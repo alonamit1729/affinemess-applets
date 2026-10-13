@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fractional Parts of Powers</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #111827;
+  color: #e5e7eb;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+#sidebar {
+  width: 300px;
+  min-width: 260px;
+  background: #1f2937;
+  border-right: 1px solid #374151;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+h1 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #93c5fd;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.section-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  margin-bottom: 5px;
+}
+
+.field-label {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: #f3f4f6;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  transition: border-color 0.15s;
+}
+input[type="text"] { font-family: 'Courier New', Courier, monospace; }
+input:focus { outline: none; border-color: #60a5fa; }
+
+.x-preview {
+  margin-top: 5px;
+  font-size: 0.78rem;
+  font-family: 'Courier New', monospace;
+  color: #60a5fa;
+  min-height: 18px;
+  word-break: break-all;
+}
+.x-preview.err { color: #f87171; }
+
+.syntax-hint {
+  font-size: 0.73rem;
+  color: #4b5563;
+  line-height: 1.55;
+  margin-top: 3px;
+}
+
+.range-row {
+  display: flex;
+  gap: 10px;
+}
+.range-row > div { flex: 1; }
+
+/* ── Segmented toggle buttons ── */
+.btn-group {
+  display: flex;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.btn-group .tog {
+  flex: 1;
+  padding: 7px 3px;
+  background: #111827;
+  color: #9ca3af;
+  border: none;
+  border-right: 1px solid #374151;
+  cursor: pointer;
+  font-size: 0.76rem;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+  text-align: center;
+}
+.btn-group .tog:last-child { border-right: none; }
+.btn-group .tog.active { background: #3b82f6; color: #fff; font-weight: 600; }
+.btn-group .tog:hover:not(.active) { background: #1f2937; color: #e5e7eb; }
+
+#compute-btn {
+  padding: 10px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  letter-spacing: 0.02em;
+}
+#compute-btn:hover { background: #2563eb; }
+#compute-btn:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
+
+#status {
+  font-size: 0.78rem;
+  color: #6b7280;
+  min-height: 18px;
+  line-height: 1.4;
+}
+#status.err { color: #f87171; }
+#status.ok  { color: #34d399; }
+
+.divider { border-top: 1px solid #374151; }
+
+.examples-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.chip {
+  display: inline-block;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  color: #d1d5db;
+  transition: border-color 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+.chip:hover { border-color: #60a5fa; color: #93c5fd; }
+
+#precision-info {
+  font-size: 0.72rem;
+  color: #4b5563;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* ── Main plot area ── */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#plot { flex: 1; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h1>Fractional Parts<br>of X<sup style="font-size:0.7em">n</sup></h1>
+
+  <div>
+    <div class="section-label">Base expression</div>
+    <input type="text" id="x-input" value="(1+sqrt(5))/2" autocomplete="off" spellcheck="false" />
+    <div class="x-preview" id="x-preview">≈ 1.6180339887498948482…</div>
+    <div class="syntax-hint">
+      Ops: <b>+ − * / ^</b> &nbsp;|&nbsp;
+      <b>sqrt(</b>x<b>)</b> &nbsp;<b>cbrt(</b>x<b>)</b> &nbsp;<b>root(</b>n,x<b>)</b><br>
+      Constants: <b>pi</b>, <b>e</b>, <b>phi</b>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="section-label">Range for n</div>
+    <div class="range-row">
+      <div>
+        <div class="field-label">From A</div>
+        <input type="number" id="a-input" value="0" min="0" max="999" step="1" />
+      </div>
+      <div>
+        <div class="field-label">To B</div>
+        <input type="number" id="b-input" value="100" min="1" max="1000" step="1" />
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label">Color dots by</div>
+    <div class="btn-group" id="color-group">
+      <button class="tog active" onclick="setColorMode('value')">Value</button>
+      <button class="tog"        onclick="setColorMode('mod2')">Parity</button>
+      <button class="tog"        onclick="setColorMode('mod3')">Mod 3</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label">Y axis shows</div>
+    <div class="btn-group" id="y-group">
+      <button class="tog active" onclick="setYMode('frac')">Frac. part</button>
+      <button class="tog"        onclick="setYMode('dist')">Dist. to ℤ</button>
+    </div>
+  </div>
+
+  <button id="compute-btn" onclick="doCompute()">Compute</button>
+
+  <div id="status"></div>
+  <div id="precision-info"></div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="section-label">Examples</div>
+    <div class="examples-grid">
+      <span class="chip" onclick="setEx('(1+sqrt(5))/2')">φ=(1+√5)/2</span>
+      <span class="chip" onclick="setEx('sqrt(2)')">√2</span>
+      <span class="chip" onclick="setEx('sqrt(3)')">√3</span>
+      <span class="chip" onclick="setEx('cbrt(2)')">∛2</span>
+      <span class="chip" onclick="setEx('2^(1/3)')">2^(1/3)</span>
+      <span class="chip" onclick="setEx('e')">e</span>
+      <span class="chip" onclick="setEx('pi')">π</span>
+      <span class="chip" onclick="setEx('4/3')">4/3</span>
+      <span class="chip" onclick="setEx('32/17')">32/17</span>
+      <span class="chip" onclick="setEx('1+sqrt(2)')">1+√2</span>
+      <span class="chip" onclick="setEx('(sqrt(2)+sqrt(3))/2')">(√2+√3)/2</span>
+      <span class="chip" onclick="setEx('root(5,2)')">2^(1/5)</span>
+    </div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="plot"></div>
+</div>
+
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Expression parser — returns a Decimal value
+// Grammar:
+//   expr   = term   (('+' | '-') term)*
+//   term   = power  (('*' | '/') power)*
+//   power  = unary  ('^' unary)*      right-associative
+//   unary  = '-' unary | primary
+//   primary= '(' expr ')' | number | ident
+// ─────────────────────────────────────────────────────────────────────────────
+class Parser {
+  constructor(src) {
+    this.src = src.replace(/\u2212/g, '-').replace(/\u00d7/g, '*').replace(/\u00f7/g, '/');
+    this.i = 0;
+  }
+
+  err(msg) { throw new Error(msg); }
+
+  peek() {
+    while (this.i < this.src.length && this.src[this.i] === ' ') this.i++;
+    return this.i < this.src.length ? this.src[this.i] : null;
+  }
+
+  eat() { this.peek(); return this.i < this.src.length ? this.src[this.i++] : null; }
+
+  need(ch) {
+    const got = this.eat();
+    if (got !== ch) this.err(`Expected '${ch}', got '${got ?? 'end'}'`);
+  }
+
+  parse() {
+    const v = this.expr();
+    if (this.peek() !== null) this.err(`Unexpected: '${this.src.slice(this.i)}'`);
+    return v;
+  }
+
+  expr() {
+    let v = this.term();
+    for (;;) {
+      const c = this.peek();
+      if (c === '+' || c === '-') { this.eat(); v = c === '+' ? v.plus(this.term()) : v.minus(this.term()); }
+      else break;
+    }
+    return v;
+  }
+
+  term() {
+    let v = this.power();
+    for (;;) {
+      const c = this.peek();
+      if (c === '*') { this.eat(); v = v.times(this.power()); }
+      else if (c === '/') { this.eat(); v = v.div(this.power()); }
+      else break;
+    }
+    return v;
+  }
+
+  power() {
+    let base = this.unary();
+    if (this.peek() === '^') { this.eat(); base = base.pow(this.unary()); }
+    return base;
+  }
+
+  unary() {
+    if (this.peek() === '-') { this.eat(); return this.unary().neg(); }
+    if (this.peek() === '+') { this.eat(); }
+    return this.primary();
+  }
+
+  primary() {
+    const c = this.peek();
+    if (c === null) this.err('Unexpected end of expression');
+    if (c === '(') { this.eat(); const v = this.expr(); this.need(')'); return v; }
+    if (/[0-9.]/.test(c)) return this.readNumber();
+    if (/[a-zA-Z]/.test(c)) return this.readIdent();
+    this.err(`Unexpected character: '${c}'`);
+  }
+
+  readNumber() {
+    let s = '';
+    while (this.i < this.src.length && /[0-9.]/.test(this.src[this.i])) s += this.src[this.i++];
+    return new Decimal(s);
+  }
+
+  readIdent() {
+    let start = this.i;
+    while (this.i < this.src.length && /[a-zA-Z0-9_]/.test(this.src[this.i])) this.i++;
+    const name = this.src.slice(start, this.i).toLowerCase();
+
+    // Constants
+    if (name === 'pi')    return new Decimal(1).atan().times(4);
+    if (name === 'tau')   return new Decimal(1).atan().times(8);
+    if (name === 'e')     return new Decimal(1).exp();
+    if (name === 'phi')   return new Decimal(1).plus(new Decimal(5).sqrt()).div(2);
+
+    // Functions
+    if (this.peek() !== '(') this.err(`Unknown constant or function: '${name}'`);
+    this.eat();
+
+    if (name === 'sqrt') {
+      const a = this.expr(); this.need(')');
+      if (a.isNegative()) this.err('sqrt: argument must be non-negative');
+      return a.sqrt();
+    }
+    if (name === 'cbrt') {
+      const a = this.expr(); this.need(')');
+      const t = new Decimal(1).div(3);
+      return a.isNegative() ? a.abs().pow(t).neg() : a.pow(t);
+    }
+    if (name === 'root') {
+      const n = this.expr(); this.need(',');
+      const a = this.expr(); this.need(')');
+      if (n.lte(0)) this.err('root: order must be positive');
+      const t = new Decimal(1).div(n);
+      return a.isNegative() ? a.abs().pow(t).neg() : a.pow(t);
+    }
+    if (name === 'exp') { const a = this.expr(); this.need(')'); return a.exp(); }
+    if (name === 'ln' || name === 'log') {
+      const a = this.expr(); this.need(')');
+      if (!a.isPositive()) this.err('ln: argument must be positive');
+      return a.ln();
+    }
+    if (name === 'log2')  { const a = this.expr(); this.need(')'); return a.log(2); }
+    if (name === 'log10') { const a = this.expr(); this.need(')'); return a.log(10); }
+    if (name === 'abs')   { const a = this.expr(); this.need(')'); return a.abs(); }
+    if (name === 'sin')   { const a = this.expr(); this.need(')'); return a.sin(); }
+    if (name === 'cos')   { const a = this.expr(); this.need(')'); return a.cos(); }
+    if (name === 'tan')   { const a = this.expr(); this.need(')'); return a.tan(); }
+
+    this.err(`Unknown function: '${name}'`);
+  }
+}
+
+function evaluate(str) { return new Parser(str.trim()).parse(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Adaptive precision: enough decimal digits for integer part + safety margin
+// ─────────────────────────────────────────────────────────────────────────────
+function requiredPrecision(Xnum, B) {
+  const logX = Math.log10(Math.abs(Xnum));
+  if (logX <= 0) return 120;
+  return Math.max(120, Math.min(1200, Math.ceil(B * logX) + 160));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Dot size: 18 px at N=1, 7 px at N=1000 (square-root ramp)
+// ─────────────────────────────────────────────────────────────────────────────
+function markerSize(N) {
+  if (N <= 1) return 18;
+  return Math.max(7, Math.round(18 - 11 * Math.sqrt((N - 1) / 999)));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Compute fractional parts + distance to nearest integer
+// ─────────────────────────────────────────────────────────────────────────────
+function computeFracParts(xStr, A, B) {
+  // Step 1 — low-precision parse to estimate required precision
+  Decimal.set({ precision: 40, rounding: Decimal.ROUND_HALF_EVEN });
+  const Xlow = evaluate(xStr);
+  const Xnum = parseFloat(Xlow.toFixed(15));
+  if (!isFinite(Xnum) || Xnum <= 0) throw new Error('X must be a positive finite number');
+
+  const prec = requiredPrecision(Xnum, B);
+
+  // Step 2 — full-precision parse
+  Decimal.set({ precision: prec, rounding: Decimal.ROUND_HALF_EVEN });
+  const X = evaluate(xStr);
+  if (!X.isFinite()) throw new Error('X is not finite');
+  if (X.lte(0))      throw new Error('X must be positive');
+
+  // Step 3 — sequential multiplication X^0, X^1, …, X^B
+  const ns = [], fracs = [], dists = [], hoverTexts = [];
+  let power = new Decimal(1);
+
+  for (let n = 0; n <= B; n++) {
+    if (n >= A) {
+      const fl  = power.floor();
+      const fr  = power.minus(fl);                       // frac ∈ [0, 1)
+      const dt  = fr.lte(0.5) ? fr : new Decimal(1).minus(fr);  // dist ∈ [0, 0.5]
+      const fNum = parseFloat(fr.toFixed(30));
+      const dNum = parseFloat(dt.toFixed(30));
+      ns.push(n);
+      fracs.push(fNum);
+      dists.push(dNum);
+      hoverTexts.push(
+        `n = ${n}` +
+        `<br>frac = ${fr.toSignificantDigits(12).toString()}` +
+        `<br>dist = ${dt.toSignificantDigits(12).toString()}`
+      );
+    }
+    if (n < B) power = power.times(X);
+  }
+
+  return { ns, fracs, dists, hoverTexts, prec, xStr };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// App state
+// ─────────────────────────────────────────────────────────────────────────────
+let state     = null;
+let colorMode = 'value';  // 'value' | 'mod2' | 'mod3'
+let yMode     = 'frac';   // 'frac'  | 'dist'
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Render
+// ─────────────────────────────────────────────────────────────────────────────
+// Continuous colorscale (blue → purple → pink → orange → green)
+const VALUE_COLORSCALE = [
+  [0.00, '#1d4ed8'],
+  [0.20, '#7c3aed'],
+  [0.40, '#db2777'],
+  [0.60, '#ea580c'],
+  [0.80, '#ca8a04'],
+  [1.00, '#15803d'],
+];
+
+// Colors for categorical modes
+const MOD2_COLORS = ['#fbbf24', '#818cf8'];       // even: amber, odd: indigo
+const MOD3_COLORS = ['#f87171', '#34d399', '#60a5fa']; // 0:red, 1:green, 2:blue
+const MOD2_NAMES  = ['n even', 'n odd'];
+const MOD3_NAMES  = ['n ≡ 0 (mod 3)', 'n ≡ 1 (mod 3)', 'n ≡ 2 (mod 3)'];
+
+function renderPlot() {
+  if (!state) return;
+  const { ns, fracs, dists, hoverTexts, xStr } = state;
+  const N    = ns.length;
+  const sz   = markerSize(N);
+  const yVals = yMode === 'frac' ? fracs : dists;
+  const yRange = yMode === 'frac' ? [-0.04, 1.04]  : [-0.02, 0.54];
+  const yDtick = yMode === 'frac' ? 0.25           : 0.1;
+  const yTitle = yMode === 'frac' ? '{Xⁿ}'         : 'dist(Xⁿ, ℤ)';
+  const plotTitle = yMode === 'frac'
+    ? `{(${xStr})<sup>n</sup>} — fractional parts`
+    : `dist((${xStr})<sup>n</sup>, ℤ) — distance to nearest integer`;
+
+  let traces = [];
+
+  if (colorMode === 'value') {
+    traces = [{
+      x: ns, y: yVals,
+      mode: 'markers', type: 'scatter',
+      showlegend: false,
+      marker: {
+        size: sz,
+        color: yVals,
+        colorscale: VALUE_COLORSCALE,
+        cmin: 0,
+        cmax: yMode === 'frac' ? 1 : 0.5,
+        showscale: true,
+        colorbar: {
+          title: { text: yTitle, font: { color: '#9ca3af', size: 12 } },
+          tickfont: { color: '#9ca3af', size: 11 },
+          thickness: 14, len: 0.75, x: 1.01,
+        },
+        opacity: 0.65,
+      },
+      text: hoverTexts,
+      hovertemplate: '%{text}<extra></extra>',
+    }];
+  } else {
+    const k     = colorMode === 'mod2' ? 2 : 3;
+    const colors = colorMode === 'mod2' ? MOD2_COLORS : MOD3_COLORS;
+    const names  = colorMode === 'mod2' ? MOD2_NAMES  : MOD3_NAMES;
+    const buckets = Array.from({ length: k }, () => ({ x: [], y: [], t: [] }));
+
+    for (let i = 0; i < ns.length; i++) {
+      const b = buckets[ns[i] % k];
+      b.x.push(ns[i]); b.y.push(yVals[i]); b.t.push(hoverTexts[i]);
+    }
+
+    traces = buckets.map((b, r) => ({
+      x: b.x, y: b.y,
+      name: names[r],
+      mode: 'markers', type: 'scatter',
+      marker: { size: sz, color: colors[r], opacity: 0.65 },
+      text: b.t,
+      hovertemplate: '%{text}<extra></extra>',
+    }));
+  }
+
+  const layout = {
+    title: {
+      text: plotTitle,
+      font: { color: '#e5e7eb', size: 15, family: 'Segoe UI, system-ui, sans-serif' },
+      x: 0.05,
+    },
+    paper_bgcolor: '#111827',
+    plot_bgcolor:  '#1f2937',
+    font: { color: '#9ca3af', family: 'Segoe UI, system-ui, sans-serif' },
+    xaxis: {
+      title: { text: 'n', font: { color: '#9ca3af', size: 13 } },
+      gridcolor: '#374151', zerolinecolor: '#4b5563',
+      tickfont: { color: '#9ca3af' }, linecolor: '#374151',
+    },
+    yaxis: {
+      title: { text: yTitle, font: { color: '#9ca3af', size: 13 } },
+      range: yRange, dtick: yDtick,
+      gridcolor: '#374151', zerolinecolor: '#4b5563',
+      tickfont: { color: '#9ca3af' }, linecolor: '#374151',
+    },
+    legend: {
+      font: { color: '#e5e7eb', size: 12 },
+      bgcolor: '#1f2937',
+      bordercolor: '#374151',
+      borderwidth: 1,
+    },
+    showlegend: colorMode !== 'value',
+    hoverlabel: {
+      bgcolor: '#1f2937', bordercolor: '#4b5563',
+      font: { color: '#e5e7eb', size: 12 },
+    },
+    margin: { l: 60, r: 70, t: 55, b: 55 },
+  };
+
+  Plotly.react('plot', traces, layout, {
+    responsive: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ['toImage', 'sendDataToCloud'],
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Toggle helpers
+// ─────────────────────────────────────────────────────────────────────────────
+function activateBtn(groupId, value, modePrefix) {
+  document.querySelectorAll(`#${groupId} .tog`).forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === value ||
+      btn.getAttribute('onclick').includes(`'${modePrefix === 'color' ? value : value}'`));
+  });
+}
+
+function setColorMode(mode) {
+  colorMode = mode;
+  document.querySelectorAll('#color-group .tog').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('onclick').includes(`'${mode}'`)));
+  renderPlot();
+}
+
+function setYMode(mode) {
+  yMode = mode;
+  document.querySelectorAll('#y-group .tog').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('onclick').includes(`'${mode}'`)));
+  renderPlot();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UI helpers
+// ─────────────────────────────────────────────────────────────────────────────
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = cls || '';
+}
+
+function setPrecInfo(msg) { document.getElementById('precision-info').textContent = msg; }
+
+function updatePreview() {
+  const el = document.getElementById('x-preview');
+  try {
+    Decimal.set({ precision: 30 });
+    const v = evaluate(document.getElementById('x-input').value.trim());
+    el.textContent = '≈ ' + v.toSignificantDigits(16).toString();
+    el.className = 'x-preview';
+  } catch(e) {
+    el.textContent = e.message;
+    el.className = 'x-preview err';
+  }
+}
+
+function setEx(expr) {
+  document.getElementById('x-input').value = expr;
+  updatePreview();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main computation
+// ─────────────────────────────────────────────────────────────────────────────
+function doCompute() {
+  const xStr = document.getElementById('x-input').value.trim();
+  let A = parseInt(document.getElementById('a-input').value, 10);
+  let B = parseInt(document.getElementById('b-input').value, 10);
+
+  if (isNaN(A) || A < 0) A = 0;
+  if (isNaN(B) || B < 1) B = 100;
+  B = Math.min(B, 1000);
+  document.getElementById('a-input').value = A;
+  document.getElementById('b-input').value = B;
+
+  if (A >= B) { setStatus('A must be strictly less than B', 'err'); return; }
+
+  setStatus('Computing…');
+  setPrecInfo('');
+  document.getElementById('compute-btn').disabled = true;
+
+  setTimeout(() => {
+    try {
+      const t0 = performance.now();
+      state = computeFracParts(xStr, A, B);
+      const ms = (performance.now() - t0).toFixed(0);
+
+      renderPlot();
+      setStatus(`${state.ns.length} points computed in ${ms} ms`, 'ok');
+      setPrecInfo(`Working precision: ${state.prec} decimal digits`);
+    } catch(e) {
+      setStatus('Error: ' + e.message, 'err');
+    } finally {
+      document.getElementById('compute-btn').disabled = false;
+    }
+  }, 20);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Event wiring
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById('x-input').addEventListener('input', updatePreview);
+document.getElementById('x-input').addEventListener('keydown', e => { if (e.key === 'Enter') doCompute(); });
+['a-input', 'b-input'].forEach(id =>
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doCompute(); }));
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────────────────────────────────────
+updatePreview();
+doCompute();
+</script>
+</body>
+</html>
