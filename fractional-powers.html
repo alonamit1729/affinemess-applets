@@ -1,262 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fractional Parts of Powers</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fractional Parts of xⁿ · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
 body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: #111827;
-  color: #e5e7eb;
-  height: 100vh;
-  display: flex;
-  overflow: hidden;
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
 }
 
-/* ── Sidebar ── */
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+
+/* ---- this applet ---- */
+
+.fp-body { display: flex; flex: 1 1 auto; min-height: 0; position: relative; }
 #sidebar {
-  width: 300px;
-  min-width: 260px;
-  background: #1f2937;
-  border-right: 1px solid #374151;
-  padding: 20px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  overflow-y: auto;
+  width: 250px; flex-shrink: 0; overflow-y: auto;
+  background: var(--paper-card); border-right: 1px solid var(--line);
+  padding: 14px 14px 18px; display: flex; flex-direction: column; gap: 14px;
 }
-
-h1 {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #93c5fd;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
-}
-
-.section-label {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6b7280;
-  margin-bottom: 5px;
-}
-
-.field-label {
-  font-size: 0.82rem;
-  color: #9ca3af;
-  margin-bottom: 4px;
-}
-
-input[type="text"], input[type="number"] {
-  width: 100%;
-  padding: 9px 11px;
-  border: 1px solid #374151;
-  background: #111827;
-  color: #f3f4f6;
-  border-radius: 6px;
-  font-size: 0.92rem;
-  transition: border-color 0.15s;
-}
-input[type="text"] { font-family: 'Courier New', Courier, monospace; }
-input:focus { outline: none; border-color: #60a5fa; }
-
-.x-preview {
-  margin-top: 5px;
-  font-size: 0.78rem;
-  font-family: 'Courier New', monospace;
-  color: #60a5fa;
-  min-height: 18px;
-  word-break: break-all;
-}
-.x-preview.err { color: #f87171; }
-
-.syntax-hint {
-  font-size: 0.73rem;
-  color: #4b5563;
-  line-height: 1.55;
-  margin-top: 3px;
-}
-
-.range-row {
-  display: flex;
-  gap: 10px;
-}
-.range-row > div { flex: 1; }
-
-/* ── Segmented toggle buttons ── */
-.btn-group {
-  display: flex;
-  border: 1px solid #374151;
-  border-radius: 6px;
-  overflow: hidden;
-}
-.btn-group .tog {
-  flex: 1;
-  padding: 7px 3px;
-  background: #111827;
-  color: #9ca3af;
-  border: none;
-  border-right: 1px solid #374151;
-  cursor: pointer;
-  font-size: 0.76rem;
-  transition: background 0.12s, color 0.12s;
-  white-space: nowrap;
-  text-align: center;
-}
-.btn-group .tog:last-child { border-right: none; }
-.btn-group .tog.active { background: #3b82f6; color: #fff; font-weight: 600; }
-.btn-group .tog:hover:not(.active) { background: #1f2937; color: #e5e7eb; }
-
-#compute-btn {
-  padding: 10px;
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-  letter-spacing: 0.02em;
-}
-#compute-btn:hover { background: #2563eb; }
-#compute-btn:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
-
-#status {
-  font-size: 0.78rem;
-  color: #6b7280;
-  min-height: 18px;
-  line-height: 1.4;
-}
-#status.err { color: #f87171; }
-#status.ok  { color: #34d399; }
-
-.divider { border-top: 1px solid #374151; }
-
-.examples-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
+#main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
+#plot { flex: 1; min-height: 0; }
+.x-field { display: flex; align-items: center; gap: 8px; flex: 1 1 260px; min-width: 200px; max-width: 420px; }
+.x-field .am-label { white-space: nowrap; }
+#x-input { flex: 1; min-width: 0; }
+.x-preview { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 210px; }
+.x-preview.err { color: var(--accent-deep); }
+.range-field { display: flex; align-items: center; gap: 6px; }
+.range-field input { width: 64px; }
+#compute-btn { }
+.section-label { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+.am-seg { display: flex; }
+.am-seg .tog { flex: 1; font-size: 10px; padding: 8px 4px; }
+.am-seg .tog.active { color: var(--paper-card); background: var(--ink); }
+.syntax-hint { font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
+.syntax-hint b { font-family: var(--mono); font-weight: 500; font-size: 11.5px; color: var(--ink); }
+.examples-grid { display: flex; flex-wrap: wrap; gap: 5px; }
 .chip {
-  display: inline-block;
-  background: #111827;
-  border: 1px solid #374151;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 0.75rem;
-  font-family: 'Courier New', monospace;
-  cursor: pointer;
-  color: #d1d5db;
-  transition: border-color 0.12s, color 0.12s;
-  white-space: nowrap;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-soft); cursor: pointer; white-space: nowrap;
+  border: 1px solid var(--line-soft); border-radius: 3px; padding: 4px 7px; background: var(--paper);
+  transition: color .15s, border-color .15s;
 }
-.chip:hover { border-color: #60a5fa; color: #93c5fd; }
+.chip:hover { color: var(--accent); border-color: var(--accent); }
+#status { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); min-height: 16px; line-height: 1.4; }
+#status.err { color: var(--accent-deep); }
+#status.ok { color: var(--ink-soft); }
+#precision-info { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); }
+.divider { border-top: 1px solid var(--line-soft); }
+#opts-btn { display: none; }
+@media (max-width: 700px) {
+  #opts-btn { display: inline-block; }
+  #sidebar {
+    position: absolute; top: 0; left: 0; bottom: 0; z-index: 15; width: min(300px, 88%);
+    box-shadow: 14px 0 30px -20px rgba(30,24,16,.45);
+    transform: translateX(-104%); visibility: hidden;
+    transition: transform .3s cubic-bezier(.16,1,.3,1), visibility 0s linear .3s;
+  }
+  #sidebar.open { transform: none; visibility: visible; transition: transform .3s cubic-bezier(.16,1,.3,1); }
+  .x-preview { display: none; }
+  .x-field { flex: 1 1 100%; max-width: none; order: 4; }
+}
 
-#precision-info {
-  font-size: 0.72rem;
-  color: #4b5563;
-  font-style: italic;
-  line-height: 1.4;
-}
-
-/* ── Main plot area ── */
-#main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-#plot { flex: 1; }
 </style>
 </head>
 <body>
-
-<div id="sidebar">
-  <h1>Fractional Parts<br>of X<sup style="font-size:0.7em">n</sup></h1>
-
-  <div>
-    <div class="section-label">Base expression</div>
-    <input type="text" id="x-input" value="(1+sqrt(5))/2" autocomplete="off" spellcheck="false" />
-    <div class="x-preview" id="x-preview">≈ 1.6180339887498948482…</div>
+<div class="am-app">
+<header class="am-bar">
+  <a class="am-home" href="https://affinemess.com/#applets/fractional-powers" target="_top">affine<span class="sep">·</span>mess</a>
+  <div class="x-field">
+    <span class="am-label">x =</span>
+    <input class="am-input" type="text" id="x-input" value="(1+sqrt(5))/2" autocomplete="off" spellcheck="false" aria-label="base expression x">
+    <span class="x-preview" id="x-preview">≈ 1.6180339887498948482…</span>
+  </div>
+  <div class="range-field">
+    <span class="am-label">n</span>
+    <input class="am-input" type="number" id="a-input" value="0" min="0" max="999" step="1" aria-label="from n">
+    <span class="am-label">to</span>
+    <input class="am-input" type="number" id="b-input" value="100" min="1" max="1000" step="1" aria-label="to n">
+  </div>
+  <button class="am-btn is-on" id="compute-btn" onclick="doCompute()">Compute</button>
+  <button class="am-btn" id="opts-btn" type="button" aria-expanded="false" aria-controls="sidebar">Options</button>
+  <span class="am-spacer"></span>
+  <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+</header>
+<div class="am-stage fp-body">
+  <div id="sidebar">
+    <div>
+      <div class="section-label">Color dots by</div>
+      <div class="am-seg" id="color-group">
+        <button class="am-btn tog active" onclick="setColorMode('value')">Value</button>
+        <button class="am-btn tog" onclick="setColorMode('mod2')">Parity</button>
+        <button class="am-btn tog" onclick="setColorMode('mod3')">Mod 3</button>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Y axis shows</div>
+      <div class="am-seg" id="y-group">
+        <button class="am-btn tog active" onclick="setYMode('frac')">Frac. part</button>
+        <button class="am-btn tog" onclick="setYMode('dist')">Dist. to ℤ</button>
+      </div>
+    </div>
+    <div>
+      <div id="status"></div>
+      <div id="precision-info"></div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="section-label">Examples</div>
+      <div class="examples-grid">
+        <span class="chip" onclick="setEx('(1+sqrt(5))/2')">φ=(1+√5)/2</span>
+        <span class="chip" onclick="setEx('cbrt((9+sqrt(69))/18)+cbrt((9-sqrt(69))/18)')">ρ (plastic)</span>
+        <span class="chip" onclick="setEx('1+sqrt(2)')">1+√2</span>
+        <span class="chip" onclick="setEx('sqrt(2)')">√2</span>
+        <span class="chip" onclick="setEx('sqrt(3)')">√3</span>
+        <span class="chip" onclick="setEx('cbrt(2)')">∛2</span>
+        <span class="chip" onclick="setEx('3/2')">3/2</span>
+        <span class="chip" onclick="setEx('4/3')">4/3</span>
+        <span class="chip" onclick="setEx('32/17')">32/17</span>
+        <span class="chip" onclick="setEx('e')">e</span>
+        <span class="chip" onclick="setEx('pi')">π</span>
+        <span class="chip" onclick="setEx('(sqrt(2)+sqrt(3))/2')">(√2+√3)/2</span>
+        <span class="chip" onclick="setEx('root(5,2)')">2^(1/5)</span>
+      </div>
+    </div>
+    <div class="divider"></div>
     <div class="syntax-hint">
-      Ops: <b>+ − * / ^</b> &nbsp;|&nbsp;
-      <b>sqrt(</b>x<b>)</b> &nbsp;<b>cbrt(</b>x<b>)</b> &nbsp;<b>root(</b>n,x<b>)</b><br>
-      Constants: <b>pi</b>, <b>e</b>, <b>phi</b>
+      Ops: <b>+ − * / ^</b> · <b>sqrt(x)</b> <b>cbrt(x)</b> <b>root(n,x)</b><br>
+      Constants: <b>pi</b>, <b>e</b>, <b>phi</b>. Enter computes.
     </div>
   </div>
-
-  <div class="divider"></div>
-
-  <div>
-    <div class="section-label">Range for n</div>
-    <div class="range-row">
-      <div>
-        <div class="field-label">From A</div>
-        <input type="number" id="a-input" value="0" min="0" max="999" step="1" />
-      </div>
-      <div>
-        <div class="field-label">To B</div>
-        <input type="number" id="b-input" value="100" min="1" max="1000" step="1" />
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <div class="section-label">Color dots by</div>
-    <div class="btn-group" id="color-group">
-      <button class="tog active" onclick="setColorMode('value')">Value</button>
-      <button class="tog"        onclick="setColorMode('mod2')">Parity</button>
-      <button class="tog"        onclick="setColorMode('mod3')">Mod 3</button>
-    </div>
-  </div>
-
-  <div>
-    <div class="section-label">Y axis shows</div>
-    <div class="btn-group" id="y-group">
-      <button class="tog active" onclick="setYMode('frac')">Frac. part</button>
-      <button class="tog"        onclick="setYMode('dist')">Dist. to ℤ</button>
-    </div>
-  </div>
-
-  <button id="compute-btn" onclick="doCompute()">Compute</button>
-
-  <div id="status"></div>
-  <div id="precision-info"></div>
-
-  <div class="divider"></div>
-
-  <div>
-    <div class="section-label">Examples</div>
-    <div class="examples-grid">
-      <span class="chip" onclick="setEx('(1+sqrt(5))/2')">φ=(1+√5)/2</span>
-      <span class="chip" onclick="setEx('sqrt(2)')">√2</span>
-      <span class="chip" onclick="setEx('sqrt(3)')">√3</span>
-      <span class="chip" onclick="setEx('cbrt(2)')">∛2</span>
-      <span class="chip" onclick="setEx('2^(1/3)')">2^(1/3)</span>
-      <span class="chip" onclick="setEx('e')">e</span>
-      <span class="chip" onclick="setEx('pi')">π</span>
-      <span class="chip" onclick="setEx('4/3')">4/3</span>
-      <span class="chip" onclick="setEx('32/17')">32/17</span>
-      <span class="chip" onclick="setEx('1+sqrt(2)')">1+√2</span>
-      <span class="chip" onclick="setEx('(sqrt(2)+sqrt(3))/2')">(√2+√3)/2</span>
-      <span class="chip" onclick="setEx('root(5,2)')">2^(1/5)</span>
-    </div>
-  </div>
+  <div id="main"><div id="plot"></div></div>
+  <aside class="am-about" id="am-about" aria-hidden="true">
+    <button class="am-btn am-close" type="button">Close</button>
+    <h2>Fractional parts of xⁿ</h2>
+    <p>Pick a number x &gt; 1 and look at the fractional parts of x, x², x³, … Each dot is one power: n across, the part after the decimal point up.</p>
+    <h3>Almost always: noise</h3>
+    <p>For almost every x &gt; 1, the fractional parts of xⁿ are equidistributed in [0, 1): in the long run every interval gets its fair share (Koksma, 1935). Try √2, ∛2 or 32/17 and the dots fill the strip evenly.</p>
+    <h3>Sometimes: not at all</h3>
+    <p>Try φ, 1+√2 or the plastic ratio ρ. The dots collapse onto 0 and 1, because xⁿ gets closer and closer to an integer. These are <em>Pisot numbers</em>: algebraic integers whose other conjugates all have absolute value below 1, so their contribution to xⁿ dies away. Switch the y-axis to "Dist. to ℤ" to watch it go to zero, and colour by parity to see which side it approaches from.</p>
+    <h3>And nobody knows</h3>
+    <p>For 3/2, e or π, nobody can prove anything of the kind. It is not even known whether the fractional parts of (3/2)ⁿ are dense in [0, 1]. The picture looks perfectly random; the theorem is wide open.</p>
+    <h3>Under the hood</h3>
+    <p>Powers are computed in high precision with decimal.js, and the working precision grows with n so the fractional part is still right at n = 1000. Plot by Plotly.</p>
+  </aside>
 </div>
-
-<div id="main">
-  <div id="plot"></div>
 </div>
 
 <script>
+/* am-kit v1 BEGIN */
+(function () {
+  // Opened on its own (not inside affinemess.com)? Show the wordmark home link.
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+
+</script>
+<script>
 'use strict';
+const FONT_MONO = 'JetBrains Mono, ui-monospace, monospace';
+const FONT_SERIF = 'Fraunces, Georgia, serif';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Expression parser — returns a Decimal value
@@ -465,17 +483,14 @@ let yMode     = 'frac';   // 'frac'  | 'dist'
 // ─────────────────────────────────────────────────────────────────────────────
 // Continuous colorscale (blue → purple → pink → orange → green)
 const VALUE_COLORSCALE = [
-  [0.00, '#1d4ed8'],
-  [0.20, '#7c3aed'],
-  [0.40, '#db2777'],
-  [0.60, '#ea580c'],
-  [0.80, '#ca8a04'],
-  [1.00, '#15803d'],
+  [0.00, '#2E5C9A'],
+  [0.50, '#9A8466'],
+  [1.00, '#B85820'],
 ];
 
 // Colors for categorical modes
-const MOD2_COLORS = ['#fbbf24', '#818cf8'];       // even: amber, odd: indigo
-const MOD3_COLORS = ['#f87171', '#34d399', '#60a5fa']; // 0:red, 1:green, 2:blue
+const MOD2_COLORS = ['#B85820', '#2E5C9A'];       // even: amber, odd: indigo
+const MOD3_COLORS = ['#B85820', '#5E8A4A', '#2E5C9A']; // 0:red, 1:green, 2:blue
 const MOD2_NAMES  = ['n even', 'n odd'];
 const MOD3_NAMES  = ['n ≡ 0 (mod 3)', 'n ≡ 1 (mod 3)', 'n ≡ 2 (mod 3)'];
 
@@ -507,11 +522,11 @@ function renderPlot() {
         cmax: yMode === 'frac' ? 1 : 0.5,
         showscale: true,
         colorbar: {
-          title: { text: yTitle, font: { color: '#9ca3af', size: 12 } },
-          tickfont: { color: '#9ca3af', size: 11 },
+          title: { text: yTitle, font: { color: '#5C5142', size: 12, family: FONT_MONO } },
+          tickfont: { color: '#8A7D66', size: 10, family: FONT_MONO },
           thickness: 14, len: 0.75, x: 1.01,
         },
-        opacity: 0.65,
+        opacity: 0.7,
       },
       text: hoverTexts,
       hovertemplate: '%{text}<extra></extra>',
@@ -531,7 +546,7 @@ function renderPlot() {
       x: b.x, y: b.y,
       name: names[r],
       mode: 'markers', type: 'scatter',
-      marker: { size: sz, color: colors[r], opacity: 0.65 },
+      marker: { size: sz, color: colors[r], opacity: 0.7 },
       text: b.t,
       hovertemplate: '%{text}<extra></extra>',
     }));
@@ -540,35 +555,35 @@ function renderPlot() {
   const layout = {
     title: {
       text: plotTitle,
-      font: { color: '#e5e7eb', size: 15, family: 'Segoe UI, system-ui, sans-serif' },
+      font: { color: '#1E1810', size: 16, family: FONT_SERIF },
       x: 0.05,
     },
-    paper_bgcolor: '#111827',
-    plot_bgcolor:  '#1f2937',
-    font: { color: '#9ca3af', family: 'Segoe UI, system-ui, sans-serif' },
+    paper_bgcolor: '#F2EBD9',
+    plot_bgcolor:  '#FBF6E8',
+    font: { color: '#5C5142', family: FONT_MONO, size: 11 },
     xaxis: {
-      title: { text: 'n', font: { color: '#9ca3af', size: 13 } },
-      gridcolor: '#374151', zerolinecolor: '#4b5563',
-      tickfont: { color: '#9ca3af' }, linecolor: '#374151',
+      title: { text: 'n', font: { color: '#5C5142', size: 12 } },
+      gridcolor: '#E3D9C2', zerolinecolor: '#D4C9AC',
+      tickfont: { color: '#8A7D66' }, linecolor: '#B8AB8A',
     },
     yaxis: {
-      title: { text: yTitle, font: { color: '#9ca3af', size: 13 } },
+      title: { text: yTitle, font: { color: '#5C5142', size: 12 } },
       range: yRange, dtick: yDtick,
-      gridcolor: '#374151', zerolinecolor: '#4b5563',
-      tickfont: { color: '#9ca3af' }, linecolor: '#374151',
+      gridcolor: '#E3D9C2', zerolinecolor: '#D4C9AC',
+      tickfont: { color: '#8A7D66' }, linecolor: '#B8AB8A',
     },
     legend: {
-      font: { color: '#e5e7eb', size: 12 },
-      bgcolor: '#1f2937',
-      bordercolor: '#374151',
+      font: { color: '#1E1810', size: 11 },
+      bgcolor: '#FBF6E8',
+      bordercolor: '#D4C9AC',
       borderwidth: 1,
     },
     showlegend: colorMode !== 'value',
     hoverlabel: {
-      bgcolor: '#1f2937', bordercolor: '#4b5563',
-      font: { color: '#e5e7eb', size: 12 },
+      bgcolor: '#FBF6E8', bordercolor: '#B8AB8A',
+      font: { color: '#1E1810', size: 12, family: FONT_MONO },
     },
-    margin: { l: 60, r: 70, t: 55, b: 55 },
+    margin: { l: 56, r: 64, t: 48, b: 46 },
   };
 
   Plotly.react('plot', traces, layout, {
@@ -679,6 +694,19 @@ document.getElementById('x-input').addEventListener('keydown', e => { if (e.key 
 // ─────────────────────────────────────────────────────────────────────────────
 // Init
 // ─────────────────────────────────────────────────────────────────────────────
+// phones: Options button slides the controls panel over the plot
+(function () {
+  const btn = document.getElementById('opts-btn'), side = document.getElementById('sidebar');
+  btn.addEventListener('click', () => {
+    const open = !side.classList.contains('open');
+    side.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
+    btn.classList.toggle('is-on', open);
+  });
+})();
+// keep Plotly sized to its box (iframe resizes, phone rotation, drawer)
+new ResizeObserver(() => { if (window.Plotly && document.getElementById('plot').data) Plotly.Plots.resize('plot'); })
+  .observe(document.getElementById('plot'));
+
 updatePreview();
 doCompute();
 </script>

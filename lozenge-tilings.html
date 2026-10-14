@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lozenge Tilings · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+
+/* ---- this applet ---- */
+.side-field { display: flex; align-items: center; gap: 8px; }
+.side-field input[type=range] { width: 120px; }
+#sideLengthValue { font-family: var(--mono); font-size: 13px; font-weight: 500; min-width: 2ch; font-variant-numeric: tabular-nums; }
+.persp { display: inline-flex; align-items: center; gap: 6px; }
+.persp .sw { width: 9px; height: 9px; border-radius: 1px; background: var(--c); transform: rotate(45deg) skew(10deg, 10deg); }
+.persp[data-active="true"] { color: var(--paper-card); background: var(--c); }
+.persp[data-active="true"] .sw { background: var(--paper-card); }
+#tilingCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.lz-readout {
+  position: absolute; left: 14px; top: 12px; z-index: 3; pointer-events: none; max-width: min(520px, 70%);
+  font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--ink-soft);
+}
+.lz-readout .claim { color: var(--ink); }
+.lz-readout .status { color: var(--ink-faint); }
+#note {
+  position: absolute; left: 50%; bottom: 16px; z-index: 12; transform: translate(-50%, 12px); opacity: 0;
+  max-width: min(560px, 90%); padding: 9px 14px; pointer-events: none;
+  background: var(--ink); color: var(--paper-card); border-radius: 3px;
+  font-family: var(--serif); font-size: 14px; line-height: 1.4; transition: opacity .2s, transform .2s;
+}
+#note.show { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 600px) {
+  .side-field input[type=range] { width: 96px; }
+  .persp .lbl { display: none; }
+  .persp { padding: 9px 12px; }
+  .lz-readout { font-size: 10.5px; left: 10px; top: 8px; max-width: 92%; }
+}
+
+</style>
+</head>
+<body>
+<div class="am-app">
+<header class="am-bar">
+  <a class="am-home" href="https://affinemess.com/#applets/lozenge-tilings" target="_top">affine<span class="sep">·</span>mess</a>
+  <label class="side-field"><span class="am-label">side</span>
+    <input id="sideLength" type="range" min="3" max="24" value="8" aria-label="hexagon side length">
+    <span id="sideLengthValue">8</span></label>
+  <span class="am-seg">
+    <button id="solveBtn" class="am-btn" type="button">Solve</button>
+    <button id="scrambleBtn" class="am-btn" type="button">Scramble</button>
+  </span>
+  <span class="am-seg" role="group" aria-label="Perspective">
+    <button id="perspectiveRedBtn" class="am-btn persp" data-color="red" style="--c:#C0492F" type="button"><i class="sw"></i><span class="lbl">Red</span></button>
+    <button id="perspectiveGreenBtn" class="am-btn persp" data-color="green" style="--c:#5E8A4A" type="button"><i class="sw"></i><span class="lbl">Green</span></button>
+    <button id="perspectiveBlueBtn" class="am-btn persp" data-color="blue" style="--c:#3A64A8" type="button"><i class="sw"></i><span class="lbl">Blue</span></button>
+  </span>
+  <span class="am-spacer"></span>
+  <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+</header>
+<main class="am-stage am-dots" id="stage">
+  <canvas id="tilingCanvas"></canvas>
+  <div class="lz-readout">
+    <div id="pieceCount"></div>
+    <div class="claim" id="orientationTarget"></div>
+    <div class="status" id="perspectiveStatus">Flat view. Click a lozenge to turn it, drag to move it.</div>
+  </div>
+  <div id="note" role="status" aria-live="polite"></div>
+  <aside class="am-about" id="am-about" aria-hidden="true">
+    <button class="am-btn am-close" type="button">Close</button>
+    <h2>Three colours, equal shares</h2>
+    <p>Tile a regular hexagon of side n with lozenges, each made of two unit triangles. A lozenge can point three ways, coloured red, green and blue. However you tile it, each colour appears exactly <em>n²</em> times.</p>
+    <h3>Try it</h3>
+    <p><b>Solve</b> builds a random tiling. <b>Scramble</b> throws the pieces out again. Build your own: click a lozenge to turn it, drag it to move it (it snaps to the grid). Count the colours when you're done.</p>
+    <h3>The proof is a change of perspective</h3>
+    <p>Look at a finished tiling and stop seeing it as flat: it is a drawing of unit cubes stacked in the corner of an n × n × n box. The three colours are the three kinds of visible face: tops, lefts and rights.</p>
+    <p>Now press a colour. The pile is lifted into 3D and the camera turns to look straight down one axis of the box. From there only faces of that colour are visible, and together they cover one n × n wall of the box exactly. So there are n² of them. The same goes for the other two colours.</p>
+    <p>The perspective buttons need a complete tiling; press Solve first if you've been building by hand.</p>
+    <h3>Where it comes from</h3>
+    <p>This is <em>the problem of the calissons</em>, named after the lozenge-shaped sweets of Aix-en-Provence. Guy David and Carlos Tomei published the cube proof in the American Mathematical Monthly in 1989. It is one of the classic proofs without words.</p>
+    <h3>Under the hood</h3>
+    <p>A lozenge tiling is the same thing as a perfect matching between the hexagon's up-triangles and down-triangles. Solve finds a random one with Hopcroft–Karp. The 3D view assigns each vertex a height from the tiling and rotates the camera.</p>
+  </aside>
+</main>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  // Opened on its own (not inside affinemess.com)? Show the wordmark home link.
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+
+</script>
+<script>
+(() => {
+  const H = Math.sqrt(3) / 2;
+  const MIN_SIDE = 3;
+  const MAX_SIDE = 24;
+  const LOZENGE_COLORS = ["#C0492F", "#5E8A4A", "#3A64A8"];  // red, green, blue (site palette)
+  const MODE_TO_ORIENTATION = { red: 0, green: 1, blue: 2 };
+  const FLAT_RIGHT_RAW = { x: 1, y: 0.5, z: -0.5 };
+  const FLAT_UP_RAW = { x: 0, y: H, z: H };
+  const FLAT_BASIS_LENGTH = Math.sqrt(1.5);
+  const CAMERA_PRESETS = {
+    flat: {
+      view: { x: 1, y: -1, z: 1 },
+      upHint: { x: 0, y: 1, z: 1 },
+      zoom: 1,
+    },
+    red: {
+      view: { x: 0, y: 0, z: 1 },
+      upHint: { x: 0, y: 1, z: 0 },
+      zoom: 1.58,
+    },
+    green: {
+      view: { x: 1, y: 0, z: 0 },
+      upHint: { x: 0, y: 0, z: 1 },
+      zoom: 1.58,
+    },
+    blue: {
+      view: { x: 0, y: -1, z: 0 },
+      upHint: { x: 0, y: 0, z: 1 },
+      zoom: 1.58,
+    },
+  };
+
+  // Offsets in (u, v) triangular-lattice coordinates from a lozenge anchor.
+  const ORIENTATION_PATTERNS = [
+    [
+      [0, 0],
+      [1, 0],
+      [1, 1],
+      [0, 1],
+    ],
+    [
+      [0, 0],
+      [0, 1],
+      [1, 0],
+      [1, -1],
+    ],
+    [
+      [0, 0],
+      [1, 0],
+      [2, -1],
+      [1, -1],
+    ],
+  ];
+
+  const CENTROID_OFFSETS = ORIENTATION_PATTERNS.map((pattern) => {
+    const sum = pattern.reduce(
+      (acc, [du, dv]) => ({ u: acc.u + du, v: acc.v + dv }),
+      { u: 0, v: 0 },
+    );
+    return { u: sum.u / 4, v: sum.v / 4 };
+  });
+
+  const canvas = document.getElementById("tilingCanvas");
+  const ctx = canvas.getContext("2d");
+  const stageEl = canvas.parentElement;
+  const sideSlider = document.getElementById("sideLength");
+  const sideLengthValue = document.getElementById("sideLengthValue");
+  const pieceCountEl = document.getElementById("pieceCount");
+  const orientationTargetEl = document.getElementById("orientationTarget");
+  const solveBtn = document.getElementById("solveBtn");
+  const scrambleBtn = document.getElementById("scrambleBtn");
+  const perspectiveRedBtn = document.getElementById("perspectiveRedBtn");
+  const perspectiveBlueBtn = document.getElementById("perspectiveBlueBtn");
+  const perspectiveGreenBtn = document.getElementById("perspectiveGreenBtn");
+  const perspectiveStatusEl = document.getElementById("perspectiveStatus");
+  const perspectiveButtons = [
+    perspectiveRedBtn,
+    perspectiveBlueBtn,
+    perspectiveGreenBtn,
+  ];
+
+  const state = {
+    side: Number(sideSlider.value),
+    lozenges: [],
+    nextId: 1,
+    drag: null,
+    animation: null,
+    cameraMode: "flat",
+    cameraAnimation: null,
+    surfaceModel: null,
+    requiredTrianglesCache: new Map(),
+    rafId: null,
+    viewport: { width: 1, height: 1, dpr: 1 },
+    layout: { scale: 1, offsetX: 0, offsetY: 0 },
+  };
+
+  const noteEl = document.getElementById("note");
+  let noteTimer = null;
+  function notify(message) {
+    noteEl.textContent = message;
+    noteEl.classList.add("show");
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(() => noteEl.classList.remove("show"), 5200);
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function randInt(maxExclusive) {
+    return Math.floor(Math.random() * maxExclusive);
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function easeInOutCubic(t) {
+    if (t < 0.5) {
+      return 4 * t * t * t;
+    }
+    return 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function vec3Add(a, b) {
+    return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
+  }
+
+  function vec3Sub(a, b) {
+    return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+  }
+
+  function vec3Scale(v, s) {
+    return { x: v.x * s, y: v.y * s, z: v.z * s };
+  }
+
+  function vec3Lerp(a, b, t) {
+    return {
+      x: lerp(a.x, b.x, t),
+      y: lerp(a.y, b.y, t),
+      z: lerp(a.z, b.z, t),
+    };
+  }
+
+  function vec3Dot(a, b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+  }
+
+  function vec3Cross(a, b) {
+    return {
+      x: a.y * b.z - a.z * b.y,
+      y: a.z * b.x - a.x * b.z,
+      z: a.x * b.y - a.y * b.x,
+    };
+  }
+
+  function vec3Length(v) {
+    return Math.hypot(v.x, v.y, v.z);
+  }
+
+  function vec3Normalize(v) {
+    const length = vec3Length(v);
+    if (length < 1e-8) {
+      return { x: 1, y: 0, z: 0 };
+    }
+    return vec3Scale(v, 1 / length);
+  }
+
+  function vec3Slerp(a, b, t) {
+    let from = vec3Normalize(a);
+    let to = vec3Normalize(b);
+    let dot = clamp(vec3Dot(from, to), -1, 1);
+
+    if (dot < -0.9999) {
+      // Opposite vectors: pick a stable intermediate axis.
+      const axis =
+        Math.abs(from.x) < 0.8
+          ? vec3Normalize(vec3Cross(from, { x: 1, y: 0, z: 0 }))
+          : vec3Normalize(vec3Cross(from, { x: 0, y: 1, z: 0 }));
+      const theta = Math.PI * t;
+      return vec3Normalize(
+        vec3Add(vec3Scale(from, Math.cos(theta)), vec3Scale(axis, Math.sin(theta))),
+      );
+    }
+
+    if (dot > 0.9999) {
+      return vec3Normalize(vec3Lerp(from, to, t));
+    }
+
+    const theta = Math.acos(dot);
+    const sinTheta = Math.sin(theta);
+    const w1 = Math.sin((1 - t) * theta) / sinTheta;
+    const w2 = Math.sin(t * theta) / sinTheta;
+    from = vec3Scale(from, w1);
+    to = vec3Scale(to, w2);
+    return vec3Normalize(vec3Add(from, to));
+  }
+
+  function cameraBasisFromView(viewDirection, upHint) {
+    const view = vec3Normalize(viewDirection);
+    let right = vec3Cross(upHint, view);
+    if (vec3Length(right) < 1e-6) {
+      right = vec3Cross({ x: 0, y: 0, z: 1 }, view);
+    }
+    if (vec3Length(right) < 1e-6) {
+      right = vec3Cross({ x: 0, y: 1, z: 0 }, view);
+    }
+    right = vec3Normalize(right);
+    const up = vec3Normalize(vec3Cross(view, right));
+    return { right, up, view };
+  }
+
+  function getCameraPreset(mode) {
+    if (mode === "flat") {
+      const right = vec3Normalize(FLAT_RIGHT_RAW);
+      const up = vec3Normalize(FLAT_UP_RAW);
+      const view = vec3Normalize(vec3Cross(right, up));
+      return {
+        right,
+        up,
+        view,
+        zoom: CAMERA_PRESETS.flat.zoom,
+      };
+    }
+    const preset = CAMERA_PRESETS[mode];
+    return {
+      ...cameraBasisFromView(preset.view, preset.upHint),
+      zoom: preset.zoom,
+    };
+  }
+
+  function capitalize(label) {
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
+
+  function uvKey(point) {
+    return `${point.u},${point.v}`;
+  }
+
+  function uvToWorld(u, v) {
+    return { x: u + 0.5 * v, y: H * v };
+  }
+
+  function worldToUv(x, y) {
+    const v = y / H;
+    const u = x - 0.5 * v;
+    return { u, v };
+  }
+
+  function roundUv(point) {
+    return { u: Math.round(point.u), v: Math.round(point.v) };
+  }
+
+  function worldToScreen(world) {
+    return {
+      x: world.x * state.layout.scale + state.layout.offsetX,
+      y: world.y * state.layout.scale + state.layout.offsetY,
+    };
+  }
+
+  function uvToScreen(u, v) {
+    return worldToScreen(uvToWorld(u, v));
+  }
+
+  function screenToWorld(x, y) {
+    return {
+      x: (x - state.layout.offsetX) / state.layout.scale,
+      y: (y - state.layout.offsetY) / state.layout.scale,
+    };
+  }
+
+  function inHexRegion(u, v, margin = 0) {
+    const n = state.side;
+    return (
+      v >= 0 + margin &&
+      v <= 2 * n - margin &&
+      u >= -n + margin &&
+      u <= n - margin &&
+      u + v >= 0 + margin &&
+      u + v <= 2 * n - margin
+    );
+  }
+
+  function lozengeCentroidUv(anchor, orientation) {
+    const offset = CENTROID_OFFSETS[orientation];
+    return { u: anchor.u + offset.u, v: anchor.v + offset.v };
+  }
+
+  function triangleKey(part, u, v) {
+    return `${part}:${u},${v}`;
+  }
+
+  function inHexForSide(u, v, side) {
+    return (
+      v >= 0 &&
+      v <= 2 * side &&
+      u >= -side &&
+      u <= side &&
+      u + v >= 0 &&
+      u + v <= 2 * side
+    );
+  }
+
+  function getRequiredTriangleSet(side) {
+    if (state.requiredTrianglesCache.has(side)) {
+      return state.requiredTrianglesCache.get(side);
+    }
+    const set = new Set();
+    const boundsPad = 2;
+    for (let u = -side - boundsPad; u <= side + boundsPad; u += 1) {
+      for (let v = -boundsPad; v <= 2 * side + boundsPad; v += 1) {
+        if (inHexForSide(u + 1 / 3, v + 1 / 3, side)) {
+          set.add(triangleKey("up", u, v));
+        }
+        if (inHexForSide(u + 2 / 3, v + 2 / 3, side)) {
+          set.add(triangleKey("down", u, v));
+        }
+      }
+    }
+    state.requiredTrianglesCache.set(side, set);
+    return set;
+  }
+
+  function lozengeVerticesUv(anchor, orientation) {
+    return ORIENTATION_PATTERNS[orientation].map(([du, dv]) => ({
+      u: anchor.u + du,
+      v: anchor.v + dv,
+    }));
+  }
+
+  function sortUvPolygon(points) {
+    const center = points.reduce(
+      (acc, p) => ({ x: acc.x + p.u / points.length, y: acc.y + p.v / points.length }),
+      { x: 0, y: 0 },
+    );
+    const sorted = [...points];
+    sorted.sort(
+      (a, b) =>
+        Math.atan2(a.v - center.y, a.u - center.x) -
+        Math.atan2(b.v - center.y, b.u - center.x),
+    );
+    return sorted;
+  }
+
+  function lozengeTriangleKeys(anchor, orientation) {
+    const u = anchor.u;
+    const v = anchor.v;
+    if (orientation === 0) {
+      return [triangleKey("up", u, v), triangleKey("down", u, v)];
+    }
+    if (orientation === 1) {
+      return [triangleKey("up", u, v), triangleKey("down", u, v - 1)];
+    }
+    return [triangleKey("up", u + 1, v - 1), triangleKey("down", u, v - 1)];
+  }
+
+  function liftUvTo3D(point, depthByVertex) {
+    const t = depthByVertex.get(uvKey(point));
+    if (t === undefined) {
+      return null;
+    }
+    return {
+      x: point.u + t,
+      y: point.v - t,
+      z: t,
+    };
+  }
+
+  function inferSurfaceModelFromTiling() {
+    const side = state.side;
+    if (state.lozenges.length !== 3 * side * side) {
+      return { ok: false, reason: "Incorrect lozenge count for current side length." };
+    }
+
+    const requiredTriangles = getRequiredTriangleSet(side);
+    const coveredTriangles = new Set();
+    const edgeMap = new Map();
+    const allVertexKeys = new Set();
+    const faceSeeds = [];
+
+    for (const lozenge of state.lozenges) {
+      const anchor = roundUv(lozenge.anchor);
+      if (
+        Math.abs(lozenge.anchor.u - anchor.u) > 1e-6 ||
+        Math.abs(lozenge.anchor.v - anchor.v) > 1e-6
+      ) {
+        return {
+          ok: false,
+          reason: "Lozenge anchors must be on grid points. Snap and try again.",
+        };
+      }
+
+      const triKeys = lozengeTriangleKeys(anchor, lozenge.orientation);
+      for (const key of triKeys) {
+        if (!requiredTriangles.has(key)) {
+          return {
+            ok: false,
+            reason: "Lozenges must form a full tiling inside the hexagon.",
+          };
+        }
+        if (coveredTriangles.has(key)) {
+          return {
+            ok: false,
+            reason: "Overlapping lozenges detected. Build a valid tiling first.",
+          };
+        }
+        coveredTriangles.add(key);
+      }
+
+      const vertices = sortUvPolygon(lozengeVerticesUv(anchor, lozenge.orientation));
+      for (const vertex of vertices) {
+        allVertexKeys.add(uvKey(vertex));
+      }
+      for (let i = 0; i < vertices.length; i += 1) {
+        const a = vertices[i];
+        const b = vertices[(i + 1) % vertices.length];
+        const key = edgeKey(a, b);
+        if (!edgeMap.has(key)) {
+          edgeMap.set(key, { a, b });
+        }
+      }
+
+      faceSeeds.push({
+        id: lozenge.id,
+        orientation: lozenge.orientation,
+        vertices,
+      });
+    }
+
+    if (coveredTriangles.size !== requiredTriangles.size) {
+      return {
+        ok: false,
+        reason: "Tiling is incomplete. Fill the hexagon with non-overlapping lozenges.",
+      };
+    }
+
+    const adjacency = new Map();
+    for (const key of allVertexKeys) {
+      adjacency.set(key, []);
+    }
+
+    for (const edge of edgeMap.values()) {
+      const du = edge.b.u - edge.a.u;
+      const dv = edge.b.v - edge.a.v;
+      let dt = null;
+      if (
+        (du === 1 && dv === 0) ||
+        (du === -1 && dv === 0) ||
+        (du === 0 && dv === 1) ||
+        (du === 0 && dv === -1)
+      ) {
+        dt = 0;
+      } else if (du === -1 && dv === 1) {
+        dt = 1;
+      } else if (du === 1 && dv === -1) {
+        dt = -1;
+      } else {
+        return { ok: false, reason: "Found a non-lattice lozenge edge." };
+      }
+      const ka = uvKey(edge.a);
+      const kb = uvKey(edge.b);
+      adjacency.get(ka).push({ key: kb, dt });
+      adjacency.get(kb).push({ key: ka, dt: -dt });
+    }
+
+    const depthByVertex = new Map();
+    const seeds = [...allVertexKeys];
+    if (seeds.length === 0) {
+      return { ok: false, reason: "No lozenges to reconstruct." };
+    }
+    depthByVertex.set(seeds[0], 0);
+    const queue = [seeds[0]];
+    for (let qi = 0; qi < queue.length; qi += 1) {
+      const current = queue[qi];
+      const currentDepth = depthByVertex.get(current);
+      for (const neighbor of adjacency.get(current)) {
+        const candidate = currentDepth + neighbor.dt;
+        if (!depthByVertex.has(neighbor.key)) {
+          depthByVertex.set(neighbor.key, candidate);
+          queue.push(neighbor.key);
+        } else if (depthByVertex.get(neighbor.key) !== candidate) {
+          return {
+            ok: false,
+            reason: "Inconsistent tiling geometry. Please re-tile the hexagon.",
+          };
+        }
+      }
+    }
+
+    if (depthByVertex.size !== allVertexKeys.size) {
+      return {
+        ok: false,
+        reason: "Tiling must be connected inside the hexagon.",
+      };
+    }
+
+    const faces = [];
+    const allPoints = [];
+    for (const face of faceSeeds) {
+      const points3D = face.vertices.map((vertex) => liftUvTo3D(vertex, depthByVertex));
+      if (points3D.some((point) => point === null)) {
+        return { ok: false, reason: "Failed to lift tiling into 3D." };
+      }
+      const center3D = points3D.reduce(
+        (acc, point) => ({
+          x: acc.x + point.x / 4,
+          y: acc.y + point.y / 4,
+          z: acc.z + point.z / 4,
+        }),
+        { x: 0, y: 0, z: 0 },
+      );
+      faces.push({
+        id: face.id,
+        orientation: face.orientation,
+        points3D,
+        center3D,
+      });
+      for (const point of points3D) {
+        allPoints.push(point);
+      }
+    }
+
+    const minX = Math.min(...allPoints.map((p) => p.x));
+    const maxX = Math.max(...allPoints.map((p) => p.x));
+    const minY = Math.min(...allPoints.map((p) => p.y));
+    const maxY = Math.max(...allPoints.map((p) => p.y));
+    const minZ = Math.min(...allPoints.map((p) => p.z));
+    const maxZ = Math.max(...allPoints.map((p) => p.z));
+
+    return {
+      ok: true,
+      model: {
+        side,
+        faces,
+        center3D: {
+          x: (minX + maxX) / 2,
+          y: (minY + maxY) / 2,
+          z: (minZ + maxZ) / 2,
+        },
+      },
+    };
+  }
+
+  function invalidateSurfaceModel() {
+    state.surfaceModel = null;
+  }
+
+  function currentCamera(now) {
+    if (!state.cameraAnimation) {
+      return getCameraPreset(state.cameraMode);
+    }
+
+    const raw = clamp(
+      (now - state.cameraAnimation.startTime) / state.cameraAnimation.durationMs,
+      0,
+      1,
+    );
+    const blend = easeInOutCubic(raw);
+    const start = getCameraPreset(state.cameraAnimation.startMode);
+    const end = getCameraPreset(state.cameraAnimation.endMode);
+    const view = vec3Slerp(start.view, end.view, blend);
+    const upHint = vec3Slerp(start.up, end.up, blend);
+    const basis = cameraBasisFromView(view, upHint);
+    const zoom = lerp(start.zoom, end.zoom, blend);
+
+    if (raw >= 1) {
+      state.cameraMode = state.cameraAnimation.endMode;
+      state.cameraAnimation = null;
+      updatePerspectiveUi();
+      updateControlDisabledState();
+    }
+
+    return { ...basis, zoom };
+  }
+
+  function lozengePolygonFlat(anchor, orientation) {
+    const points = lozengeVerticesUv(anchor, orientation).map((point) =>
+      uvToScreen(point.u, point.v),
+    );
+    const center = points.reduce(
+      (acc, p) => ({ x: acc.x + p.x / 4, y: acc.y + p.y / 4 }),
+      { x: 0, y: 0 },
+    );
+    points.sort(
+      (a, b) =>
+        Math.atan2(a.y - center.y, a.x - center.x) -
+        Math.atan2(b.y - center.y, b.x - center.x),
+    );
+    return points;
+  }
+
+  function polygonAreaAbs(points) {
+    let area = 0;
+    for (let i = 0; i < points.length; i += 1) {
+      const j = (i + 1) % points.length;
+      area += points[i].x * points[j].y - points[j].x * points[i].y;
+    }
+    return Math.abs(area) * 0.5;
+  }
+
+  function pointInPolygon(point, polygon) {
+    if (!polygon) {
+      return false;
+    }
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i, i += 1) {
+      const xi = polygon[i].x;
+      const yi = polygon[i].y;
+      const xj = polygon[j].x;
+      const yj = polygon[j].y;
+      const intersects =
+        yi > point.y !== yj > point.y &&
+        point.x < ((xj - xi) * (point.y - yi)) / (yj - yi) + xi;
+      if (intersects) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
+  function getCanvasPointer(event) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  function recomputeLayout() {
+    const width = state.viewport.width;
+    const height = state.viewport.height;
+    const n = state.side;
+    // Hexagon plus the ring of scattered pieces must fit the stage (iframe, phone, desktop).
+    const desiredHexWidth = Math.max(150, 0.6 * Math.min(width, height));
+    const scale = desiredHexWidth / (2 * n);
+    const hexCenterWorld = uvToWorld(0, n);
+    const hexCenterScreen = { x: width * 0.5, y: height * 0.5 };
+
+    state.layout = {
+      scale,
+      offsetX: hexCenterScreen.x - hexCenterWorld.x * scale,
+      offsetY: hexCenterScreen.y - hexCenterWorld.y * scale,
+    };
+  }
+
+  function resizeCanvas() {
+    const rect = stageEl.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    canvas.style.width = `${Math.floor(rect.width)}px`;
+    canvas.style.height = `${Math.floor(rect.height)}px`;
+    state.viewport = {
+      width: Math.floor(rect.width),
+      height: Math.floor(rect.height),
+      dpr,
+    };
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    recomputeLayout();
+    requestRender();
+  }
+
+  function requestRender() {
+    if (state.rafId !== null) {
+      return;
+    }
+    state.rafId = requestAnimationFrame(render);
+  }
+
+  function updatePerspectiveUi() {
+    const visualMode = state.cameraAnimation
+      ? state.cameraAnimation.endMode
+      : state.cameraMode;
+    perspectiveRedBtn.dataset.active = visualMode === "red" ? "true" : "false";
+    perspectiveBlueBtn.dataset.active = visualMode === "blue" ? "true" : "false";
+    perspectiveGreenBtn.dataset.active =
+      visualMode === "green" ? "true" : "false";
+
+    if (state.cameraAnimation) {
+      if (visualMode === "flat") {
+        perspectiveStatusEl.textContent = "Returning to flat view...";
+      } else {
+        perspectiveStatusEl.textContent = `Moving to ${capitalize(visualMode)} perspective...`;
+      }
+      return;
+    }
+
+    if (visualMode === "flat") {
+      perspectiveStatusEl.textContent = "Flat view. Click a lozenge to turn it, drag to move it.";
+    } else {
+      perspectiveStatusEl.textContent = `Looking down the ${visualMode} axis: only ${visualMode} faces are visible. Click ${capitalize(visualMode)} again to go back.`;
+    }
+  }
+
+  function updateControlDisabledState() {
+    const busy = Boolean(state.animation || state.cameraAnimation);
+    const editingLocked = busy || state.cameraMode !== "flat";
+    solveBtn.disabled = editingLocked;
+    scrambleBtn.disabled = editingLocked;
+    sideSlider.disabled = editingLocked;
+    for (const button of perspectiveButtons) {
+      button.disabled = busy;
+    }
+  }
+
+  function togglePerspective(mode) {
+    if (state.cameraAnimation || state.animation) {
+      return;
+    }
+    const endMode = state.cameraMode === mode ? "flat" : mode;
+    if (endMode === state.cameraMode) {
+      return;
+    }
+
+    if (endMode !== "flat" && !state.surfaceModel) {
+      const reconstruction = inferSurfaceModelFromTiling();
+      if (!reconstruction.ok) {
+        notify(`${reconstruction.reason} Tip: press Solve first, then switch to a perspective.`);
+        return;
+      }
+      state.surfaceModel = reconstruction.model;
+    }
+
+    state.cameraAnimation = {
+      startMode: state.cameraMode,
+      endMode,
+      startTime: performance.now(),
+      durationMs: 900,
+    };
+    updatePerspectiveUi();
+    updateControlDisabledState();
+    requestRender();
+  }
+
+  function drawHexBoundary() {
+    const n = state.side;
+    const verticesUv = [
+      [0, 0],
+      [n, 0],
+      [n, n],
+      [0, 2 * n],
+      [-n, 2 * n],
+      [-n, n],
+    ];
+    const points = verticesUv.map(([u, v]) => uvToScreen(u, v));
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i += 1) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "#FFFDF7";
+    ctx.strokeStyle = "#8A7D66";
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  function drawLozenges(now) {
+    const camera = currentCamera(now);
+    const inPerspective = state.cameraMode !== "flat" || state.cameraAnimation;
+
+    if (inPerspective && state.surfaceModel) {
+      const model = state.surfaceModel;
+      const centerScreen = uvToScreen(0, state.side);
+      const scale = state.layout.scale * FLAT_BASIS_LENGTH * camera.zoom;
+      const projectedFaces = [];
+
+      for (const face of model.faces) {
+        const points = face.points3D.map((point) => {
+          const relative = vec3Sub(point, model.center3D);
+          return {
+            x: centerScreen.x + vec3Dot(relative, camera.right) * scale,
+            y: centerScreen.y + vec3Dot(relative, camera.up) * scale,
+          };
+        });
+        if (polygonAreaAbs(points) < 0.35) {
+          continue;
+        }
+        const depth = vec3Dot(vec3Sub(face.center3D, model.center3D), camera.view);
+        projectedFaces.push({
+          id: face.id,
+          orientation: face.orientation,
+          points,
+          depth,
+        });
+      }
+
+      projectedFaces.sort((a, b) => a.depth - b.depth);
+      for (const face of projectedFaces) {
+        ctx.beginPath();
+        ctx.moveTo(face.points[0].x, face.points[0].y);
+        for (let i = 1; i < face.points.length; i += 1) {
+          ctx.lineTo(face.points[i].x, face.points[i].y);
+        }
+        ctx.closePath();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = LOZENGE_COLORS[face.orientation];
+        ctx.strokeStyle = "rgba(16, 15, 14, 0.46)";
+        ctx.lineWidth = 1.05;
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      if (state.cameraAnimation) {
+        requestRender();
+      }
+      return;
+    }
+
+    const animation = state.animation;
+    let t = 1;
+    if (animation) {
+      t = clamp((now - animation.startTime) / animation.durationMs, 0, 1);
+      if (t >= 1) {
+        for (const lozenge of state.lozenges) {
+          const end = animation.byId.get(lozenge.id);
+          lozenge.anchor = { ...end.endAnchor };
+          lozenge.orientation = end.endOrientation;
+        }
+        state.animation = null;
+        invalidateSurfaceModel();
+        updateControlDisabledState();
+        t = 1;
+      }
+    }
+
+    for (const lozenge of state.lozenges) {
+      let drawAnchor = lozenge.anchor;
+      let drawOrientation = lozenge.orientation;
+
+      if (state.animation) {
+        const entry = state.animation.byId.get(lozenge.id);
+        drawAnchor = {
+          u: entry.startAnchor.u + (entry.endAnchor.u - entry.startAnchor.u) * t,
+          v: entry.startAnchor.v + (entry.endAnchor.v - entry.startAnchor.v) * t,
+        };
+        drawOrientation = t < 0.5 ? entry.startOrientation : entry.endOrientation;
+      }
+
+      const polygon = lozengePolygonFlat(drawAnchor, drawOrientation);
+      const isDragged =
+        !state.animation &&
+        state.drag &&
+        state.drag.lozengeId === lozenge.id &&
+        state.drag.moved;
+
+      ctx.beginPath();
+      ctx.moveTo(polygon[0].x, polygon[0].y);
+      for (let i = 1; i < polygon.length; i += 1) {
+        ctx.lineTo(polygon[i].x, polygon[i].y);
+      }
+      ctx.closePath();
+      ctx.globalAlpha = isDragged ? 0.6 : 1;
+      ctx.fillStyle = LOZENGE_COLORS[drawOrientation];
+      ctx.strokeStyle = "rgba(16, 15, 14, 0.52)";
+      ctx.lineWidth = 1.15;
+      ctx.fill();
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      if (!state.animation) {
+        lozenge._screenPoly = polygon;
+      }
+    }
+
+    if (state.animation) {
+      requestRender();
+    }
+  }
+
+  function render(now = performance.now()) {
+    state.rafId = null;
+    ctx.clearRect(0, 0, state.viewport.width, state.viewport.height);
+    const inPerspective = state.cameraMode !== "flat" || state.cameraAnimation;
+    if (!inPerspective) {
+      drawHexBoundary();
+    }
+    drawLozenges(now);
+  }
+
+  function findTopmostLozengeIndex(point) {
+    for (let i = state.lozenges.length - 1; i >= 0; i -= 1) {
+      if (pointInPolygon(point, state.lozenges[i]._screenPoly)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function findLozengeById(id) {
+    return state.lozenges.find((lozenge) => lozenge.id === id) || null;
+  }
+
+  function rotateLozenge(lozenge) {
+    const oldOrientation = lozenge.orientation;
+    const newOrientation = (oldOrientation + 1) % 3;
+    const oldCenter = lozengeCentroidUv(lozenge.anchor, oldOrientation);
+    const newOffset = CENTROID_OFFSETS[newOrientation];
+    lozenge.orientation = newOrientation;
+    lozenge.anchor = roundUv({
+      u: oldCenter.u - newOffset.u,
+      v: oldCenter.v - newOffset.v,
+    });
+    invalidateSurfaceModel();
+  }
+
+  function handlePointerDown(event) {
+    if (state.animation || state.cameraAnimation || state.cameraMode !== "flat") {
+      return;
+    }
+    const point = getCanvasPointer(event);
+    const index = findTopmostLozengeIndex(point);
+    if (index === -1) {
+      return;
+    }
+
+    const [picked] = state.lozenges.splice(index, 1);
+    state.lozenges.push(picked);
+
+    state.drag = {
+      pointerId: event.pointerId,
+      lozengeId: picked.id,
+      startPoint: point,
+      startAnchor: { ...picked.anchor },
+      startWorld: uvToWorld(picked.anchor.u, picked.anchor.v),
+      moved: false,
+    };
+    canvas.setPointerCapture(event.pointerId);
+    requestRender();
+  }
+
+  function handlePointerMove(event) {
+    if (!state.drag || event.pointerId !== state.drag.pointerId) {
+      return;
+    }
+    const lozenge = findLozengeById(state.drag.lozengeId);
+    if (!lozenge) {
+      return;
+    }
+
+    const point = getCanvasPointer(event);
+    const dx = point.x - state.drag.startPoint.x;
+    const dy = point.y - state.drag.startPoint.y;
+
+    if (!state.drag.moved && Math.hypot(dx, dy) > 4) {
+      state.drag.moved = true;
+    }
+    if (!state.drag.moved) {
+      return;
+    }
+
+    const startWorld = state.drag.startWorld;
+    const movedWorld = {
+      x: startWorld.x + dx / state.layout.scale,
+      y: startWorld.y + dy / state.layout.scale,
+    };
+    lozenge.anchor = worldToUv(movedWorld.x, movedWorld.y);
+    invalidateSurfaceModel();
+    requestRender();
+  }
+
+  function endPointerInteraction(event) {
+    if (!state.drag || event.pointerId !== state.drag.pointerId) {
+      return;
+    }
+    const lozenge = findLozengeById(state.drag.lozengeId);
+    if (lozenge) {
+      if (!state.drag.moved) {
+        rotateLozenge(lozenge);
+      } else {
+        lozenge.anchor = roundUv(lozenge.anchor);
+        invalidateSurfaceModel();
+      }
+    }
+    state.drag = null;
+    if (canvas.hasPointerCapture(event.pointerId)) {
+      canvas.releasePointerCapture(event.pointerId);
+    }
+    requestRender();
+  }
+
+  function randomOutsideAnchor(orientation) {
+    const width = state.viewport.width;
+    const height = state.viewport.height;
+    const edgeMargin = Math.max(24, 0.04 * Math.min(width, height));
+    const n = state.side;
+    const hexCenter = uvToScreen(0, n);
+    const hexRadiusPx = n * state.layout.scale;
+    const minR = hexRadiusPx * 0.95;
+    const maxR = hexRadiusPx * 1.55;
+    const tries = 500;
+
+    function centerWithinSafeBounds(center) {
+      const screen = uvToScreen(center.u, center.v);
+      return (
+        screen.x >= edgeMargin &&
+        screen.x <= width - edgeMargin &&
+        screen.y >= edgeMargin &&
+        screen.y <= height - edgeMargin
+      );
+    }
+
+    for (let i = 0; i < tries; i += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = minR + Math.random() * (maxR - minR);
+      const sx = hexCenter.x + Math.cos(angle) * radius;
+      const sy = hexCenter.y + Math.sin(angle) * radius;
+
+      if (
+        sx < edgeMargin ||
+        sx > width - edgeMargin ||
+        sy < edgeMargin ||
+        sy > height - edgeMargin
+      ) {
+        continue;
+      }
+
+      const world = screenToWorld(sx, sy);
+      const anchor = roundUv(worldToUv(world.x, world.y));
+      const center = lozengeCentroidUv(anchor, orientation);
+
+      // Keep most pieces outside while allowing light overlap with the boundary.
+      if (inHexRegion(center.u, center.v, 0.45)) {
+        continue;
+      }
+      if (!centerWithinSafeBounds(center)) {
+        continue;
+      }
+      return anchor;
+    }
+
+    // Stable fallback near the right side of the hexagon, still away from edges.
+    const fallbackWorld = screenToWorld(
+      clamp(hexCenter.x + 1.25 * hexRadiusPx, edgeMargin, width - edgeMargin),
+      clamp(hexCenter.y, edgeMargin, height - edgeMargin),
+    );
+    return roundUv(worldToUv(fallbackWorld.x, fallbackWorld.y));
+  }
+
+  function createRandomLozenge() {
+    const orientation = randInt(3);
+    return {
+      id: state.nextId++,
+      orientation,
+      anchor: randomOutsideAnchor(orientation),
+      _screenPoly: null,
+    };
+  }
+
+  function syncLozengeCount(targetCount) {
+    let changed = false;
+    while (state.lozenges.length < targetCount) {
+      state.lozenges.push(createRandomLozenge());
+      changed = true;
+    }
+    while (state.lozenges.length > targetCount) {
+      state.lozenges.pop();
+      changed = true;
+    }
+    if (changed) {
+      invalidateSurfaceModel();
+    }
+  }
+
+  function updateMeta() {
+    const n = state.side;
+    const total = 3 * n * n;
+    pieceCountEl.textContent = `${total} lozenges, exactly enough to tile.`;
+    orientationTargetEl.textContent = `Claim: every tiling uses ${n * n} of each colour.`;
+  }
+
+  function setSideLength(newSide) {
+    const side = clamp(Math.round(newSide), MIN_SIDE, MAX_SIDE);
+    state.side = side;
+    sideSlider.value = String(side);
+    sideLengthValue.textContent = String(side);
+    syncLozengeCount(3 * side * side);
+    updateMeta();
+    state.animation = null;
+    state.cameraAnimation = null;
+    state.cameraMode = "flat";
+    invalidateSurfaceModel();
+    updatePerspectiveUi();
+    updateControlDisabledState();
+    recomputeLayout();
+    requestRender();
+  }
+
+  function startAnimation(targets, durationMs = 780) {
+    if (targets.length !== state.lozenges.length) {
+      return;
+    }
+    const byId = new Map();
+    for (let i = 0; i < state.lozenges.length; i += 1) {
+      const lozenge = state.lozenges[i];
+      byId.set(lozenge.id, {
+        startAnchor: { ...lozenge.anchor },
+        endAnchor: { ...targets[i].anchor },
+        startOrientation: lozenge.orientation,
+        endOrientation: targets[i].orientation,
+      });
+    }
+    state.animation = {
+      startTime: performance.now(),
+      durationMs,
+      byId,
+    };
+    invalidateSurfaceModel();
+    updateControlDisabledState();
+    requestRender();
+  }
+
+  function scramble(animated = true) {
+    if (state.animation || state.cameraAnimation || state.cameraMode !== "flat") {
+      return;
+    }
+    const targets = state.lozenges.map(() => {
+      const orientation = randInt(3);
+      return {
+        orientation,
+        anchor: randomOutsideAnchor(orientation),
+      };
+    });
+    if (animated) {
+      startAnimation(targets, 820);
+    } else {
+      for (let i = 0; i < state.lozenges.length; i += 1) {
+        state.lozenges[i].orientation = targets[i].orientation;
+        state.lozenges[i].anchor = { ...targets[i].anchor };
+      }
+      invalidateSurfaceModel();
+      requestRender();
+    }
+  }
+
+  function edgeKey(a, b) {
+    if (a.u < b.u || (a.u === b.u && a.v <= b.v)) {
+      return `${a.u},${a.v}|${b.u},${b.v}`;
+    }
+    return `${b.u},${b.v}|${a.u},${a.v}`;
+  }
+
+  function classifyEdgeType(a, b) {
+    const du = b.u - a.u;
+    const dv = b.v - a.v;
+    if ((du === 1 && dv === 0) || (du === -1 && dv === 0)) {
+      return "a";
+    }
+    if ((du === 0 && dv === 1) || (du === 0 && dv === -1)) {
+      return "b";
+    }
+    if ((du === 1 && dv === -1) || (du === -1 && dv === 1)) {
+      return "c";
+    }
+    throw new Error(`Unexpected edge vector (${du}, ${dv})`);
+  }
+
+  function edgeTypeToOrientation(type) {
+    if (type === "c") {
+      return 0;
+    }
+    if (type === "a") {
+      return 1;
+    }
+    return 2;
+  }
+
+  function shuffleInPlace(items) {
+    for (let i = items.length - 1; i > 0; i -= 1) {
+      const j = randInt(i + 1);
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+  }
+
+  function hopcroftKarp(adj, leftCount, rightCount) {
+    const pairU = new Array(leftCount).fill(-1);
+    const pairV = new Array(rightCount).fill(-1);
+    const dist = new Array(leftCount).fill(-1);
+
+    function bfs() {
+      const queue = [];
+      for (let u = 0; u < leftCount; u += 1) {
+        if (pairU[u] === -1) {
+          dist[u] = 0;
+          queue.push(u);
+        } else {
+          dist[u] = -1;
+        }
+      }
+
+      let foundAugmenting = false;
+      for (let q = 0; q < queue.length; q += 1) {
+        const u = queue[q];
+        for (const edge of adj[u]) {
+          const matchedU = pairV[edge.right];
+          if (matchedU === -1) {
+            foundAugmenting = true;
+          } else if (dist[matchedU] === -1) {
+            dist[matchedU] = dist[u] + 1;
+            queue.push(matchedU);
+          }
+        }
+      }
+      return foundAugmenting;
+    }
+
+    function dfs(u) {
+      for (const edge of adj[u]) {
+        const matchedU = pairV[edge.right];
+        if (
+          matchedU === -1 ||
+          (dist[matchedU] === dist[u] + 1 && dfs(matchedU))
+        ) {
+          pairU[u] = edge.right;
+          pairV[edge.right] = u;
+          return true;
+        }
+      }
+      dist[u] = -1;
+      return false;
+    }
+
+    let cardinality = 0;
+    while (bfs()) {
+      for (let u = 0; u < leftCount; u += 1) {
+        if (pairU[u] === -1 && dfs(u)) {
+          cardinality += 1;
+        }
+      }
+    }
+
+    return { pairU, pairV, cardinality };
+  }
+
+  function findAnchorFromVertices(vertices, orientation) {
+    const pattern = ORIENTATION_PATTERNS[orientation];
+    const set = new Set(vertices.map(uvKey));
+
+    for (const candidate of vertices) {
+      for (const [du, dv] of pattern) {
+        const anchor = { u: candidate.u - du, v: candidate.v - dv };
+        let ok = true;
+        for (const [pu, pv] of pattern) {
+          if (!set.has(`${anchor.u + pu},${anchor.v + pv}`)) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) {
+          return anchor;
+        }
+      }
+    }
+    return null;
+  }
+
+  function solvePlacementsForSide(side) {
+    const triangles = [];
+    const edgeToTriangles = new Map();
+    const boundsPad = 2;
+
+    function addTriangle(part, verts) {
+      const id = triangles.length;
+      triangles.push({ id, part, verts });
+      const edgePairs = [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ];
+      for (const [i, j] of edgePairs) {
+        const a = verts[i];
+        const b = verts[j];
+        const key = edgeKey(a, b);
+        if (!edgeToTriangles.has(key)) {
+          edgeToTriangles.set(key, { a, b, triangles: [id] });
+        } else {
+          edgeToTriangles.get(key).triangles.push(id);
+        }
+      }
+    }
+
+    function inHexForSide(u, v) {
+      return (
+        v >= 0 &&
+        v <= 2 * side &&
+        u >= -side &&
+        u <= side &&
+        u + v >= 0 &&
+        u + v <= 2 * side
+      );
+    }
+
+    for (let u = -side - boundsPad; u <= side + boundsPad; u += 1) {
+      for (let v = -boundsPad; v <= 2 * side + boundsPad; v += 1) {
+        if (inHexForSide(u + 1 / 3, v + 1 / 3)) {
+          addTriangle("up", [
+            { u, v },
+            { u: u + 1, v },
+            { u, v: v + 1 },
+          ]);
+        }
+        if (inHexForSide(u + 2 / 3, v + 2 / 3)) {
+          addTriangle("down", [
+            { u: u + 1, v },
+            { u, v: v + 1 },
+            { u: u + 1, v: v + 1 },
+          ]);
+        }
+      }
+    }
+
+    const upIds = [];
+    const downIds = [];
+    for (const tri of triangles) {
+      if (tri.part === "up") {
+        upIds.push(tri.id);
+      } else {
+        downIds.push(tri.id);
+      }
+    }
+    if (upIds.length !== downIds.length) {
+      throw new Error("Triangle bipartition mismatch.");
+    }
+
+    const upIndexById = new Map();
+    const downIndexById = new Map();
+    for (let i = 0; i < upIds.length; i += 1) {
+      upIndexById.set(upIds[i], i);
+      downIndexById.set(downIds[i], i);
+    }
+
+    const adj = Array.from({ length: upIds.length }, () => []);
+    for (const edge of edgeToTriangles.values()) {
+      if (edge.triangles.length !== 2) {
+        continue;
+      }
+      const t1 = triangles[edge.triangles[0]];
+      const t2 = triangles[edge.triangles[1]];
+      if (t1.part === t2.part) {
+        continue;
+      }
+      const upTri = t1.part === "up" ? t1 : t2;
+      const downTri = t1.part === "down" ? t1 : t2;
+      const left = upIndexById.get(upTri.id);
+      const right = downIndexById.get(downTri.id);
+      const type = classifyEdgeType(edge.a, edge.b);
+      adj[left].push({ right, type, upId: upTri.id, downId: downTri.id });
+    }
+
+    for (const neighbors of adj) {
+      shuffleInPlace(neighbors);
+    }
+
+    const matching = hopcroftKarp(adj, upIds.length, downIds.length);
+    if (matching.cardinality !== upIds.length) {
+      throw new Error("Unable to find a full lozenge tiling.");
+    }
+
+    const placements = [];
+    const orientationCount = [0, 0, 0];
+
+    for (let uIndex = 0; uIndex < upIds.length; uIndex += 1) {
+      const right = matching.pairU[uIndex];
+      const edge = adj[uIndex].find((option) => option.right === right);
+      const orientation = edgeTypeToOrientation(edge.type);
+      const upTri = triangles[upIds[uIndex]];
+      const downTri = triangles[downIds[right]];
+      const merged = new Map();
+      for (const point of upTri.verts.concat(downTri.verts)) {
+        merged.set(uvKey(point), point);
+      }
+      const vertices = [...merged.values()];
+      const anchor = findAnchorFromVertices(vertices, orientation);
+      if (!anchor) {
+        throw new Error("Failed to derive lozenge anchor from matched triangles.");
+      }
+      placements.push({ anchor, orientation });
+      orientationCount[orientation] += 1;
+    }
+
+    const expectedPerOrientation = side * side;
+    if (
+      orientationCount[0] !== expectedPerOrientation ||
+      orientationCount[1] !== expectedPerOrientation ||
+      orientationCount[2] !== expectedPerOrientation
+    ) {
+      throw new Error("Orientation invariant violated in solver output.");
+    }
+
+    placements.sort((a, b) => {
+      if (a.anchor.v !== b.anchor.v) {
+        return a.anchor.v - b.anchor.v;
+      }
+      if (a.anchor.u !== b.anchor.u) {
+        return a.anchor.u - b.anchor.u;
+      }
+      return a.orientation - b.orientation;
+    });
+
+    return placements;
+  }
+
+  function solve(animated = true) {
+    if (state.animation || state.cameraAnimation || state.cameraMode !== "flat") {
+      return;
+    }
+    const targets = solvePlacementsForSide(state.side);
+    if (targets.length !== state.lozenges.length) {
+      syncLozengeCount(targets.length);
+    }
+    if (animated) {
+      startAnimation(targets, 930);
+    } else {
+      for (let i = 0; i < state.lozenges.length; i += 1) {
+        state.lozenges[i].anchor = { ...targets[i].anchor };
+        state.lozenges[i].orientation = targets[i].orientation;
+      }
+      invalidateSurfaceModel();
+      requestRender();
+    }
+  }
+
+  function wireEvents() {
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("pointerup", endPointerInteraction);
+    canvas.addEventListener("pointercancel", endPointerInteraction);
+
+    sideSlider.addEventListener("input", () => {
+      setSideLength(Number(sideSlider.value));
+    });
+
+    solveBtn.addEventListener("click", () => {
+      noteEl.classList.remove("show");
+      try {
+        solve(true);
+      } catch (error) {
+        // Solver failures should never happen for this region.
+        // Keep the app usable and surface an explicit message.
+        notify(`Solve failed: ${error.message}`);
+      }
+    });
+
+    scrambleBtn.addEventListener("click", () => {
+      scramble(true);
+    });
+
+    perspectiveRedBtn.addEventListener("click", () => {
+      togglePerspective("red");
+    });
+    perspectiveBlueBtn.addEventListener("click", () => {
+      togglePerspective("blue");
+    });
+    perspectiveGreenBtn.addEventListener("click", () => {
+      togglePerspective("green");
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+    const resizeObserver = new ResizeObserver(() => resizeCanvas());
+    resizeObserver.observe(stageEl);
+  }
+
+  function init() {
+    wireEvents();
+    resizeCanvas();
+    setSideLength(state.side);
+    updatePerspectiveUi();
+    updateControlDisabledState();
+    scramble(false);
+    requestRender();
+  }
+
+  init();
+})();
+
+</script>
+</body>
+</html>
