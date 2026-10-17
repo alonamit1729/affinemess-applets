@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Affine Mess</title><style>body{margin:0}</style></head>
+<body>
+<!-- affinemess.com loader 2026-10-17a: the site itself lives on GitHub Pages (https://apps.affinemess.com/site/). Paste once; it never needs replacing. -->
+<div id="am-mount"><noscript>affine&middot;mess needs JavaScript to show its pages.</noscript></div>
+<script>
+(function () {
+  var B = 'https://apps.affinemess.com/site/', m = document.getElementById('am-mount');
+  function fail() {
+    m.innerHTML = '<p style="font:17px Georgia,serif;padding:48px 20px;text-align:center;color:#1E1810">affine&middot;mess is taking a moment to load. <a href="' + B + 'preview.html">Open it directly</a>.</p>';
+  }
+  function get(f) {
+    return fetch(B + f, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(f); return r.text(); });
+  }
+  Promise.all([get('site.html'), get('site.js')]).then(function (a) {
+    m.innerHTML = a[0];
+    var s = document.createElement('script');
+    s.textContent = a[1];
+    document.body.appendChild(s);
+  }).catch(fail);
+})();
+</script>
+</body></html>
