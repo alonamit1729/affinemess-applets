@@ -1,5 +1,7 @@
 <!-- =========================================================
-  VERSION 2026-10-17e
+  VERSION 2026-10-18a
+    a: applet links on apps.affinemess.com; Hexagon paper added; two placeholder YouTube tiles removed
+  PREVIOUS 2026-10-17e
     e: nav: current tab bold + underlined (constant 2px), stray focus bars removed
   PREVIOUS 2026-10-17d
     d: PhD thesis row links to the thesis PDF (hosted in the repo under papers/)
@@ -654,7 +656,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-10-17e">
+<div class="am-root" data-version="2026-10-18a">
   <div class="am-container">
 
     <header class="site-head">
@@ -679,6 +681,14 @@
           <span class="tagline">peer-reviewed, mostly</span>
         </div>
         <div class="papers-list">
+          <a class="paper" href="https://hexagonmath.org/2610.00191v1" target="_blank" rel="noopener">
+            <span class="yr">2026</span>
+            <span class="meta">
+              <span class="title">Brudno&rsquo;s Families of Equal Sums of Sixth Powers and Bremner&rsquo;s K3 Surface</span>
+              <span class="sub">with Claude Fable 5.1</span>
+            </span>
+            <span class="venue">Hexagon&nbsp;2610.00191</span>
+          </a>
           <a class="paper" href="https://arxiv.org/abs/2502.09955" target="_blank" rel="noopener">
             <span class="yr">2025</span>
             <span class="meta">
@@ -759,7 +769,7 @@
         <div class="grid">
           <!-- data-slug="<slug>" = opens in the viewer at #<tab>/<slug>; omit it for a plain new-tab tile.
                Optional data-src = what the viewer loads, if different from href (YouTube/Desmos embeds). -->
-          <a class="tile" data-slug="brudno-sextic-explorer" href="https://alonamit1729.github.io/affinemess-applets/brudno-sextic-explorer.html" target="_blank" rel="noopener">
+          <a class="tile" data-slug="brudno-sextic-explorer" href="https://apps.affinemess.com/brudno-sextic-explorer.html" target="_blank" rel="noopener">
             <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
               <path d="M 10 50 Q 22 10 34 50 T 58 50 T 82 50 Q 92 74 94 60"/>
               <line x1="6" y1="50" x2="96" y2="50" stroke-dasharray="2 4" opacity="0.4"/>
@@ -778,7 +788,7 @@
             </div>
           </a>
 
-          <a class="tile" data-slug="hcn-explorer" href="https://alonamit1729.github.io/affinemess-applets/hcn-explorer.html" target="_blank" rel="noopener">
+          <a class="tile" data-slug="hcn-explorer" href="https://apps.affinemess.com/hcn-explorer.html" target="_blank" rel="noopener">
             <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
               <line x1="10" y1="86" x2="96" y2="86"/>
               <rect x="16" y="22" width="10" height="64" fill="currentColor" stroke="none"/>
@@ -795,7 +805,7 @@
             </div>
           </a>
 
-          <a class="tile" data-slug="red-blue-matching" href="https://alonamit1729.github.io/affinemess-applets/red-blue-matching.html" target="_blank" rel="noopener">
+          <a class="tile" data-slug="red-blue-matching" href="https://apps.affinemess.com/red-blue-matching.html" target="_blank" rel="noopener">
             <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
               <line x1="20" y1="30" x2="78" y2="34"/>
               <line x1="30" y1="68" x2="68" y2="72"/>
@@ -815,7 +825,7 @@
             </div>
           </a>
 
-          <a class="tile" data-slug="fractional-powers" href="https://alonamit1729.github.io/affinemess-applets/fractional-powers.html" target="_blank" rel="noopener">
+          <a class="tile" data-slug="fractional-powers" href="https://apps.affinemess.com/fractional-powers.html" target="_blank" rel="noopener">
             <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
               <line x1="10" y1="22" x2="90" y2="22" stroke-dasharray="2 4" opacity="0.4"/>
               <line x1="10" y1="78" x2="90" y2="78" stroke-dasharray="2 4" opacity="0.4"/>
@@ -835,7 +845,7 @@
             </div>
           </a>
 
-          <a class="tile" data-slug="lozenge-tilings" href="https://alonamit1729.github.io/affinemess-applets/lozenge-tilings.html" target="_blank" rel="noopener">
+          <a class="tile" data-slug="lozenge-tilings" href="https://apps.affinemess.com/lozenge-tilings.html" target="_blank" rel="noopener">
             <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
               <path d="M50 16 L80 33 L50 50 L20 33 Z" fill="#B85820" fill-opacity="0.85"/>
               <path d="M20 33 L50 50 L50 84 L20 67 Z" fill="currentColor" fill-opacity="0.18"/>
@@ -979,30 +989,6 @@
             <div class="title">Paradoxes in Probability</div>
             <div class="desc">a talk at the National Museum of Mathematics, October 2019</div>
               <div class="open">watch <span>→</span></div>
-            </div>
-          </a>
-          <a class="tile" href="#" target="_blank" rel="noopener">
-            <div class="media video"><img src="https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg"
-                   onerror="this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg,#1E1810,#5C5142)';"
-                   alt="Math circle talk">
-              <div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
-            <div class="body">
-            <div class="label">Math Circle</div>
-            <div class="title">[Talk title]</div>
-            <div class="desc">add the video id and this fills in automatically</div>
-              <div class="open">watch <span>↗</span></div>
-            </div>
-          </a>
-          <a class="tile" href="#" target="_blank" rel="noopener">
-            <div class="media video"><img src="https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg"
-                   onerror="this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg,#1E1810,#5C5142)';"
-                   alt="Math circle talk">
-              <div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
-            <div class="body">
-            <div class="label">Math Circle</div>
-            <div class="title">[Talk title]</div>
-            <div class="desc">add the video id and this fills in automatically</div>
-              <div class="open">watch <span>↗</span></div>
             </div>
           </a>
         </div>
