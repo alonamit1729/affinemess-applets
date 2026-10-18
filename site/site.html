@@ -1,5 +1,7 @@
 <!-- =========================================================
-  VERSION 2026-10-17d
+  VERSION 2026-10-17e
+    e: nav: current tab bold + underlined (constant 2px), stray focus bars removed
+  PREVIOUS 2026-10-17d
     d: PhD thesis row links to the thesis PDF (hosted in the repo under papers/)
   PREVIOUS 2026-10-17c
     c: Papers link to the papers themselves (DOI / publisher / author PDF); About: LinkedIn replaces GitHub
@@ -35,7 +37,7 @@
 ========================================================== -->
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=JetBrains+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=JetBrains+Mono:wght@400;500;700&display=swap');
   
   body { background-color: #F2EBD9 !important; }
   .content-wrapper { padding-top: 0 !important; padding-bottom: 0 !important; }
@@ -163,14 +165,19 @@
     position: relative;
     white-space: nowrap;
     transition: color 0.2s;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
+    outline: none;                      /* the focus ring was clipped by the scroller: it showed as two stray vertical bars */
+    -webkit-tap-highlight-color: transparent;
   }
   .am-root .tabs button:hover { color: var(--accent); }
   .am-root .tabs button[aria-selected="true"] {
     color: var(--ink);
-    border-bottom-color: var(--accent);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 7px;
   }
+  .am-root .tabs button[aria-selected="true"]:hover { color: var(--ink); }
 
   /* ============== PANELS ============== */
   .am-root main { flex-grow: 1; padding: 28px 0 20px; position: relative; }
@@ -647,7 +654,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-10-17d">
+<div class="am-root" data-version="2026-10-17e">
   <div class="am-container">
 
     <header class="site-head">

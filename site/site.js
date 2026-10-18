@@ -169,6 +169,7 @@
       const next = e.key === 'ArrowRight' ? (current + 1) % order.length : (current - 1 + order.length) % order.length;
       closeViewerUI();
       activate(order[next], true);
+      if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.tabs')) document.activeElement.blur();
     });
 
     /* ---------- routing: #applets, #applets/<slug>, #youtube/<slug>, ... ---------- */
