@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How do I convince my son not to major in math? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-01-20</div>
+<h1>How do I convince my son not to major in math?</h1>
+<div class="q-body"><p>The question’s details:</p><blockquote><p>“My son is a high school senior who plans to major in math. I would be fine with that, but he's just not that good at math. In all 4 years of his high school career, he had to work very hard just to get an A- in all his math classes. When he participated in math contests, he would study hard, only to end up in the bottom half of participants. In general, he works very hard in math just to stay mediocre. I'm afraid that if he majors in math, he'll crash and burn, wasting his effort like he does now. He tells me that he finds math interesting and that he's willing to work as hard as he needs to, but I have heard that most math majors are prodigies, who never struggled in high school math. How do I tell him that he should look for something else, where he won't be so outclassed?”</p></blockquote><p>What’s wrong with being outclassed? Lowering yourself to some imagined level where you think you will outshine everyone is also a good way to never make real progress. Being around people who “outclass” you is the more challenging and rewarding choice, and often the right one.</p><p>(Not always. There are no universal truths of this nature.)</p><p>My life experiences are my life experiences and yours are yours. Mine are not better or more informative. But if you’re interested in other people’s perspectives, here’s mine.</p><p>Given a choice between head of the foxes or tail of the lions (to paraphrase a Hebrew aphorism), I always chose the lions. If you choose to lead the mediocre, at best you’ll indeed lead the mediocre, and you may find that you can’t even do that. At any rate, you’re unlikely to be pushed ahead.</p><p>If you choose to place yourself among the lions, you may find yourself not at the tail at all. Perhaps you’ll be in the middle. Perhaps, to your own surprise, you may be at the top. You will surely learn more and be more inspired.</p><p>You can spin tales with the opposite conclusion, for sure. Regardless, your son says that this is what interests him and that he’s willing to work hard; I can’t imagine why you’d want to shelter him from that decision and some perceived possible painful failure. He’s not a child anymore. Let him make his choices and bear their consequences. If he falls, he’ll get up and do something different. He will still have learned something of great value.</p><p>You call being at the bottom half of contestants a “wasted effort”. I can’t imagine why.</p><br/><p>I was asked to answer this question, perhaps because I love math and deeply believe in the value of studying it. I didn’t say anything about math in my answer. Everything I said applies if the son wishes to study archaeology, ballet or business administration. I don’t think it’s wiser or easier to try and convince someone not to major in math than in any other field.</p><p>There’s nothing better than studying something you love. Sometimes circumstances force you to choose pragmatism over love; I can’t fault that, but this doesn’t seem to be the case here.</p><p>The one thing here that is specific to math is your comment about “most math majors are prodigies”. That’s not true. Like in any field, some are, many aren’t. The myth that all math students – or all mathematicians – are geniuses is just that: a myth. Don’t pay attention to it.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzEX" target="_blank" rel="noopener">https://qr.ae/pFmzEX</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

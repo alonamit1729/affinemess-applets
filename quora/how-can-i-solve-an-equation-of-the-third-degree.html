@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How can I solve an equation of the third degree? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2013-09-19</div>
+<h1>How can I solve an equation of the third degree?</h1>
+<div class="q-body"><p>There is more than one way to interpret "solve" in the context of equations in general, and polynomial equations in particular. In practice, most often you would solve a cubic equation (3rd degree) <b>by guessing one solution</b> <span class="tex" data-tex="x_1">x_1</span>, dividing the cubic by <span class="tex" data-tex="x-x_1">x-x_1</span> and then solving the resulting quadratic equation (2nd degree) as usual.</p><p>You can also solve any such equation numerically, for example using <a href="http://en.wikipedia.org/wiki/Newton's_method" rel="noopener" target="_blank">Newton's method</a>.</p><p>However, when people talk about "solving an equation of the 3rd degree", they usually mean a <b>solution by radicals</b>. This means a way to write the three solutions as expressions involving the coefficients of the original equation, square roots, cubic roots, and arithmetic operations. The quadratic formula</p><p><span class="tex" data-tex="x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}">x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a}</span></p><p>is, famously, a way to express the roots of the quadratic equation <span class="tex" data-tex="ax^2+bx+c=0">ax^2+bx+c=0</span> in this way.</p><p><h3><b>Why should anyone care?</b></h3><br/><h3></h3>Honestly, cubic equations aren't that important. They do occur here and there "in real life" and in abstract math, but they're not really fundamentally vital. However, <b>the method of solution has tremendous historical importance and considerable beauty, and therein lies its real value</b>.</p><p>It's amazing that mankind attempted to solve cubic equations for thousands of years, eventually succeeding after the dedicated efforts of countless people, yet so few today - even those with considerable mathematical training - are able to remember the algorithm well enough to be able to use it or explain it on demand, without looking it up. This was one of the key intellectual achievements of the renaissance, a significant breakaway from the frontiers of classical knowledge, and I think it deserves to be better known.</p><p>It's not really that difficult, anyway. Ready?</p><p><h3>The Classical Approach</h3><br/><h3></h3>We're trying to solve an equation that looks like <span class="tex" data-tex="ax^3+bx^2+cx+d=0">ax^3+bx^2+cx+d=0</span> where the coefficients <span class="tex" data-tex="a,b,c,d">a,b,c,d</span> are some numbers. In fact, I'm going to focus on what seems like a very special case:</p><p>(1)     <span class="tex" data-tex="x^3 + cx + d = 0 ">x^3 + cx + d = 0 </span>.</p><p>The reason for this focus is that reducing a general cubic to this form is fairly straightforward, so I'll leave this to the end. The real gem is this special case.</p><p>You can play around with this equation for days and months to no avail - the algebraic manipulations we know and love just don't do anything here. The crucial idea is to perform a daring gambit, replacing the single unknown <span class="tex" data-tex="x">x</span> with a sum of two unknowns <span class="tex" data-tex="p, q">p, q</span>. So we just boldly write <span class="tex" data-tex="x=p+q">x=p+q</span>.</p><p>How can this be a good thing? We need to determine <b>one</b> number <span class="tex" data-tex="x">x</span>, and now we have <b>two</b> unknowns to deal with? Well, sure, but we also have a new degree of freedom - we can impose another condition on <span class="tex" data-tex="p">p</span> and <span class="tex" data-tex="q">q</span> while allowing them to still add up to <span class="tex" data-tex="x">x</span>. Maybe that'll save us (hint: it does). <b>This is the only part of the solution that you need to pull out of a hat</b>. The rest is algebra.</p><p>Let's put that <span class="tex" data-tex="p+q">p+q</span> in our equation to be solved (1). We get</p><p><span class="tex" data-tex="(p+q)^3 + c(p+q) + d = 0">(p+q)^3 + c(p+q) + d = 0</span></p><p>Expanding the cube, this is</p><p><span class="tex" data-tex="p^3 + q^3 + 3p^2q + 3pq^2 + c(p+q) + d = 0">p^3 + q^3 + 3p^2q + 3pq^2 + c(p+q) + d = 0</span>.</p><p>We leave the cubes alone but observe that there's another <span class="tex" data-tex="p+q">p+q</span> hiding in the mixed terms:</p><p><span class="tex" data-tex="p^3 + q^3 + 3pq(p+q) + c(p+q) + d = 0">p^3 + q^3 + 3pq(p+q) + c(p+q) + d = 0</span>.</p><p>We see a repeated term <span class="tex" data-tex="p+q">p+q</span>, so we naturally collect the terms that contain it:</p><p><span class="tex" data-tex=" p^3 + q^3 + (3pq+c)(p+q) + d = 0"> p^3 + q^3 + (3pq+c)(p+q) + d = 0</span>.</p><p>Now comes the kicker: remember that extra degree of freedom we have? We can use it to eliminate this whole mess in the middle. Quite simply, <b>we nonchalantly impose that <span class="tex" data-tex="3pq+c">3pq+c</span> is to vanish</b>.</p><p><span class="tex" data-tex="3pq+c = 0">3pq+c = 0</span></p><p>Or:<br/> (2)    <span class="tex" data-tex=" q = -\frac{c}{3p}"> q = -\frac{c}{3p}</span>.</p><p>Our equation is now:</p><p><span class="tex" data-tex="p^3 - \frac{c^3}{27p^3} + d = 0">p^3 - \frac{c^3}{27p^3} + d = 0</span>.</p><p>And we're done!!</p><p>Wait. Why are we done?</p><p>Well, if you've solved many high-school quadratic exercises, you may recognize that the last equation is merely a quadratic in disguise. There's only one variable now, and that is <span class="tex" data-tex="p">p</span>. It only appears in the equation as <span class="tex" data-tex="p^3">p^3</span>, so we might as well call <span class="tex" data-tex="z = p^3">z = p^3</span> and get</p><p><span class="tex" data-tex="z - \frac{c^3}{27z} + d = 0">z - \frac{c^3}{27z} + d = 0</span></p><p>or</p><p><span class="tex" data-tex="z^2 + dz - \frac{c^3}{27}= 0">z^2 + dz - \frac{c^3}{27}= 0</span>,</p><p>A measly quadratic. Solve it, find the possible values of <span class="tex" data-tex="z">z</span>, infer the possible values of <span class="tex" data-tex="p">p</span> (including the complex ones!), determine <span class="tex" data-tex="q">q</span> (remember equation (2)), and add them up to get <span class="tex" data-tex="x">x</span>.</p><p><img alt="" loading="lazy" src="img/2411de2e87c8f3.png"/><br/>TADAAA!!!</p><p><h3>A Worked Example</h3><br/>Let's try to go through those steps with a concrete equation:</p><p><span class="tex" data-tex="x^3 - 7x + 6 = 0 ">x^3 - 7x + 6 = 0 </span>.</p><p>Once again, the way you <b>really</b> solve this is by guessing a solution (quite easy in this case), eliminating that solution and solving the quadratic. Takes about 2 minutes here. But no - we're going to follow the recipe. It's going to be way harder, introducing complex numbers along the way, but the beauty of it is that it's a <i>recipe</i>, requiring no guesses and guaranteed to work. Always.</p><p>So, we make <span class="tex" data-tex="x=p+q">x=p+q</span>,</p><p><span class="tex" data-tex="p^3+q^3+3p^2q+3pq^2 - 7(p+q) + 6 = 0">p^3+q^3+3p^2q+3pq^2 - 7(p+q) + 6 = 0</span></p><p><span class="tex" data-tex="p^3 + q^3 + 3pq(p+q) - 7(p+q) + 6 = 0">p^3 + q^3 + 3pq(p+q) - 7(p+q) + 6 = 0</span></p><p><span class="tex" data-tex="p^3 + q^3 + (3pq-7)(p+q) + 6 = 0">p^3 + q^3 + (3pq-7)(p+q) + 6 = 0</span></p><p>We now declare that</p><p><span class="tex" data-tex="3pq = 7">3pq = 7</span>, or</p><p><span class="tex" data-tex="q = \frac{7}{3p}">q = \frac{7}{3p}</span></p><p>getting</p><p><span class="tex" data-tex="p^3 + \frac{343}{27p^3} + 6 = 0">p^3 + \frac{343}{27p^3} + 6 = 0</span></p><p>or, letting <span class="tex" data-tex="z = p^3">z = p^3</span>,</p><p><span class="tex" data-tex="z + \frac{343}{27z} + 6 = 0">z + \frac{343}{27z} + 6 = 0</span></p><p><span class="tex" data-tex="z^2 + 6z + \frac{343}{27} = 0">z^2 + 6z + \frac{343}{27} = 0</span></p><p>This is somewhat hairy, but we plow through and find</p><p><span class="tex" data-tex="z = -3 \pm \frac{10\sqrt{3}}{9}i">z = -3 \pm \frac{10\sqrt{3}}{9}i</span>.</p><p>The next task is to find the <span class="tex" data-tex="p">p</span>s which correspond to each of those <span class="tex" data-tex="z">z</span>s. This is a matter of extracting cube roots of a complex number, a tricky but not insurmountable task. Let's find the cube roots of the one with the <span class="tex" data-tex="+">+</span> sign (it turns out that this is enough - repeating the task for the other value will yield the same roots again). They are:</p><p><span class="tex" data-tex="p_1 = -\frac{3}{2} + \frac{\sqrt{3}}{6}i">p_1 = -\frac{3}{2} + \frac{\sqrt{3}}{6}i</span></p><p><span class="tex" data-tex="p_2 = \frac{1}{2} - \frac{5\sqrt{3}}{6} i">p_2 = \frac{1}{2} - \frac{5\sqrt{3}}{6} i</span></p><p><span class="tex" data-tex="p_3 = 1 + \frac{2\sqrt{3}}{3} i">p_3 = 1 + \frac{2\sqrt{3}}{3} i</span></p><p>For each of these, we calculate <span class="tex" data-tex="q = 7/(3p)">q = 7/(3p)</span>, add<span class="tex" data-tex="p+q">p+q</span> and find the values of <span class="tex" data-tex="x">x</span>, which turn out to be...</p><p><span class="tex" data-tex="x_1 = p_1 + \frac{7}{3p_1} = -3">x_1 = p_1 + \frac{7}{3p_1} = -3</span></p><p><span class="tex" data-tex="x_2 = p_2 + \frac{7}{3p_2} = 1">x_2 = p_2 + \frac{7}{3p_2} = 1</span></p><p><span class="tex" data-tex="x_3 = p_3 + \frac{7}{3p_3} = 2">x_3 = p_3 + \frac{7}{3p_3} = 2</span>.</p><p>Well. The roots turned out to be fairly simple numbers: -3, 1 and 2. That certainly could have been guessed. The method is impressively inefficient in this particular case, forcing us to work with these complex expressions only to get such simple answers eventually. But again: this is foolproof recipe that works for any cubic equation of the form <span class="tex" data-tex="x^3+b x + c = 0">x^3+b x + c = 0</span>.</p><p><h3>The General Cubic</h3><h3></h3><br/>So far we dealt with the special case <span class="tex" data-tex="x^3+bx+c=0">x^3+bx+c=0</span>. In the general case, you start with</p><p><span class="tex" data-tex="ax^3+bx^2+cx+d = 0">ax^3+bx^2+cx+d = 0</span>.</p><p>First, divide through by <span class="tex" data-tex="a">a</span> to get rid of the leading coefficient (we assume that <span class="tex" data-tex="a \neq 0">a \neq 0</span>, otherwise it's not a cubic). You now have something like this (renaming the variables to keep things simple):</p><p><span class="tex" data-tex="x^3+bx^2+cx+d = 0">x^3+bx^2+cx+d = 0</span>.</p><p>The coefficient <span class="tex" data-tex="b">b</span> is minus the sum of the roots. This is just a special case of <a href="http://en.wikipedia.org/wiki/Vieta's_formulas" rel="noopener" target="_blank">Vieta's formulas</a>, but if you're not familiar with them you can easily see this by writing</p><p><span class="tex" data-tex="x^3+bx^2+cx+d = (x-x_1)(x-x_2)(x-x_3)">x^3+bx^2+cx+d = (x-x_1)(x-x_2)(x-x_3)</span>, expanding and equating coefficients of <span class="tex" data-tex="x^2">x^2</span>.</p><p>This means that if we shift <span class="tex" data-tex="x">x</span> by <span class="tex" data-tex="b/3">b/3</span>, the sum of the roots of the new equation will be 0. Indeed, let <span class="tex" data-tex="y = x+b/3">y = x+b/3</span> or <span class="tex" data-tex="x = y-b/3">x = y-b/3</span>, substitute in the equation, and observe how <span class="tex" data-tex="x^3">x^3</span> contributes a factor of <span class="tex" data-tex="-by^2">-by^2</span> and the <span class="tex" data-tex="bx^2">bx^2</span> term contributes <span class="tex" data-tex="by^2">by^2</span> making the quadratic term disappear.</p><p>This is much easier to do in specific instances than by following the formulas. If you don't remember what you need to shift the variable by, just write <span class="tex" data-tex="x = y - t">x = y - t</span>, substitute and then find the value of <span class="tex" data-tex="t">t</span> that makes the square term vanish.</p><p>Once you're done solving the formula for <span class="tex" data-tex="y">y</span>, which is now in the correct form, just remember to subtract <span class="tex" data-tex="b/3">b/3</span> from each solution to get the values of the original <span class="tex" data-tex="x">x</span>.</p><p>That's it!</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmQmX" target="_blank" rel="noopener">https://qr.ae/pFmQmX</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

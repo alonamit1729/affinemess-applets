@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How do I solve the polynomial x^5+x^4-16x^3+5x^2+21x-9=0 , with no approximation? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-07-09</div>
+<h1>How do I solve the polynomial <span class="tex" data-tex="x^5+x^4-16x^3+5x^2+21x-9=0 "></span>, with no approximation?</h1>
+<div class="q-body"><p>Oh man, someone hand-crafted this polynomial <b>VERY</b> carefully! Where did you come across this question? This seems suitable for a course in computational Galois theory…</p><p>The roots of this polynomial, very surprisingly, <i>can</i> actually be expressed with standard, simple expressions. Finding those expressions isn’t easy, and systems such as Wolfram|Alpha are <a href="https://www.wolframalpha.com/input/?i=x^5+x^4-16*x^3+5*x^2+21*x-9=0" rel="noopener" target="_blank">unable to do it</a> without assistance.</p><img alt="" loading="lazy" src="img/219a4306e6befb.png"/><br/><p>First things first: we should check if the polynomial is irreducible over <span class="tex" data-tex="\Q">\Q</span>. If it were reducible, we would have had a much easier task ahead of us, but it’s not. The easiest way to see this, I believe, is to reduce mod <span class="tex" data-tex="2">2</span>. The polynomial <span class="tex" data-tex="x^5+x^4+x^2+x+1">x^5+x^4+x^2+x+1</span> is irreducible in <span class="tex" data-tex="\mathbb{F}_2">\mathbb{F}_2</span>, which says that our polynomial is irreducible over <span class="tex" data-tex="\Z">\Z</span>, which means it’s also irreducible over <span class="tex" data-tex="\Q">\Q</span> (since it’s monic).</p><p>So we have an irreducible polynomial over <span class="tex" data-tex="\Q">\Q</span>, and we should determine its Galois group. It is either <span class="tex" data-tex="A_5">A_5</span>, <span class="tex" data-tex="S_5">S_5</span> or a solvable group; in the first two cases, we’re screwed – at least if we hope for simple, radical expressions. In other cases, we’re very lucky.</p><p>We’re very lucky.</p><p>The Galois group of this polynomial is, incredibly, as simple as it could possibly be: not only is it solvable, it is abelian, and not only is it abelian, it is cyclic. Here is a quick <a href="http://www.sagemath.org/" rel="noopener" target="_blank">Sage</a> dialog:</p><img alt="" loading="lazy" src="img/c4ab937b2f4e91.png"/><p>(You can run this calculation yourself online in a Sage math cell, <a href="http://sagecell.sagemath.org/?z=eJzz1rNJtLP1K81NSi1yy0zNSdGoiDPVrogz0TU006qIM9Y2BZJG2kaGWhW6lpq8XO623nrpiTn5mcXx6UX5pQUaeYm5qcW2SpVKIEm9_KKU1CINTQBpdBnW&amp;lang=sage" rel="noopener" target="_blank">here</a>). This says that the Galois group has order <span class="tex" data-tex="5">5</span>, and the only group of order <span class="tex" data-tex="5">5</span> is the cyclic group.</p><p>Welp, if the Galois group is cyclic, the polynomial is most definitely solvable in radicals. In fact, by Kronecker-Weber, the splitting field is contained in a cyclotomic field, which in less fancy terms means that the roots are expressible using just roots of unity. But which ones?</p><p>I’m still not sure how to make Sage tell me directly, but here’s what I did instead. The discriminant of the polynomial is easy to calculate (well, easy for Sage. By hand it would have been a lot of work):</p><img alt="" loading="lazy" src="img/60ff41f1ee9ea7.png"/><p>The discriminant is <span class="tex" data-tex="41^4">41^4</span>. (The number <span class="tex" data-tex="41">41</span> just jumps right at you when you look at this polynomial, doesn’t it?) So I set <span class="tex" data-tex="\zeta = \exp(2\pi i/41)">\zeta = \exp(2\pi i/41)</span>, a <span class="tex" data-tex="41^\text{st}">41^\text{st}</span> root of unity, and factored the polynomial over <span class="tex" data-tex="\Q(\zeta)">\Q(\zeta)</span>. It factors completely!</p><img alt="" loading="lazy" src="img/47d47ec022b854.jpg"/><p>(I’ve left one factor out since it’s kind of long and ruins the image).</p><p><b><i>Well</i></b>. We have our solution, but it’s a little cumbersome. Let’s take the fourth factor in the list above:</p><p><span class="tex" data-tex="x = \zeta^2+\zeta^6+\zeta^{13}+\zeta^{18}+\zeta^{23}+\zeta^{28}+\zeta^{35}+\zeta^{39}">x = \zeta^2+\zeta^6+\zeta^{13}+\zeta^{18}+\zeta^{23}+\zeta^{28}+\zeta^{35}+\zeta^{39}</span></p><p>Notice how the exponents can be paired up to have a sum of <span class="tex" data-tex="41">41</span> (<span class="tex" data-tex="2">2</span> and <span class="tex" data-tex="39">39</span>, <span class="tex" data-tex="6">6</span> and <span class="tex" data-tex="35">35</span> and so on). Since <span class="tex" data-tex="\zeta^{41}=1">\zeta^{41}=1</span>, this means that</p><p><span class="tex" data-tex="x = \zeta^2+\overline{\zeta}^2+\zeta^6+\overline{\zeta}^6+\zeta^{13}+\overline{\zeta}^{13}+\zeta^{18}+\overline{\zeta}^{18}">x = \zeta^2+\overline{\zeta}^2+\zeta^6+\overline{\zeta}^6+\zeta^{13}+\overline{\zeta}^{13}+\zeta^{18}+\overline{\zeta}^{18}</span></p><p>But</p><p><span class="tex" data-tex="\zeta^k+\overline{\zeta}^k = \exp(2\pi i k/41)+\exp(-2\pi i k/41)=2\cos(2\pi k/41)">\zeta^k+\overline{\zeta}^k = \exp(2\pi i k/41)+\exp(-2\pi i k/41)=2\cos(2\pi k/41)</span></p><p>So, letting <span class="tex" data-tex="\alpha = 2\pi/41">\alpha = 2\pi/41</span>, here is one of the roots in the simplest of terms:</p><p><span class="tex" data-tex="x = 2(\cos(2\alpha)+\cos(6\alpha)+\cos(13\alpha)+\cos(18\alpha))">x = 2(\cos(2\alpha)+\cos(6\alpha)+\cos(13\alpha)+\cos(18\alpha))</span></p><p>There may be some clever logic here that still eludes me (EDIT: figured it out, see below). I mean, someone put together this algebraic number that has a nice and simple minimal polynomial – there ought to be some rhyme and reason to it, but I can’t say I see it immediately.</p><p>Oh, funny thing: if you feed this <a href="https://www.wolframalpha.com/input/?i=exp(2*pi*i/41)^8+exp(2*pi*i/41)^(-8)+exp(2*pi*i/41)^10+exp(2*pi*i/41)^(-10)+exp(2*pi*i/41)^11+exp(2*pi*i/41)^(-11)+exp(2*pi*i/41)^17+exp(2*pi*i/41)^(-17)" rel="noopener" target="_blank">sum of exponents</a> into Wolfram|Alpha, it <i>does</i> recognize our polynomial as the minimal polynomial! It’s not completely useless after all :) But it couldn’t figure it out directly from the polynomial – we had to bring in some knowledge of Galois theory.</p><img alt="" loading="lazy" src="img/72e56500a7be28.png"/><p>Anyway, we’ve just displayed one root of this polynomial in very simple terms, and the other four roots have similar expressions. Very nice problem, if you have Sage handy (or some other CAS). I don’t know how anyone is expected to solve this by hand though!</p><br/><p>EDIT: Ok, progress. I understand where those exponents are coming from.</p><p>The order of <span class="tex" data-tex="3">3</span> mod <span class="tex" data-tex="41">41</span> is <span class="tex" data-tex="8">8</span>, meaning <span class="tex" data-tex="3^8 \equiv 1 \pmod{41}">3^8 \equiv 1 \pmod{41}</span> is the smallest power of <span class="tex" data-tex="3">3</span> congruent to <span class="tex" data-tex="1">1</span> mod <span class="tex" data-tex="41">41</span>. So there’s a subgroup <span class="tex" data-tex="T=\langle 3\rangle">T=\langle 3\rangle</span> generated by <span class="tex" data-tex="3">3</span> mod <span class="tex" data-tex="41">41</span>, and it has <span class="tex" data-tex="8">8</span> elements and <span class="tex" data-tex="5">5</span> cosets (including itself).</p><p>The five roots of the polynomial <span class="tex" data-tex="P(x)=x^5+x^4-16x^3+5x^2+21x-9">P(x)=x^5+x^4-16x^3+5x^2+21x-9</span> are simply the sums <span class="tex" data-tex="\sum_{i \in C} \zeta^i">\sum_{i \in C} \zeta^i</span> when <span class="tex" data-tex="C">C</span> is any one of those cosets. For example, the number <span class="tex" data-tex="\omega = \sum_{i=0}^7 \zeta^{3^i}">\omega = \sum_{i=0}^7 \zeta^{3^i}</span> is a root of <span class="tex" data-tex="P">P</span>, corresponding to the subgroup <span class="tex" data-tex="T">T</span> itself.</p><p>I think this is an instance of a method devised by Kummer to generate cyclic, and more generally abelian, extensions.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzB2" target="_blank" rel="noopener">https://qr.ae/pFmzB2</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

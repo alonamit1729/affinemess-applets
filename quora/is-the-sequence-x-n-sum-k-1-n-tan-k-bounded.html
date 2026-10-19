@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is the sequence x_n = \sum_{k=1} ^n \tan(k) bounded? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-12-20</div>
+<h1>Is the sequence <span class="tex" data-tex="x_n = \sum_{k=1} ^n \tan(k)"></span> bounded?</h1>
+<div class="q-body"><p>Oh. My. Gauss. What a punch drunk lovely squiggly wiggly sequence that is.</p><p>First, let me answer the question, so you don’t have to suffer through the rest of my musings: no, the sequence isn’t bounded, and it’s not hard to prove. The fun lies in the <i>way</i> it dances around as <span class="tex" data-tex="n">n</span> grows.</p><br/><p>So we’re looking at partial sums of the sequence <span class="tex" data-tex="\tan(1),\tan(2),\tan(3),\ldots">\tan(1),\tan(2),\tan(3),\ldots</span> and so on. The arguments <span class="tex" data-tex="1,2,3">1,2,3</span> are, of course, interpreted as radians. The first thing you probably want to do is look at the sequence itself – how about the first 10 terms?</p><img alt="" loading="lazy" src="img/0b6b0d9ce973df.png"/><p><span class="tex" data-tex="1.557, -2.185, -0.1425, 1.158, -3.380, -0.2910, 0.8715, -6.800, -0.4523, 0.6483">1.557, -2.185, -0.1425, 1.158, -3.380, -0.2910, 0.8715, -6.800, -0.4523, 0.6483</span></p><p>(All the code snippets are <a href="http://www.sagemath.org/" rel="noopener" target="_blank">Sage</a>, but sometimes I reformatted the output for legibility. The environment is <a href="https://jupyter.org/" rel="noopener" target="_blank">Jupyter</a>).</p><p>Looks pretty harmless, right? Random-looking small numbers, some positive, some negative. If we look at the partial sums, meaning <span class="tex" data-tex="\tan(1),\tan(1)+\tan(2),\tan(1)+\tan(2)+\tan(3)">\tan(1),\tan(1)+\tan(2),\tan(1)+\tan(2)+\tan(3)</span> and so on, we expect something that meanders randomly up and down. And indeed, here’s what we see:</p><img alt="" loading="lazy" src="img/5008f0ceaaef9e.png"/><img alt="" loading="lazy" src="img/f6796d49a93270.png"/><p>I mean, sure, it looks a bit down-ish, but nothing too dramatic. Perhaps it’s bounded? If the positive terms and negative terms keep showing up randomly, they might cancel each other out. It might stay bounded.</p><p>But we stopped at <span class="tex" data-tex="\tan(10)=0.6483\ldots">\tan(10)=0.6483\ldots</span>, maybe we should do a bit more? What is <span class="tex" data-tex="\tan(11)">\tan(11)</span> anyway?</p><img alt="" loading="lazy" src="img/a2ce035543a3b6.png"/><p>LOL wait what? <span class="tex" data-tex="\tan(11)">\tan(11)</span> is negative two<i> hundred</i> something? Why…? How…?</p><p>Before we answer that, let’s agree that this dramatic entrant is going to push our partial sums <i>way</i> low. And if <span class="tex" data-tex="\tan(12), \tan(13)">\tan(12), \tan(13)</span> etc. are well behaved we’re going to stay low. And indeed:</p><img alt="" loading="lazy" src="img/a93793ed200c55.png"/><p>Notice the scale on the left: instead of wandering around small negative numbers, we’re now stuck deep in the abyss. What if we keep going?</p><img alt="" loading="lazy" src="img/8483274a429b33.png"/><p>That’s a… that’s an odd staircase if I’ve ever seen one on a simple function. The steps down seems to be mitigating themselves though… shall we keep going? Here are the first 300 partial sums:</p><img alt="" loading="lazy" src="img/c6e4dfc0bc7a24.png"/><p>Whoa.</p><p>But wait, you ain’t seen nothing yet. Here are the first <i>400</i>:</p><img alt="" loading="lazy" src="img/69764d0d87f816.png"/><p>Well, <i>damn</i>. Somewhere around <span class="tex" data-tex="350">350</span>, something was pushing the sums back <i>up</i> to around zero, and then jumped back down. What the…? And how come it’s so nicely symmetric?</p><p>Clearly, we must up our game. Let’s do the first 1,000?</p><img alt="" loading="lazy" src="img/ee1af4f8426fe9.png"/><p>Ok that looks <i>really</i> bounded. Right? It’s bizarre, but quite regular, and seems to be confined to somewhere between the negative 400’s and small positive values. Does it stay that way forever? I mean the peaks seem to <i>slightly</i> rise, but that’s probably nothing… right?</p><img alt="" loading="lazy" src="img/1538b90f9d3499.png"/><p><b>I guess not</b>.</p><p>Those “periodic” bounces, three of which occurred through 1,000, were just the first few harmonics in what seems to be a relentless trend <i>upwards</i>. Remember when we were in the negative range? We seem to have long left it, and now we’re flying high above the ground.</p><p>Cautiously we proceed… through 50,000:</p><img alt="" loading="lazy" src="img/e14aeb354ae246.png"/><p>“Bounded” no longer seems like the right adjective, does it? More like “exponentially growing”? Remember though, there’s a fine detail in this graph: if you zoom in, you’ll see those bouncy-mouncy troughs from the previous graph. Un<i>canny</i>.</p><p>But why stop at 50,000? We are young, we are free, we have computers. 100,000 here we come:</p><img alt="" loading="lazy" src="img/a5add2bc48e45f.png"/><p>W H A A A A A A A A A A T . . .</p><p>Well apparently, <i>something</i> came along around the 50,000 mark and just <i>smashed</i> that exponential progress we’ve made in one fell swoop, reversing the entire playing field. <i>Again</i>.</p><p>You think this is the last time? I guess by now we quit having any expectations of predictability, or predictions of expectability. Or something. Here, I went further down some more.</p><img alt="" loading="lazy" src="img/50adcae69d06e6.png"/><p>We are now pretty much in NSFW territory.</p><p>Ok. It’s time to put some thought into this madness.</p><br/><p>Remember than <span class="tex" data-tex="\tan(11)=-225.95\ldots">\tan(11)=-225.95\ldots</span>? What’s that “11” thing?</p><p>You may recall that <span class="tex" data-tex="\pi \approx \frac{22}{7}">\pi \approx \frac{22}{7}</span> is a particularly good approximation of <span class="tex" data-tex="\pi">\pi</span>. That means that <span class="tex" data-tex="\frac{11}{7}">\frac{11}{7}</span> is particularly close to <span class="tex" data-tex="\frac{\pi}{2}">\frac{\pi}{2}</span>, which in turn means that <span class="tex" data-tex="11">11</span> is very close to <span class="tex" data-tex="7\frac{\pi}{2}">7\frac{\pi}{2}</span>, an odd multiple of <span class="tex" data-tex="\frac{\pi}{2}">\frac{\pi}{2}</span>.</p><p>What happens at whole, odd multiples of <span class="tex" data-tex="\frac{\pi}{2}">\frac{\pi}{2}</span>? Well, <span class="tex" data-tex="\sin(x)">\sin(x)</span> is pretty large (close to <span class="tex" data-tex="1">1</span>), while <span class="tex" data-tex="\cos(x)">\cos(x)</span> is <i>tiny</i>. This makes their ratio <span class="tex" data-tex="\tan(x)">\tan(x)</span> very large in absolute value – either positive or negative, depending on whether you’re slightly above or slightly below a whole, odd multiple of <span class="tex" data-tex="\frac{\pi}{2}">\frac{\pi}{2}</span>.</p><p>This explains why <span class="tex" data-tex="\tan(11)">\tan(11)</span> is so enormous. The integer <span class="tex" data-tex="11">11</span> just happens to lie exceedingly close to <span class="tex" data-tex="7\frac{\pi}{2}">7\frac{\pi}{2}</span>. The next well-known approximation of <span class="tex" data-tex="\pi">\pi</span> is <span class="tex" data-tex="\frac{355}{113}">\frac{355}{113}</span>, but <span class="tex" data-tex="355">355</span> is odd so we get an <i>even</i> multiple of <span class="tex" data-tex="\frac{\pi}{2}">\frac{\pi}{2}</span>, which makes <span class="tex" data-tex="\tan(355)">\tan(355)</span> very <i>small</i>, almost zero. However, <span class="tex" data-tex="11">11</span> steps before that we are hitting an odd multiple from below, which is why <span class="tex" data-tex="\tan(344)">\tan(344)</span>is so large, just large enough to cancel the effect of <span class="tex" data-tex="\tan(11)">\tan(11)</span> (since <span class="tex" data-tex="355">355</span> is almost <span class="tex" data-tex="113\pi">113\pi</span>, <span class="tex" data-tex="\tan(355-11)">\tan(355-11)</span> is almost the negative of <span class="tex" data-tex="\tan(11)">\tan(11)</span>.) This is how the bouncy-mouncy trough is formed.</p><p>The sum total of each of those troughs is positive, so as we add them up and keep drifting away we increase and get that exponentially rising curve. But then comes a new sharp approximation of <span class="tex" data-tex="\pi">\pi</span> with an even denominator, which is <span class="tex" data-tex="104348">104348</span>, so at <span class="tex" data-tex="104348/2 = 52174">104348/2 = 52174</span> we got our downwards bit of drama, that massive drop down followed by a mirror of previous events: <span class="tex" data-tex="\tan(52174)">\tan(52174)</span> is around negative 181 <i>thousand</i>.</p><p>The reason those crazy good approximations keep popping up is the fact that <span class="tex" data-tex="\pi">\pi</span>, like any good irrational number, has a sequence of convergents arising from its continued fraction.</p><p>We’ve gone through similar arguments <a href="https://www.quora.com/What-is-the-radius-of-convergence-of-sum-frac-x-n-sin-pi-n-sqrt-2-for-which-x-does-it-converge" rel="noopener" target="_blank">here</a> and <a href="https://www.quora.com/How-do-I-show-whether-the-series-sum_-n-1-infty-frac-sin-n-2-n-converges-or-diverges" rel="noopener" target="_blank">here</a>. In fact, as we saw, the mere irrationality of <span class="tex" data-tex="\pi">\pi</span> shows that the sequence <span class="tex" data-tex="n \bmod \pi">n \bmod \pi</span> is dense, so it gets arbitrarily close to <span class="tex" data-tex="\pi/2">\pi/2</span> which implies that <span class="tex" data-tex="\tan(n)">\tan(n)</span> isn’t bounded, and therefore the partial sums <span class="tex" data-tex="x_n">x_n</span> cannot be bounded either. If they were all between some <span class="tex" data-tex="A">A</span> and some <span class="tex" data-tex="B">B</span>, <span class="tex" data-tex="\tan(n)">\tan(n)</span> couldn’t exceed <span class="tex" data-tex="B-A">B-A</span>, but eventually it does.</p><p>This argument leaves open the possibility that <span class="tex" data-tex="x_n">x_n</span> is bounded <i>below</i> but not above, or vice versa. I’m quite sure it’s not, but this may require more careful analysis. At any rate, the partial sums certainly aren’t <i>bounded</i>.</p><p>What a punch drunk lovely series that is!</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzJW" target="_blank" rel="noopener">https://qr.ae/pFmzJW</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

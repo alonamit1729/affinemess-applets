@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Could we &quot;invent&quot; a number h such that h={{1}\over{0}}, similarly to the way we &quot;invented&quot; i=\sqrt{-1}? What would be the effect on modern math if we did so? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2016-03-07</div>
+<h1>Could we "invent" a number <span class="tex" data-tex="h"></span> such that <span class="tex" data-tex="h"></span><span class="tex" data-tex="={{1}\over{0}}"></span>, similarly to the way we "invented" <span class="tex" data-tex="i=\sqrt{-1}"></span>? What would be the effect on modern math if we did so?</h1>
+<div class="q-body"><p>You may not be aware of this, but mathematicians are very imaginative and creative people. They love defining new things, they love analogies, they love challenging accepted assumptions and they love completeness and symmetry.</p><p>Any one of those reasons alone provides ample motivation to explore the idea of adding <span class="tex" data-tex="1/0">1/0</span> to our algebraic, geometric or analytic domains.</p><ul><li>Just for the sake of defining something new, a mathematician would be curious to see what happens if <span class="tex" data-tex="1/0">1/0</span> becomes a thing.</li><li>By analogy with "<span class="tex" data-tex="x^2=-1">x^2=-1</span> is unsolvable so let's invent a solution", a mathematician would naturally be led to consider "<span class="tex" data-tex="0\times x=1">0\times x=1</span> is unsolvable so let's invent a solution".</li><li>Just to challenge the accepted norm of "division by zero is meaningless", many mathematicians would wonder what happens if we try to divide by zero anyway.</li><li>Just because how symmetric it would be to let division apply to all numbers, the way addition and subtraction and multiplication are, any mathematician is compelled to try and "complete the system" so it's fully symmetric.</li></ul><p>And of course, mathematicians did do this, in many different ways, for centuries.</p><p>From a purely algebraic standpoint, it turns out that not much is gained by allowing 0 to have a multiplicative inverse. The cleanest definition of an algebraic structure supporting both addition and multiplication and in which every element is invertible is called a <a href="https://en.wikipedia.org/wiki/Wheel_theory" rel="noopener" target="_blank">wheel</a>, and while they are perfectly ok structures, wheels were never found to have any deep utility or much innate beauty.</p><p>In fact, algebraists found quite the opposite to be true: a rich, fruitful and insanely useful theory emerges if we let more elements beyond 0 to have <i>no</i> inverse. Instead of <i>allowing</i> division by 0, we <i>disallow</i> division by 7, or 23 and 11, or other combinations. The theory of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)" rel="noopener" target="_blank">rings</a> studies algebraic structures where some, but not all, elements are invertible. Within that theory, the crucial idea of <a href="https://en.wikipedia.org/wiki/Localization_(algebra)" rel="noopener" target="_blank">localization</a> studies exactly what happens when you add certain carefully chosen inverses but not others. What if we consider only fractions with odd denominators? What if we invert every polynomial except those that are 0 right <i>there</i>? That's localization, and it's a brilliant idea.</p><p>So much for algebra. On the other hand, in geometry, the notion of "infinite slope" has been a profound and immensely fruitful idea.</p><p>When you learn analytic geometry in school, you are taught that every line in the plane is described by an equation like <span class="tex" data-tex="y=ax+b">y=ax+b</span>. Well, actually, not every line. Vertical lines cannot be described in this way. Why? Because the slope <span class="tex" data-tex="a">a</span> is "rise divided by run" as they say in the US, or <span class="tex" data-tex="\Delta y/\Delta x">\Delta y/\Delta x</span>, or some such thing, and that leaves the poor vertical lines out of the game.</p><p>That's not very nice, is it? There's nothing wrong with vertical lines. So we switch to using a more symmetric expression like <span class="tex" data-tex="ax+by+c=0">ax+by+c=0</span>, and now the slope is <span class="tex" data-tex="-a/b">-a/b</span> and if <span class="tex" data-tex="b=0">b=0</span> that's "infinity" and that's ok. The line <span class="tex" data-tex="x+23=0">x+23=0</span> is a fine line, and its slope is your favorite number <span class="tex" data-tex="1/0">1/0</span>.</p><p>Of course now the triplet <span class="tex" data-tex="a,b,c">a,b,c</span> defines the exact same line as <span class="tex" data-tex="ta,tb,tc">ta,tb,tc</span>, so all we care about is the triplet <span class="tex" data-tex="[a:b:c]">[a:b:c]</span> up to a scalar multiple of all three numbers, meaning <span class="tex" data-tex="[1:2:5]=[3:6:15]">[1:2:5]=[3:6:15]</span>, and behold, we just invented the projective plane.</p><p>Unsurprisingly, this is a beautifully symmetric structure, where every two points make a line and every two lines meet at a point and the annoying special case of "parallel lines" is gone. Allowing division by zero for infinite slopes is a really smart move: it creates a geometrically complete and homogenous structure. It lets us see that this elliptic curve</p><img alt="" loading="lazy" src="img/664b8b11c79262.jpg"/><p>is really two circles</p><img alt="" loading="lazy" src="img/170997796f023a.jpg"/><p>Which really are just part of a beautiful torus, if we allow complex numbers.</p><p>The same idea can be used to invent projective spaces of all dimensions, and if we take it one dimension <i>lower</i> than we just did, we get the projective <i>line</i>, which is made up of pairs <span class="tex" data-tex="[a:b]">[a:b]</span> which aren't both 0 and where <span class="tex" data-tex="[a:b]=[ta:tb]">[a:b]=[ta:tb]</span> for <span class="tex" data-tex="t\neq 0">t\neq 0</span>.</p><p>Because of this equivalence, the pair <span class="tex" data-tex="[a:b]">[a:b]</span> can naturally be identified with the number <span class="tex" data-tex="\frac{a}{b}">\frac{a}{b}</span>, since of course <span class="tex" data-tex="\frac{a}{b}=\frac{ta}{tb}">\frac{a}{b}=\frac{ta}{tb}</span>. That means that the projective line is the same as the ordinary real line... except for one point, denoted <span class="tex" data-tex="[1:0]">[1:0]</span>, which would just correspond to your favorite ratio <span class="tex" data-tex="\frac{1}{0}">\frac{1}{0}</span>.</p><p>So the projective line naturally introduces this new point, and geometrically, it very reasonably corresponds to a circle, obtained by wrapping up the real line and adding the new point <span class="tex" data-tex="[1:0]">[1:0]</span> just where positive infinity and negative infinity meet.</p><img alt="" loading="lazy" src="img/b40a239593cd13.jpg"/><p>The projective line alone is a bit boring, but two generalizations make it super interesting: moving up one or more dimensions to the projective plane and beyond, or changing the underlying domain from the real numbers to the complex ones. This second move is similar to switching to two dimensions, but is now described by one complex variable rather than two real ones. It's called the Riemann Sphere and is one of many important complex analytic manifolds.</p><p>Back to the first generalization, the projective plane. Despite being smooth and homogenous and two-dimensional, the projective plane doesn't fit in our meager 3-dimensional space so I can't show you a really nice picture of it. All we have are distorted partial visualizations, like the one below.</p><img alt="" loading="lazy" src="img/a02ec0e0257480.jpg"/><p>Sometimes, just before falling asleep after making love, I catch a glimpse of it in its full, symmetrical beauty.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzwc" target="_blank" rel="noopener">https://qr.ae/pFmzwc</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

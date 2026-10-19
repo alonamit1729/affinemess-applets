@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is the explanation of the solution of problem 3 from IMO 1988? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-05-05</div>
+<h1>What is the explanation of the solution of problem 3 from IMO 1988?</h1>
+<div class="q-body"><p>Oh, that’s a fun one.</p><p>I believe this problem can be solved quite easily given enough time (not all IMO problems can.) It’s much harder to do under time pressure, which is why it’s a P3; you’d need amazing insight or a lot of luck to figure it out quickly. But figuring it out slowly is actually not that difficult.</p><p>We have a function <span class="tex" data-tex="f">f</span>, defined for every positive integer <span class="tex" data-tex="n">n</span> like this:</p><p><span class="tex" data-tex="\displaystyle f(1)=1, f(3)=3">\displaystyle f(1)=1, f(3)=3</span></p><p><span class="tex" data-tex="\displaystyle f(2n)=f(n)">\displaystyle f(2n)=f(n)</span></p><p><span class="tex" data-tex="\displaystyle f(4n+1)=2f(2n+1)-f(n)">\displaystyle f(4n+1)=2f(2n+1)-f(n)</span></p><p><span class="tex" data-tex="\displaystyle f(4n+3)=3f(2n+1)-2f(n)">\displaystyle f(4n+3)=3f(2n+1)-2f(n)</span></p><p>The first thing to observe is that this really does define a function for all positive integers <span class="tex" data-tex="n">n</span>, with no ambiguity or unknown values.</p><p>We are asked to find how many fixed points <span class="tex" data-tex="f">f</span> has through <span class="tex" data-tex="1988">1988</span>, meaning how many numbers <span class="tex" data-tex="n">n</span> between <span class="tex" data-tex="1">1</span> and <span class="tex" data-tex="1988">1988</span> satisfy <span class="tex" data-tex="f(n)=n">f(n)=n</span>. As always, this <span class="tex" data-tex="1988">1988</span> is clearly just a red herring. We need to generally understand the fixed points, which likely means we need to understand what this function does in general.</p><p>Staring at the recursive definition doesn’t necessarily make anything stand out, so we simply do the most natural thing: calculate some values of <span class="tex" data-tex="f">f</span>. I always prefer to write <span class="tex" data-tex="a\to b">a\to b</span> instead of <span class="tex" data-tex="f(a)=b">f(a)=b</span>: it’s clearer, and the name <span class="tex" data-tex="f">f</span> is useless when there’s only one function around.</p><p>So, we quickly compute:</p><p><span class="tex" data-tex="1 \to 1">1 \to 1</span></p><p><span class="tex" data-tex="2 \to 1">2 \to 1</span></p><p><span class="tex" data-tex="3 \to 3">3 \to 3</span></p><p><span class="tex" data-tex="4 \to 1">4 \to 1</span></p><p><span class="tex" data-tex="5 \to 5">5 \to 5</span></p><p><span class="tex" data-tex="6 \to 3">6 \to 3</span></p><p><span class="tex" data-tex="7 \to 7">7 \to 7</span></p><p><span class="tex" data-tex="8 \to 1">8 \to 1</span></p><p><span class="tex" data-tex="9 \to 9">9 \to 9</span></p><p><span class="tex" data-tex="10 \to 5">10 \to 5</span></p><p>Danger lurks at this point: having made 10 experiments you may think you’ve sampled enough, and you may conclude that <span class="tex" data-tex="f(n)=n">f(n)=n</span> holds for all odd <span class="tex" data-tex="n">n</span>. If you stop now and try to prove this, though, you will quickly run into trouble. Let’s keep going.</p><p><span class="tex" data-tex="11 \to 13">11 \to 13</span> (oh!)</p><p><span class="tex" data-tex="12 \to 3">12 \to 3</span></p><p><span class="tex" data-tex="13 \to 11">13 \to 11</span></p><p><span class="tex" data-tex="14 \to 7">14 \to 7</span></p><p><span class="tex" data-tex="15 \to 15">15 \to 15</span></p><p><span class="tex" data-tex="16 \to 1">16 \to 1</span></p><p><span class="tex" data-tex="17 \to 17">17 \to 17</span></p><p><span class="tex" data-tex="18 \to 9">18 \to 9</span></p><p><span class="tex" data-tex="19 \to 25">19 \to 25</span></p><p><span class="tex" data-tex="20 \to 5">20 \to 5</span></p><p>At this second milestone of 20 numbers computed, another danger lurks: the most reasonable theory at this point is that <span class="tex" data-tex="f(n)=n">f(n)=n</span> occurs exactly around powers of <span class="tex" data-tex="2">2</span>, that is when <span class="tex" data-tex="n=2^k \pm 1">n=2^k \pm 1</span>. Right? This perfectly explains why <span class="tex" data-tex="11">11</span>, <span class="tex" data-tex="13">13</span> and <span class="tex" data-tex="19">19</span> are out while all other small oddies are in.</p><p>Do not succumb to temptation. Persevere. Do one more. Just one more.</p><p><span class="tex" data-tex="21 \to 21">21 \to 21</span></p><p>Aha! There goes <i>that</i> theory out the window.</p><p>So, what’s going on here?</p><p>The fixed points we have so far are <span class="tex" data-tex="1,3,5,7,9,15,17">1,3,5,7,9,15,17</span> and <span class="tex" data-tex="21">21</span>. It’s not too clear what these numbers are. The even numbers clearly can’t be fixed points, but the way they map is relevant to how the odd numbers behave. What’s the order in this chaos?</p><p>The inspired observation you need is to stop looking at these numbers in base 10. Looking at the rules defining <span class="tex" data-tex="f">f</span>, and how calculating it involves doubling and quadrupling, it may seem natural to look at all of these values in binary.</p><p><span class="tex" data-tex="1\to 1">1\to 1</span></p><p><span class="tex" data-tex="10\to 1">10\to 1</span></p><p><span class="tex" data-tex="11\to 11">11\to 11</span></p><p><span class="tex" data-tex="100 \to 1">100 \to 1</span></p><p>Actually, let’s just look at the more interesting ones.</p><p><span class="tex" data-tex="1011 \to 1101">1011 \to 1101</span> (that’s <span class="tex" data-tex="11\to 13">11\to 13</span>)</p><p><span class="tex" data-tex="1101 \to 1011">1101 \to 1011</span> (that’s <span class="tex" data-tex="13\to 11">13\to 11</span>)</p><p><span class="tex" data-tex="10011 \to 11001">10011 \to 11001</span> (that’s <span class="tex" data-tex="19 \to 25">19 \to 25</span>)</p><p>Do you see it now?</p><br/><p>Yes! The function simply reverses the binary digits of its input. That’s why <span class="tex" data-tex="19">19</span> goes to <span class="tex" data-tex="25">25</span>, and we can easily confirm that <span class="tex" data-tex="25">25</span> indeed goes back to <span class="tex" data-tex="19">19</span>. That’s also why <span class="tex" data-tex="21">21</span>, which is <span class="tex" data-tex="10101">10101</span> in binary, is a fixed point.</p><p>Noticing this simple description of the function <span class="tex" data-tex="f">f</span> is the only really hard part of this problem. Gathering the data for this observation is purely mechanical, and proving it – which we shall now proceed to do – is pretty straightforward, too. <i>Realizing</i> it takes experience and observation, but we get many clues.</p><br/><p>To prove that <span class="tex" data-tex="f">f</span> really reverses in binary, we can just do this: declare <span class="tex" data-tex="g">g</span> to be the function that actually reverses the binary digits, and show that <span class="tex" data-tex="g">g</span> satisfies the same conditions that <span class="tex" data-tex="f">f</span> does. Since these conditions determine <span class="tex" data-tex="f">f</span> uniquely, it must be that <span class="tex" data-tex="f=g">f=g</span>.</p><p>So if <span class="tex" data-tex="g">g</span> is, by definition, the bit-reversal function, then obviously <span class="tex" data-tex="g(1)=1">g(1)=1</span> and <span class="tex" data-tex="g(3)=3">g(3)=3</span>. It’s also clear that <span class="tex" data-tex="g(2n)=g(n)">g(2n)=g(n)</span>: the binary representation of <span class="tex" data-tex="2n">2n</span> is the same as that of <span class="tex" data-tex="n">n</span>, with a single <span class="tex" data-tex="0">0</span> attached to the end. Reversing <span class="tex" data-tex="2n">2n</span> places that <span class="tex" data-tex="0">0</span> at the beginning, which represents the same number as the reversal of <span class="tex" data-tex="n">n</span>.</p><p>Now for the last two relations. Take any natural number <span class="tex" data-tex="n">n</span> represented in binary. Attach <span class="tex" data-tex="01">01</span>at the end; this is now <span class="tex" data-tex="4n+1">4n+1</span>. Reverse; you get <span class="tex" data-tex="g(4n+1)=2^k+g(n)">g(4n+1)=2^k+g(n)</span>, where the term <span class="tex" data-tex="2^k">2^k</span> comes from moving the rightmost <span class="tex" data-tex="1">1</span> to the very left, and we don’t bother to calculate <span class="tex" data-tex="k">k</span>: we won’t need to.</p><p>Indeed, <span class="tex" data-tex="g(2n+1)=2^{k-1}+g(n)">g(2n+1)=2^{k-1}+g(n)</span>, where the added power of <span class="tex" data-tex="2">2</span> is clearly one less than <span class="tex" data-tex="k">k</span>. So,</p><p><span class="tex" data-tex="2g(2n+1)=2^k+2g(n)=g(4n+1)+g(n)">2g(2n+1)=2^k+2g(n)=g(4n+1)+g(n)</span></p><p>which is exactly the defining relation of <span class="tex" data-tex="f(4n+1)">f(4n+1)</span>.</p><p>Finally, <span class="tex" data-tex="4n+3">4n+3</span> is represented by the binary representation of <span class="tex" data-tex="n">n</span> with <span class="tex" data-tex="11">11</span> appended in the end, so</p><p><span class="tex" data-tex="g(4n+3)=2^k+2^{k-1}+g(n)">g(4n+3)=2^k+2^{k-1}+g(n)</span></p><p>while</p><p><span class="tex" data-tex="3g(2n+1)=3(2^{k-1}+g(n))=(2+1)2^{k-1}+3g(n)">3g(2n+1)=3(2^{k-1}+g(n))=(2+1)2^{k-1}+3g(n)</span></p><p>or</p><p><span class="tex" data-tex="3g(2n+1)=2^k+2^{k-1}+3g(n)=g(4n+3)+2g(n)">3g(2n+1)=2^k+2^{k-1}+3g(n)=g(4n+3)+2g(n)</span></p><p>which confirms the last relation.</p><p>This concludes the verification that <span class="tex" data-tex="g(n)">g(n)</span>, the “binary reversal” function, satisfies the same recursive relations as <span class="tex" data-tex="f">f</span>, so the two functions are one and the same.</p><br/><p>The only thing left to do is count how many palindromic numbers exist between <span class="tex" data-tex="1">1</span> and <span class="tex" data-tex="1988">1988</span>. The number of such nonzero numbers with <span class="tex" data-tex="d">d</span> binary digits is:</p><ul><li><span class="tex" data-tex="2^{e-1}">2^{e-1}</span> if <span class="tex" data-tex="d=2e">d=2e</span> is even (you must start with <span class="tex" data-tex="1">1</span>, and then freely choose <span class="tex" data-tex="e-1">e-1</span> digits)</li><li><span class="tex" data-tex="2^e">2^e</span> if <span class="tex" data-tex="d=2e+1">d=2e+1</span> is odd (start with <span class="tex" data-tex="1">1</span>, choose <span class="tex" data-tex="e-1">e-1</span> digits, and choose the middle digit).</li></ul><p>This gives <span class="tex" data-tex="1+1+2+2+4+4+8+8+16+16">1+1+2+2+4+4+8+8+16+16</span> palindromes of up to <span class="tex" data-tex="10">10</span> bits. With <span class="tex" data-tex="11">11</span> bits we should have had <span class="tex" data-tex="32">32</span> palindromes, but two of them start with five <span class="tex" data-tex="1">1</span>’s and are therefore larger than <span class="tex" data-tex="1988">1988</span> (notice that <span class="tex" data-tex="1988">1988</span> is very close to <span class="tex" data-tex="2^{11}=2048">2^{11}=2048</span>). So we only get <span class="tex" data-tex="30">30</span> palindromic numbers of <span class="tex" data-tex="11">11</span> bits which do not exceed <span class="tex" data-tex="1988">1988</span>, and so the final answer is <span class="tex" data-tex="92">92</span>.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzED" target="_blank" rel="noopener">https://qr.ae/pFmzED</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

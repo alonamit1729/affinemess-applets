@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are coffin problems in mathematics? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-06-06</div>
+<h1>What are coffin problems in mathematics?</h1>
+<div class="q-body"><p>“Coffin problems” are extremely difficult math problems which, nevertheless, have elementary solutions. They were devised for and used by admission committees at Soviet universities in the 70’s and 80’s to keep Jewish candidates (and other “undesirables”) out of the most prestigious universities, such as Moscow State. <b>Only undesirable candidates were asked these questions in the oral entrance exams</b>.</p><p>For more on the history of the practice, see:</p><ul><li>Chapter 3 of <a href="https://en.wikipedia.org/wiki/Edward_Frenkel" rel="noopener" target="_blank">Edward Frenkel’s</a> “<a href="https://www.amazon.com/Love-Math-Heart-Hidden-Reality/dp/0465050743" rel="noopener" target="_blank">Love and Math</a>”, or Frenkel’s article “<a href="https://www.newcriterion.com/issues/2012/10/the-fifth-problem-math-anti-semitism-in-the-soviet-union" rel="noopener" target="_blank">The Fifth Problem: Math and anti-Semitism in the Soviet Union</a>”.</li><li>Alexander Shen’s “<a href="http://3038.org/press/shen.pdf" rel="noopener" target="_blank">Entrance Examinations to the Mekh-Mat</a>”, The Mathematical Intelligencer Vol. 16, No. 4, 1994.</li><li>Tanya Khovanova’s “<a href="http://www.tanyakhovanova.com/coffins.html" rel="noopener" target="_blank">Coffins</a>” page, and her article "<a href="https://arxiv.org/abs/1110.1556" rel="noopener" target="_blank">Killer Problems</a>" in The American Mathematical Monthly, Vol. 119, No. 10 (2012), pp. 815-82.</li><li><a href="http://www.3038.org/press/fea-saul.pdf" rel="noopener" target="_blank">Articles</a> by <a href="https://www.quora.com/profile/Mark-5941" rel="noopener" target="_blank">Mark</a> and Anatoly <a href="http://www.3038.org/press/vershik.pdf" rel="noopener" target="_blank">Vershik</a>.</li><li>Another reference suggested by <a href="https://www.quora.com/profile/Ted-Alper" rel="noopener" target="_blank">Ted Alper</a> is the book “<a href="https://www.amazon.com/Failed-Your-Math-Comrade-Einstein/dp/9812562796" rel="noopener" target="_blank">You Failed your Math Test, Comrade Einstein</a>” by M. Shifman.</li></ul><p>The articles by Shen and Khovanova, and the <a href="http://www.tanyakhovanova.com/Coffins/Vardi-solutions.pdf" rel="noopener" target="_blank">solution set by Ilan Vardi</a>, contain a large collection of Coffin problems. Some of these problems have also appeared elsewhere, for example in Peter Winkler’s <a href="https://www.amazon.com/Mathematical-Puzzles-Connoisseurs-Peter-Winkler/dp/1568812019" rel="noopener" target="_blank">wonderful collection</a> or in various math olympiads.</p><p>The tragedy of these problems is that, despite their ignominious origin, many of them are absolute gems, a testimony to the ingenuity and creativity of those tasked with finding problems that are impossible to solve in the setting of an oral exam, while being “defensible” in the sense that short, ingenious, elementary solutions do exist.</p><br/><p>In my mind, one of the best of these problems is the following geometry pearl, which is also the one in Winkler’s book (p. 47, “Sphere and Quadrilateral”):</p><p><b>A quadrilateral in space has all of its edges tangent to a sphere. Prove that the points of tangency are coplanar.</b></p><p>(A quadrilateral in space is simply four points <span class="tex" data-tex="A,B,C,D">A,B,C,D</span> and four straight line segments <span class="tex" data-tex="AB,BC,CD,DA">AB,BC,CD,DA</span>. The four points may or may not lie on a plane.)</p><p>Approaching this problem in any of the usual or not-quite-usual ways – with analytic geometry in space, or vector calculus, or complex coordinates on the Riemann sphere – is extremely difficult.</p><p>However, an ingenious trick allows for a solution in a few lines. Each vertex of the quadrilateral has two edges emanating from it and tangent to the sphere at two points; the distances <span class="tex" data-tex="d">d</span> from the vertex to these two points are the same (why?). Put a mass of <span class="tex" data-tex="1/d">1/d</span> at that vertex. For any two vertices, their center of mass is now precisely the point of tangency between them (observe how this doesn’t work with mass of <span class="tex" data-tex="d">d</span>: you need a small mass for the larger distance!). Therefore, the center of mass of the entire contraption lies at a point which also lies on lines connecting opposite pairs of tangency points, which means the whole thing is in one plane. <span class="tex" data-tex="\blacksquare">\blacksquare</span></p><p>Ilan Vardi presents <a href="http://www.lix.polytechnique.fr/Labo/Ilan.Vardi/mekh-mat.html" rel="noopener" target="_blank">here</a> several alternate solutions, including an algebraic one spanning four pages of calculations. This is not an easy problem by any stretch of the imagination, and the fact that it nevertheless has such a short solution is truly miraculous.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzxI" target="_blank" rel="noopener">https://qr.ae/pFmzxI</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

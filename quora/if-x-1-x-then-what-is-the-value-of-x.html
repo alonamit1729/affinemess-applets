@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>If X+1=X , then what is the value of X? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2017-09-19</div>
+<h1>If X+1=X , then what is the value of X?</h1>
+<div class="q-body"><p>Wait. Let's start with something easier, ok?</p><p>If <span class="tex" data-tex="x^4=16">x^4=16</span>, what is <span class="tex" data-tex="x">x</span>?</p><p>In some contexts, the answer is clear: <span class="tex" data-tex="x=2">x=2</span>. In other contexts, the answer is just as clear: <span class="tex" data-tex="x=2">x=2</span> or <span class="tex" data-tex="x=-2">x=-2</span>. And in another context the obvious answer is <span class="tex" data-tex="x=2,-2,2i">x=2,-2,2i</span> or <span class="tex" data-tex="-2i">-2i</span>.</p><p>You can't definitively answer the question as written. Implicitly, the question is really this: “Consider the natural numbers (or the integers, or the reals, or the complex numbers, or the quaternions, or whatever.) Among those numbers, which are the ones whose fourth power is the number we call <span class="tex" data-tex="16">16</span>?”</p><p>Habit and experience made us sloppy. Textbooks and teachers give us equations to solve, and the domain of discourse is supposed to be clear from context. This is why most people would answer <span class="tex" data-tex="x^4=16">x^4=16</span> and <span class="tex" data-tex="z^4=16">z^4=16</span> differently, despite the fact that these two equations say the exact same thing.</p><p>Without a clear delineation of what precisely I'm looking for, simply saying “solve <span class="tex" data-tex="x^2=0">x^2=0</span>" is <i>meaningless</i>. It's not a complete sentence. It's half a question. Am I asking about real numbers? Matrices? Elements of some ring? There are infinitely many answers to that question, all equally right and wrong.</p><p>The operation of squaring and the symbol <span class="tex" data-tex="0">0</span> are <i>overloaded</i>. They mean different things in different domains, so asking you to solve this is like asking you “who is the captain?” What does that mean? What kind of captain? A maritime profession? A military rank? Where? When? Of what?</p><br/><p>Ok. Now that we've established that, it may be clear that asking for “the value of <span class="tex" data-tex="x">x</span>" given <span class="tex" data-tex="x+1=x">x+1=x</span> is not a meaningful question. It's not up to me to figure out what sort of legitimate <span class="tex" data-tex="x">x</span>s you have in mind, and what you mean by “<span class="tex" data-tex="+">+</span>” or “<span class="tex" data-tex="1">1</span>” or “<span class="tex" data-tex="=">=</span>“. This is part of the question. If you don't tell me, you're asking me to make up a question, not answer one. I can make up many questions.</p><p>I may ask: if <span class="tex" data-tex="x">x</span> is a natural number and <span class="tex" data-tex="x+1=x">x+1=x</span>, what is <span class="tex" data-tex="x">x</span>? And the answer is: there isn't any natural number satisfying this equation.</p><p>I may ask: if <span class="tex" data-tex="x">x</span> is a real number and <span class="tex" data-tex="x+1=x">x+1=x</span>, what is <span class="tex" data-tex="x">x</span>? And the answer is: there isn't any real number satisfying this equation.</p><p>I may ask: if <span class="tex" data-tex="x">x</span> is a cardinal number and <span class="tex" data-tex="x+1=x">x+1=x</span>, what is <span class="tex" data-tex="x">x</span>? And the answer is: <span class="tex" data-tex="x">x</span> may be any infinite cardinal, for example <span class="tex" data-tex="\aleph_0">\aleph_0</span>. (Note that “<span class="tex" data-tex="+">+</span>" now means something different than before.)</p><p>I may ask: if <span class="tex" data-tex="x">x</span> is an ordinal number and <span class="tex" data-tex="x+1=x">x+1=x</span>, what is <span class="tex" data-tex="x">x</span>? And the answer is: there isn't any such ordinal number, but if you're ok with <span class="tex" data-tex="1+x=x">1+x=x</span> then any infinite ordinal will do.</p><p>I may ask: if <span class="tex" data-tex="x">x</span> is a boolean variable, <span class="tex" data-tex="+">+</span> means “OR”, <span class="tex" data-tex="1">1</span> means “True”, and <span class="tex" data-tex="x+1=x">x+1=x</span>, what is <span class="tex" data-tex="x">x</span>? And the answer is: <span class="tex" data-tex="x">x</span> is <span class="tex" data-tex="1">1</span>, or “True”. (Lots of commenters seem to be interested in this version, so I added it in).</p><p>I may ask: if “<code>=</code>" doesn’t mean “is equal to” but rather “assign what’s on the right to the variable on the left”, as it does in some programming languages like C or Python, and if you re-write the thing as “<code>x=x+1</code>", then what is <code>x</code>? And the answer is: it’s the result of applying the “<code>+1</code>” operator, whatever that is for the appropriate data type, to whatever value <code>x</code> had before that command was executed.</p><p>Finally, many people are explaining in the comments that <span class="tex" data-tex="x">x</span> is “+inf” or “-inf” or <span class="tex" data-tex="\infty">\infty</span> or <span class="tex" data-tex="+\infty">+\infty</span> or <span class="tex" data-tex="-\infty">-\infty</span> or something like that. The only mathematical contexts where this notation makes sense are the <a href="https://en.wikipedia.org/wiki/Extended_real_number_line" rel="noopener" target="_blank">extended real line</a> in real analysis (including <span class="tex" data-tex="+\infty">+\infty</span> and <span class="tex" data-tex="-\infty">-\infty</span>) and the <a href="https://en.wikipedia.org/wiki/Riemann_sphere" rel="noopener" target="_blank">Riemann sphere</a> in complex analysis (with <span class="tex" data-tex="\infty">\infty</span> alone). Once again, if this is the intended context, fine, but without specifying that this is the intended context, those answers are not more or less correct than any other one I’ve mentioned.</p><br/><p>So, there's no “the” value of <span class="tex" data-tex="x">x</span> under those conditions. The question is incomplete, and different ways of completing it yield different questions with different answers.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzuu" target="_blank" rel="noopener">https://qr.ae/pFmzuu</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

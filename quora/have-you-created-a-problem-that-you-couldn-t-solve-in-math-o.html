@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Have you created a problem that you couldn&#x27;t solve in math or logic but that someone else could? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2013-09-03</div>
+<h1>Have you created a problem that you couldn't solve in math or logic but that someone else could?</h1>
+<div class="q-body"><p>That's actually one of my happiest achievements in mathematics.</p><p>Some years ago I came up with a conjecture based on a combination of wishful thinking, minuscule amounts of data and extremely vague intuition. I made some progress on one half of my own conjecture but wasn't able to resolve it completely, and I had no idea how to tackle the other half. The conjecture apparently spread around and eventually both halves were solved and published by people I don't personally know at all.</p><p>In some ways, this made me more proud than my own published results.<b> I asked a good question!</b></p><img alt="" loading="lazy" src="img/9b2892e7f7aef2.png"/><p><b>Background</b></p><p>Given a finite group <span class="tex" data-tex="G">G</span> and an expression such as <span class="tex" data-tex="XY^2Z^{-1}X^{-1}ZY^{-1}">XY^2Z^{-1}X^{-1}ZY^{-1}</span>, one may ask about the values of the expression if random elements of <span class="tex" data-tex="G">G</span> are substituted into the variables <span class="tex" data-tex="X,Y,Z">X,Y,Z</span>. Officially, the "expression" is an element of the free group with some finite number of generators, and it's pretty natural to ask about what you get when you evaluate such words when group elements are assigned to the generators.</p><p>Specifically, if you plug in uniform, random elements of a finite group into some such expression, what is the probability that you get <span class="tex" data-tex="1">1</span>, the identity element? Is this probability at least some positive constant, perhaps depending on <span class="tex" data-tex="G">G</span> but not on the expression?</p><p>It is not so strange to guess that the identity should come up often when you evaluate such expressions. In fact, it's easy to see that this must be the case when the group is abelian, for example. It's also reasonable to assume that given that the expression is not allowed to contain any constants.</p><p><b>The Conjecture</b></p><p>After lots of experimentation, partial results, staring at pages full of calculations, false proofs and wrong turns, I proposed the following conjecture:</p><p><b>A finite group </b><span class="tex" data-tex="G">G</span><b> is solvable if and only if there exists some positive constant </b><span class="tex" data-tex="c&gt;0">c&gt;0</span><b> (depending on </b><span class="tex" data-tex="G">G</span><b>) such that, for every </b><span class="tex" data-tex="r \in \mathbb{N}">r \in \mathbb{N}</span><b> and every </b><span class="tex" data-tex="w \in F_r">w \in F_r</span><b> (the free group on </b><span class="tex" data-tex="r">r</span><b> generators), the probability that </b><span class="tex" data-tex="w(g_1,\ldots,g_r)=1">w(g_1,\ldots,g_r)=1</span><b> is at least </b><span class="tex" data-tex="c">c</span><b>, where the </b><span class="tex" data-tex="g_i">g_i</span><b> are uniformly, independently chosen elements of </b><span class="tex" data-tex="G">G</span><b>.</b></p><p>As promised, this conjecture has two halves:</p><ol><li>Showing that for <b>solvable</b> groups you can <b>never</b> contrive a word that pushes the probability down below some fixed positive constant (the probability of getting <span class="tex" data-tex="1">1</span> is "bounded away from 0").</li><li>Showing that for <b>non-solvable</b> groups you can <b>always</b> come up with a sequence of contrived words that do push the probability as close to 0 as you wish.</li></ol><p>This conjecture seemed attractive to me for several reasons. First, it's quite elementary, requiring nothing more than the definition of a group (even the notion of a free group is not really needed here). Second, there's no obvious reason why "solvability" is the right dividing line here, and it's quite pleasing that it is: the condition of solvability originally came about from the relationship between groups and solvability of polynomials by radicals, and here we are re-interpreting it as "ease of solving equations <i>inside</i> the group". Indeed, the conjecture can be regarded as saying that equations like <span class="tex" data-tex="XY^2Z^{-1}X^{-1}ZY^{-1} = 1">XY^2Z^{-1}X^{-1}ZY^{-1} = 1</span> are easy to solve in solvable groups and possibly hard to solve in non-solvable groups. Doesn't that sound quaint?</p><p><b>The Resolution</b></p><p>I made no explicit effort to publicize the conjecture. I never published it, nor my proof of the first half in the case that <span class="tex" data-tex="G">G</span> is nilpotent. Somehow it made the rounds; some friends from grad school heard me discuss it and told their friends, my thesis advisor mentioned it to a few people, and eventually people smart enough to tackle it actually found it interesting enough to tackle, and solved it. It took about 4 years after the conjecture came into being.</p><p>The second half was solved first, by Miklós Abért in 2005: <a href="http://arxiv.org/abs/math/0504312" rel="noopener" target="_blank">On the probability of satisfying a word in a group</a>. The first half was solved by Nikolay Nikolov and Dan Segal, who were thus able to state the result as <a href="http://blms.oxfordjournals.org/content/39/2/209" rel="noopener" target="_blank">A characterization of finite soluble groups</a>, published in the Bulletin of the LMS in 2006.</p><p>While looking up the links for this answer I noticed that more people are aware of those results and are finding them interesting (here's one example<a href="http://mathoverflow.net/questions/87083/explicit-element-in-free-group-which-is-killed-by-every-solvable-quotient/96140#96140" rel="noopener" target="_blank"> on Mathoverflow</a>). I can't quite describe how happy this makes me.</p><p>EDIT: I just discovered that the first half became <a href="http://www.math.u-szeged.hu/~mmaroti/schweitzer/schweitzer-2004-eng.pdf" rel="noopener" target="_blank">Problem 5</a> in the 2004 Miklós Schweitzer Competition!</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmQzg" target="_blank" rel="noopener">https://qr.ae/pFmQzg</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

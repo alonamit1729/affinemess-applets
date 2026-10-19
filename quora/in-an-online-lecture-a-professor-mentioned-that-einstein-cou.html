@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In an online lecture, a professor mentioned that Einstein could draw or imagine a 4-dimensional figure. How can one possibly do that? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2014-09-06</div>
+<h1>In an online lecture, a professor mentioned that Einstein could draw or imagine a 4-dimensional figure. How can one possibly do that?</h1>
+<div class="q-body"><p>Here's a 3-dimensional figure.</p><img alt="" loading="lazy" src="img/ee39efc46bf0e1.jpg"/><p>​<br/>Right? Wrong. The knot is drawn on a flat screen, that of your phone or computer, so the image is decidedly 2-dimensional. However, it provides visual cues that help our imagination reconstruct the 3-dimensional shape. (In fact, each of our eyes sees in two dimensions anyway, and our brain pieces together the two images to create a model of the three-dimensional world around us. But this model is in our minds, not in the colorful patterns of light that hit our retinae).</p><p>In the same way that we can draw a 3-dimensional shape by projecting it onto two dimensions and completing the model with our imagination, we can create 3-dimensional models of 4-dimensional shapes that we train ourselves to imagine. In fact we can even draw those 3-dimensional models in 2 dimensions like we did before, and let our minds perform <i>two</i> dimensional leaps.</p><p>It takes some getting used to, but it's not impossible and many people develop a rather good intuition for four dimensions. I strongly encourage you to ignore the comment about Einstein having some special ability here (the original question referenced a talk where a professor mentioned Einstein could see in 4 dimensions). He was a superb mathematician and physicist with uncanny intuition and excellent technical mastery, but he did not have any special organ in his brain that let him draw or see in four dimensions.</p><p>Two common methods of visualizing the fourth dimension are to use color or time. In the color method, we draw a 3d shape as usual but paint it dark or bright depending on the value of the fourth coordinate. Dark points are "at the bottom" of the extra dimension, and light points are understood to be "at the top" of it. Two regions of your shape may occupy the same region in 3d space but have different colors, so they are actually separated in 4 dimensions.</p><p>To better understand this, let's start with a simple example in fewer dimensions. Here's a two dimensional shape, a figure 8 made of some ribbon.</p><img alt="" loading="lazy" src="img/6049736997c990.png"/><p>​<br/>Now suppose we wish to represent a 3-dimensional shape which is similar, except that the ribbon doesn't cross itself at the center; rather it is lifted "out of the page" to lie above the other ribbon. We can easily do this in three dimensional space, but let's stick to two dimensions and use color instead:</p><img alt="" loading="lazy" src="img/24df52a73b499a.png"/><p>​</p><p>We are here using shades of blue as our extra dimension. The physical shape itself is still two-dimensional! The two ribbons are not spatially separated, they are only color-separated. The ribbon swings around and when it gets close to the center it is gradually "lifted up in blue-space", so that at the very center it lies far above (in the blue dimension) the black ribbon underneath. Then it glides back to black.</p><p>Note that we can't show the actual black ribbon alongside the blue ribbon since we can't apply two different colors, black and blue, to the same region in our 2d model. There's some imagination required here to understand that there are two crossing ribbons at the center, one black (at the "bottom" of the blue dimension) and one, blue, at the top.</p><p>Interestingly enough, the color dimension creates quite an intuitive visual feeling of a third dimension. But remember, the shape here is not spatially 3-d, it is "horizontal+vertical+color"-dimensional.</p><p>So now, we can do the exact same thing, starting with a genuine 3-dimensional shape and coloring it to add the fourth dimension. (In fact, using two independent colors like red and blue, we can actually visualize <i>five</i> dimensions quite effectively).</p><p>Consider a famous shape, the Klein bottle, which is a bottle that loops into itself to create a shape with no inside and outside. You can obtain it by gluing together two Möbius strips along their edge.</p><img alt="" loading="lazy" src="img/8736f17565f825.gif"/><p>​</p><p>Sadly, we can't quite fit a Klein bottle in our 3-dimensional space, since it is not supposed to actually cut through itself. Like the ribbon above, the critical junction where it folds back in is meant to allow the two tubes to be completely separated.</p><p>But that's quite easy to achieve using color, right? Here's an example:</p><img alt="" loading="lazy" src="img/59770b04e886b1.png"/><p>​</p><p>This uses the exact same approach as we had with the ribbon. The tube shifts into a different area in color space as it loops back in, and by the time it passes itself it is already very separated (green vs white). The Klein bottle sits very comfortably in 4-dimensional space, without any nasty self intersections.</p><p>Once you get this, it's quite easy to visualize and even discover or prove various facts about higher dimensions. For example, a knot in three dimensional space cannot be unknotted by moving it about:</p><img alt="" loading="lazy" src="img/9a852af02b354f.jpg"/><p>​</p><p>But do you see how easy it is to untie it in 4 dimensions? Whenever you need to pass part of the knot through another part, just slide its color gradually from orange to blue, and now it can freely pass "through" any orange part since it is "colorfully" separated. Then glide it back to orange and keep going until the knot is untied. There are no 1-dimensional knots in 4 dimensions (but there are 2-dimensional ones).</p><p>See? That wasn't so hard. No need to be an Einstein.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzMe" target="_blank" rel="noopener">https://qr.ae/pFmzMe</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

@@ -1,0 +1,758 @@
+[
+ {
+  "slug": "can-a-quantum-computer-calculate-the-factorial-this-factoria",
+  "title": "Can a quantum computer calculate the factorial? This factorial is (( (((3!)!)!)!)!)! .",
+  "th": "Can a quantum computer calculate the factorial? This factorial is (( (((3!)!)!)!)!)! .",
+  "date": "2023-06-25",
+  "excerpt": "No. I would encourage you to ignore most of the nonsensical answers given here. First of all, by “calculating” you probably mean producing the sequence of decimal digits of the indicated number. For…",
+  "url": "https://qr.ae/pyMBBU",
+  "words": 384
+ },
+ {
+  "slug": "what-is-the-largest-prime-number-printed-by-a-computer",
+  "title": "What is the largest prime number printed by a computer?",
+  "th": "What is the largest prime number printed by a computer?",
+  "date": "2021-02-10",
+  "excerpt": "As of February 10, 2021, the largest known prime is … And here it is, printed in its full glory. Yes, right there. There, right above. Three lines ago. Yup, this is it. It’s printed. On your screen.…",
+  "url": "https://qr.ae/pFmzQc",
+  "words": 355
+ },
+ {
+  "slug": "in-mathematics-it-is-possible-to-calculate-problems-in-infin",
+  "title": "In mathematics, it is possible to calculate problems in infinite dimensions. Is this just another failure of logic or might this be useful for anything other than giving students a headache?",
+  "th": "In mathematics, it is possible to calculate problems in infinite dimensions. Is this just another failure of logic or might this be useful for anything other than giving students a headache?",
+  "date": "2021-02-06",
+  "excerpt": "People sometimes react with disdain, fear, concern, disbelief or outright shock to the idea of infinite-dimensional spaces (or manifolds, or other entities), seeing as three dimensions were good…",
+  "url": "https://qr.ae/pFmzlw",
+  "words": 616
+ },
+ {
+  "slug": "how-many-prime-numbers-in-total-are-known-as-of-november-202",
+  "title": "How many prime numbers in total are known as of November 2020?",
+  "th": "How many prime numbers in total are known as of November 2020?",
+  "date": "2020-11-28",
+  "excerpt": "Let’s head over to Wolfram|Alpha together. Wolfram|Alpha Type in “Random 1000 digit prime”. Wait a few seconds. You should see something like this: You can tap “More digits” to see more digits.…",
+  "url": "https://qr.ae/pFmd6S",
+  "words": 264
+ },
+ {
+  "slug": "what-are-some-programming-problems-that-look-hard-at-a-first",
+  "title": "What are some programming problems that look hard at a first glance but are actually easy?",
+  "th": "What are some programming problems that look hard at a first glance but are actually easy?",
+  "date": "2020-08-01",
+  "excerpt": "Here’s a black and white image. It is represented, as you’d expect, as an array of bits: 0 is white, 1 is black. Your programming challenge is to determine the number of connected components in such…",
+  "url": "https://qr.ae/pFmzbC",
+  "words": 776
+ },
+ {
+  "slug": "why-do-they-teach-integration-and-derivatives-in-high-school",
+  "title": "Why do they teach integration and derivatives in high school? What is its use in day-to-day life?",
+  "th": "Why do they teach integration and derivatives in high school? What is its use in day-to-day life?",
+  "date": "2020-07-06",
+  "excerpt": "This question, and a million others like it, should win some sort of award for the most perennial, persistent, insistent, consistent, constant conundrum among Quora queries. I find that sad. Question…",
+  "url": "https://qr.ae/pFmzBz",
+  "words": 860
+ },
+ {
+  "slug": "what-real-numbers-will-we-never-know-even-the-approximate-va",
+  "title": "What real numbers will we never know (even the approximate) value of?",
+  "th": "What real numbers will we never know (even the approximate) value of?",
+  "date": "2020-04-01",
+  "excerpt": "…. I contend that we won’t ever know whether this number is positive or negative, whether it is more than a billion or less than a billionth, whether its integer value is odd or even, anything of the…",
+  "url": "https://qr.ae/pvDxl4",
+  "words": 258
+ },
+ {
+  "slug": "is-64-the-first-perfect-square-and-a-perfect-cube-is-it-the",
+  "title": "Is 64 the first perfect square and a perfect cube? Is it the only one?",
+  "th": "Is 64 the first perfect square and a perfect cube? Is it the only one?",
+  "date": "2020-02-27",
+  "excerpt": "Come, I want to show you something. If x is any integer, then x^3 is what you’d call a perfect cube. And if y is any integer, then y^2 is what you’d call a perfect square. If a number is both a…",
+  "url": "https://qr.ae/pFmzMZ",
+  "words": 965
+ },
+ {
+  "slug": "which-is-the-larger-number-one-googolplex-or-graham-s-number",
+  "title": "Which is the larger number: one googolplex or Graham's number?",
+  "th": "Which is the larger number: one googolplex or Graham's number?",
+  "date": "2019-11-09",
+  "excerpt": "HAHAHAHAHAHAHAHA!!! Not even close. Not even remotely close. Not even funny, how not even close these two numbers are. They aren’t in the same ballpark, the same world, the same universe, the same…",
+  "url": "https://qr.ae/pFmzc5",
+  "words": 507
+ },
+ {
+  "slug": "what-would-happen-if-a-supercomputer-calculated-pi-out-and-d",
+  "title": "What would happen if a supercomputer calculated pi out and discovered that it does end finitely?",
+  "th": "What would happen if a supercomputer calculated pi out and discovered that it does end finitely?",
+  "date": "2019-10-19",
+  "excerpt": "To make things clearer, let’s remove the marketing hype and the bits which may be unclear. Here’s an alternative question: What would happen if my iPhone calculator calculated 6 and discovered that…",
+  "url": "https://qr.ae/pFmzuk",
+  "words": 390
+ },
+ {
+  "slug": "what-do-complex-numbers-mean-physically",
+  "title": "What do complex numbers mean physically?",
+  "th": "What do complex numbers mean physically?",
+  "date": "2019-09-22",
+  "excerpt": "Doesn’t work like that. Let’s start with real numbers. What do they mean physically? Well, everything and nothing. Everything, because we use real numbers as models for position, distance, time,…",
+  "url": "https://qr.ae/pFmQrO",
+  "words": 248
+ },
+ {
+  "slug": "why-are-there-so-many-intellectuals-e-g-those-in-certain-bra",
+  "title": "Why are there so many intellectuals (e.g. those in certain branches of mathematics and philosophy) thinking so hard about problems whose solutions have little to no real-world significance? Are all truths actually profound and important to arrive at?",
+  "th": "Why are there so many intellectuals (e.g. those in certain branches of mathematics and philosophy) thinking so hard about problems whose solutions have little to no real-world significance? Are all truths actually profound and important to arrive at?",
+  "date": "2019-09-19",
+  "excerpt": "The reason people think hard about problems that interest them is because the problems interest them. They don’t know if the solutions have “little to no real-world significance” (and neither do…",
+  "url": "https://qr.ae/pFmQrY",
+  "words": 321
+ },
+ {
+  "slug": "which-is-larger-2-100-or-2-100",
+  "title": "Which is larger?  2^{100!} or 2^{100}! ",
+  "th": "Which is larger? <span class=\"tex\" data-tex=\" 2^{100!}\"></span> or <span class=\"tex\" data-tex=\"2^{100}! \"></span>",
+  "date": "2019-08-16",
+  "excerpt": "I often suggest this as a problem to be solved by completely elementary means: no Stirling, no logs, no nothing. The key observation is that n! < n^n. This should be obvious: n! is the product of n…",
+  "url": "https://qr.ae/pFmzS1",
+  "words": 258
+ },
+ {
+  "slug": "why-don-t-we-just-invent-math-that-will-allow-us-to-solve-pr",
+  "title": "Why don't we just invent math that will allow us to solve problems like x^x = 2 so we don't have to use numerical methods?",
+  "th": "Why don't we just invent math that will allow us to solve problems like x^x = 2 so we don't have to use numerical methods?",
+  "date": "2019-06-25",
+  "excerpt": "We did. But there’s plenty of confusion around what it means to “solve” equations. Take x^3=2. Can you solve it? Sure: …. So we have the “math” to solve this equation without resorting to numerical…",
+  "url": "https://qr.ae/pFmzBR",
+  "words": 298
+ },
+ {
+  "slug": "why-do-computers-take-more-time-in-prime-factorization-than",
+  "title": "Why do computers take more time in prime factorization than in multiplication? The time difference is too much.",
+  "th": "Why do computers take more time in prime factorization than in multiplication? The time difference is too much.",
+  "date": "2019-06-06",
+  "excerpt": "How long would it take you to mix a cup of sugar and a cup of salt? How long would it take you to separate them back? Many actions, even reversible ones, require very different resources to do and to…",
+  "url": "https://qr.ae/pFmQke",
+  "words": 104
+ },
+ {
+  "slug": "math-question-you-are-allowed-to-take-as-many-positive-whole",
+  "title": "Math question: You are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. What is the biggest possible result you can get?",
+  "th": "Math question: You are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. What is the biggest possible result you can get?",
+  "date": "2019-06-03",
+  "excerpt": "20? Why 20? That’s a number both boring and small. Imagine that we are allowed to take as many whole numbers as we want that add up to a trillion, and then multiply them together. What is the biggest…",
+  "url": "https://qr.ae/pFmzcg",
+  "words": 1032
+ },
+ {
+  "slug": "can-there-exist-100-lines-in-the-plane-no-three-concurrent-s",
+  "title": "Can there exist 100 lines in the plane, no three concurrent, such that they intersect in exactly 2002 points?",
+  "th": "Can there exist 100 lines in the plane, no three concurrent, such that they intersect in exactly 2002 points?",
+  "date": "2019-05-12",
+  "excerpt": "Yup. This looks like a geometry problem, right? It’s not. It’s a problem in number theory. The geometry part is almost entirely a red herring. You see, when you have lines in the plane, any two lines…",
+  "url": "https://qr.ae/pKDDBv",
+  "words": 812
+ },
+ {
+  "slug": "what-makes-statistics-probability-easier-than-other-subjects",
+  "title": "What makes statistics/probability easier than other subjects?",
+  "th": "What makes statistics/probability easier than other subjects?",
+  "date": "2019-01-31",
+  "excerpt": "Easier? Probability and statistics are the most devilish, treacherous, subtle, confounding subjects out there, by a wide margin. They seem easy. To laypersons, to students, to professional…",
+  "url": "https://qr.ae/pFmzcl",
+  "words": 557
+ },
+ {
+  "slug": "what-are-some-mathematical-proofs-which-appear-to-be-correct",
+  "title": "What are some mathematical proofs which appear to be correct, but are actually incorrect?",
+  "th": "What are some mathematical proofs which appear to be correct, but are actually incorrect?",
+  "date": "2019-01-28",
+  "excerpt": "The most fiendish false proofs are not proofs of incorrect assertions. They are faulty proofs of correct assertions. When someone offers a proof of an incorrect assertion, you know that at some point…",
+  "url": "https://qr.ae/pFmQw8",
+  "words": 1869
+ },
+ {
+  "slug": "for-any-given-prime-number-can-you-estimate-what-the-next-pr",
+  "title": "For any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes?",
+  "th": "For any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes?",
+  "date": "2019-01-08",
+  "excerpt": "‘Hey, Salviati, can you estimate the next prime after 100003?’ ‘Sure. It’s 100019.’ ‘Wait, what? How did you know?’ ‘Oh, easy. …, so 99910 is divisible by both 97 and 103, so neither 99910+97 nor…",
+  "url": "https://qr.ae/pFmzjH",
+  "words": 645
+ },
+ {
+  "slug": "is-the-sequence-x-n-sum-k-1-n-tan-k-bounded",
+  "title": "Is the sequence x_n = \\sum_{k=1} ^n \\tan(k) bounded?",
+  "th": "Is the sequence <span class=\"tex\" data-tex=\"x_n = \\sum_{k=1} ^n \\tan(k)\"></span> bounded?",
+  "date": "2018-12-20",
+  "excerpt": "Oh. My. Gauss. What a punch drunk lovely squiggly wiggly sequence that is. First, let me answer the question, so you don’t have to suffer through the rest of my musings: no, the sequence isn’t…",
+  "url": "https://qr.ae/pFmzJW",
+  "words": 1008
+ },
+ {
+  "slug": "in-simple-terms-what-is-an-isomorphism-in-mathematics-for-ex",
+  "title": "In simple terms, what is an isomorphism in mathematics? For example, what does it mean that there is an isomorphism between the real and complex numbers?",
+  "th": "In simple terms, what is an isomorphism in mathematics? For example, what does it mean that there is an isomorphism between the real and complex numbers?",
+  "date": "2018-12-12",
+  "excerpt": "Here’s a chess set [1]. Here’s another chess set [2]. They look rather different, but they are both chess sets. When people play chess with these sets, or any other, they are playing the same game.…",
+  "url": "https://qr.ae/pFmQtv",
+  "words": 1427
+ },
+ {
+  "slug": "when-has-an-unsolved-conjecture-been-disproved-by-counter-ex",
+  "title": "When has an unsolved conjecture been disproved by counter-example?",
+  "th": "When has an unsolved conjecture been disproved by counter-example?",
+  "date": "2018-10-29",
+  "excerpt": "In 1856, Moritz Abraham Stern found a counterexample to a 100-year-old conjecture of Goldbach, which stated that every positive odd integer is either prime or the sum of a prime and twice a square.…",
+  "url": "https://qr.ae/pFmzE3",
+  "words": 325
+ },
+ {
+  "slug": "can-you-show-me-how-to-integrate-by-using-partial-fractions",
+  "title": "Can you show me how to integrate by using partial fractions?",
+  "th": "Can you show me how to integrate by using partial fractions?",
+  "date": "2018-09-30",
+  "excerpt": "Oh, I’d be happy to. Integration by partial fractions has a peculiar pedagogical pedigree. It is often presented in calculus courses as a way of integrating rational functions, but it is rarely…",
+  "url": "https://qr.ae/pFmQ2q",
+  "words": 2928
+ },
+ {
+  "slug": "can-anyone-explain-in-layman-s-terms-where-the-taylor-series",
+  "title": "Can anyone explain in layman's terms where the Taylor series comes from? Why and how does it work so well?",
+  "th": "Can anyone explain in layman's terms where the Taylor series comes from? Why and how does it work so well?",
+  "date": "2018-08-10",
+  "excerpt": "= I’m sitting in my car. = Good for you. = Can you tell me where I’m going to be 5 seconds from now? = Um, no. How could I? = You can ask me questions. = Fine. Where will you be 5 seconds from now? =…",
+  "url": "https://qr.ae/pFmzU0",
+  "words": 767
+ },
+ {
+  "slug": "for-mathematicians-what-would-be-the-most-surprising-new-fin",
+  "title": "For mathematicians: What would be the most surprising new finding?",
+  "th": "For mathematicians: What would be the most surprising new finding?",
+  "date": "2018-08-10",
+  "excerpt": "(EDIT: A lot of people are expressing shock in the comments regarding the statements in the list below. To be clear, once again, none of these things is known to be true, and in fact they are widely…",
+  "url": "https://qr.ae/pFmQ3B",
+  "words": 163
+ },
+ {
+  "slug": "what-is-the-math-formula-for-a-b-5",
+  "title": "What is the math formula for (a+b)^5?",
+  "th": "What is the math formula for <span class=\"tex\" data-tex=\"(a+b)^5\"></span>?",
+  "date": "2018-07-17",
+  "excerpt": "Here are two numbers: a = 37 b = 63 Someone’s asking you for (a+b)^5. What do you do? Lots of people have suggested the binomial formula as an answer to this question. This means … which may just be…",
+  "url": "https://qr.ae/pFmzJk",
+  "words": 255
+ },
+ {
+  "slug": "how-do-i-solve-the-polynomial-x-5-x-4-16x-3-5x-2-21x-9-0-wit",
+  "title": "How do I solve the polynomial x^5+x^4-16x^3+5x^2+21x-9=0 , with no approximation?",
+  "th": "How do I solve the polynomial <span class=\"tex\" data-tex=\"x^5+x^4-16x^3+5x^2+21x-9=0 \"></span>, with no approximation?",
+  "date": "2018-07-09",
+  "excerpt": "Oh man, someone hand-crafted this polynomial VERY carefully! Where did you come across this question? This seems suitable for a course in computational Galois theory… The roots of this polynomial,…",
+  "url": "https://qr.ae/pFmzB2",
+  "words": 708
+ },
+ {
+  "slug": "what-are-coffin-problems-in-mathematics",
+  "title": "What are coffin problems in mathematics?",
+  "th": "What are coffin problems in mathematics?",
+  "date": "2018-06-06",
+  "excerpt": "“Coffin problems” are extremely difficult math problems which, nevertheless, have elementary solutions. They were devised for and used by admission committees at Soviet universities in the 70’s and…",
+  "url": "https://qr.ae/pFmzxI",
+  "words": 526
+ },
+ {
+  "slug": "what-is-the-explanation-of-the-solution-of-problem-3-from-im",
+  "title": "What is the explanation of the solution of problem 3 from IMO 1988?",
+  "th": "What is the explanation of the solution of problem 3 from IMO 1988?",
+  "date": "2018-05-05",
+  "excerpt": "Oh, that’s a fun one. I believe this problem can be solved quite easily given enough time (not all IMO problems can.) It’s much harder to do under time pressure, which is why it’s a P3; you’d need…",
+  "url": "https://qr.ae/pFmzED",
+  "words": 914
+ },
+ {
+  "slug": "given-dfrac-1-a-dfrac-1-b-dfrac-1-c-1-what-are-the-values-of",
+  "title": "Given \\dfrac{1}{a}+\\dfrac{1}{b}+\\dfrac{1}{c}=1, what are the values of a,b, and c if they are integers?",
+  "th": "Given <span class=\"tex\" data-tex=\"\\dfrac{1}{a}+\\dfrac{1}{b}+\\dfrac{1}{c}=1\"></span>, what are the values of <span class=\"tex\" data-tex=\"a\"></span>,<span class=\"tex\" data-tex=\"b\"></span>, and <span class=\"tex\" data-tex=\"c\"></span> if they are integers?",
+  "date": "2018-03-24",
+  "excerpt": "This is a surprisingly useful little question. In geometry and group theory ( triangle groups), there is interest in classifying triplets of numbers a,b,c by comparing … with 1. A triangle with…",
+  "url": "https://qr.ae/pFmzjv",
+  "words": 355
+ },
+ {
+  "slug": "how-do-i-solve-this-int-0-1-sqrt-x-sqrt-x-sqrt-x-dx",
+  "title": "How do I solve this  \\int_{0}^{1} \\sqrt{x+\\sqrt{x+\\sqrt{x+....}}} dx ? ",
+  "th": "How do I solve this <span class=\"tex\" data-tex=\" \\int_{0}^{1} \\sqrt{x+\\sqrt{x+\\sqrt{x+....}}} dx ? \"></span>",
+  "date": "2018-03-10",
+  "excerpt": "Whatever function f(x) is represented by the infinite nested radical … we can reasonably expect it to satisfy … This is because what follows the first “ x+ ” in the nested radical is precisely the…",
+  "url": "https://qr.ae/pFmzqs",
+  "words": 163
+ },
+ {
+  "slug": "is-it-possible-that-pi-is-finite-but-we-haven-t-calculated-i",
+  "title": "Is it possible that pi is finite, but we haven't calculated it in full?",
+  "th": "Is it possible that pi is finite, but we haven't calculated it in full?",
+  "date": "2018-03-06",
+  "excerpt": "My first reaction to this question, and many others like it, is exasperation. Really? Again? But let me start with a few straight up answers, before I indulge in some measured ranting. It’s not…",
+  "url": "https://qr.ae/pFmzSW",
+  "words": 550
+ },
+ {
+  "slug": "how-do-i-convince-my-son-not-to-major-in-math",
+  "title": "How do I convince my son not to major in math?",
+  "th": "How do I convince my son not to major in math?",
+  "date": "2018-01-20",
+  "excerpt": "The question’s details: “My son is a high school senior who plans to major in math. I would be fine with that, but he's just not that good at math. In all 4 years of his high school career, he had to…",
+  "url": "https://qr.ae/pFmzEX",
+  "words": 589
+ },
+ {
+  "slug": "what-is-the-value-of-sum-n-0-infty-binom-34-4n",
+  "title": "What is the value of \\sum_{n=0}^\\infty \\binom{34}{4n}?",
+  "th": "What is the value of <span class=\"tex\" data-tex=\"\\sum_{n=0}^\\infty \\binom{34}{4n}\"></span>?",
+  "date": "2018-01-11",
+  "excerpt": "Oh my, what a fun question! Seriously, I have a whole new math circle plan just as a result of solving this gem. Very nice. Despite appearances, this isn’t actually a rote calculation problem. It is…",
+  "url": "https://qr.ae/pFmQtS",
+  "words": 1338
+ },
+ {
+  "slug": "how-do-you-prove-that-lim-limits-n-to-infty-e-n-sum-k-0-n-fr",
+  "title": "How do you prove that \\lim_\\limits{n\\to\\infty}e^{-n}\\sum_{k=0}^{n}\\frac{n^k}{k!}=\\frac{1}{2}?",
+  "th": "How do you prove that <span class=\"tex\" data-tex=\"\\lim\\limits_{n\\to\\infty}e^{-n}\\sum_{k=0}^{n}\\frac{n^k}{k!}=\\frac{1}{2}\"></span>?",
+  "date": "2017-12-26",
+  "excerpt": "Oh man, you totally spoiled it! This isn’t how you ask the question, come on! You ask it like this: What is … And then you sit back and enjoy the spectacle of everyone saying that it’s obviously 1,…",
+  "url": "https://qr.ae/pFmzm0",
+  "words": 517
+ },
+ {
+  "slug": "how-do-i-prove-that-sqrt-n-sqrt-n-is-irrational",
+  "title": "How do I prove that \\sqrt{n+\\sqrt{n}} is irrational?",
+  "th": "How do I prove that <span class=\"tex\" data-tex=\"\\sqrt{n+\\sqrt{n}}\"></span> is irrational?",
+  "date": "2017-12-23",
+  "excerpt": "We are assuming, of course, that n is a positive integer. If … then … … … … This is a monic polynomial (leading coefficient 1) with integer coefficients. Rational roots of such polynomials must…",
+  "url": "https://qr.ae/pFmLZZ",
+  "words": 120
+ },
+ {
+  "slug": "can-quaternions-be-explained-to-a-nonmathematician",
+  "title": "Can quaternions be explained to a nonmathematician?",
+  "th": "Can quaternions be explained to a nonmathematician?",
+  "date": "2017-11-27",
+  "excerpt": "Sure. Dimension 1: The Real Numbers We all (presumably) know that numbers can be added and multiplied. “Numbers” here usually means real numbers, which you may be familiar with from school. They are…",
+  "url": "https://qr.ae/pFmzZQ",
+  "words": 1174
+ },
+ {
+  "slug": "introductory-courses-in-linear-algebra-tend-to-start-with-ei",
+  "title": "Introductory courses in linear algebra tend to start with either vectors or systems of equations. Which do you prefer to start your course with and why?",
+  "th": "Introductory courses in linear algebra tend to start with either vectors or systems of equations. Which do you prefer to start your course with and why?",
+  "date": "2017-11-16",
+  "excerpt": "“Hello everyone! This is an introductory course in Linear Algebra. Linear Algebra is absolutely fundamental for both the theory and application of mathematics, and it provides an excellent…",
+  "url": "https://qr.ae/pFmQ2a",
+  "words": 476
+ },
+ {
+  "slug": "what-is-it-like-to-be-a-blind-mathematician",
+  "title": "What is it like to be a blind mathematician?",
+  "th": "What is it like to be a blind mathematician?",
+  "date": "2017-10-25",
+  "excerpt": "My father had been blind most of his adult life. He was also a mathematician, of sorts: he held a Ph.D. in mathematics and though he wasn’t in academia, he spent much of his professional life around…",
+  "url": "https://qr.ae/p2wGFz",
+  "words": 738
+ },
+ {
+  "slug": "if-a-math-curriculum-were-designed-solely-around-math-that-t",
+  "title": "If a math curriculum were designed solely around math that the average person were likely to encounter in their life, what would be included?",
+  "th": "If a math curriculum were designed solely around math that the average person were likely to encounter in their life, what would be included?",
+  "date": "2017-10-19",
+  "excerpt": "A few comments first, if I may? The History curriculum is not designed solely around history that the average person is likely to encounter in their life. The Physical Education curriculum is not…",
+  "url": "https://qr.ae/pFmzdL",
+  "words": 609
+ },
+ {
+  "slug": "if-x-1-x-then-what-is-the-value-of-x",
+  "title": "If X+1=X , then what is the value of X?",
+  "th": "If X+1=X , then what is the value of X?",
+  "date": "2017-09-19",
+  "excerpt": "Wait. Let's start with something easier, ok? If x^4=16, what is x? In some contexts, the answer is clear: x=2. In other contexts, the answer is just as clear: x=2 or x=-2. And in another context the…",
+  "url": "https://qr.ae/pFmzuu",
+  "words": 692
+ },
+ {
+  "slug": "how-do-you-solve-the-functional-equation-f-f-x-f-y-f-x-y-f-x",
+  "title": "How do you solve the functional equation f(f(x)f(y))+f(x+y)=f(xy)? (P2 from 2017 International Math Olympiad)",
+  "th": "How do you solve the functional equation <span class=\"tex\" data-tex=\"f(f(x)f(y))+f(x+y)=f(xy)\"></span>? (P2 from 2017 International Math Olympiad)",
+  "date": "2017-08-11",
+  "excerpt": "Let me take this opportunity to solve another math problem terribly. Problem 2 in the 2017 IMO was this functional equation: Problem 2. Let … be the set of real numbers. Determine all functions ……",
+  "url": "https://qr.ae/pFmQkM",
+  "words": 1856
+ },
+ {
+  "slug": "what-are-some-fast-algorithms-for-computing-the-nth-power-of",
+  "title": "What are some fast algorithms for computing the nth power of a number?",
+  "th": "What are some fast algorithms for computing the nth power of a number?",
+  "date": "2017-08-09",
+  "excerpt": "This question leads to an absolutely delightful little theory which everyone should know about (and everyone would know about if everyone read Knuth’s TAOCP cover to cover, as everyone should). So…",
+  "url": "https://qr.ae/pFmzzq",
+  "words": 910
+ },
+ {
+  "slug": "what-are-x-y-and-z-in-x-3-y-3-z-3-33",
+  "title": "What are x, y, and z in x^3+y^3+z^3=33?",
+  "th": "What are <span class=\"tex\" data-tex=\"x\"></span>, <span class=\"tex\" data-tex=\"y\"></span>, and <span class=\"tex\" data-tex=\"z\"></span> in <span class=\"tex\" data-tex=\"x^3+y^3+z^3=33\"></span>?",
+  "date": "2017-06-30",
+  "excerpt": "It depends. If you want three real numbers x,y,z satisfying x^3+y^3+z^3=33 then there are infinitely many, and they are very easy to find. If you want three rational numbers x,y,z satisfying…",
+  "url": "https://qr.ae/pFmQ5c",
+  "words": 557
+ },
+ {
+  "slug": "is-it-difficult-to-prove-fermat-s-last-theorem-for-case-n-3",
+  "title": "Is it difficult to prove Fermat's Last Theorem for case n=3?",
+  "th": "Is it difficult to prove Fermat's Last Theorem for case <span class=\"tex\" data-tex=\"n=3\"></span>?",
+  "date": "2017-06-18",
+  "excerpt": "“Difficult” is in the eye of the besolver. “Fermat’s Last Theorem” (FLT) for exponent 3 is the statement that a^3+b^3=c^3 has no solutions in nonzero integers. It would make a very difficult puzzle…",
+  "url": "https://qr.ae/pFmzzA",
+  "words": 3556
+ },
+ {
+  "slug": "a-machine-outputs-random-real-numbers-between-0-and-1-until",
+  "title": "A machine outputs random real numbers between 0 and 1, until their sum exceeds 1. How many numbers will it need to generate, on average?",
+  "th": "A machine outputs random real numbers between <span class=\"tex\" data-tex=\"0\"></span> and <span class=\"tex\" data-tex=\"1\"></span>, until their sum exceeds <span class=\"tex\" data-tex=\"1\"></span>. How many numbers will it need to generate, on average?",
+  "date": "2017-06-10",
+  "excerpt": "Here's a little trick that's often useful: when a random variable takes on positive integer values, its expectation is The probability that it is at least 1, plus The probability that it is at least…",
+  "url": "https://qr.ae/pFmdBw",
+  "words": 286
+ },
+ {
+  "slug": "how-would-i-find-sqrt-i",
+  "title": "How would I find \\sqrt{i}?",
+  "th": "How would I find <span class=\"tex\" data-tex=\"\\sqrt{i}\"></span>?",
+  "date": "2017-06-08",
+  "excerpt": "What is the square root of 9? Well, it's 3 of course. Remember when you learned that? Perhaps you discovered it yourself? If you did, it wasn't because you followed some magical recipe for finding…",
+  "url": "https://qr.ae/pFmzZG",
+  "words": 426
+ },
+ {
+  "slug": "what-is-an-example-of-a-conjecture-that-was-proven-wrong-for",
+  "title": "What is an example of a conjecture that was proven wrong for \"very large\" numbers?",
+  "th": "What is an example of a conjecture that was proven wrong for \"very large\" numbers?",
+  "date": "2017-06-04",
+  "excerpt": "12 isn't prime: it's composite. So is 121. So is 1211. So is 12111. So is 121111. So is 1211111. So is 12111111. This seems to be a persistent pattern. Let's keep going. Seven 1’s, composite. Eight,…",
+  "url": "https://qr.ae/pFmzqY",
+  "words": 960
+ },
+ {
+  "slug": "what-is-it-like-to-prove-a-theorem-no-one-has-ever-proven-be",
+  "title": "What is it like to prove a theorem no one has ever proven before?",
+  "th": "What is it like to prove a theorem no one has ever proven before?",
+  "date": "2017-05-23",
+  "excerpt": "It’s a special, peculiar, lovely, lonely thrill. How big of a thrill depends on the circumstances. The theorem could be tiny or huge, famous or unknown, profound or superficial, nifty or stunning, a…",
+  "url": "https://qr.ae/pFmd3q",
+  "words": 364
+ },
+ {
+  "slug": "how-do-you-find-the-positive-integer-solutions-to-frac-x-y-z",
+  "title": "How do you find the positive integer solutions to \\frac{x}{y+z}+ \\frac{y}{z+x}+\\frac{z}{x+y} = 4?",
+  "th": "How do you find the positive integer solutions to <span class=\"tex\" data-tex=\"\\frac{x}{y+z}+ \\frac{y}{z+x}+\\frac{z}{x+y} = 4?\"></span>",
+  "date": "2017-05-22",
+  "excerpt": "I was playing around with several cubic representation problems in the style of previous work by Andrew and Richard Guy. The numerical results were fascinating…” ( comment on MathOverflow) This is…",
+  "url": "https://qr.ae/pFmzuG",
+  "words": 2341
+ },
+ {
+  "slug": "is-it-just-a-coincidence-that-the-derivative-of-e-x-is-also",
+  "title": "Is it just a coincidence that the derivative of e^x is also e^x or is there some feature in the function due to which this happens?",
+  "th": "Is it just a coincidence that the derivative of <span class=\"tex\" data-tex=\"e^x\"></span> is also <span class=\"tex\" data-tex=\"e^x\"></span> or is there some feature in the function due to which this happens?",
+  "date": "2017-05-22",
+  "excerpt": "Oh goodness no, of course it’s not a coincidence. The function which is its own derivative is the fundamental idea here, and the logical starting point. This function is the exponential function ……",
+  "url": "https://qr.ae/pFmzwZ",
+  "words": 715
+ },
+ {
+  "slug": "how-would-i-go-about-getting-a-math-phd-by-the-age-of-25",
+  "title": "How would I go about getting a math PhD by the age of 25?",
+  "th": "How would I go about getting a math PhD by the age of 25?",
+  "date": "2017-04-29",
+  "excerpt": "I have the will and the passion to want to get such a thing. I love math beyond all things. Being only 14, I (surprisingly) have found my passion and I know that a math PhD is my goal. I’ve begun…",
+  "url": "https://qr.ae/psK523",
+  "words": 646
+ },
+ {
+  "slug": "how-did-germany-lose-its-edge-in-mathematics",
+  "title": "How did Germany lose its edge in mathematics?",
+  "th": "How did Germany lose its edge in mathematics?",
+  "date": "2017-01-24",
+  "excerpt": "Judging a country’s level of excellence in mathematics by the number of Fields medal recipients is dubious (and I’ll be shocked if Germany doesn’t land another Fields at the next ICM*), but it cannot…",
+  "url": "https://qr.ae/pFmQEw",
+  "words": 434
+ },
+ {
+  "slug": "what-if-i-requested-the-last-room-at-the-hilbert-s-hotel",
+  "title": "What if I requested the last room at the Hilbert's Hotel?",
+  "th": "What if I requested the last room at the Hilbert's Hotel?",
+  "date": "2016-10-30",
+  "excerpt": "“Welcome to Hilbert’s Hotel, transfinitely serving your needs since 1883! How may we be of service?” “Yes, I’d like to have a room, please.” “Very good, sir. Which room would you prefer? Our rooms…",
+  "url": "https://qr.ae/pCfcUz",
+  "words": 1203
+ },
+ {
+  "slug": "i-am-not-amazingly-good-at-maths-so-it-is-obvious-to-me-whet",
+  "title": "I am not amazingly good at maths, so it is obvious to me whether I can solve a problem or not after 5 minutes. How do people spend hours on problems?",
+  "th": "I am not amazingly good at maths, so it is obvious to me whether I can solve a problem or not after 5 minutes. How do people spend hours on problems?",
+  "date": "2016-09-25",
+  "excerpt": "How do people spend hours on problems? Excellent, excellent question. One of the bad misconceptions people have about math problem solving is that it’s a mechanical process: either you know which…",
+  "url": "https://qr.ae/pYCTHM",
+  "words": 1286
+ },
+ {
+  "slug": "was-what-the-mathematician-ed-witten-did-to-receive-the-fiel",
+  "title": "Was what the mathematician Ed Witten did to receive the Fields medal legitimate mathematics, or not?",
+  "th": "Was what the mathematician Ed Witten did to receive the Fields medal legitimate mathematics, or not?",
+  "date": "2016-08-31",
+  "excerpt": "“Physicists on Quora and in the physics community claim that Witten does not follow mathematical rules in his creation of string theory. So was his mathematics for the fields medal legitimate or is…",
+  "url": "https://qr.ae/pFmzmb",
+  "words": 1319
+ },
+ {
+  "slug": "in-mathematics-how-do-you-know-when-you-have-proven-a-theore",
+  "title": "In mathematics, how do you know when you have proven a theorem?",
+  "th": "In mathematics, how do you know when you have proven a theorem?",
+  "date": "2016-07-18",
+  "excerpt": "Oh, fantastic question, and one which I’m well positioned to answer. Why? Because many times I thought I proved things when I actually hadn’t. And I thought I failed to prove things when I actually…",
+  "url": "https://qr.ae/pFmz6j",
+  "words": 1161
+ },
+ {
+  "slug": "how-do-you-prove-that-a-number-is-even",
+  "title": "How do you prove that a number is even?",
+  "th": "How do you prove that a number is even?",
+  "date": "2016-07-01",
+  "excerpt": "Proving that a number is even can be easy for a 4th grader, hard for a smart high-schooler, worthy of a math Ph.D. at Harvard, or beyond the current abilities of all the world’s mathematicians put…",
+  "url": "https://qr.ae/psgbzv",
+  "words": 393
+ },
+ {
+  "slug": "if-3-is-3-times-2-times-1-then-what-is-1-5",
+  "title": "If 3! is 3 \\times 2 \\times 1 then what is 1.5!?",
+  "th": "If <span class=\"tex\" data-tex=\"3!\"></span> is <span class=\"tex\" data-tex=\"3 \\times 2 \\times 1\"></span> then what is <span class=\"tex\" data-tex=\"1.5!\"></span>?",
+  "date": "2016-06-20",
+  "excerpt": "The first known attempt at answering this question is in a letter written by Daniel Bernoulli on October 26, 1729. That’s 287 years ago. (See “Why is the Gamma function so [ sic ] as it is?” By…",
+  "url": "https://qr.ae/pFmzSK",
+  "words": 905
+ },
+ {
+  "slug": "what-are-some-examples-of-non-trivial-or-difficult-counterex",
+  "title": "What are some examples of non-trivial or difficult counterexamples to mathematical conjectures?",
+  "th": "What are some examples of non-trivial or difficult counterexamples to mathematical conjectures?",
+  "date": "2016-06-10",
+  "excerpt": "Oh, this is going to be fun. First, a point of terminology: there are no “counterexamples to mathematical theories ”, because a theory isn’t a single statement that can be refuted with a…",
+  "url": "https://qr.ae/pKmy91",
+  "words": 1975
+ },
+ {
+  "slug": "could-we-invent-a-number-h-such-that-h-1-over-0-similarly-to",
+  "title": "Could we \"invent\" a number h such that h={{1}\\over{0}}, similarly to the way we \"invented\" i=\\sqrt{-1}? What would be the effect on modern math if we did so?",
+  "th": "Could we \"invent\" a number <span class=\"tex\" data-tex=\"h\"></span> such that <span class=\"tex\" data-tex=\"h\"></span><span class=\"tex\" data-tex=\"={{1}\\over{0}}\"></span>, similarly to the way we \"invented\" <span class=\"tex\" data-tex=\"i=\\sqrt{-1}\"></span>? What would be the effect on modern math if we did so?",
+  "date": "2016-03-07",
+  "excerpt": "You may not be aware of this, but mathematicians are very imaginative and creative people. They love defining new things, they love analogies, they love challenging accepted assumptions and they love…",
+  "url": "https://qr.ae/pFmzwc",
+  "words": 899
+ },
+ {
+  "slug": "what-math-problem-with-an-elementary-solution-was-unsolved-f",
+  "title": "What math problem with an elementary solution was unsolved for the longest period?",
+  "th": "What math problem with an elementary solution was unsolved for the longest period?",
+  "date": "2016-01-12",
+  "excerpt": "Being a competitive guy, I'll offer a problem that I think stood the longest. Naturally, I'm going to stretch the meaning of \"elementary solution\" so much that it writhes in agony, but this is…",
+  "url": "https://qr.ae/pFmzS9",
+  "words": 1418
+ },
+ {
+  "slug": "are-there-any-numbers-which-don-t-fall-into-at-least-one-of",
+  "title": "Are there any numbers which don't fall into at least one of the categories of real numbers, imaginary numbers, or complex numbers?",
+  "th": "Are there any numbers which don't fall into at least one of the categories of real numbers, imaginary numbers, or complex numbers?",
+  "date": "2015-11-13",
+  "excerpt": "Yes, here's one: …. \"Wait!\", I hear you cry. \"That's not a number, It's a function!\" OK, let's think about that for a second. Many years ago, when the human race was younger, the only \"numbers\" were…",
+  "url": "https://qr.ae/pFmzO8",
+  "words": 760
+ },
+ {
+  "slug": "is-it-still-possible-for-a-mathematician-to-be-competent-in",
+  "title": "Is it still possible for a mathematician to be competent in most of the areas or fields of mathematics?",
+  "th": "Is it still possible for a mathematician to be competent in most of the areas or fields of mathematics?",
+  "date": "2015-10-10",
+  "excerpt": "No, it is no longer possible, and has been impossible for about 100 years. Hilbert and Poincaré are considered to be the last mathematicians to have mastered so much of the mathematics of their day…",
+  "url": "https://qr.ae/p2NxMa",
+  "words": 544
+ },
+ {
+  "slug": "what-is-a-great-riddle-that-has-no-right-answer",
+  "title": "What is a great riddle that has no right answer?",
+  "th": "What is a great riddle that has no right answer?",
+  "date": "2015-10-05",
+  "excerpt": "A group of people are standing around in a circle. Every ten seconds, every person simultaneously shoots a random other person (with a laser tag system, of course. Nobody is actually hurt). If you're…",
+  "url": "https://qr.ae/pFmzmO",
+  "words": 359
+ },
+ {
+  "slug": "why-is-the-obvious-proof-of-the-four-colour-map-theorem-whic",
+  "title": "Why is the obvious proof of the four colour map theorem, which says that any planar map can be coloured using only 4 colours, seemingly wrong? If 3 colours are all touching each other, then the 4th colour that touches all 3 must encircle one of them.",
+  "th": "Why is the obvious proof of the four colour map theorem, which says that any planar map can be coloured using only 4 colours, seemingly wrong? If 3 colours are all touching each other, then the 4th colour that touches all 3 must encircle one of them.",
+  "date": "2015-08-31",
+  "excerpt": "I'd like to offer a perspective that may help readers understand more clearly not only why this proof doesn't work, but what is it about this kind of approach that makes it unlikely to succeed. At a…",
+  "url": "https://qr.ae/pFmQvb",
+  "words": 618
+ },
+ {
+  "slug": "why-did-riemann-propose-the-riemann-zeta-function",
+  "title": "Why did Riemann propose the Riemann zeta function?",
+  "th": "Why did Riemann propose the Riemann zeta function?",
+  "date": "2015-08-03",
+  "excerpt": "Riemann was, first and foremost, a geometer. His deep research into the structure and geometry of manifolds set the stage for the field known today as Riemannian Geometry, which is fundamental for…",
+  "url": "https://qr.ae/pFmQOR",
+  "words": 319
+ },
+ {
+  "slug": "is-a-b-1-1-the-only-solution-of-the-equation-3-a-b-2-2-where",
+  "title": "Is (a,b)=(1,1) the only solution of the equation 3^a = b^2+2  where a,b are integers?",
+  "th": "Is <span class=\"tex\" data-tex=\"(a,b)=(1,1)\"></span> the only solution of the equation <span class=\"tex\" data-tex=\"3^a = b^2+2 \"></span> where <span class=\"tex\" data-tex=\"a,b\"></span> are integers?",
+  "date": "2015-08-02",
+  "excerpt": "Alright, buckle up. I'm going use this little problem as an excuse to introduce the wonders of Algebraic Number Theory, at least a small portion of it. Ready? Ok. We're trying to solve 3^n = m^2+2…",
+  "url": "https://qr.ae/pFmzqU",
+  "words": 3279
+ },
+ {
+  "slug": "how-did-andrew-wiles-succeed-in-proving-fermat-s-last-theore",
+  "title": "How did Andrew Wiles succeed in proving Fermat's last theorem when others had failed?",
+  "th": "How did Andrew Wiles succeed in proving Fermat's last theorem when others had failed?",
+  "date": "2015-07-25",
+  "excerpt": "A facetious, provocative answer with a shred of truth: he did not. Andrew Wiles didn't actually prove Fermat's Last Theorem. Not directly. He proved a much deeper and more important result, the…",
+  "url": "https://qr.ae/pFmQEk",
+  "words": 581
+ },
+ {
+  "slug": "is-10-100-1-a-googol-plus-1-prime",
+  "title": "Is 10^{100}+1 (a googol plus 1) prime?",
+  "th": "Is <span class=\"tex\" data-tex=\"10^{100}+1\"></span> (a googol plus 1) prime?",
+  "date": "2015-06-12",
+  "excerpt": "No, googol+1 isn't prime and you don't need a computer to see that. If m is odd, then (-1)^m=-1 so (-1)^m+1=0 or put differently, -1 is a root of the polynomial X^m+1, which is the same as saying…",
+  "url": "https://qr.ae/pFmzuA",
+  "words": 310
+ },
+ {
+  "slug": "let-a-and-b-be-positive-integers-such-that-ab-1-divides-a-2",
+  "title": "Let a and b be positive integers such that ab+1 divides a^2+b^2. Why must \\frac{a^2+b^2}{ab+1} be a perfect square?",
+  "th": "Let <span class=\"tex\" data-tex=\"a\"></span> and <span class=\"tex\" data-tex=\"b\"></span> be positive integers such that <span class=\"tex\" data-tex=\"ab+1\"></span> divides <span class=\"tex\" data-tex=\"a^2+b^2\"></span>. Why must <span class=\"tex\" data-tex=\"\\frac{a^2+b^2}{ab+1}\"></span> be a perfect square?",
+  "date": "2015-06-11",
+  "excerpt": "This may be the single most famous elementary number theory problem of recent years, discussed many times on forums such as artofproblemsolving, math.stackexchange and elsewhere. It was also problem…",
+  "url": "https://qr.ae/pKbN8C",
+  "words": 852
+ },
+ {
+  "slug": "what-is-2-raised-to-the-power-of-50-000",
+  "title": "What is 2 raised to the power of 50,000?",
+  "th": "What is 2 raised to the power of 50,000?",
+  "date": "2015-05-20",
+  "excerpt": "Most answers given are somewhat baffling to me. We are considering a number: two to the power fifty thousand. That's two times two times two times... Lots of times. Big number for sure, relative to…",
+  "url": "https://qr.ae/pFmzwT",
+  "words": 674
+ },
+ {
+  "slug": "on-average-can-a-person-with-a-phd-in-mathematics-answer-mos",
+  "title": "On average, can a person with a PhD in mathematics answer most of the questions on math.stackexchange?",
+  "th": "On average, can a person with a PhD in mathematics answer most of the questions on math.stackexchange?",
+  "date": "2015-01-01",
+  "excerpt": "My intuition said \"likely not\", but I decided to check. I looked at the list of top questions as of right now, 1/1/2015, 9:52am PST. I marked \"No\" questions that don't seem to me to be necessarily…",
+  "url": "https://qr.ae/pFmzBd",
+  "words": 530
+ },
+ {
+  "slug": "what-do-mathematicians-say-about-this-picture-shared-on-9gag",
+  "title": "What do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π?",
+  "th": "What do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π?",
+  "date": "2014-11-02",
+  "excerpt": "AAARGH!!! When will this nonsense go away?! Never. It will never go away, I'm desperately certain. A hundred years from now people will still be sharing this hackneyed hokum. A thousand years in the…",
+  "url": "https://qr.ae/pFmzSs",
+  "words": 870
+ },
+ {
+  "slug": "in-an-online-lecture-a-professor-mentioned-that-einstein-cou",
+  "title": "In an online lecture, a professor mentioned that Einstein could draw or imagine a 4-dimensional figure. How can one possibly do that?",
+  "th": "In an online lecture, a professor mentioned that Einstein could draw or imagine a 4-dimensional figure. How can one possibly do that?",
+  "date": "2014-09-06",
+  "excerpt": "Here's a 3-dimensional figure. ​ Right? Wrong. The knot is drawn on a flat screen, that of your phone or computer, so the image is decidedly 2-dimensional. However, it provides visual cues that help…",
+  "url": "https://qr.ae/pFmzMe",
+  "words": 880
+ },
+ {
+  "slug": "what-is-the-practical-usefulness-of-learning-the-nth-root-of",
+  "title": "What is the practical usefulness of learning the Nth root of a number?",
+  "th": "What is the practical usefulness of learning the Nth root of a number?",
+  "date": "2014-08-24",
+  "excerpt": "My soon to be 7th grade son asked me. I/we could think of good reasons for finding 2nd and 3rd root, but not Nth. Any good explanations? Does he play the piano, by any chance? You may teach him that…",
+  "url": "https://qr.ae/pFmz3t",
+  "words": 748
+ },
+ {
+  "slug": "what-makes-mathematics-beautiful",
+  "title": "What makes mathematics beautiful?",
+  "th": "What makes mathematics beautiful?",
+  "date": "2014-07-29",
+  "excerpt": "What makes anything beautiful? We don't know exactly, of course, and there's no single answer. But some themes come to mind. A subtle blend of the familiar, the reassuring, with the surprising, the…",
+  "url": "https://qr.ae/pFmz6Y",
+  "words": 552
+ },
+ {
+  "slug": "what-are-the-most-interesting-or-popular-probability-puzzles",
+  "title": "What are the most interesting or popular probability puzzles in which the intuition is contrary to the solution?",
+  "th": "What are the most interesting or popular probability puzzles in which the intuition is contrary to the solution?",
+  "date": "2014-04-11",
+  "excerpt": "How to Confuse Curious Minds My Pattern is Better than Yours 1. Flip a fair coin twice. What is the probability that you get two heads (HH)? What is the probability that you get heads followed by…",
+  "url": "https://qr.ae/pFmzSQ",
+  "words": 733
+ },
+ {
+  "slug": "what-is-a-simple-explanation-for-the-general-equation-of-the",
+  "title": "What is a simple explanation for the general equation of the second degree?",
+  "th": "What is a simple explanation for the general equation of the second degree?",
+  "date": "2014-01-26",
+  "excerpt": "- Can you solve x^2=9? - Yes: x=3. - There's another solution. - Oh yeah, x=-3 works as well. - Good. How about (x+1)^2=9? - Well, I know that …... - Stop! Resist the reflex to expand this. It's…",
+  "url": "https://qr.ae/pFmzVD",
+  "words": 499
+ },
+ {
+  "slug": "how-does-a-computer-program-convert-different-types-of-data",
+  "title": "How does a computer program convert different types of data like images or text files into binary data?",
+  "th": "How does a computer program convert different types of data like images or text files into binary data?",
+  "date": "2014-01-18",
+  "excerpt": "Whatever thing you wish to represent in a computer, you need to find a way of converting it into numbers. This conversion process is sometimes completely faithful, meaning you can recover the…",
+  "url": "https://qr.ae/pFmzJR",
+  "words": 2478
+ },
+ {
+  "slug": "how-can-i-solve-an-equation-of-the-third-degree",
+  "title": "How can I solve an equation of the third degree?",
+  "th": "How can I solve an equation of the third degree?",
+  "date": "2013-09-19",
+  "excerpt": "There is more than one way to interpret \"solve\" in the context of equations in general, and polynomial equations in particular. In practice, most often you would solve a cubic equation (3rd degree)…",
+  "url": "https://qr.ae/pFmQmX",
+  "words": 1173
+ },
+ {
+  "slug": "have-you-created-a-problem-that-you-couldn-t-solve-in-math-o",
+  "title": "Have you created a problem that you couldn't solve in math or logic but that someone else could?",
+  "th": "Have you created a problem that you couldn't solve in math or logic but that someone else could?",
+  "date": "2013-09-03",
+  "excerpt": "That's actually one of my happiest achievements in mathematics. Some years ago I came up with a conjecture based on a combination of wishful thinking, minuscule amounts of data and extremely vague…",
+  "url": "https://qr.ae/pFmQzg",
+  "words": 724
+ },
+ {
+  "slug": "what-is-the-point-of-pure-mathematics",
+  "title": "What is the point of pure mathematics?",
+  "th": "What is the point of pure mathematics?",
+  "date": "2013-04-13",
+  "excerpt": "…are there any realistic benefits that actually help the world run? (Original question details) How is \"actually helping the world run\" synonymous with \"having a point\"? Does music help the world…",
+  "url": "https://qr.ae/pFmzlU",
+  "words": 349
+ }
+]

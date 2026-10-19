@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are some fast algorithms for computing the nth power of a number? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2017-08-09</div>
+<h1>What are some fast algorithms for computing the nth power of a number?</h1>
+<div class="q-body"><p>This question leads to an absolutely delightful little theory which everyone should know about (and everyone <i>would</i> know about if everyone read Knuth’s TAOCP cover to cover, as everyone should).</p><p>So let's say I give you some number <span class="tex" data-tex="x">x</span> and I ask you to calculate <span class="tex" data-tex="x^{10}">x^{10}</span>. At your disposal is some gizmo that can calculate products, but each calculation of a product costs you something – an arm, a leg, or a few milliseconds. Doesn't matter, as long as we agree that your goal is simply to <b>minimize the number of multiplications</b>.</p><p>So. What do you do?</p><p>A very reasonable solution goes like this: first calculate <span class="tex" data-tex="x^2">x^2</span> by multiplying <span class="tex" data-tex="x \times x">x \times x</span>. Then multiply <span class="tex" data-tex="x^2">x^2</span> by itself to obtain <span class="tex" data-tex="x^4=x^2\times x^2">x^4=x^2\times x^2</span>. Then do this again to get <span class="tex" data-tex="x^8=x^4\times x^4">x^8=x^4\times x^4</span>. Now to get <span class="tex" data-tex="x^{10}">x^{10}</span>, all you need is to multiply <span class="tex" data-tex="x^8">x^8</span> by <span class="tex" data-tex="x^2">x^2</span>, which luckily we have already calculated. So we managed to find <span class="tex" data-tex="x^{10}">x^{10}</span> using four multiplications:</p><ol><li><span class="tex" data-tex="x">x</span> (given)</li><li><span class="tex" data-tex="x^2=x\times x">x^2=x\times x</span></li><li><span class="tex" data-tex="x^4=x^2\times x^2">x^4=x^2\times x^2</span></li><li><span class="tex" data-tex="x^8=x^4\times x^4">x^8=x^4\times x^4</span></li><li><span class="tex" data-tex="x^{10}=x^8\times x^2">x^{10}=x^8\times x^2</span>.</li></ol><p>Let’s think about what's going on here. We see that it doesn't really matter what <span class="tex" data-tex="x">x</span> is – it could be large, small, an integer, a floating point number, a large matrix or anything else that we can multiply. (For matrices there are useful shortcuts such as diagonalizing them first, or triangulating. But this is outside our main concern here).</p><p>The only thing that matters is the sequence of exponents in our calculation, where at each step we produce a new exponent which is the <i>sum</i> of two previously calculated exponents. The starting point is simply <span class="tex" data-tex="1">1</span>.</p><ol><li><span class="tex" data-tex="1">1</span> (given)</li><li><span class="tex" data-tex="2=1+1">2=1+1</span></li><li><span class="tex" data-tex="4=2+2">4=2+2</span></li><li><span class="tex" data-tex="8=4+4">8=4+4</span></li><li><span class="tex" data-tex="10=8+2">10=8+2</span></li></ol><p>The sequence <span class="tex" data-tex="1,2,4,8,10">1,2,4,8,10</span> is called an <i>addition chain</i> ending in <span class="tex" data-tex="10">10</span>. An addition chain is just a sequence of numbers, starting with <span class="tex" data-tex="1">1</span>, where each number is the sum of two (not necessarily distinct) earlier numbers in the sequence. The length of the chain is how many numbers it has, excluding the <span class="tex" data-tex="1">1</span> in the beginning (since we have it for free). In other words, the length is just the number of addition steps we need to take (or multiplication steps in the calculation of <span class="tex" data-tex="x^n">x^n</span>).</p><p>The challenge of calculating <span class="tex" data-tex="x^n">x^n</span> efficiently is now seen to be simply this: <b>find the shortest possible addition chain ending in </b><span class="tex" data-tex="n">n</span>. The length of this optimal chain is called <span class="tex" data-tex="l(n)">l(n)</span>.</p><p>The number <span class="tex" data-tex="10">10</span> can also be achieved via <span class="tex" data-tex="1,2,4,5,10">1,2,4,5,10</span>, where instead of greedily doubling the <span class="tex" data-tex="4">4</span> to get <span class="tex" data-tex="8">8</span> we’ve added the <span class="tex" data-tex="4">4</span> and the <span class="tex" data-tex="1">1</span> to get <span class="tex" data-tex="5">5</span>; this “sacrifice” paid up in the next step where we were able to double the <span class="tex" data-tex="5">5</span> to land straight on <span class="tex" data-tex="10">10</span>. You can convince yourself that there’s no way to get to <span class="tex" data-tex="10">10</span> with fewer steps. So <span class="tex" data-tex="l(10)=4">l(10)=4</span>.</p><p>But what is the shortest possible chain for <span class="tex" data-tex="23">23</span>? For <span class="tex" data-tex="191">191</span>? For <span class="tex" data-tex="3^{1729}">3^{1729}</span>?</p><p>The most efficient step in an addition chain is <i>doubling</i>, which is just multiplying the previous element by <span class="tex" data-tex="2">2</span>. The sequences for <span class="tex" data-tex="10">10</span> contain mostly doublings, and there’s an easy way to use the binary representation of a number to create an addition chain for that number that has lots of doublings: Write the number in binary; remove the leftmost “1”; replace each “1” with a “D1” and each “0” with a “D”; and interpret the result as a chain where “D” means “double” and “1” means “add 1”.</p><p>For example, to make <span class="tex" data-tex="21">21</span>, write <span class="tex" data-tex="21=10101_2">21=10101_2</span>, erase the leading <span class="tex" data-tex="1">1</span> to get <span class="tex" data-tex="0101">0101</span>, and interpret this as <span class="tex" data-tex="D D1 D D1">D D1 D D1</span> which means “double, double, add one, double, double, add one”. Indeed, <span class="tex" data-tex="1,2,4,5,10,20,21">1,2,4,5,10,20,21</span> is an addition chain for <span class="tex" data-tex="21">21</span>, and it is the best possible.</p><p>This “binary method” is quite efficient, and Knuth points out that some people actually claimed that it always produces the most efficient addition chain. But this is false. It is already false for <span class="tex" data-tex="15=1111_2">15=1111_2</span>, where the binary method leads to <span class="tex" data-tex="1,2,3,6,7,14,15">1,2,3,6,7,14,15</span> but you can do better: <span class="tex" data-tex="1,2,3,6,12,15">1,2,3,6,12,15</span>.</p><p><i>(Good coding exercise: write a program that calculates an addition chain of shortest possible length for a given number </i><span class="tex" data-tex="n">n</span><i>).</i></p><p>Addition chains are incredibly subtle. Here are some surprises mentioned by Knuth:</p><ul><li>A “star chain” is one where every number utilizes its immediate predecessor. This seems like a very reasonable thing to do, and it is natural to assume that there’s always a star chain that achieves the minimum length. But this isn’t true. The first counterexample I know of is <span class="tex" data-tex="2^{6106}+2^{3048}+2^{2032}+2^{1016}+1">2^{6106}+2^{3048}+2^{2032}+2^{1016}+1</span>, a rather monstrous number. This was discovered by Hansen in 1958.</li><li>If you’ve found the best addition chain for <span class="tex" data-tex="n">n</span>, it is reasonable to expect that the best chain for <span class="tex" data-tex="2n">2n</span> is just the best chain for <span class="tex" data-tex="n">n</span> followed by a doubling. A doubling is, after all, the most efficient step. In other words, the conjecture is that <span class="tex" data-tex="l(2n)=l(n)+1">l(2n)=l(n)+1</span>. But this isn’t true. The shortest possible addition chain for <span class="tex" data-tex="191">191</span> has <span class="tex" data-tex="11">11</span> steps, so <span class="tex" data-tex="l(191)=11">l(191)=11</span>, and amazingly, <span class="tex" data-tex="l(382)=11">l(382)=11</span> as well. You can get to <span class="tex" data-tex="382">382</span> in the same(!) number of steps as you can get to <span class="tex" data-tex="191">191</span>.</li></ul><p><i>(Use your code to verify those claims).</i></p><p>Section 4.6.3 in vol. 2 of Knuth’s “The Art of Computer Programming” contains a very detailed analysis of the theory of addition chains, as an excursion off of the efficient computation of <span class="tex" data-tex="x^n">x^n</span>. Those deep, surprising excursions are one of the wonders of this incredible sequence of books.</p><p>There are still several open problems about addition chains, and some very clever associated algorithms. It’s amazing how a simple problem such as calculating <span class="tex" data-tex="x^n">x^n</span> in the most efficient way leads to such unexpected depths.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzzq" target="_blank" rel="noopener">https://qr.ae/pFmzzq</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

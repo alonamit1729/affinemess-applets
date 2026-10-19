@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which is the larger number: one googolplex or Graham&#x27;s number? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2019-11-09</div>
+<h1>Which is the larger number: one googolplex or Graham's number?</h1>
+<div class="q-body"><p>HAHAHAHAHAHAHAHA!!!</p><p>Not even close. Not even <i>remotely</i> close. Not even funny, how not even close these two numbers are. They aren’t in the same ballpark, the same world, the same universe, the same <i>multi</i>-universe.</p><p>Googolplexian is “ten to the power googolplex”, while googolplex is “ten to the power googol”, and googol is “ten to the power one hundred”. In other words, googol is 1 followed by a hundred zeroes, googolplex is 1 followed by a googol zeroes, and googolplexian is 1 followed by a googolplex of zeroes.</p><p>Large?</p><p>That’s <i>nothing</i>. Less than microscopic. Negligible. Peanuts, smashed to bits with a sledgehammer and then crushed in a particle accelerator. A single quark, compared with a googolplexian universes, is still far from representing just how tiny googolplexian is compared to Graham’s number.</p><p>Seriously, I’m not exaggerating.</p><p>Look:</p><p><span class="tex" data-tex="\displaystyle \text{googol} = 10^{100} &lt; \left(3^3\right)^{100} = 3^{300} &lt; 3^{3^{3^3}} = 3\uparrow\!\uparrow 4">\displaystyle \text{googol} = 10^{100} &lt; \left(3^3\right)^{100} = 3^{300} &lt; 3^{3^{3^3}} = 3\uparrow\!\uparrow 4</span></p><p>The mighty googol is less than <span class="tex" data-tex="3\uparrow\!\uparrow 4">3\uparrow\!\uparrow 4</span>. Remember that <span class="tex" data-tex="a\uparrow\!\uparrow b">a\uparrow\!\uparrow b</span> is just <span class="tex" data-tex="a^{a^{\cdots^a}}">a^{a^{\cdots^a}}</span>, a tower of exponents of height <span class="tex" data-tex="b">b</span>.</p><p>What about googolplex? Well, it’s <span class="tex" data-tex="10^\text{googol}">10^\text{googol}</span>, and so</p><p><span class="tex" data-tex="\displaystyle \text{googolplex} &lt; \left(3^3\right)^{3\uparrow\!\uparrow 4} = 3^{3 \times 3\uparrow\!\uparrow 4}">\displaystyle \text{googolplex} &lt; \left(3^3\right)^{3\uparrow\!\uparrow 4} = 3^{3 \times 3\uparrow\!\uparrow 4}</span></p><p>Think what you will about <span class="tex" data-tex="3 \times 3 \uparrow\!\uparrow 4">3 \times 3 \uparrow\!\uparrow 4</span>, it’s definitely way, way, <i>waaaaaaaay</i> smaller than <span class="tex" data-tex="3 \uparrow\!\uparrow 5">3 \uparrow\!\uparrow 5</span>. Therefore, the mighty googolplex is no more than <span class="tex" data-tex="3 \uparrow\!\uparrow 6">3 \uparrow\!\uparrow 6</span>, and for the same reason, the super mighty googolplexian is microscopically smaller than <span class="tex" data-tex="3 \uparrow\!\uparrow 8">3 \uparrow\!\uparrow 8</span>.</p><p><span class="tex" data-tex="\displaystyle \text{googolplexian} &lt;\!&lt;\!&lt; 3\uparrow\!\uparrow 8">\displaystyle \text{googolplexian} &lt;\!&lt;\!&lt; 3\uparrow\!\uparrow 8</span>.</p><p>Do you know what <span class="tex" data-tex="3\uparrow\!\uparrow\!\uparrow 3">3\uparrow\!\uparrow\!\uparrow 3</span> is? It’s <span class="tex" data-tex="3\uparrow\!\uparrow(3\uparrow\!\uparrow 3)">3\uparrow\!\uparrow(3\uparrow\!\uparrow 3)</span>. That’s</p><p><span class="tex" data-tex="3\uparrow\!\uparrow \left(3^{27}\right)">3\uparrow\!\uparrow \left(3^{27}\right)</span></p><p>instead of a tower of exponents of height <span class="tex" data-tex="8">8</span>, this is a tower of exponents of height <span class="tex" data-tex="3^{27}">3^{27}</span>. That’s a tower with more than <i>seven trillion</i> <span class="tex" data-tex="3">3</span>'s. Up there, at its very top, there’s a tiny smidgen with eight <span class="tex" data-tex="3">3</span>'s; that smidgen alone is more than googolplexian, and we are taking <span class="tex" data-tex="3">3</span> to <i>that </i>power, and then <span class="tex" data-tex="3">3</span> to <i>this,</i> and then <span class="tex" data-tex="3">3</span> to the that again, <i>trillions of times</i>. By the time we’re done, do you still think we can even see googolplexian if we look down with a telescope?</p><p>But wait! That’s merely <span class="tex" data-tex="3\uparrow\!\uparrow\!\uparrow 3">3\uparrow\!\uparrow\!\uparrow 3</span>. Do you know what <span class="tex" data-tex="3\uparrow\!\uparrow\!\uparrow\!\uparrow 3">3\uparrow\!\uparrow\!\uparrow\!\uparrow 3</span> is? That’s <span class="tex" data-tex="3\uparrow\!\uparrow\!\uparrow (3\uparrow\!\uparrow\!\uparrow 3)">3\uparrow\!\uparrow\!\uparrow (3\uparrow\!\uparrow\!\uparrow 3)</span>. It’s an insane recursive construction that is repeated as many times as this gigantic number we’ve just described. There’s no way to even describe in words just how many layers are in this tower of exponents.</p><p>But wait! That’s merely the <i>first step</i> in the construction of Graham’s number. The next step involves <span class="tex" data-tex="3\uparrow\cdots\uparrow 3">3\uparrow\cdots\uparrow 3</span> with as many arrows as that first step. That’s ridiculously past anything we’ve seen so far. And then Graham’s number does this again, and again and again… <span class="tex" data-tex="64">64</span> times.</p><br/><p>As far as “large numbers” go, the construction of googol, googolplex, googolplexian and so on is pathetically, ridiculously small. Even if you continue raising <span class="tex" data-tex="10">10</span> to the previous number a million times, you’re still not even a tiny bit close to <span class="tex" data-tex="3\uparrow\!\uparrow\!\uparrow 3">3\uparrow\!\uparrow\!\uparrow 3</span>, and adding a single arrow shoots you up to a completely different level of existence. Please recognize that constructions with Knuth’s up-arrow notation immediately leave far behind any tower of exponents you can still describe.</p><p>And of course, there are fast-growing functions that defeat even the up-arrow notation. Large numbers that are sufficiently large to become interesting are really, really, <i>really</i> large.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzc5" target="_blank" rel="noopener">https://qr.ae/pFmzc5</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

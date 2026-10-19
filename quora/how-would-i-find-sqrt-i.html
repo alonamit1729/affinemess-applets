@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How would I find \sqrt{i}? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2017-06-08</div>
+<h1>How would I find <span class="tex" data-tex="\sqrt{i}"></span>?</h1>
+<div class="q-body"><p>What is the square root of <span class="tex" data-tex="9">9</span>?</p><p>Well, it's <span class="tex" data-tex="3">3</span> of course.</p><p>Remember when you learned that? Perhaps you discovered it yourself? If you did, it wasn't because you followed some magical recipe for finding square roots. You simply knew that <span class="tex" data-tex="3\times 3=9">3\times 3=9</span>, and then you learned that multiplying something by itself is called “squaring”, so <span class="tex" data-tex="3^2=9">3^2=9</span>, and then you were taught that “square root” means “that which, when squared, gives the number”, and you recognized <span class="tex" data-tex="3">3</span> as the square root of <span class="tex" data-tex="9">9</span>.</p><p>Later, you noticed that <span class="tex" data-tex="(-1)(-1)=1">(-1)(-1)=1</span>, and as a result <span class="tex" data-tex="(-3)^2=9">(-3)^2=9</span> as well. So <span class="tex" data-tex="9">9</span> really has two square roots, and so does <span class="tex" data-tex="16">16</span>, and so on. In fact, whenever anything has a square root <span class="tex" data-tex="a">a</span>, it also has <span class="tex" data-tex="-a">-a</span> for a square root, since <span class="tex" data-tex="(-a)^2=a^2">(-a)^2=a^2</span>.</p><p>What about the square root of <span class="tex" data-tex="18">18</span>?</p><p>Well, <span class="tex" data-tex="18=2\times 9">18=2\times 9</span>, so whatever the square root of <span class="tex" data-tex="2">2</span> is, we can multiply it by <span class="tex" data-tex="3">3</span> and get a square root of <span class="tex" data-tex="18">18</span>. Simply,</p><p><span class="tex" data-tex="(\sqrt{2}\times 3)^2=2\times 9=18">(\sqrt{2}\times 3)^2=2\times 9=18</span>.</p><p>In the same way, <span class="tex" data-tex="\sqrt{90}=3\sqrt{10}">\sqrt{90}=3\sqrt{10}</span>, and so on.</p><br/><p>Ok. Now, you were introduced to those new <i>complex</i> numbers, made from a square root of <span class="tex" data-tex="-1">-1</span>, called <span class="tex" data-tex="i">i</span>. Before we attempt to answer hard questions like square roots of <span class="tex" data-tex="i">i</span>, we should do what we did when we were kids: square random stuff and see what we get.</p><p>What's <span class="tex" data-tex="i^2">i^2</span>? Well it's <span class="tex" data-tex="-1">-1</span>, of course.</p><p>What's <span class="tex" data-tex="(2i)^2">(2i)^2</span>? Clearly <span class="tex" data-tex="-4">-4</span>.</p><p>Now, how about something more complicated like <span class="tex" data-tex="1+i">1+i</span>? The most important thing here is to get used to such manipulations. The usual laws of algebra still apply. All you need is to remember that <span class="tex" data-tex="i^2=-1">i^2=-1</span>.</p><p>So:</p><p><span class="tex" data-tex="(1+i)^2=(1+i)(1+i)=1+i+i+i^2=1+2i-1=2i">(1+i)^2=(1+i)(1+i)=1+i+i+i^2=1+2i-1=2i</span></p><p>Cool. We didn't quite find a square root of <span class="tex" data-tex="i">i</span>, but we did find a square root of <span class="tex" data-tex="2i">2i</span>. Can we fix it?</p><p>Sure, just like we handled <span class="tex" data-tex="18">18</span>. If <span class="tex" data-tex="1+i">1+i</span> squared is <span class="tex" data-tex="2i">2i</span>, we just need to divide it by the square root of <span class="tex" data-tex="2">2</span> and we’re home free.</p><p><span class="tex" data-tex="\displaystyle \left(\frac{1+i}{\sqrt{2}}\right)^2=\frac{(1+i)^2}{2}=\frac{2i}{2}=i">\displaystyle \left(\frac{1+i}{\sqrt{2}}\right)^2=\frac{(1+i)^2}{2}=\frac{2i}{2}=i</span></p><p>And there you go. You've found the square root of <span class="tex" data-tex="i">i</span> just by fooling around with squaring simple numbers, the same way you've found the square root of <span class="tex" data-tex="9">9</span>.</p><br/><p>As usual, the negative of this number is also a square root of <span class="tex" data-tex="i">i</span>. So the two square roots of <span class="tex" data-tex="i">i</span> are now known to us.</p><p>When you get further into it, you learn better ways of finding square roots (and higher roots) of complex numbers, and you learn the nice geometric interpretation they have, and the connection to the exponential function.</p><p>But to get started, all you need to do is what you did when you first learned arithmetic: just play.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzZG" target="_blank" rel="noopener">https://qr.ae/pFmzZG</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When has an unsolved conjecture been disproved by counter-example? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-10-29</div>
+<h1>When has an unsolved conjecture been disproved by counter-example?</h1>
+<div class="q-body"><p>In 1856, <a href="https://en.wikipedia.org/wiki/Moritz_Abraham_Stern" rel="noopener" target="_blank">Moritz Abraham Stern </a>found a <a href="http://archive.numdam.org/item/NAM_1856_1_15__23_0/" rel="noopener" target="_blank">counterexample</a> to a 100-year-old conjecture of Goldbach, which stated that every positive odd integer is either prime or the sum of a prime and twice a square. Goldbach stated the conjecture in a <a href="http://eulerarchive.maa.org/correspondence/letters/OO0878.pdf" rel="noopener" target="_blank">letter</a> to Euler, who couldn’t refute it.</p><p>The counterexample is 5777. The only other known counterexample is 5993.</p><br/><p>In 1946, Bill Tutte found a counterexample to <a href="https://en.wikipedia.org/wiki/Tait's_conjecture" rel="noopener" target="_blank">Tait’s conjecture</a> that every 3-connected planar cubic graph is Hamiltonian.</p><img alt="" loading="lazy" src="img/316ec8b96ce167.png"/><p>(The <a href="https://en.wikipedia.org/wiki/Tutte_graph" rel="noopener" target="_blank">Tutte graph</a>)</p><br/><p>In 1958, <a href="https://en.wikipedia.org/wiki/C._Brian_Haselgrove" rel="noopener" target="_blank">C. Brian Haselgrove </a>disproved a <a href="https://en.wikipedia.org/wiki/Pólya_conjecture" rel="noopener" target="_blank">conjecture</a> of Pólya, that the number of integers <span class="tex" data-tex="&lt;N">&lt;N</span> with an odd number of prime factors exceeds the number of those with an even number. Haselgrove’s counterexample wasn’t explicit, but an explicit value of <span class="tex" data-tex="N=906150257">N=906150257</span> was found later.</p><br/><p>In 1966, Lander and Parkin disproved a conjecture of Euler which stated that an <span class="tex" data-tex="m^\text{th}">m^\text{th}</span> power of an integer cannot be expressed as a sum of fewer than <span class="tex" data-tex="m">m</span> other <span class="tex" data-tex="m^\text{th}">m^\text{th}</span> powers.</p><p><span class="tex" data-tex="27^5+84^5+110^5+133^5=144^5">27^5+84^5+110^5+133^5=144^5</span></p><p>(Later, in 1988, <a href="https://en.wikipedia.org/wiki/Noam_Elkies" rel="noopener" target="_blank">Noam Elkies</a> used deep theoretical techniques to construct counterexamples with exponent 4).</p><br/><p>In 1972, <a href="https://en.wikipedia.org/wiki/Per_Enflo" rel="noopener" target="_blank">Per Enflo</a> revolutionized Banach Space theory by constructing a separable Banach space that does not have any <a href="https://en.wikipedia.org/wiki/Schauder_basis" rel="noopener" target="_blank">Schauder basis</a>, negatively answering a question asked by Banach himself. He then <a href="https://link.springer.com/article/10.1007/BF02392270" rel="noopener" target="_blank">constructed</a> another Banach space without the Approximation Property (which asks if every compact operator can be approximated by finite-rank operators, in the operator-norm topology). His work created a whole new direction in Banach space theory and functional analysis.</p><br/><p>In 1993, <a href="https://www.quora.com/profile/Gil-Kalai" rel="noopener" target="_blank">Gil Kalai</a> and <a href="https://en.wikipedia.org/wiki/Jeff_Kahn" rel="noopener" target="_blank">Jeff Kahn</a> constructed counterexamples to <a href="https://en.wikipedia.org/wiki/Borsuk's_conjecture" rel="noopener" target="_blank">Borsuk’s Conjecture</a>, which was widely believed to be true: Can every bounded set in <span class="tex" data-tex="\R^n">\R^n</span> be partitioned into <span class="tex" data-tex="n+1">n+1</span> subsets of smaller diameter? The answer is No, as shown by Kalai and Kahn, despite many earlier positive results for special cases. Their construction appears in “<a href="https://www.amazon.com/Proofs-BOOK-Martin-Aigner/dp/3642008550" rel="noopener" target="_blank">Proofs from the Book</a>” by Aigner and Ziegler.</p><br/><p>This happens quite frequently for smaller, less-known conjectures, and every once in a while for the really big ones.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzE3" target="_blank" rel="noopener">https://qr.ae/pFmzE3</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

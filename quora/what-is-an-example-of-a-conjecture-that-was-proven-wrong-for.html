@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is an example of a conjecture that was proven wrong for &quot;very large&quot; numbers? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2017-06-04</div>
+<h1>What is an example of a conjecture that was proven wrong for "very large" numbers?</h1>
+<div class="q-body"><p>12 isn't prime: it's composite.</p><p>So is 121.</p><p>So is 1211.</p><p>So is 12111.</p><p>So is 121111.</p><p>So is 1211111.</p><p>So is 12111111.</p><p>This seems to be a persistent pattern. Let's keep going. Seven 1’s, composite. Eight, still composite. Nine. Ten, eleven and twelve. We keep going. Everything up to twenty 1’s is composite. Up to thirty, still everything is composite. Forty. Fifty. Keep going. <i>One hundred</i>. They are <i>all</i> composite.</p><p>At this point it may seem reasonable to conjecture that these numbers are never prime. But this isn't true. The number with 138 digits, all 1’s except for the second digit which is 2, is prime.</p><p>To be clear, this isn't a particularly shocking example. It's not really that surprising. But it underscores the fact that some very simple patterns in numbers persist into pretty big territory, and then suddenly break down.</p><br/><p>There appear to be two slightly different questions here. One is about statements which appear to be true, and are verifiably true for small numbers, but turn out to be false where the first counterexamples are massive. The other question is about such situations which have furthermore become actual conjectures, put forth and studied and perhaps widely believed in, until they were refuted.</p><p>In response to such questions, I used to cite a couple of nice examples given by Stark in his number theory textbook, by way of motivating his readers to see the need for proofs.</p><p>One example is <a href="https://en.m.wikipedia.org/wiki/Pólya_conjecture" rel="noopener" target="_blank">Pólya’s conjecture</a>, which is a famous instance of this phenomenon: it was a real conjecture suggested by a very prominent mathematician, supported by both numerical evidence and heuristic reasoning, which turned out to be false.</p><p>Another example given by Stark is a nice, smallish Diophantine equation which has a very large smallest solution. This isn't a case of a genuine conjecture, but it nicely demonstrates the necessity for proofs.</p><p>In that spirit, my new go-to example is definitely <a href="https://www.quora.com/How-do-you-find-the-positive-integer-solutions-to-frac-x-y+z-+-frac-y-z+x-+-frac-z-x+y-4/answer/Alon-Amit" rel="noopener" target="_blank">this gem</a>. If you check numerically, you will quickly convince yourself that there aren't any natural numbers which satisfy</p><p><span class="tex" data-tex="\displaystyle \frac{a}{b+c}+\frac{b}{a+c}+\frac{c}{a+b}=4">\displaystyle \frac{a}{b+c}+\frac{b}{a+c}+\frac{c}{a+b}=4</span>.</p><p>You can search through millions, billions, trillions or quadrillions if you have the resources, and nothing works. It would seem very reasonable to expect that there aren't any solutions to this simple equation in natural numbers, just like many other similar equations. But that's false. There are infinitely many solutions, and the smallest one is <i>ginormous</i>.</p><p>This, to be clear, is not an instance of a “genuine conjecture”. I don't believe anyone actually suggested that this equation has no solutions: by the time it was stumbled upon, there was already enough theory to solve it. But it is a fantastic example of an equation which seems unsolvable unless you look very, very far.</p><br/><p>I don't know if it was ever formally suggested that <span class="tex" data-tex="\text{Li}(x)">\text{Li}(x)</span>, the logarithmic integral, is always greater than <span class="tex" data-tex="\pi(x)">\pi(x)</span>, the number of primes less than <span class="tex" data-tex="x">x</span>. The Prime Number Theorem says that the ratio between these two functions approaches <span class="tex" data-tex="1">1</span>, but numerical evidence seems to strongly suggest that while this is of course true, it is consistently the logarithmic integral which has the upper hand. This is indeed true for values of <span class="tex" data-tex="x">x</span> up to billions, and likely much further.</p><p>But Littlewood proved that these two functions switch sides infinitely often. It's just that the first reversal occurs very, very far out. Littlewood’s student Skewes showed that it happens earlier than <span class="tex" data-tex="e^{e^{e^{79}}}">e^{e^{e^{79}}}</span>, a number now known as Skewes’ number. Today it is known that it happens earlier, but still the first occurrence is gigantic.</p><p>Once again, I'm not sure if this was ever an “official” conjecture which got refuted, but it would have been a very reasonable conjecture to make even if it weren't.</p><br/><p>A better example perhaps is Mertens’ conjecture from 1885, refuted exactly one hundred years later.</p><p>The Möbius function is an important function in number theory and combinatorics. It is defined as <span class="tex" data-tex="\mu(n)=(-1)^k">\mu(n)=(-1)^k</span> if <span class="tex" data-tex="n">n</span> has <span class="tex" data-tex="k">k</span> distinct prime factors, and <span class="tex" data-tex="0">0</span> otherwise (when <span class="tex" data-tex="n">n</span> has a repeated factor). The Mertens function is then</p><p><span class="tex" data-tex="M(n)=\sum_{k=1}^n \mu(k)">M(n)=\sum_{k=1}^n \mu(k)</span>.</p><p>As early as 1885, Stieltjes conjectured that</p><p><span class="tex" data-tex="|M(n)|&lt;\sqrt{n}">|M(n)|&lt;\sqrt{n}</span></p><p>for all <span class="tex" data-tex="n">n</span>, and this is supported by overwhelming numerical evidence. Moreover, it implies the Riemann Hypothesis – so it was definitely an interesting conjecture. In 1897, Mertens independently conjectured it again.</p><p>However, it's false. Odlyzko and te Riele proved in 1985 that <span class="tex" data-tex="M(n)">M(n)</span> exceeds <span class="tex" data-tex="\sqrt{n}">\sqrt{n}</span> by at least 6% infinitely many times. The first counterexample is probably around <span class="tex" data-tex="10^{40}">10^{40}</span> or so.</p><br/><p>Finally, I'll mention a less elementary example, but one which (to me) was quite a shocker.</p><p>For any finite group <span class="tex" data-tex="G">G</span> we can form the group algebra <span class="tex" data-tex="\mathbb{Z}G">\mathbb{Z}G</span>, which is just the free abelian group generated by the elements of <span class="tex" data-tex="G">G</span>, with multiplication of basis elements defined as in <span class="tex" data-tex="G">G</span> and then extended linearly. If you don't know what any of that means, you'll need to take my word for it: finite groups are among the most fundamental building blocks of math, and group algebras are a very natural, and extremely useful, construction involving them.</p><p>We may then wonder: the group determines its group algebra – is the opposite also true? Can you recover the group from the group algebra? In other words, if <span class="tex" data-tex="\mathbb{Z}G \cong \mathbb{Z}H">\mathbb{Z}G \cong \mathbb{Z}H</span>, does it follow that <span class="tex" data-tex="G \cong H">G \cong H</span>?</p><p>This was not a <i>named</i> conjecture, but it was definitely a conjecture. It is mentioned, for example, in Isaacs’ “Character Theory of Finite Groups” from 1976 (p. 41 in my edition).</p><p>It turns out to be false, as Martin Hertweck showed in a 2001 paper<a href="#bPMdu">[1]</a> titled “A Counterexample to the Isomorphism Problem for Integral Group Rings”. His counterexample is a group of size <span class="tex" data-tex="2^{21}97^{28}">2^{21}97^{28}</span>, and people can be forgiven for taking long to find it.</p><p>Footnotes</p><p class="citation" id="bPMdu"><a href="#cite-bPMdu">[1] </a><a href="http://www.jstor.org/stable/3062112?seq=1#page_scan_tab_contents" rel="noopener" target="_blank">A Counterexample to the Isomorphism Problem for Integral Group Rings</a></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzqY" target="_blank" rel="noopener">https://qr.ae/pFmzqY</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

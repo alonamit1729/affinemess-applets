@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Was what the mathematician Ed Witten did to receive the Fields medal legitimate mathematics, or not? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2016-08-31</div>
+<h1>Was what the mathematician Ed Witten did to receive the Fields medal legitimate mathematics, or not?</h1>
+<div class="q-body"><blockquote><p>“Physicists on Quora and in the physics community claim that Witten does not follow mathematical rules in his creation of string theory. So was his mathematics for the fields medal legitimate or is it possibly nonsense?” (From the question’s details.)</p></blockquote><p><b>The Fields Medal</b></p><p>Let me tell you something about the Fields medal.</p><p>Apart from the fact that it is the most prestigious award in the mathematical world (so you may safely assume it does not get awarded to anyone for any kind of “arbitrary nonsense”), there's another aspect of the medal that's somewhat less well known.</p><p>The Fields medal is only awarded to people under 40. This is why Andrew Wiles, who sensationally proved Fermat’s Last Theorem, wasn't awarded one. So weren't many other incredible mathematicians who missed the deadline, so to speak.</p><p>The reason this age limit is in place is because the medal was meant to encourage young researchers. It was not designed as a “lifetime achievement” medal, like the Nobel Prize, but as a way to support or motivate promising mathematicians so they keep on researching and producing revolutionary ideas.</p><p>Not entirely surprisingly, this ideal doesn't always play out. Creating truly novel, groundbreaking theories isn't something many people can do <i>once</i> in a lifetime, let alone twice. Since the Fields medal is so prestigious, and is awarded to so few people, it is naturally awarded to mathematicians who have already produced the finest of the finest in original research, and it's almost unreasonable to expect them to continue to be as sensationally creative.</p><p>Indeed, for a good number of past medalists, nothing they did after the medal comes close to the body of work that won them the Fields. To be clear, this isn't any kind of criticism or a downplaying of their ingenuity: every single Fields medalist did something incredible. It's just that the “young, promising researcher” thing is setting the bar quite unreasonably high.</p><p>There are, however, exceptions. A number of awardees were such profoundly transformative mathematicians that they achieved no less after the medal than before it – so much so that they perhaps would have been awarded a Fields for their latter work alone.</p><p>I'm far from qualified to judge who, exactly, deserves to be on the shortlist of the shortlist, the elite of the peak of human mathematical achievement. Grothendieck is certainly among them. So is Serre, and Atle Selberg who developed the profound Trace Formula that bears his name six years after receiving the medal, and several others I would dare name.</p><p>And, in my mind, for whatever that's worth, so is Witten.</p><br/><p><b>Witten’s Work</b></p><p>Ed Witten was awarded the Fields medal for a series of groundbreaking mathematical discoveries which, in the words of Sir Michael Atiyah, have “made a profound impact on contemporary mathematics.” Through Witten’s work, Atiyah continued, “physics is once again providing a rich source of inspiration and insight in mathematics.”</p><p>Witten was awarded the medal in 1990, when he was 39 years old (as you can imagine, it's quite uncommon for people to land it long before the age 40 limit). By then he created topological quantum field theory and discovered deep links between Morse theory and supersymmetry.</p><p>Let's be clear: those are <i>mathematical</i> achievements. The IMU didn't just decide it was time to give some physicist a medal. The mathematical theory of knots and 3-manifolds, to give one example, is forever changed thanks to Witten’s pre-Fields work.</p><p>But he wasn't quite done yet.</p><p>The “second revolution” of string theory was sparked in 1995 by Witten’s amazing discovery that the various extant string theories are but shadows of a single idea now called an M-theory.</p><p>That's physics, so to speak. But in math, the Seiberg-Witten invariants had an impact on the theory of 4-manifolds that's at least as profound as his earlier work on 3-manifolds, and I've seen mathematicians refer to them as Witten’s finest achievement. This is 1994, four years after the mathematical world already deemed his work worthy of its highest honor.</p><p>Putting in question the legitimacy of Witten’s contributions to mathematics is a few notches beyond ridiculous. He stands out even among the best of the best of them, as one of the few who continued to work miracles even <i>after</i> they received the medal.</p><br/><p><b>String Theory</b></p><p>The question refers to “string theory arbitrary nonsense”, so I feel obliged to say something about that as well.</p><p>String Theory isn't complete or perfect, and may never become either. It may eventually come to be understood as merely a step, or more likely a collection of important steps and some missteps that were still inevitable in our quest for a unified theory.</p><p>But branding it “nonsense” is just ignorant. Whatever it is – almost the whole truth, a glimpse of the truth, or a beautiful non-truth which miraculously manages to come ever so close to the truth – one thing it cannot be is nonsense. It's a magnificent, shining edifice of such internal cohesiveness and beauty that it almost doesn't matter if it doesn't describe our own universe: the universe it does describe deserves our attention and exploration.</p><p>Like many theories under formation, it has parts that are conjectural or speculative, but it also has huge sections that are worked out in complete rigor.</p><p>Like many present and future physical theories, it makes predictions that are difficult to confirm with available technology. That doesn't mean it's “not falsifiable” in principle. In fact, any new mathematical theory that produces the same results as QED or QCD is by definition falsifiable: it would have been falsified by any experiment that would refute QED or QCD. There's huge value in finding new mathematical frameworks that “merely” recast the current theories in a new setting. This isn't a retraction of Popper’s ideas about science; it's the observation that multiple distinct theories can produce the same observables and are therefore worthy of equal scrutiny.</p><p>It's been said that string theory already made one profound prediction: it predicts gravity. This is, of course, a joke, but it has a kernel of truth. A theory that reproduces the standard model of particle physics <i>and</i> yields gravity as a natural outcome does something very special that the current standard model doesn't do. It could be wrong, but it cannot be worthless.</p><br/><p><b>Mathematical Rigor</b></p><p>Finally, I believe that there's enormous misconception around the “non-rigorous” aspects of Witten’s work (as well as others, such as Thurston's), and around the whole notion of mathematical discovery, conjecture and proof.</p><p>Intuitive ideas, half-formed theories, heuristic arguments, nonsensical transformations, provably false derivations, partial analogies, guesses, wishes, and vaguely describable dreams are a huge, crucial and inevitable part of mathematics. Missing this is misunderstanding mathematics and creativity.</p><p>Proofs don't emerge in a vacuum. Theorems don't fall like ripe apples on mathematicians’ heads out of some divine tree. Everything comes from imagination, and while we are imagining and fantasizing we are often deliberately and knowingly making non-rigorous statements. Doing mathematics any other way is like programming a MacBook to spit out true statements in ZFC. Rigorous and correct, but pointless.</p><p>Criticizing Witten’s work for being non-rigorous is making two profound errors. First, a tremendous amount of his work is completely rigorous. Second, the parts that aren't matter just as much. They point the way for others to fill the gaps and formalize the arguments. They create spaces for people to work in. They guide and innovate in original, imaginative ways.</p><p>Asking good questions and making good conjectures has the same amount of value to mathematical development, or more, as proving things. Anyone who told you otherwise misunderstands what it means to do mathematics and to be a mathematician.</p><br/><p>This came out longer than I had expected, but honestly it's even less emotional than it would have been had I written it immediately when the question was asked. I feel strongly about these things, yes. And I hope I've answered your question.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzmb" target="_blank" rel="noopener">https://qr.ae/pFmzmb</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

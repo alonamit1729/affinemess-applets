@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2014-11-02</div>
+<h1>What do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π?</h1>
+<div class="q-body"><img alt="" loading="lazy" src="img/2893a855469c99.jpg"/><p><b>AAARGH!!! When will this nonsense go away?!</b></p><p>Never. It will never go away, I'm desperately certain. A hundred years from now people will still be sharing this hackneyed hokum. A thousand years in the future, using technologies we can't even comprehend, individuals of future generations will be wasting each other's time and depleting the collective intellect of all humanity by trying to convince each other that <span class="tex" data-tex="\pi">\pi</span> is magic, <span class="tex" data-tex="\pi">\pi</span> can see through your heart, <span class="tex" data-tex="\pi">\pi</span> has all the answers and all the questions and all there was and is and will ever be.</p><p>This is <i>astounding</i> to me. Not only is it false and misleading, I can't fathom why anyone would care about it <i>had</i> it been true. It is so easy, so stupefyingly trivial, to conceive of a sequence of characters or numbers or bits that does indeed contain everything that is true - along with everything that is false, a trillion wrongs for every right, astronomical amounts of junk for every little phrase of value or beauty, it is so damn <i>obvious</i> that it is a complete mystery to me how anyone can find any shred of interest in this inane idiocy.</p><p>You want a sequence that contains "the name of everyone you will ever love" in some encoding, ASCII, whatever? The "answers to all the great questions of the universe"? The "DNA of every being in the universe" (let's pretend this makes any sense)?</p><p>Are you ready for this?</p><p>Deep breath.</p><p>Here we go:</p><p>1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, ...</p><p>You really need this as the decimal expansion of a real number?</p><p>Wait for it...</p><p>0.1234567891011121314151617...</p><p>Do you see why? Every finite piece of knowledge, every chunk of text however long, every image, every sequence of audio lectures, any one of those things can be converted to a sequence of bits (and indeed <b><i>is</i></b> so converted, routinely, in your smartphone or laptop or the Amazon servers). If you want to know how, there's <a href="https://www.quora.com/How-does-a-computer-program-convert-different-types-of-data-like-images-or-text-files-into-binary-data/answer/Alon-Amit" rel="noopener" target="_blank">a Quora answer for that.</a> So every finite piece of knowledge can be represented as a natural number (or a long sequence of digits, either one), and every such number shows up somewhere in the sequence 1, 2, 3, ...</p><p>Of course, along with all the true statements and all the copies of each and every Dickens novel translated into all languages, this sequence also contains each such novel with all possible combinations of typos, missing paragraphs, and countless variations involving Hungarian language excerpts of Dr. Seuss, 16th century gardening tips, and misrepresentations of lectures on Elgar's cello concerto. Yes, not a very useful source of truth, knowledge or value.</p><p>Now, is this mystery number which contains all knowledge (and all nonsense) unique? Goodness no. There are infinitely many variations of it that are just as good. Here's one:</p><p>0.12300002300004567800000230000091011120000002300000....</p><p>The hilarious yet heartbreaking irony here is that despite the fact that such numbers are totally trivial to manufacture, and despite the fact that there are <b>uncountably many</b> of them, it just so happens that we don't actually know if the illustrious <span class="tex" data-tex="\pi">\pi</span> is one. It <i>might</i> be, in fact it very likely <i>is</i>, but we don't <i>know</i> that. As far as we know, the digits in the decimal expansion of <span class="tex" data-tex="\pi">\pi</span> <b>may actually fail to contain </b>any Shakespeare sonnet, or the poem Jabberwocky, let alone longer meaningful things.</p><p>Moreover, although we don't know if this is true of almost any other explicit number like <span class="tex" data-tex="\sqrt{2}">\sqrt{2}</span> or <span class="tex" data-tex="e">e</span>, in all likelihood they are just as knowledge-complete as <span class="tex" data-tex="\pi">\pi</span> is. It makes absolutely no sense to tout <span class="tex" data-tex="\pi">\pi</span> as having any special place in this regard.</p><p>Let's conclude with a step-by-step analysis of the 9gag profundity quoted in the question:</p><ul><li>"Pi is an infinite, non-repeating decimal" - <b>no it's not</b>. <span class="tex" data-tex="\pi">\pi</span> is a real number, and like any real number it has many, many representations, <i>one</i> of which is its decimal expansion. Like <i>any</i> irrational number, this expansion is not repeating. Nothing special here. Pro tip: <b><i>every</i></b> piece of text that starts with "Pi is an infinite decimal" ends in heartbreak.</li><li>"...meaning that every possible number combination exists somewhere in pi" - <b>False</b>. Being non-repeating doesn't mean anything of the sort. The number 0.17117111711117111117... is irrational, since its decimal expansion is not repeating, yet it fails to ever contain the digit 2. In fact, we don't actually know if the decimal expansion of <span class="tex" data-tex="\pi">\pi</span> contains every finite sequence of digits. Nobody knows if it ever contains 999999999999999, for example, let alone the complete DNA of any human being.</li><li>"...the name of every person you will ever love..." - yeah, and actually also "the name of every person, period". Even "ALON" in ASCII (65767978) occurs in position 132,155,589 in the decimal expansion of <span class="tex" data-tex="\pi">\pi</span> (yes, really). <b>Will you ever love me?</b></li><li>"...the date, time and manner of your death". And also the date, time and manner of Vladimir Putin's next trip to the loo. <b>Fascinating</b>.</li></ul><p>To end on a positive note, here's one of the images which, properly encoded, appears somewhere in the sequence 1, 2, 3, 4, ...</p><img alt="" loading="lazy" src="img/f8c6733f0f4651.jpg"/><p><i>[For a shorter, less annoyed and possibly less funny version of this answer, see </i><a href="https://www.quora.com/Does-the-decimal-representation-of-Pi-being-non-repeating-and-non-ending-have-some-deep-interpretation-It-might-mean-that-the-decimal-representation-of-Pi-contains-whatever-there-was-is-and-there-will-or-could-be-in-terms-of-numbers-and-bits" rel="noopener" target="_blank"><i>this older question</i></a><i>.]</i></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzSs" target="_blank" rel="noopener">https://qr.ae/pFmzSs</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

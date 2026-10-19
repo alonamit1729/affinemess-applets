@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In mathematics, it is possible to calculate problems in infinite dimensions. Is this just another failure of logic or might this be useful for anything other than giving students a headache? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2021-02-06</div>
+<h1>In mathematics, it is possible to calculate problems in infinite dimensions. Is this just another failure of logic or might this be useful for anything other than giving students a headache?</h1>
+<div class="q-body"><p>People sometimes react with disdain, fear, concern, disbelief or outright shock to the idea of infinite-dimensional spaces (or manifolds, or other entities), seeing as three dimensions were good enough for Archimedes, Newton and their grandmother so they ought to be good enough for us.</p><p>This is nothing more than a simple misunderstanding. It arises from the strict association of “dimensions” with our spatial awareness, rather than a much more simple and generic concept: a dimension is a parameter required to describe something.</p><p>To describe a location in space, we need three parameters, or coordinates, such as latitude, longitude and altitude (or some other useful combination). That’s why we say “the world is three-dimensional”, and it’s grossly incorrect. Physical space is three-dimensional, but “the world” is much richer than a single point floating in physical space.</p><p>Look at this:</p><img alt="" loading="lazy" src="img/c301b6841ea0c9.jpg"/><p>This is an audio recording console. To describe its state at a moment in time, you need to specify the location of each slider, knob and toggle button. That’s something like 260 continuous parameters and 80 discrete ones, if I’m eyeballing this right. <b>This console is 340-dimensional</b>. (It also costs $177,000 or so, being a Neve, so I don’t know which is more stupefying, the price tag or the dimension count.)</p><p>No, really. If I just wanted to tell you where in the universe this console is right now, I could use three coordinates. If you wanted to also know how it’s oriented (is it parallel to the floor? Tilted? Upside down?), I would need three more, so “location and orientation of object” is already a six-dimensional affair. But if you also wanted to know what were the settings on this console at a particular moment in a recording session, I would have to provide you with 340 (or so) distinct, independent pieces of information. Channel 1’s fader was at 70%, panning was 10% left, EQ was this, this and that, and so on. The space of possible configurations of this console has 340 dimensions.</p><p>There’s nothing outlandish, strange or controversial about this – you just need to stop thinking of “dimensions” as “a location in space”.</p><br/><p>Now, suppose you wanted to describe something more complicated than an audio console. Like, for example, this:</p><img alt="" loading="lazy" src="img/b09f2bb35bbd6b.jpg"/><p>This is Ivy, fast asleep. She has hair, and each strand of hair can flex in an amazing variety of ways. Ignoring for a moment what happens at the atomic level, if you just imagine that each hair is described by a smooth, continuous curve in space, then <b>each hair is infinite-dimensional</b>. A single strand of (idealized) hair requires infinitely many parameters to describe, so the configuration space of a single hair is infinite-dimensional. The space of all hairs on one dog is like 3,000 infinite-dimensional spaces.</p><p>There’s no reason to freak out about infinite dimensional spaces. It’s just a dog. She weighs 7 lbs. No “failure of logic” involved.</p><p>Also, the sentiment that some things are invented “just to give students a headache” is something you’ll want to outgrow once you’re older than, like, 7. Nothing in modern math, or science, was introduced to annoy students or make their lives miserable, much as you’d like to express your frustration with it. Infinite-dimensional spaces are not merely “useful”, they are indispensable for modern physics: the quantum-mechanical models of some of the simplest physical systems are infinite-dimensional Hilbert spaces. Modern math is unthinkable without function spaces, which are infinite dimensional, and are routinely used to explore and understand the most ordinary, familiar concepts (as well as many that are neither ordinary nor familiar).</p><p>Resist the urge to assume that these things are illogical or wrong or sadistic. They are well worth your time to understand.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzlw" target="_blank" rel="noopener">https://qr.ae/pFmzlw</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

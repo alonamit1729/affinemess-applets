@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math question: You are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. What is the biggest possible result you can get? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2019-06-03</div>
+<h1>Math question: You are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. What is the biggest possible result you can get?</h1>
+<div class="q-body"><p><span class="tex" data-tex="20">20</span>? Why <span class="tex" data-tex="20">20</span>? That’s a number both boring and small. Imagine that we are allowed to take as many whole numbers as we want that add up to a <i>trillion</i>, and then multiply them together. What is the biggest possible result we can get?</p><p>Of course, I don’t really mean a trillion. What I mean is <span class="tex" data-tex="N">N</span>, an arbitrary positive integer. We need to maximize the product of some whole numbers (positive integers) adding up to <span class="tex" data-tex="N">N</span>. Yes, we will solve <i>infinitely many</i> versions of this problem, not merely the one with <span class="tex" data-tex="20">20</span>.</p><br/><p>In school, many of us learn techniques for solving optimization problems using derivatives. There are several obvious problems with such an approach here: the unknowns are whole numbers, rather than real numbers; we have an unknown number of unknowns; and if you are early in your study of calculus, you may be unsure how to maximize a function of several variables.</p><p>There’s an approach to this problem that I won’t spend too much time on but is worth mentioning: you can try to ignore some of these problems. Imagine the numbers are real, instead of being positive integers, and imagine that you do know how many there are. What happens then?</p><p>You may be able to deduce that the best way to maximize a product given a fixed sum is to make all variables equal. So, if you decided to have <span class="tex" data-tex="k">k</span> numbers, the maximal product will be <span class="tex" data-tex="(N/k)^k">(N/k)^k</span>. All that’s left to do is find the optimal <span class="tex" data-tex="k">k</span>, which is a fun problem in and of itself. You can once again ignore the fact that <span class="tex" data-tex="k">k</span> is an integer; for a real variable, this is maximized when <span class="tex" data-tex="N/k=e">N/k=e</span>, Euler’s constant. Our incorrect approach seems to give us a clue: we want the numbers to be close to <span class="tex" data-tex="e">e</span>. This turns out to be correct, although we don’t know that yet.</p><br/><p>The actual, successful approach is simply to consider small, local changes. Here’s what I mean by that.</p><p>Suppose someone claims that they have the best list of numbers which add up to <span class="tex" data-tex="N">N</span>, “best” meaning having maximum product, of course. Could that best list possibly include a <span class="tex" data-tex="17">17</span>?</p><p>You may be thinking, sure, why not? Here’s why not: if your buddy says they have the best list and it has a <span class="tex" data-tex="17">17</span>, you can immediately make a <i>better</i> list by replacing that <span class="tex" data-tex="17">17</span> with an <span class="tex" data-tex="8">8</span> and a <span class="tex" data-tex="9">9</span>. Did you change the sum? Not at all. <span class="tex" data-tex="8+9">8+9</span> is still <span class="tex" data-tex="17">17</span>. Did you change the product? Yes, and you can see exactly how: the product used to be something times something times <span class="tex" data-tex="17">17</span> times blah blah, and now it’s something times something times <span class="tex" data-tex="72">72</span> times blah blah. That’s much bigger!</p><p>Conclusion: the number <span class="tex" data-tex="17">17</span> cannot <i>possibly</i> be a member of a winning team. Is that a special feature of <span class="tex" data-tex="17">17</span>? No, of course not. <span class="tex" data-tex="53">53</span> can’t be there either, nor can <span class="tex" data-tex="12">12</span> or <span class="tex" data-tex="7">7</span> or <span class="tex" data-tex="5">5</span>. If you have <i>any</i> number <span class="tex" data-tex="x">x</span> which is at least <span class="tex" data-tex="5">5</span>, you can replace it by the pair <span class="tex" data-tex="x-2, 2">x-2, 2</span> which keeps the sum intact but increases the product from having an <span class="tex" data-tex="x">x</span> to having a <span class="tex" data-tex="2x-4">2x-4</span>. This <span class="tex" data-tex="2x-4">2x-4</span> is more than <span class="tex" data-tex="x">x</span> (because <span class="tex" data-tex="x">x</span> is at least <span class="tex" data-tex="5">5</span>) so the replacement pays off.</p><p>We’ve made tremendous progress: the optimal solution, whatever it is, must comprise exclusively <span class="tex" data-tex="1">1</span>'s, <span class="tex" data-tex="2">2</span>'s, <span class="tex" data-tex="3">3</span>'s and <span class="tex" data-tex="4">4</span>'s.</p><p>Wait. Do we really need <span class="tex" data-tex="4">4</span>'s? Any <span class="tex" data-tex="4">4</span> can be replaced by a pair of <span class="tex" data-tex="2">2</span>'s. That doesn’t change the sum, and although it doesn’t improve the product, it doesn’t hurt either. Whatever the optimal solution is, it doesn’t <i>need</i> to have any <span class="tex" data-tex="4">4</span>'s.</p><p>And of course, we don’t want any <span class="tex" data-tex="1">1</span>'s, too. I mean, if <span class="tex" data-tex="N=1">N=1</span> then we have no choice, but for any larger <span class="tex" data-tex="N">N</span>, keeping any <span class="tex" data-tex="1">1</span>'s around isn’t a mark of high intelligence. Any <span class="tex" data-tex="1">1</span> along with some other <span class="tex" data-tex="x">x</span> can be replaced with an <span class="tex" data-tex="x+1">x+1</span>. Same sum, larger product.</p><p>So: our optimal product is made up <i>exclusively</i> of <span class="tex" data-tex="2">2</span>'s and <span class="tex" data-tex="3">3</span>'s. Remember when we said that the best thing to do is stay close to <span class="tex" data-tex="e">e</span>? There you go.</p><p>Now, how many <span class="tex" data-tex="2">2</span>'s and how many <span class="tex" data-tex="3">3</span>'s do we want? Here’s the final key observation: if you have <span class="tex" data-tex="2,2,2">2,2,2</span>, you should replace them with <span class="tex" data-tex="3,3">3,3</span>. The sum stays intact but the product just increased by a factor of <span class="tex" data-tex="\frac{9}{8}">\frac{9}{8}</span>.</p><p>So we are allowed to keep <i>some</i> <span class="tex" data-tex="2">2</span>'s around, but not too many: at most two of them. Everything else should be a <span class="tex" data-tex="3">3</span>. Once again, glimpses of that mystic <span class="tex" data-tex="e">e</span>, closer to <span class="tex" data-tex="3">3</span> than it is to <span class="tex" data-tex="2">2</span>.</p><p>So do we want no <span class="tex" data-tex="2">2</span>'s at all? Or one of them? Or two? Fun fact: we don’t need to figure that out, since <span class="tex" data-tex="N">N</span> forces the number of <span class="tex" data-tex="2">2</span>'s. If <span class="tex" data-tex="N">N</span> is divisible by <span class="tex" data-tex="3">3</span>, the number of <span class="tex" data-tex="2">2</span>'s cannot be one or two: it has to be none at all, or three, or six, and so on; but we already know that three <span class="tex" data-tex="2">2</span>'s are useless, so we simply need none.</p><p>Similarly, if <span class="tex" data-tex="n">n</span> leaves a remainder of <span class="tex" data-tex="2">2</span> upon division by <span class="tex" data-tex="3">3</span>, we will want a single <span class="tex" data-tex="2">2</span>, while if <span class="tex" data-tex="n">n</span> leaves a remainder of <span class="tex" data-tex="1">1</span> upon division by <span class="tex" data-tex="3">3</span>, we will need two <span class="tex" data-tex="2">2</span>'s to make the sum work.</p><br/><p>That’s it! We’ve solved the problem in complete generality: the maximal product of positive integers whose sum is <span class="tex" data-tex="N">N</span> is obtained as follows.</p><ul><li>If <span class="tex" data-tex="N=3m">N=3m</span>, take <span class="tex" data-tex="m">m</span> <span class="tex" data-tex="3">3</span>'s to obtain a product of <span class="tex" data-tex="3^m">3^m</span>.</li><li>If <span class="tex" data-tex="N=3m+1">N=3m+1</span>, take <span class="tex" data-tex="(m-1)">(m-1)</span> <span class="tex" data-tex="3">3</span>'s and two <span class="tex" data-tex="2">2</span>'s, to get <span class="tex" data-tex="4 \times 3^{m-1} = \left(\frac{4}{3}\right)\times 3^m">4 \times 3^{m-1} = \left(\frac{4}{3}\right)\times 3^m</span>.</li><li>If <span class="tex" data-tex="N=3m+2">N=3m+2</span>, take <span class="tex" data-tex="m">m</span> <span class="tex" data-tex="3">3</span>'s and a single <span class="tex" data-tex="2">2</span> to get a product of <span class="tex" data-tex="2 \times 3^m">2 \times 3^m</span>.</li></ul><p>For the original problem with <span class="tex" data-tex="N=20">N=20</span>, the maximal product is therefore <span class="tex" data-tex="2 \times 3^6 = 1458">2 \times 3^6 = 1458</span>. If <span class="tex" data-tex="N=100">N=100</span>, which is how I usually ask the question, the maximal product is <span class="tex" data-tex="4 \times 3^{32}">4 \times 3^{32}</span>. And if <span class="tex" data-tex="N=10^{12}">N=10^{12}</span>, a trillion, the maximal product is <span class="tex" data-tex="4 \times 3^{333333333332}">4 \times 3^{333333333332}</span>. You can even determine the largest possible product for a bunch of positive integers whose sum is googolplex.</p><p>That’s all – we’ve just solved an optimization problem involving an unknown number of integer unknowns!</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzcg" target="_blank" rel="noopener">https://qr.ae/pFmzcg</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

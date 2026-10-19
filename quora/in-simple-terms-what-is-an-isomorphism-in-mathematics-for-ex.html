@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In simple terms, what is an isomorphism in mathematics? For example, what does it mean that there is an isomorphism between the real and complex numbers? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-12-12</div>
+<h1>In simple terms, what is an isomorphism in mathematics? For example, what does it mean that there is an isomorphism between the real and complex numbers?</h1>
+<div class="q-body"><p>Here’s a chess set<a href="#IozcH">[1]</a>.</p><img alt="" loading="lazy" src="img/479af043a12b81.jpg"/><p>Here’s another chess set<a href="#XYQsP">[2]</a>.</p><img alt="" loading="lazy" src="img/3878f38262c6ab.jpg"/><p>They look rather different, but they are both <i>chess sets</i>. When people play chess with these sets, or any other, they are playing the same game. <i>Chess is chess is chess</i>. We say that these two chess sets are <i>isomorphic</i> even though they look and feel and cost differently. I can match up their pieces, one-to-one, and any game played on one can be faithfully reproduced in the other. It’ll be the same game, with the same opening, the same mistakes, the same sacrifices and the same winner.</p><p>All chess sets in the world are isomorphic. Even the online ones. Even the ones in the magazine. Even the one you keep in your mind as you play a blind game. The black king in any set can be matched with the black king in any other set, and they obey the same rules and make the same moves. Any game can be played on any set.</p><p>From an artistic perspective, the two sets pictured above aren’t at all isomorphic. Nor are they isomorphic from a physical perspective: they have different weights, different dimensions, different materials. The molecules that make up the black king in one set cannot be matched with the molecules that make up the second. But for the study of the game of chess, for playing chess, for thinking about chess, the molecules are meaningless. They don’t need to even exist. Chess emerges from the rules of the game, and as long as a king moves and captures the way a chess king moves and captures, it’s a chess king.</p><br/><p>The notion of isomorphism in mathematics is similar, but there are many subtleties which may only become apparent over time.</p><p>Many mathematical structures consist of “elements” (numbers, points, functions, what have you) and various connections or relations or operations between them. Things can be added, or multiplied, or compared, or have a distance between them.</p><p>The essence of the structure, like the essence of chess, emerges from those connections, or relations, or rules. The physical form or abstract nature of the elements are immaterial. If you have two structures of the same kind (two fields, two groups, two topological spaces) and their elements can be matched up in a way that preserves the rules, we say that they are isomorphic (“iso-morphic” comes from “equal shape” or “equal form”.)</p><p>Take the natural numbers with the usual rules of addition, multiplication and order.</p><p>Familiar structure? Good.</p><p>Now color all the numbers pink. Seriously. Imagine an “alternative” set of natural numbers which are all pink. Make them obey the same rules: pink <span class="tex" data-tex="1">1</span> plus pink <span class="tex" data-tex="6">6</span> is pink <span class="tex" data-tex="7">7</span>, pink <span class="tex" data-tex="7">7</span> times pink <span class="tex" data-tex="11">11</span> is pink <span class="tex" data-tex="77">77</span>, and so on. Exact same rules.</p><p>We’ve been studying the natural numbers for millennia. They are infinitely wondrous. But if someone asks you to fund their research into this new and exciting algebraic structure, the <i>pink natural numbers</i>, you’d be right to refuse. It doesn’t matter. Pink primes are just like primes, pink arithmetic progressions are arithmetic progressions, and so on. There’s no point in studying pink arithmetic, because the natural numbers and the pink natural numbers are <i>isomorphic</i>. Any mathematical assertion about one is automatically true of the other.</p><p>Note that I said <i>mathematical</i> assertion. Some assertions are only true for pink numbers, for example: they are pink. But anything that can be expressed with addition, multiplication and order is the same. The Prime Number Theorem holds for pink numbers. If someone solves the pink Twin Primes problem, they will have solved the classical Twin Primes problem as well. Isomorphic.</p><br/><p>This is what you initially learn when you get introduced to isomorphisms. Since isomorphisms match up the elements of one structure with those of the other, they are merely a renaming, a recoloring, a silly replacement of the elements with an alternative set which behaves in the exact same way. When you imagine the class of structures that are isomorphic to, say, the rational numbers, you think of “rational numbers with a different color” or “rational numbers expressed in French” or some such silly rechristening.</p><p>Sometimes the relabeling seems a little less obvious. Consider:</p><ol><li>The numbers <span class="tex" data-tex="0">0</span> and <span class="tex" data-tex="1">1</span>, with addition “mod <span class="tex" data-tex="2">2</span>", which simply means <span class="tex" data-tex="0+0=0">0+0=0</span>, <span class="tex" data-tex="0+1=1">0+1=1</span>, <span class="tex" data-tex="1+0=1">1+0=1</span>, <span class="tex" data-tex="1+1=0">1+1=0</span>.</li><li>The logical constants “T” and “F” (True and False), with the operation of “XOR” (Exclusive Or)</li><li>The real numbers <span class="tex" data-tex="-1">-1</span> and <span class="tex" data-tex="1">1</span>, with the operation of multiplication.</li></ol><p>All of these structures are isomorphic. They are all groups (a set with a single operation), and it’s easy to map their elements to each other so that the operation stays the same: <span class="tex" data-tex="0">0</span> is like “True” is like <span class="tex" data-tex="1">1</span>, and <span class="tex" data-tex="1">1</span> is like “False” is like <span class="tex" data-tex="-1">-1</span>. Yes, the <span class="tex" data-tex="1">1</span> in example 1 is not the <span class="tex" data-tex="1">1</span> in example 3, it’s the <span class="tex" data-tex="-1">-1</span>. Do you see why?</p><p>So yes, sometimes isomorphisms can look a bit less silly than pink numbers. But still pretty obvious and transparent.</p><p>But then…</p><p>Then one day you’re the teaching assistant in a course on the Theory of Groups, taught by Zlil<a href="#rfHEk">[3]</a>. You’re already a grad student, and you’re young, so clearly you know <i>everything</i>, and definitely everything about isomorphisms, which are just silly recoloring of the elements of a structure.</p><p>And in the very first problem set Zlil proposes for the students, he asks them to consider two structures (which are both groups):</p><ul><li>The positive rational numbers, with the operation of multiplication;</li><li>Infinite sequences of integers which are all <span class="tex" data-tex="0">0</span> except for finitely many, with the operation of addition term-by-term.</li></ul><p>They are to show that these two groups are isomorphic.</p><p>Wait, what? How could rational numbers, simple finite things, be isomorphic to infinite sequences? Almost all <span class="tex" data-tex="0">0</span>? With <i>addition</i> rather than <i>multiplication</i>? Huh?</p><p>Once you think about it some, you manage to see how these two groups are isomorphic. (Do it! Ask for hints if you’re stuck, but please check other comments because someone may have asked before you.) Formally, you got it, but your perspective on isomorphisms is a bit shaken.</p><p>Of course, you then remember that you used to think that it’s impossible for short interval to be in bijection with a long interval, or a square, but you know that’s true, so these sets are isomorphic as mere sets, which is what everyone learns in a first course in set theory. But the group-theory example is still kind of different.</p><p>(The isomorphism between real and complex numbers alluded to in the question is also, presumably, the set-theoretic correspondence between these sets in their naked form, with no algebra and no topology. Very few people would call these things “isomorphic” without explicitly clarifying that they’re talking about sets).</p><br/><p>What would the analogy be in the world of chess?</p><p>The isomorphism between any two chess sets you’ve ever seen is <i>obvious</i>. It’s not surprising. But imagine someone invents a new game, say a game played with piles of matches, with various complicated rules about how matches are allowed to be transferred from one pile to the other. It’s a wild and crazy game whose rules are impossible to memorize.</p><p>And then, someone proves that your game-with-matches is isomorphic to chess! Yeah! This combination of piles of matches is a pawn, and these are the white queen, and they show you that the allowed match moves correspond exactly to the rules of chess, with castling and en-passant and all.</p><p>The matches game <i>is</i> chess, though it doesn’t look anything like chess at first glance. Just like infinite sequences of integers don’t look anything like rational numbers. And yet, they are isomorphic.</p><br/><p>Even though isomorphisms are defined very simply and very naturally as structure-preserving bijections, they can emerge in very unexpected situations.</p><p>Some things are isomorphic in a very obvious way, like complex numbers and pairs of real numbers with an appropriate multiplication.</p><p>Some are less obvious, like complex numbers and appropriate matrices.</p><p>And some are downright shocking, like Fourier series: the Hilbert space of square-integrable functions on the circle (up to almost-everywhere equality) and the space of square-summable infinite sequences of complex numbers are isomorphic. The “continuous” space <span class="tex" data-tex="L^2(\mathbb{T})">L^2(\mathbb{T})</span> is isomorphic to the “discrete” <span class="tex" data-tex="\ell^2(\Z)">\ell^2(\Z)</span>.</p><p>Any student of mathematics should, and eventually does, get used to the many faces of isomorphisms, unique isomorphisms, natural isomorphisms and other variants. It’s fundamentally important, and well worth your time thinking about.</p><p>Footnotes</p><p class="citation" id="IozcH"><a href="#cite-IozcH">[1] </a><a href="https://thechessstore.com/french-lardy-staunton-chess-set-in-ebonized-boxwood-with-macassar-chess-board-3-25-king/?gclid=Cj0KCQiAgMPgBRDDARIsAOh3uyJLRR2iP2_H-h2hBuAtsXiaYytfLvtr7Hh6kn7GTKzQHGLhxOTySWwaAprVEALw_wcB" rel="noopener" target="_blank">French Lardy Staunton Chess Set in Ebonized Boxwood with Macassar Chess Board - 3.25" King</a></p><p class="citation" id="XYQsP"><a href="#cite-XYQsP">[2] </a><a href="https://store.moma.org/kids/games-puzzles/nyc-skyline-chess-set/2628-128944.html?gclid=Cj0KCQiAgMPgBRDDARIsAOh3uyLrHTr-Db76u2YOl2D7_tAvGkNsHKbU3ax77bSR-NR93L4ZXxLc8BgaAotbEALw_wcB" rel="noopener" target="_blank">NYC Skyline Chess Set</a></p><p class="citation" id="rfHEk"><a href="#cite-rfHEk">[3] </a><a href="https://en.wikipedia.org/wiki/Zlil_Sela" rel="noopener" target="_blank">Zlil Sela - Wikipedia</a></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmQtv" target="_blank" rel="noopener">https://qr.ae/pFmQtv</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

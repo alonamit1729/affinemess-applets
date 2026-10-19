@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is a simple explanation for the general equation of the second degree? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2014-01-26</div>
+<h1>What is a simple explanation for the general equation of the second degree?</h1>
+<div class="q-body"><p>- Can you solve <span class="tex" data-tex="x^2=9">x^2=9</span>?</p><p>- Yes: <span class="tex" data-tex="x=3">x=3</span>.</p><p>- There's another solution.</p><p>- Oh yeah, <span class="tex" data-tex="x=-3">x=-3</span> works as well.</p><p>- Good. How about <span class="tex" data-tex="(x+1)^2=9">(x+1)^2=9</span>?</p><p>- Well, I know that <span class="tex" data-tex="(x+1)^2=x^2+2x+">(x+1)^2=x^2+2x+</span>...</p><p>- Stop! Resist the reflex to expand this. It's easier if you don't.</p><p>- But how can I solve <span class="tex" data-tex="(x+1)^2=9">(x+1)^2=9</span> without expanding the square?</p><p>- You've already solved a very similar equation just a moment ago.</p><p>- But turning <span class="tex" data-tex="x">x</span> into <span class="tex" data-tex="x+1">x+1</span> changes everything.</p><p>- There's another way to look at it: give <span class="tex" data-tex="x+1">x+1</span> a new name, like <span class="tex" data-tex="u">u</span>.</p><p>- Ok, how does that help?</p><p>- What is the equation now?</p><p>- It's <span class="tex" data-tex="u^2=9">u^2=9</span>. But that's cheating!</p><p>- No, you've done nothing wrong. What is <span class="tex" data-tex="u">u</span>?</p><p>- It is either 3 or -3.</p><p>- Right. So what is <span class="tex" data-tex="x">x</span>?</p><p>- Well <span class="tex" data-tex="u=x+1">u=x+1</span>, so <span class="tex" data-tex="x">x</span> is either 2 or -4.</p><p>- Brilliant. You just solved <span class="tex" data-tex="x^2+2x+1=9">x^2+2x+1=9</span> by looking at it in a different way!</p><p>- Yeah, well, but you made it up so it works nicely. What if it didn't?</p><p>- What general family of equations do you think you can solve now?</p><p>- Um, stuff like <span class="tex" data-tex="(x+\mbox{blah})^2=\mbox{whatever}">(x+\mbox{blah})^2=\mbox{whatever}</span>. I just give <span class="tex" data-tex="x+\mbox{blah}">x+\mbox{blah}</span> a new name, solve, and recover <span class="tex" data-tex="x">x</span>.</p><p>- Exactly. And guess what? This is enough to solve <b>any</b> second-degree equation.</p><p>- Huh?</p><p>- Suppose I give you <span class="tex" data-tex="x^2+10x = 11">x^2+10x = 11</span>. What would you do?</p><p>- I've no idea. It doesn't look at all like <span class="tex" data-tex="(x+\mbox{blah})^2=\mbox{anything}">(x+\mbox{blah})^2=\mbox{anything}</span>.</p><p>- Don't be so pessimistic. Do you see that <span class="tex" data-tex="\mbox{blah}=5">\mbox{blah}=5</span> almost works?</p><p>- How "almost"? Why 5?</p><p>- Try it.</p><p>- Well <span class="tex" data-tex="(x+5)^2 = x^2+10x+25">(x+5)^2 = x^2+10x+25</span>. But that's not what's in the equation.</p><p>- What is?</p><p>- Just <span class="tex" data-tex="x^2+10x">x^2+10x</span>.</p><p>- ...which you now know is <span class="tex" data-tex="(x+5)^2-25">(x+5)^2-25</span>.</p><p>- Oh. Right. So the equation is <span class="tex" data-tex="(x+5)^2-25=11">(x+5)^2-25=11</span>.</p><p>- ...which is...</p><p>- <span class="tex" data-tex="(x+5)^2 = 36">(x+5)^2 = 36</span>.</p><p>- ...so...</p><p>- I rename <span class="tex" data-tex="x+5">x+5</span> to <span class="tex" data-tex="u">u</span> (it still feels like cheating), get <span class="tex" data-tex="u^2=36">u^2=36</span>, so <span class="tex" data-tex="u">u</span> is 6 or -6 and <span class="tex" data-tex="x">x</span> is 1 or -11. That's it?</p><p>- Yes. What sort of equations can you solve now?</p><p>- Well, it looks like I can handle <span class="tex" data-tex="x^2+\mbox{something}\,\, x = \mbox{whatever}">x^2+\mbox{something}\,\, x = \mbox{whatever}</span>, provided <span class="tex" data-tex="\mbox{something}">\mbox{something}</span> is even.</p><p>- Why do you need <span class="tex" data-tex="\mbox{something}">\mbox{something}</span> to be even?</p><p>- Because what you did there was take that <span class="tex" data-tex="\mbox{something}">\mbox{something}</span>, which was 10, and take half of it to be the <span class="tex" data-tex="\mbox{blah}">\mbox{blah}</span>.</p><p>- That's right. So you can't take half of 7?</p><p>- I can, but it's a fraction.</p><p>- So?</p><p>- I hate fractions.</p><p>- LOL, ok. But they work just the same.</p><p>- Fine. So I can handle <span class="tex" data-tex="x^2+\mbox{something}\,\, x = \mbox{whatever}">x^2+\mbox{something}\,\, x = \mbox{whatever}</span>. I take half of the <span class="tex" data-tex="\mbox{something}">\mbox{something}</span>, call it <span class="tex" data-tex="\mbox{blah}">\mbox{blah}</span>, find the correction so I can write <span class="tex" data-tex="(x+\mbox{blah})^2-\mbox{correction} = \mbox{whatever}">(x+\mbox{blah})^2-\mbox{correction} = \mbox{whatever}</span>, move the numbers together, rename <span class="tex" data-tex="x+\mbox{blah}">x+\mbox{blah}</span> to <span class="tex" data-tex="u">u</span>, and solve.</p><p>- Excellent. Can you do what you just said with letters instead of blahs and whatevers?</p><p>- I think so:</p><p><span class="tex" data-tex="x^2+2bx=c">x^2+2bx=c</span></p><p><span class="tex" data-tex="(x+b)^2-b^2=c">(x+b)^2-b^2=c</span></p><p><span class="tex" data-tex="(x+b)^2 = c+b^2">(x+b)^2 = c+b^2</span></p><p><span class="tex" data-tex="x+b = \pm \sqrt{c+b^2}">x+b = \pm \sqrt{c+b^2}</span></p><p><span class="tex" data-tex="x = -b \pm \sqrt{c+b^2}">x = -b \pm \sqrt{c+b^2}</span>.</p><p>- Excellent. We usually write a quadratic as <span class="tex" data-tex="ax^2+bx+c=0">ax^2+bx+c=0</span>, but you can just divide through by <span class="tex" data-tex="a">a</span> and move the constant to the other side to get exactly what you just solved. You're done!</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzVD" target="_blank" rel="noopener">https://qr.ae/pFmzVD</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why do they teach integration and derivatives in high school? What is its use in day-to-day life? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2020-07-06</div>
+<h1>Why do they teach integration and derivatives in high school? What is its use in day-to-day life?</h1>
+<div class="q-body"><p>This question, and a million others like it, should win some sort of award for the most perennial, persistent, insistent, consistent, constant conundrum among Quora queries.</p><p>I find that sad.</p><p>Question back to you: what, exactly, do they teach you in high school that *<b>is</b>* used in “day-to-day life”? Do they teach you to drive a car, shop at the mall and manage your Netflix queue? I’d like to believe that they teach you some world history, some literature, some geography, some linguistics, some science, perhaps a dash of music? Arts? Hm? A sprinkling of philosophy? Have you been using these things in your day-to-day life?</p><p>“Oh! But reading is important!” Sure. Then read. You could read since you were, what, seven years old?</p><p>“Oh! But history and geography are useful for following the news!” Sure. You could get everything you need to follow the news in thirty minutes with Wikipedia. High school is, what, four years?</p><p>“Oh! But chemistry and physics and biology are important! For day-to-day! Life!” Really? Are they? When was the last time you needed to calculate the trajectory of a planet, or observe the way mRNA guides the production of proteins in the cell? Have you used your deep knowledge of balancing chemical reactions while cooking?</p><p>“Yes! That’s the point! Nothing in high school is useful for real life! It’s a total waste of time!” Or, maybe, the purpose of high school isn’t to teach you daily skills?</p><p>“Alright, not daily skills, but… a career! A life! I want to be ready for real life and high school isn’t helping!”</p><p>Oh, yes it does. And besides, a career isn’t everything in life.</p><p>Your teachers don’t know what you’re going to pursue as an adult. You don’t either. Perhaps you <i>think</i> you know, and maybe you’re right, but maybe not. The smartest thing you can do at your age is learn as much as you can, absorb as much as possible, and be ready for whatever the future holds. Learning is a wonderful thing.</p><p>You think your future has nothing to do with integration and differentiation? Perhaps that is so. But if your future has anything to do with science, engineering, economics or modern “knowledge work” then you will need a degree in some STEM field, and that will contain a healthy amount of integrating and differentiating.</p><p>And if not?</p><p>Then your well-trained mind will be better at pattern matching, at problem solving, at wrestling with difficult but clearly-defined challenges. You’ll understand concepts and metaphors like “change of variables” or “linearity” or “extrema are stationary”, and you may be surprised by how much of a better thinker you’ll be by these.</p><p>The question suggests a very limited view of “day-to-day life”. Whose day-to-day life? What’s in a day-to-day life? Is that all you hope to do in life, live day-to-day? Eat, sleep, watch sports? No, I know. You have dreams – to succeed, to create, to do well, to have some sort of impact.</p><p>So learn more than you think you need, not less. Read poetry, to be a better programmer. Do athletics, to be a better investor. Play an instrument, to be a better parent.</p><p>And, yes, struggle with those differential calculus problems. Those are exercises for your mind. Doing burpees isn’t great fun either, but it’s good. Minimally, it’s the same thing. Possibly, those integrals will serve you immensely well.</p><p>And finally, career isn’t everything. It may take a long time, it may never happen, but you may discover at some point that you simply enjoy math. Some things don’t come easy, but when you master them they become joyful. Some people can’t imagine their life without the beauty of math. You may or may not be one of them, but without the initial work, you will never find out.</p><br/><p><a href="https://www.quora.com/What-relevance-does-mathematics-have-on-everyday-life" rel="noopener" target="_blank">What relevance does mathematics have on everyday life?</a></p><p><a href="https://www.quora.com/What-is-algebra-How-is-it-used-in-real-life" rel="noopener" target="_blank">What is algebra? How is it used in real life</a></p><p><a href="https://www.quora.com/unanswered/What-are-the-daily-life-applications-of-algebra" rel="noopener" target="_blank">What are the daily life applications of algebra?</a></p><p><a href="https://www.quora.com/What-is-high-end-algebra-used-for-in-daily-life" rel="noopener" target="_blank">What is high-end algebra used for in daily life?</a></p><p><a href="https://www.quora.com/How-can-you-apply-Algebra-in-daily-life-situations" rel="noopener" target="_blank">How can you apply Algebra in daily life situations?</a></p><p><a href="https://www.quora.com/What-are-the-applications-of-linear-algebra-in-real-life" rel="noopener" target="_blank">What are the applications of linear algebra in real life?</a></p><p><a href="https://www.quora.com/What-are-the-practical-use-of-algebra-in-daily-life" rel="noopener" target="_blank">What are the practical use of algebra in daily life?</a></p><p><a href="https://www.quora.com/How-is-algebra-and-trignometry-used-in-our-daily-life" rel="noopener" target="_blank">How is algebra and trignometry used in our daily life?</a></p><p><a href="https://www.quora.com/Where-do-we-use-algebraic-expression-in-our-daily-life" rel="noopener" target="_blank">Where do we use algebraic expression in our daily life?</a></p><p><a href="https://www.quora.com/Why-are-we-teaching-our-children-new-math-I-have-gone-all-this-time-and-never-used-Algebra-in-my-daily-life-so-why-do-we-think-they-will-use-the-new-math" rel="noopener" target="_blank">Why are we teaching our children "new math"? I have gone all this time and never used Algebra in my daily life, so why do we think they will use the new math?</a></p><p><a href="https://www.quora.com/unanswered/How-do-we-use-algebra-3-in-our-daily-life" rel="noopener" target="_blank">How do we use algebra 3 in our daily life?</a></p><p><a href="https://www.quora.com/Why-do-schools-put-so-much-emphasis-on-students-taking-math-courses-like-algebra-What-practical-use-is-algebra-in-daily-life" rel="noopener" target="_blank">Why do schools put so much emphasis on students taking math courses like algebra? What practical use is algebra in daily life?</a></p><p><a href="https://www.quora.com/unanswered/I-understand-I-need-basic-algebra-for-daily-life-but-up-to-what-level-grade" rel="noopener" target="_blank">I understand I need basic algebra for daily life, but up to what level/grade?</a></p><p><a href="https://www.quora.com/As-we-know-Ring-and-Group-are-some-dificult-materials-in-algebra-But-until-now-I-still-didnt-understand-what-is-the-usage-of-them-in-our-daily-life-Can-we-use-it-in-our-work-or-at-least-can-we-use-it-to-solve-any-mathematical-problems" rel="noopener" target="_blank">As we know, Ring and Group are some dificult materials in algebra. But until now, I still didn't understand, what is the usage of them in our daily life? Can we use it in our work or at least can we use it to solve any mathematical problems?</a></p><p><a href="https://www.quora.com/What-is-the-use-of-algebra-and-geometry-in-everyday-life" rel="noopener" target="_blank">What is the use of algebra and geometry in everyday life?</a></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzBz" target="_blank" rel="noopener">https://qr.ae/pFmzBz</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

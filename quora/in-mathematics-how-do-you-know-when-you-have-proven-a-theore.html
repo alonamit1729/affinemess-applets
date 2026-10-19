@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In mathematics, how do you know when you have proven a theorem? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2016-07-18</div>
+<h1>In mathematics, how do you know when you have proven a theorem?</h1>
+<div class="q-body"><p>Oh, fantastic question, and one which I’m well positioned to answer. Why? Because many times I thought I proved things when I actually hadn’t. And I thought I failed to prove things when I actually did. And I got it right, too, on occasion. I’ve triumphed, and I’ve failed in every stupid, irresponsible, ignorant, lazy, embarrassing way known to people who try to prove things.</p><p>So here’s what I know, based on years of failing to prove things and failing to know when I’ve failed to prove things.</p><p><b>Two things: You learn that you don’t know, and you learn that deep inside, you do.</b></p><p>When you find, or compose, or are moonstruck by a good proof, there’s a sense of inevitability, of innate truth. You understand <i>that</i> the thing is true, and you understand <i>why</i>, and you see that it can’t be any other way. It’s like falling in love. How do you know that you’ve fallen in love? You just do.</p><p>Such proofs may be incomplete, or even downright wrong. It doesn’t matter. They have a true core, and you know it, you <i>see</i> it, and from there it’s only a matter of filling the gaps, cleaning things up, eliminating redundancy, finding shortcuts, rearranging arguments, organizing lemmas, generalizing, generalizing more, realizing that you’ve overgeneralized and backtracking, writing it all neatly in a paper, showing it around, and having someone show you that your brilliant proof is simply wrong.</p><p>And this is where you either realize that you’ve completely fooled yourself because you so <i>wanted</i> to be in love, which happens more often when you’re young and inexperienced, or you realize that it’s merely technically wrong and the core is still there, pulsing with beauty. You fix it, and everything is good with the world again.</p><p>Experience, discipline, intuition, trust and the passage of time are the things that make the latter more likely than the former. When do you know for <i>sure</i>? You never know for sure. I have papers I wrote in 1995 that I’m still afraid to look at because I don’t know what I’ll find there, and there’s a girl I thought I loved in 7th grade and I don’t know if that was really love or just teenage folly. You never know.</p><p>Fortunately, with mathematical proofs, you can have people peer into your soul and tell you if it’s real or not, something that’s harder to arrange with crushes. That’s the only way, of course. The best mathematicians need that process in order to know for sure. Someone mentioned Andrew Wiles; his was one of the most famous instances of public failure, but it’s far from unique. I don’t think any mathematician never had a colleague demolish their wonderful creation.</p><p>Breaking proofs into steps (called lemmas) can help immensely, because the truth of the lemmas can be verified independently. If you’re disciplined, you work hard to disprove your lemmas, to find counterexamples, to encourage others to find counterexamples, to critique your own lemmas as though they belonged to someone else. This is the very old and very useful idea of modularization: split up your Scala code, or your engineering project, or your proof, or what have you, into meaningful pieces and wrestle with each one independently. This way, even if your proof is broken, it’s perhaps just one lemma that’s broken, and if the lemma is actually true and it’s just your proof that’s wrong, you can still salvage everything by re-proving the lemma.</p><p>Or not. Maybe the lemma is harder than your theorem. Maybe it’s unprovable. Maybe it’s wrong and you’re not seeing it. Harsh mistress she is, math, and this is a long battle. It may takes weeks, or months, or years, and in the end it may not feel at all like having created a masterpiece; it may feel more like a house of sand and fog, with rooms and walls that you only vaguely believe are standing firm. So you send it for publication and await the responses.</p><p>Peer reviewers sometimes write: this step is wrong, but I don’t think it’s a big deal, you can fix it. They themselves may not even know how to fix it, but they have the experience and the intuition to know that it’s fine, and fixing it is just work. They ask you politely to do the work, and they may even accept the paper for publication pending the clean up of such details.</p><p>There are, sometimes, errors in published papers. It happens. We’re all human. Proofs that are central have been redone so many times that they are more infallible than anything of value, and we can be as certain of them as we are certain of anything. Proofs that are marginal and minor are more likely to be occasionally wrong.</p><p>So when do you know for sure? When reviewers reviewed, and time passes, and people redo your work and build on it and expand it, and over time it becomes absolutely clear that the underlying truth is unassailable. Then you know. It doesn’t happen overnight, but eventually you know.</p><p>And if you’re good, it just reaffirms what you knew, deep inside, from the very beginning.</p><br/><p>Mathematical proofs can be formalized, using various logical frameworks (syntactic languages, axiom systems, inference rules). In that they are different from various other human endeavors.</p><p>It's important to realize, however, that actual working mathematicians almost never write down formal versions of their proofs. Open any paper in any math journal and you'll invariably find <i>prose</i>, a story told in some human language (usually English, sometimes French or German). There are certainly lots of math symbols and nomenclature, but the arguments are still communicated in English.</p><p>In recent decades, tremendous progress has been made on practical formalizations of real proofs. With systems like Coq, HOL, Flyspeck and others, it has become possible to write down a completely formal list of steps for proving a theorem, and have a computer verify those steps and issue a formal certificate that the proof is, indeed, correct.</p><p>The motivation for setting up those systems is, at least in part, precisely the desire to remove the human, personal aspects I described and make it unambiguously clear if a proof is correct or not.</p><p>One of the key proponents of those systems is <a href="https://en.wikipedia.org/wiki/Thomas_Callister_Hales" rel="noopener" target="_blank">Thomas Hales</a>, who developed an immensely complex proof of the Kepler Conjecture and was driven by a strong desire to know whether it's correct or not. I'm fairly certain he wanted, first and foremost, to know the answer to that question himself. Hales couldn't tell, by himself, if his own proof is correct.</p><p>It is possible that in the coming decades the process will become entirely mechanized, although it won't happen overnight. As of 2016, the vast majority of proofs are still developed, communicated and verified in a very social, human way, as they were for hundreds of years, with all the hope, faith, imprecision, failure and joy that human endeavors entail.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmz6j" target="_blank" rel="noopener">https://qr.ae/pFmz6j</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

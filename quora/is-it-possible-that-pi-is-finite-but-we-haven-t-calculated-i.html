@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is it possible that pi is finite, but we haven&#x27;t calculated it in full? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-03-06</div>
+<h1>Is it possible that pi is finite, but we haven't calculated it in full?</h1>
+<div class="q-body"><p>My first reaction to this question, and many others like it, is exasperation. Really? Again? But let me start with a few straight up answers, before I indulge in some measured ranting.</p><p>It’s not possible that the decimal expansion of <span class="tex" data-tex="\pi">\pi</span> is finite and we just weren’t patient enough. <span class="tex" data-tex="\pi">\pi</span> is an irrational number, and irrational numbers have non-terminating, non-repeating decimal expansions. This is fact, not belief or hope (try this <a href="https://en.wikipedia.org/wiki/Proof_that_π_is_irrational" rel="noopener" target="_blank">Wikipedia article</a>, or <a href="https://www.quora.com/How-do-you-prove-that-pi-is-an-irrational-number" rel="noopener" target="_blank">How do you prove that <span class="tex" data-tex="\pi">\pi</span> is an irrational number?</a>)</p><p>It is possible that whoever taught you about the decimal expansion of <span class="tex" data-tex="\pi">\pi</span> incorrectly presented it as “we’ve never managed to reach the end” or “we’ve never found a pattern” or “we haven’t been able to calculate it in full.” Such statements are nonsense. We know what <span class="tex" data-tex="\pi">\pi</span> is with complete precision, and we can <i>prove</i> that it is irrational, just like we can prove that <span class="tex" data-tex="\sqrt{17}">\sqrt{17}</span> is.</p><p>This has been known for 250 years now.</p><p>Also, you should realize that decimal expansions are usually terrible at representing numbers “in full”. They can’t even represent <span class="tex" data-tex="1/7">1/7</span> in full. There are many other ways of representing numbers, and <span class="tex" data-tex="\pi">\pi</span> has plenty of perfectly finite and clear representations.</p><p>Finally, do not be misled to think that “<span class="tex" data-tex="\pi">\pi</span> is infinite.” It’s not. It’s a finite number, less than <span class="tex" data-tex="4">4</span>. Once again, the decimal expansion is just confusing you. You wouldn’t say that <span class="tex" data-tex="1/7">1/7</span> is infinite, right? Or <span class="tex" data-tex="\sqrt{2}">\sqrt{2}</span>?</p><br/><p>And now… what I’d really like to know is: <b>Why</b>? Why does the question keep coming up, over and over and over and over and over again? Why are people so worried about the decimal expansion of <span class="tex" data-tex="\pi">\pi</span>? What’s the problem with it being infinite? Is it some kind of blemish on our existence? A hurdle we need to work around? A problem? A concern? <i>Why</i>?</p><p><a href="https://www.quora.com/Can-pi-be-a-finite-number-in-a-non-Euclidean-space" rel="noopener" target="_blank">Can </a><span class="tex" data-tex="\pi">\pi</span><a href="https://www.quora.com/Can-pi-be-a-finite-number-in-a-non-Euclidean-space" rel="noopener" target="_blank"> be a finite number in a non-Euclidean space?</a></p><p><a href="https://www.quora.com/Is-there-a-base-where-pi-is-a-rational-number" rel="noopener" target="_blank">Is there a base where pi is a rational number?</a></p><p><a href="https://www.quora.com/Could-we-create-a-math-that-forces-certain-non-real-numbers-like-Pi-to-be-finite-and-adjust-all-other-mathematical-values-accordingly-to-compensate" rel="noopener" target="_blank">Could we create a math that forces certain non-real numbers like Pi to be finite?</a></p><p><a href="https://www.quora.com/What-would-the-consequences-be-if-Pi-had-finite-number-of-digits" rel="noopener" target="_blank">What would the consequences be if Pi had finite number of digits?</a></p><p><a href="https://www.quora.com/If-we-cannot-calculate-pi-exactly-how-can-we-claim-with-confidence-that-it-requires-infinitely-many-decimal-places-to-represent" rel="noopener" target="_blank">If we cannot calculate </a><span class="tex" data-tex="\pi">\pi</span><a href="https://www.quora.com/If-we-cannot-calculate-pi-exactly-how-can-we-claim-with-confidence-that-it-requires-infinitely-many-decimal-places-to-represent" rel="noopener" target="_blank"> exactly, how can we claim with confidence that it requires infinitely many decimal places to represent?</a></p><p><a href="https://www.quora.com/Is-it-possible-to-fully-compute-all-the-digits-in-the-decimal-representation-of-pi" rel="noopener" target="_blank">Is it possible to fully compute all the digits in the decimal representation of pi?</a></p><p><a href="https://www.quora.com/Why-havent-we-found-the-exact-value-of-pi-yet" rel="noopener" target="_blank">Why haven't we found the exact value of </a><span class="tex" data-tex="\pi">\pi</span><a href="https://www.quora.com/Why-havent-we-found-the-exact-value-of-pi-yet" rel="noopener" target="_blank"> yet?</a></p><p><a href="https://www.quora.com/How-many-digits-would-PI-have-if-it-ended" rel="noopener" target="_blank">How many digits would PI have if it ended?</a></p><p><a href="https://www.quora.com/Will-we-be-able-to-complete-pi" rel="noopener" target="_blank">Will we be able to complete </a><span class="tex" data-tex="\pi">\pi</span><a href="https://www.quora.com/Will-we-be-able-to-complete-pi" rel="noopener" target="_blank">?</a></p><p><a href="https://www.quora.com/Is-pi-a-finite-or-an-infinite-number" rel="noopener" target="_blank">Is pi a finite or an infinite number?</a></p><p>The question, in hundreds of variations, has been answered hundreds of times. <span class="tex" data-tex="\pi">\pi</span><b> is a finite number</b>. It is <b>irrational</b>. It is <b>computable</b>. It is <b>finitely definable</b>. It <b>has</b> “a pattern”. Some of its representations (the poor ones) require infinitely many characters. Plenty of other representations (the much better ones) only require finitely many.</p><p>The digits in the decimal expansion of <span class="tex" data-tex="\pi">\pi</span> <a href="https://affinemess.quora.com/The-Digits-of-math-pi-math-Dont-Freaking-Matter" rel="noopener" target="_blank">don’t matter</a>. Seriously, please, don’t worry about them. Many, many numbers have infinitely long decimal expansions. Some are repeating. Most are not. It’s ok. It’s not an issue. It’s not a problem we <i>need</i> to fix, it’s not a problem we <i>can</i> fix, and in fact it’s not a problem <i>at all</i>.</p><p>Decimal representations are often the worst possible way to think about a number.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzSW" target="_blank" rel="noopener">https://qr.ae/pFmzSW</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

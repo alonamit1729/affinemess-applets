@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is 64 the first perfect square and a perfect cube? Is it the only one? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2020-02-27</div>
+<h1>Is 64 the first perfect square and a perfect cube? Is it the only one?</h1>
+<div class="q-body"><p>Come, I want to show you something.</p><p>If <span class="tex" data-tex="x">x</span> is any integer, then <span class="tex" data-tex="x^3">x^3</span> is what you’d call a perfect cube. And if <span class="tex" data-tex="y">y</span> is any integer, then <span class="tex" data-tex="y^2">y^2</span> is what you’d call a perfect square. If a number is both a perfect square and a perfect cube, then this number is both <span class="tex" data-tex="y^2">y^2</span> and <span class="tex" data-tex="x^3">x^3</span>, and since it’s the same number, we can write</p><p><span class="tex" data-tex="\displaystyle y^2 = x^3">\displaystyle y^2 = x^3</span>.</p><p>What’s the first solution? We can restrict our attention to nonnegative values of <span class="tex" data-tex="x">x</span>, since negative ones are clearly out of the question. The first possible candidate is <span class="tex" data-tex="x=0">x=0</span>, and it kinda works: <span class="tex" data-tex="0^2=0^3">0^2=0^3</span>, and indeed zero is a perfect square and a perfect cube.</p><p>But that’s a little boring. We move on: how about <span class="tex" data-tex="x=1">x=1</span>? Of course, <span class="tex" data-tex="1^2=1^3">1^2=1^3</span> is also a perfect square which is a perfect cube. So <span class="tex" data-tex="64">64</span> isn’t quite the first one, nor the only one, but perhaps it’s the first <i>interesting</i> one. It’s what we get when we pick <span class="tex" data-tex="x=4">x=4</span>. What happened to <span class="tex" data-tex="x=2">x=2</span> and <span class="tex" data-tex="x=3">x=3</span>? Of course, they don’t work: <span class="tex" data-tex="8">8</span> and <span class="tex" data-tex="27">27</span> aren’t squares. Why did <span class="tex" data-tex="0,1">0,1</span> and <span class="tex" data-tex="4">4</span> work for <span class="tex" data-tex="x">x</span>? Ah, of course: they worked because they are <i>themselves</i> squares. If we take <span class="tex" data-tex="x=9">x=9</span>, for instance, then <span class="tex" data-tex="x=3^2">x=3^2</span>, so <span class="tex" data-tex="x^3=3^6">x^3=3^6</span>, and that’s a perfect square! It’s the square of <span class="tex" data-tex="y=3^3=27">y=3^3=27</span>, and the number which is both a perfect square and a perfect cube is <span class="tex" data-tex="3^6=729">3^6=729</span>.</p><p>We can keep going, of course: the square-cube numbers go <span class="tex" data-tex="0,1,64,729,4096,15625">0,1,64,729,4096,15625</span> and so on. More simply, they are <span class="tex" data-tex="0^6,1^6,2^6,3^6,4^6,5^6">0^6,1^6,2^6,3^6,4^6,5^6</span> and so on. All the sixth powers.</p><p><b>Infinitely many</b>.</p><p>So no, <span class="tex" data-tex="64">64</span> isn’t the only one and isn’t one of a few. It’s one of infinitely many sixth powers, which are numbers that are simultaneously perfect squares and perfect cubes.</p><p>But this isn’t what I wanted to show you. What I wanted to show you is what happens when we go back to <span class="tex" data-tex="y^2=x^3">y^2=x^3</span> and forget that we are talking about integers. It’s a simple relation, and we can easily plot it: we let <span class="tex" data-tex="x,y">x,y</span> be real numbers and we plot the points <span class="tex" data-tex="(x,y)">(x,y)</span> with <span class="tex" data-tex="y^2=x^3">y^2=x^3</span>.</p><p>What we get is mostly a nice, smooth curve, but there’s a particular point where it’s not so nice and smooth.</p><img alt="" loading="lazy" src="img/8580b122ecb969.jpg"/><p>The point <span class="tex" data-tex="(0,0)">(0,0)</span> is called a <i>cusp</i>. It’s very obviously different from all other points, where the curve is as smooth as a baby’s cheek. It’s just this one, sharp, pointy cusp at <span class="tex" data-tex="(0,0)">(0,0)</span>. And believe it or not, <b>this cusp is the reason we have infinitely many perfect squares that are perfect cubes</b>.</p><p>What do I mean by that?</p><p>Suppose we change the equation just slightly. Instead of <span class="tex" data-tex="y^2=x^3">y^2=x^3</span> we look at <span class="tex" data-tex="y^2=x^3+1">y^2=x^3+1</span>, or <span class="tex" data-tex="y^2=x^3-1">y^2=x^3-1</span>, or <span class="tex" data-tex="y^2=x^3+17">y^2=x^3+17</span>, whatever. Here are a few of them:</p><img alt="" loading="lazy" src="img/41ec3e0599751c.jpg"/><p>In blue we have the original, spikey <span class="tex" data-tex="y^2=x^3">y^2=x^3</span>. The red, green and orange curves are everywhere smooth as silk. And you know what else? The equations <span class="tex" data-tex="y^2=x^3-1">y^2=x^3-1</span>, <span class="tex" data-tex="y^2=x^3+2">y^2=x^3+2</span> and <span class="tex" data-tex="y^2=x^3+17">y^2=x^3+17</span> don’t have infinitely many integer solutions. <b>They only have finitely many </b>(sometimes none at all).</p><p>And guess what else?</p><p>Proving this is hard. Very hard. Finding the solutions for each of those is hard. Sometimes just tricky, sometimes <i>really</i> hard, and sometimes <i>exceedingly, insanely</i> hard.</p><p>The equation <span class="tex" data-tex="y^2=x^3+k">y^2=x^3+k</span> is called Mordell’s equation, and it’s like a different episode for every <span class="tex" data-tex="k">k</span>. The only <span class="tex" data-tex="k">k</span> for which there’s a cusp is also the only <span class="tex" data-tex="k">k</span> for which there are infinitely many solutions, and also the only <span class="tex" data-tex="k">k</span> which is easy to handle. For every other <span class="tex" data-tex="k">k</span>, it’s hard. We’ve actually seen a few Mordells here on Quora, like <a href="https://www.quora.com/Is-Fermats-conjecture-that-26-is-the-only-number-sandwiched-by-the-square-and-the-cube-of-integers-25-5-2-%E2%89%A4-26%E2%89%A4-27-3-3-proved/answer/Alon-Amit?ch=10&amp;share=c3badc3c&amp;srid=CPO" rel="noopener" target="_blank">this one</a>.</p><p>To the untrained eye, the equations <span class="tex" data-tex="y^2=x^3">y^2=x^3</span> and <span class="tex" data-tex="y^2=x^3+1">y^2=x^3+1</span> seem almost identical. What’s the difference? We just added a silly <span class="tex" data-tex="+1">+1</span>. The real trouble here are those variables, and squares, and cubes, who cares about a measly <span class="tex" data-tex="+1">+1</span>? But imagine that: if we seek integer solutions, solving <span class="tex" data-tex="y^2=x^3">y^2=x^3</span> is an elementary exercise, and solving <span class="tex" data-tex="y^2=x^3+1">y^2=x^3+1</span> is, I would guess, beyond the abilities of most professional mathematicians, unless they bring in some cavalry for help – a number theorist colleague, or a few advanced papers and books.</p><p>Let me drive this home. Consider</p><p><span class="tex" data-tex="\displaystyle \begin{aligned} y^2 &amp;= x^3-3x^2+3 \\ y^2 &amp;= x^3-3x^2+4 \end{aligned}">\displaystyle \begin{aligned} y^2 &amp;= x^3-3x^2+3 \\ y^2 &amp;= x^3-3x^2+4 \end{aligned}</span></p><p>Just by looking at the equations, can you guess which one is trivial and which one is very difficult to solve in integers? No? I wouldn’t either. But let’s look at their graphs:</p><img alt="" loading="lazy" src="img/8b3723b2aa2d47.jpg"/><p>See the difference? The blue one is smooth everywhere, and very difficult to solve in integers. The red one has a singularity: that intersection at <span class="tex" data-tex="(2,0)">(2,0)</span>. And you can take it as a nice, fun exercise to show that it has infinitely many integer solutions, and they are very easy to describe. <b>Find them!</b></p><br/><p>Much more generally, cubic equations in two variables with integer coefficients are either smooth or they have singularities. When they are smooth, they are called elliptic curves, and then they can only have finitely many integer solutions, and proving this is very far from easy. On the other hand, when they are singular, they are <b>much</b> easier to handle. They are called “rational” in this case, for ancient reasons, and they can be parametrized very simply, like the parametrization <span class="tex" data-tex="(y=t^3,x=t^2)">(y=t^3,x=t^2)</span> we’ve found for the original question. And those parametrizations allow for infinitely many integer solutions.</p><p>This is one chapter of an epic tale, as deep as an ocean: the geometry of algebraic equations is connected to their arithmetic in wildly unexpected ways. The Weil conjectures, which shaped a huge amount of math in the 20th century, are another tome in this saga.</p><br/><p>Where were we? Ah, yes: Is 64 the first perfect square and perfect cube? No. Is it the only one? No. Are there finitely many such numbers? No. And it’s all because of that tiny little pointy, spikey cusp on the graph of <span class="tex" data-tex="y^2=x^3">y^2=x^3</span>.</p><p>The queen of mathematics is just full of surprises.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzMZ" target="_blank" rel="noopener">https://qr.ae/pFmzMZ</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

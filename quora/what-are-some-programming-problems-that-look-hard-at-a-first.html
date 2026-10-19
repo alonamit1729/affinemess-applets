@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are some programming problems that look hard at a first glance but are actually easy? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2020-08-01</div>
+<h1>What are some programming problems that look hard at a first glance but are actually easy?</h1>
+<div class="q-body"><p>Here’s a black and white image.</p><img alt="" loading="lazy" src="img/9e7c3c66cf9b8a.jpg"/><p>It is represented, as you’d expect, as an array of bits: 0 is white, 1 is black. Your programming challenge is to determine the number of <b>connected components</b> in such an image. In this example, there are three of them:</p><img alt="" loading="lazy" src="img/a82b53aea75d48.jpg"/><p>You’re not required to color them in! I’m just clarifying what I mean by “connected component”.</p><p>You can make the following assumptions. The black pixels of a component share an edge, not just a corner. Assume that this:</p><img alt="" loading="lazy" src="img/0b151f327d644f.png"/><p>doesn’t happen. Connected components are strongly connected (their pixels share an edge), and different components don’t touch even in pixel corners. With a hi-res image like the example above those are very natural assumptions (Note: in an earlier version of this answer I was too lax here. Corrected now.)</p><p>Another simplifying assumption you can make is that there are no holes. The “blobs”, the connected components, are whole and filled in. Such blobs are called <i>simply connected</i>.</p><img alt="" loading="lazy" src="img/7a74851763464e.jpg"/><p>Finally, you may assume that the exterior border of the array is all white. If not, you can just zero-pad it.</p><p>So:</p><ul><li>Input: array of bits, representing an image with simply connected components.</li><li>Output: an integer representing the number of components.</li><li><b>GO!</b></li></ul><p>This is actually an important and useful algorithmic problem. Versions of it are needed, for example, in science and engineering to count objects in industrial, biological or medical images.</p><br/><p>So, how would you go about this?</p><p>Almost anyone who attempts this does the most natural thing: <a href="https://en.wikipedia.org/wiki/Flood_fill" rel="noopener" target="_blank">Flood Fill</a>. Scan the image, find a black pixel, start crawling its neighbors and their neighbors and so on, marking the pixels you’ve found along the way. When you get stuck, backtrack to a previous black pixel which still has unprocessed neighbors, and continue until you’ve completed a blob. Add <span class="tex" data-tex="1">1</span> to the count of blobs. Start over.</p><p>Here’s a quick animation (from the loc. cit. Wiki page) of a flood fill algorithm filling a white blob on a black background.</p><img alt="" loading="lazy" src="img/df1838c32e9b1b.gif"/><p>This is not a terribly difficult algorithm, but it’s not straightforward either. The Wikipedia article shows various versions, including a fairly optimized one with some 100 lines of pseudocode. See also <a href="https://en.wikipedia.org/wiki/Connected-component_labeling" rel="noopener" target="_blank">Connected-component labeling</a> for more on this approach.</p><p>(Naturally, the code golfers have <a href="https://codegolf.stackexchange.com/questions/83808/flood-fill-a-2d-grid" rel="noopener" target="_blank">addressed the problem</a>, but as you can see even they couldn’t get it down to their usual 9-byte Jelly programs. Except for the guy who cheated with Matlab’s <code>imfill</code>, the solutions are hundreds of bytes of dense code.)</p><br/><p>But remember, I didn’t ask you to flood-fill anything, nor to label the blobs. We just want to <b>count</b>. Is there an easier way?</p><p>Yes, there is, a fantastically simple and easy way. It lets you count the number of connected components in the simply connected case, and in fact it works more generally: it counts the<b> number of components minus the number of holes</b>. If we assume no holes, as we did, then you simply get the number of blobs.</p><p>Here’s the complete algorithm.</p><p>Set a counter to <span class="tex" data-tex="0">0</span>. Scan the entire image, once, looking at <span class="tex" data-tex="2 \times 2">2 \times 2</span> pixel windows anchored at each pixel. <b>Add 1</b> to the counter every time you see this (a “dot”):</p><img alt="" loading="lazy" src="img/74900b36aa3b43.png"/><p><b>Subtract 1</b> every time you see that (a “T”):</p><img alt="" loading="lazy" src="img/9d900043a16199.png"/><p>Done. The counter has the number of connected components.</p><p>Yes, really. No queues, no stacks, no recursion, no backtracking, no forest fire fills, no labeling, nothing. Just a dead-simple, linear, one-time pass through the array, and counting two simple combinations of pixels.</p><br/><p>If this is the input:</p><img alt="" loading="lazy" src="img/f63b43706e3b6b.png"/><p>You’ll catch one <span class="tex" data-tex="+1">+1</span> and no subtractions. Output: <span class="tex" data-tex="1">1</span>. Check.</p><p>If this is the input:</p><img alt="" loading="lazy" src="img/bb68f120f1e44e.png"/><p>You’ll count two <span class="tex" data-tex="+1">+1</span>'s and one <span class="tex" data-tex="-1">-1</span>. Output: <span class="tex" data-tex="1">1</span>. Check.</p><p>Here’s a more complicated example:</p><img alt="" loading="lazy" src="img/915deadd5f19a2.png"/><p>There are <span class="tex" data-tex="4">4</span> <span class="tex" data-tex="+1">+1</span>'s here and <span class="tex" data-tex="3">3</span> <span class="tex" data-tex="-1">-1</span>'s. Output: <span class="tex" data-tex="1">1</span>. Check.</p><p>The local nature of the algorithm makes it quite clear that if it works for single blobs, it works for any number of blobs. Indeed, it is additive under superpositions. Overlay two disjoint blobs and the algorithm will simply accumulate the results from each independent one.</p><br/><p>This algorithm is an instance of something truly deep and profound: the local-global behavior of the <a href="https://en.wikipedia.org/wiki/Euler_characteristic" rel="noopener" target="_blank">Euler characteristic</a>. In simple words, if you have local geometric data and you’re interested in global features, <i>take an alternating sum</i>. In our case, “dots minus T’s” is the same as “components minus holes”. The very same idea lies behind deep results like the <a href="https://en.wikipedia.org/wiki/Lefschetz_fixed-point_theorem" rel="noopener" target="_blank">Lefschetz fixed point theorem</a> and the <a href="https://en.wikipedia.org/wiki/Gauss–Bonnet_theorem" rel="noopener" target="_blank">Gauss–Bonnet theorem</a>.</p><p>We’ll have to save a complete proof to another answer, but I would submit that this is an amazing instance of a seemingly challenging algorithmic problem which turns out to have a ridiculously simple solution.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzbC" target="_blank" rel="noopener">https://qr.ae/pFmzbC</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

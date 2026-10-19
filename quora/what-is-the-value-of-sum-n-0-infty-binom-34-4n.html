@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is the value of \sum_{n=0}^\infty \binom{34}{4n}? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2018-01-11</div>
+<h1>What is the value of <span class="tex" data-tex="\sum_{n=0}^\infty \binom{34}{4n}"></span>?</h1>
+<div class="q-body"><p>Oh my, what a fun question! Seriously, I have a whole new math circle plan just as a result of solving this gem. Very nice.</p><p>Despite appearances, this isn’t actually a rote calculation problem. It is designed to teach you something, if you’re attuned to its sinister machinations. Merely tackling this question may give you a glimpse of harmonic analysis, or Fourier analysis on Abelian groups, or group character theory, or DFT and digital signal processing.</p><p>Here’s the thing. You may be familiar with other, simpler sums involving binomial coefficients.</p><p><span class="tex" data-tex="\displaystyle \sum_{k=0}^n \binom{n}{k}=2^n \tag 1">\displaystyle \sum_{k=0}^n \binom{n}{k}=2^n \tag 1</span></p><p><span class="tex" data-tex="\displaystyle \sum_{k=0}^n \binom{n}{k}(-1)^k=0 \tag 2">\displaystyle \sum_{k=0}^n \binom{n}{k}(-1)^k=0 \tag 2</span></p><p>(The second one requires <span class="tex" data-tex="n&gt;0">n&gt;0</span>). Those are well-known, and have many proofs. The proof that interests us now is one you may have seen in school. It goes like this:</p><p><span class="tex" data-tex="\displaystyle \sum_{k=0}^n \binom{n}{k}X^k = (X+1)^n \tag 3">\displaystyle \sum_{k=0}^n \binom{n}{k}X^k = (X+1)^n \tag 3</span></p><p>This is just a simple instance of the binomial theorem. Now, all you have to do is substitute <span class="tex" data-tex="X=1">X=1</span> to get (1), while <span class="tex" data-tex="X=-1">X=-1</span> gives you (2), immediately. Easy.</p><p>Evidently, the identity (3) is a lot more powerful than (1) and (2). It shows that we can calculate sums of binomial coefficients weighted by powers of any fixed number <span class="tex" data-tex="X">X</span> (in other words, we understand a generating function, which is always a useful thing.)</p><p>However, in and of itself this doesn’t seem to be helpful here. The weights we want are</p><p><span class="tex" data-tex="1,0,0,0,1,0,0,0,1,0,0,0,\ldots">1,0,0,0,1,0,0,0,1,0,0,0,\ldots</span></p><p>since we wish to keep just the binomial coefficients <span class="tex" data-tex="\binom{n}{k}">\binom{n}{k}</span> where <span class="tex" data-tex="k">k</span> is divisible by <span class="tex" data-tex="4">4</span>. And unfortunately, there’s no <span class="tex" data-tex="X">X</span> whose powers look like that.</p><p>What do we do?</p><p>Fourier transform, that’s what we do.</p><p>You see, the sequence <span class="tex" data-tex="1,0,0,0,1,0,0,0,\ldots">1,0,0,0,1,0,0,0,\ldots</span> is not a sequence of powers of one number, yet it is periodic with a period of 4 (it’s an “impulse train” for signal processing people). If we find enough sequences of period 4 which <i>are</i> powers of a single number then, with luck, we may be able to combine them to yield the sequence we want.</p><p>What sequences are available to us? We have the constant sequence (“powers of 1”, or the “DC offset” in engineering parlance, or the “trivial character”)</p><p><span class="tex" data-tex="1,1,1,1,1,1,\ldots">1,1,1,1,1,1,\ldots</span></p><p>We have the powers of <span class="tex" data-tex="-1">-1</span></p><p><span class="tex" data-tex="1,-1,1,-1,1,-1\ldots">1,-1,1,-1,1,-1\ldots</span></p><p>and of course, the only two numbers whose powers are sequences of period <span class="tex" data-tex="4">4</span> are the imaginary units <span class="tex" data-tex="i">i</span> and <span class="tex" data-tex="-i">-i</span>, yielding the sequences</p><p><span class="tex" data-tex="1,i,-1,-i,1,i,-1,-i,\ldots">1,i,-1,-i,1,i,-1,-i,\ldots</span></p><p><span class="tex" data-tex="1,-i,-1,i,1,-i,-1,i,\ldots">1,-i,-1,i,1,-i,-1,i,\ldots</span></p><p>And these are just what we need. We have four sequences and four constraints to satisfy (we want the period to be <span class="tex" data-tex="(1,0,0,0)">(1,0,0,0)</span>), so we can do it. In fact it’s very simple: just adding together all of those Fourier sequences gives us that pulse train, times <span class="tex" data-tex="4">4</span>:</p><p><span class="tex" data-tex="4(1,0,0,0)=(1,1,1,1)+(1,i,-1,-i)+(1,-1,1,-1)+(1,-i,-1,i)">4(1,0,0,0)=(1,1,1,1)+(1,i,-1,-i)+(1,-1,1,-1)+(1,-i,-1,i)</span></p><p>Therefore, expanding <span class="tex" data-tex="(1+1)^n">(1+1)^n</span>, <span class="tex" data-tex="(1+i)^n">(1+i)^n</span>, <span class="tex" data-tex="(1-1)^n">(1-1)^n</span> and <span class="tex" data-tex="(1-i)^n">(1-i)^n</span> produces four weighted sums of binomial coefficients which, when added together, conspire to interfere with each other just right to leave every fourth binomial coefficient intact and eliminate everything else.</p><p>In other words, whatever <span class="tex" data-tex="n">n</span> is,</p><p><span class="tex" data-tex="\displaystyle 4\sum_{k=0}^\infty \binom{n}{4k}=(1+1)^n+(1+i)^n+(1-1)^n+(1-i)^n=2^n+(1+i)^n(1+(-i)^n)">\displaystyle 4\sum_{k=0}^\infty \binom{n}{4k}=(1+1)^n+(1+i)^n+(1-1)^n+(1-i)^n=2^n+(1+i)^n(1+(-i)^n)</span></p><p>(In the last equality we simply replace <span class="tex" data-tex="1-i">1-i</span> with <span class="tex" data-tex="-i(1+i)">-i(1+i)</span> and collect like terms.)</p><p>Oh, that’s great: when <span class="tex" data-tex="n=34">n=34</span>, or more generally when <span class="tex" data-tex="n\equiv 2\pmod 4">n\equiv 2\pmod 4</span>, the last term vanishes, and we find</p><p><span class="tex" data-tex="\displaystyle \sum_{k=0}^\infty \binom{n}{4k}=2^{n-2}">\displaystyle \sum_{k=0}^\infty \binom{n}{4k}=2^{n-2}</span></p><p>So the answer to the question is simply <span class="tex" data-tex="2^{32}">2^{32}</span>.</p><p>(I wrote the sum extending all the way to infinity, as in the question, but this is just to save a more cumbersome upper limit. The binomial coefficients simply vanish when <span class="tex" data-tex="4k">4k</span> exceeds <span class="tex" data-tex="n">n</span>.)</p><p>Without too much trouble we can write down simple formulas for those binomial sums for all other values of <span class="tex" data-tex="n">n</span>. Furthermore, using that same method we can handle sums of binomial coefficients like <span class="tex" data-tex="\sum_k \binom{n}{4k+1}">\sum_k \binom{n}{4k+1}</span>, and generally <span class="tex" data-tex="\sum_k\binom{n}{dk+e}">\sum_k\binom{n}{dk+e}</span>, and…</p><br/><p>…In fact, if you generalize what we just did, you’ll discover a wildly strong technique. We had a sequence of numbers</p><p><span class="tex" data-tex="a_0,a_1,a_2,\ldots">a_0,a_1,a_2,\ldots</span></p><p>which we understood well enough to recognize its generating function</p><p><span class="tex" data-tex="f(X)=a_0+a_1X+a_2X^2+\ldots">f(X)=a_0+a_1X+a_2X^2+\ldots</span></p><p>We needed to calculate a sum of a “sampled” version of the sequence, and the way we did that was to express the sampling map</p><p><span class="tex" data-tex="1,0,0,0,1,0,0,0,1,0,0,0,\ldots">1,0,0,0,1,0,0,0,1,0,0,0,\ldots</span></p><p>(or any other sampling or weighting) as a linear combination of powers of a root of unity, which is simply the discrete Fourier transform. With that, we are able to express the sampled sum as a linear combination of various values <span class="tex" data-tex="f(\omega^m)">f(\omega^m)</span>, where <span class="tex" data-tex="\omega">\omega</span> is the appropriate root of unity.</p><p>The very same idea (in a multiplicative, rather than additive, context) was used by Dirichlet to estimate the number of primes in arithmetic progressions, and started an enormous and fruitful thread of ideas in mathematics.</p><p>I love how this little problem pushes us in this magnificent direction.</p><br/><p>(Added later)</p><p><b>A bijective proof</b></p><p>The solution above is instructive, since the technique is so general. But whenever such an elegant identity shows up, one must wonder why it’s true – what is a combinatorial explanation? We’ve discovered that, when <span class="tex" data-tex="n">n</span> is divisible by <span class="tex" data-tex="4">4</span>,</p><p><span class="tex" data-tex="\displaystyle \sum_{k=0}^\infty \binom{n+2}{4k} = 2^n \tag 4">\displaystyle \sum_{k=0}^\infty \binom{n+2}{4k} = 2^n \tag 4</span></p><p>On the left we are counting sequences of <span class="tex" data-tex="0">0</span>’s and <span class="tex" data-tex="1">1</span>’s of length <span class="tex" data-tex="n+2">n+2</span> where the number of <span class="tex" data-tex="1">1</span>'s is a multiple of <span class="tex" data-tex="4">4</span>, and on the right we are counting sequences of <span class="tex" data-tex="0">0</span>'s and <span class="tex" data-tex="1">1</span>'s of length <span class="tex" data-tex="n">n</span> with no further constraint. Why do these two sets have the same size? There ought to be a natural <i>bijection</i> between them.</p><p>And indeed there is. Here’s the one I managed to find after posting this answer. There may be other, better ones.</p><p>Given any bit-string <span class="tex" data-tex="S">S</span> of length <span class="tex" data-tex="n">n</span> having <span class="tex" data-tex="k">k</span> <span class="tex" data-tex="1">1</span>'s, we can augment it to a bit-string of length <span class="tex" data-tex="n+2">n+2</span> with the appropriate number of <span class="tex" data-tex="1">1</span>'s, as follows:</p><ul><li>If <span class="tex" data-tex="k \equiv 0 \pmod 4">k \equiv 0 \pmod 4</span>, attach <span class="tex" data-tex="00">00</span> at the end of <span class="tex" data-tex="S">S</span>.</li><li>If <span class="tex" data-tex="k \equiv 2 \pmod 4">k \equiv 2 \pmod 4</span>, attach <span class="tex" data-tex="11">11</span> at the end of <span class="tex" data-tex="S">S</span>.</li><li>If <span class="tex" data-tex="k \equiv 3 \pmod 4">k \equiv 3 \pmod 4</span>, attach <span class="tex" data-tex="01">01</span> at the end of <span class="tex" data-tex="S">S</span>.</li><li>If <span class="tex" data-tex="k \equiv 1 \pmod 4">k \equiv 1 \pmod 4</span>, flip all the bits of <span class="tex" data-tex="S">S</span> (replace each <span class="tex" data-tex="0">0</span> by a <span class="tex" data-tex="1">1</span> and vice versa), and then attach <span class="tex" data-tex="10">10</span> at the end of <span class="tex" data-tex="S">S</span>.</li></ul><p>In the first three cases it is obvious that the number of <span class="tex" data-tex="1">1</span>'s in the augmented string is divisible by <span class="tex" data-tex="4">4</span>: we added just the necessary number of <span class="tex" data-tex="1">1</span>'s. In the last case, we couldn’t fix the number of <span class="tex" data-tex="1">1</span>'s simply by attaching two bits, since there are <i>three</i> missing <span class="tex" data-tex="1">1</span>'s. So we first flip all the bits in <span class="tex" data-tex="S">S</span>, changing the number of <span class="tex" data-tex="1">1</span>'s from <span class="tex" data-tex="k">k</span> to <span class="tex" data-tex="n-k">n-k</span>, and this is where it’s important that <span class="tex" data-tex="n">n</span> is divisible by <span class="tex" data-tex="4">4</span>: the number of <span class="tex" data-tex="1">1</span>'s <i>now</i> is <span class="tex" data-tex="3">3</span> mod <span class="tex" data-tex="4">4</span>, and we can once again fix it by adding one <span class="tex" data-tex="1">1</span>. We do this by attaching <span class="tex" data-tex="10">10</span> instead of <span class="tex" data-tex="01">01</span>, which lets us know which strings were flipped and which weren’t.</p><p>That’s important, because this is why we get a <i>bijection</i>. Given a long string with <span class="tex" data-tex="n+2">n+2</span> bits, we can reconstruct the original <span class="tex" data-tex="S">S</span>: remove the last two bits, and flip the result if those last two bits were <span class="tex" data-tex="10">10</span>.</p><p>This is known as a <i>bijective</i> proof. It shows why the equation (4) is true by explicitly pairing up elements in two sets whose number of elements are the LHS and the RHS of the equation.</p><p><b>More things I should have said</b></p><p>The result we’ve obtained expresses the unknown magnitude as a combination</p><p><span class="tex" data-tex="(1+1)^n+(1-1)^n+(1+i)^n+(1-i)^n">(1+1)^n+(1-1)^n+(1+i)^n+(1-i)^n</span></p><p>One of these is, of course, <span class="tex" data-tex="0">0</span>, but it’s a little surprising that the last two cancel out. This is actually a very deep and very general phenomenon. When such expressions come up, there’s often a leading term coming from the trivial Fourier coefficient, which is the <span class="tex" data-tex="2^n">2^n</span> here. The other terms tend to interfere with each other destructively. They don’t always cancel so cleanly, but when they don’t, they leave an “error term” which is much smaller than the leading term.</p><p>For example, let’s go back to the equation</p><p><span class="tex" data-tex="\displaystyle 4\sum_{k=0}^\infty \binom{n}{4k}=2^n+(1+i)^n(1+(-i)^n)">\displaystyle 4\sum_{k=0}^\infty \binom{n}{4k}=2^n+(1+i)^n(1+(-i)^n)</span></p><p>If <span class="tex" data-tex="n">n</span> is divisible by <span class="tex" data-tex="4">4</span>, let us write <span class="tex" data-tex="n=4m">n=4m</span>. We now have <span class="tex" data-tex="(1+(-i)^n)=2">(1+(-i)^n)=2</span>, and since <span class="tex" data-tex="(1+i)^4=-4">(1+i)^4=-4</span>, <span class="tex" data-tex="(1+i)^{4m}=(-2)^{2m}">(1+i)^{4m}=(-2)^{2m}</span>, so we get (after dividing by <span class="tex" data-tex="4">4</span>):</p><p><span class="tex" data-tex="\displaystyle \sum_{k=0}^\infty \binom{4m}{4k}=2^{4m-2}+(-2)^{2m-1}">\displaystyle \sum_{k=0}^\infty \binom{4m}{4k}=2^{4m-2}+(-2)^{2m-1}</span></p><p>so there is a correction term now, but it’s like the square root of the leading term – much smaller. This is very typical of those interference/filtration/Fourier results.</p><br/><p>Finally, test your understanding! Find a nice, explicit expression for the following infinite sum without any calculator (or even pen and paper):</p><p><span class="tex" data-tex="\displaystyle \sum_{n=0}^\infty \frac{1}{(4n)!}">\displaystyle \sum_{n=0}^\infty \frac{1}{(4n)!}</span>.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmQtS" target="_blank" rel="noopener">https://qr.ae/pFmQtS</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

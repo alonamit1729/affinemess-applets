@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can quaternions be explained to a nonmathematician? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2017-11-27</div>
+<h1>Can quaternions be explained to a nonmathematician?</h1>
+<div class="q-body"><p>Sure.</p><p><b>Dimension 1: The Real Numbers</b></p><p>We all (presumably) know that numbers can be added and multiplied. “Numbers” here usually means <i>real</i> numbers, which you may be familiar with from school. They are conveniently visualized as points on a line.</p><p>Adding and multiplying numbers isn’t just a mathematical curiosity. We have found that the physical world is very well described by real numbers and their arithmetic. For example, “Force is mass times acceleration” is one of the basic laws of motion, and it requires multiplication.</p><p>Addition and multiplication play nicely among themselves, and with each other. We have things like <span class="tex" data-tex="a(b+c)=ab+ac">a(b+c)=ab+ac</span>, the distributive law, which together with a host of other laws makes the rational numbers or the real numbers a foundational structure in math, physics, and all of science and engineering.</p><p><b>Dimension 2: Algebra with Pairs</b></p><p>At some point, we hit upon the idea of complex numbers. Complex numbers are usually explained by introducing a new number, <span class="tex" data-tex="i=\sqrt{-1}">i=\sqrt{-1}</span>, but there’s another way to look at things which may seem less odd. You can think of complex numbers simply as <i>pairs</i> of real numbers, like <span class="tex" data-tex="(1,0)">(1,0)</span> or <span class="tex" data-tex="(-17,0.29)">(-17,0.29)</span> or <span class="tex" data-tex="(\sqrt{2},\pi)">(\sqrt{2},\pi)</span>. There is nothing deep or mysterious here: we just take two real numbers, put parentheses around them, and call this “a pair of numbers”.</p><p>Adding pairs of numbers is very straightforward. To add <span class="tex" data-tex="(2,3)">(2,3)</span> and <span class="tex" data-tex="(4,5)">(4,5)</span> we simply add the first numbers and then add the second numbers, so we get <span class="tex" data-tex="(6,8)">(6,8)</span>.</p><p>Why can’t we multiply them in the same way? We sure can, but this turns out to be useless. Multiplying pairs one-by-one creates a structure which doesn’t correspond to anything useful, and from a mathematical perspective it has some really annoying properties, like having zero divisors (this “naive” product of <span class="tex" data-tex="(7,0)">(7,0)</span> and <span class="tex" data-tex="(0,15)">(0,15)</span> is <span class="tex" data-tex="(0,0)">(0,0)</span>, so nonzero things can have a zero product. This causes trouble).</p><p>On the other hand, there’s a clever way to define multiplication which turns out to have very deep physical, geometric and mathematical significance. It may look a bit mysterious:</p><p><span class="tex" data-tex="\displaystyle (a,b) \times (c,d) = (ac-bd, ad+bc)">\displaystyle (a,b) \times (c,d) = (ac-bd, ad+bc)</span></p><p>but it is really not so bad. The trick is to think of the pair <span class="tex" data-tex="(a,b)">(a,b)</span> as a new kind of number <span class="tex" data-tex="a+bi">a+bi</span> where <span class="tex" data-tex="i">i</span> is a symbol whose unique property is that its square is <span class="tex" data-tex="-1">-1</span>. With that understanding, multiplying <span class="tex" data-tex="a+bi">a+bi</span> and <span class="tex" data-tex="c+di">c+di</span> is nothing more than expanding a product as usual, with the distributive law.</p><p>With this fancy multiplication, “pairs of numbers” become absolutely essential. They lie at the heart of quantum mechanics, for example. There’s no way to create an understanding of the microscopic world without introducing complex numbers. And modern mathematics – virtually all of it – is unimaginable without complex numbers.</p><p><b>Dimension 3: A Disappointment</b></p><p>Seeing this massive success, Sir William Rowan Hamilton<a href="#TBjsK">[1]</a> set out to find a way of multiplying <i>triplets</i> instead of pairs. After all, the physical world is 3-dimensional, and just like single numbers represent points on a line and pairs of numbers represent points in the plane, triplets <span class="tex" data-tex="(x,y,z)">(x,y,z)</span> of numbers naturally represent points in space.</p><p>Adding triplets is still done as before, one by one: <span class="tex" data-tex="(1,2,3)+(10,100,1000)=(11,102,1003)">(1,2,3)+(10,100,1000)=(11,102,1003)</span>. Simple. But how should we multiply them?</p><p>Hamilton, one of the leading mathematicians and physicists of his time, became almost obsessed with this search. He sought a formula inspired by, or analogous to, that strange <span class="tex" data-tex="(ac-bd, ad+bc)">(ac-bd, ad+bc)</span> thing which worked so well with pairs. But he couldn’t find it. Years later, he reminisced in a letter to his son:</p><blockquote><p>Every morning… on my coming down for breakfast, your (then) little brother William Edwin, and yourself, used to ask me “Well, Papa, can you multiply triplets?”. Whereto I was always obliged to reply, with a sad shake of the head: “No, I can only add and subtract them.”</p></blockquote><p>Today we know that Hamilton was bound to fail. An algebraic structure of the type he sought <i>does not exist</i> for triplets, for reasons that actually have more to do with geometry (or, more precisely, topology) than with algebra.</p><p>But Hamilton did not give up. And then, one Monday morning, on October 16, 1843…</p><p><b>Dimension 4: A Brave New Algebra</b></p><p>On that Monday morning Hamilton took a walk with his wife along the Royal Canal in Dublin, when he had one of those sudden flashes of inspiration – exactly like the ones we just talked about<a href="#ZvGoI">[2]</a>. All of a sudden he saw the answer: forget triplets. Multiply quadruplets instead. Take <i>four</i> real numbers as your basic object, and everything will work like magic. Hamilton literally scribbled the formulas on a bridge, and the event is commemorated in a plaque to this day.</p><img alt="" loading="lazy" src="img/ac0e76c4305cfa.jpg"/><p>The other part of Hamilton’s inspired insight was no less daring: he realized he has to give something up in order to step into this magical new world. Multiplication of quadruplets is beautiful, clean, and magnificently useful, but it is <i>not commutative</i>. We have to give up on the old law by which <span class="tex" data-tex="A \times B = B \times A">A \times B = B \times A</span>.</p><p>This was Hamilton’s breakthrough: instead of just a single number <span class="tex" data-tex="i">i</span> whose square is <span class="tex" data-tex="-1">-1</span>, introduce <i>three</i> of them. <span class="tex" data-tex="i^2=j^2=k^2=-1">i^2=j^2=k^2=-1</span>. We now also need to explain how they multiply among themselves, and it’s a thing of beauty:</p><p><span class="tex" data-tex="ij = k, jk = i, ki = j">ij = k, jk = i, ki = j</span></p><p>but if we flip things around:</p><p><span class="tex" data-tex="ji = -k, kj = -i, ik = -j">ji = -k, kj = -i, ik = -j</span></p><p>With these rules, we can multiply <span class="tex" data-tex="(a,b,c,d)">(a,b,c,d)</span> and <span class="tex" data-tex="(e,f,g,h)">(e,f,g,h)</span> by writing them like so:</p><p><span class="tex" data-tex="(a+bi+cj+dk)(e+fi+gj+hk)=\ldots">(a+bi+cj+dk)(e+fi+gj+hk)=\ldots</span></p><p>and all you have to do is expand the product as you usually would, remembering the special rules we just laid down. The result seems complicated, but it is fantastically brilliant. Observe that you can’t do it without the <span class="tex" data-tex="a">a</span> part, since multiplying <span class="tex" data-tex="i">i</span> or <span class="tex" data-tex="j">j</span> or <span class="tex" data-tex="k">k</span> by themselves yields <span class="tex" data-tex="-1">-1</span>, an ordinary real number. There’s no way of creating this scrambled multiplication with triplets. But it works wonders with quadruplets.</p><p>A complex number <span class="tex" data-tex="a+bi">a+bi</span> has a so-called “real part” <span class="tex" data-tex="a">a</span> and “imaginary part” <span class="tex" data-tex="bi">bi</span> (there’s nothing real about the former nor imaginary about the latter, but those are conventional adjectives). Similarly, a quaternion <span class="tex" data-tex="a+bi+cj+dk">a+bi+cj+dk</span> has a “scalar” part <span class="tex" data-tex="a">a</span> and a 3-dimensional “vector” part <span class="tex" data-tex="bi+cj+dk">bi+cj+dk</span>.</p><p>Thus was Hamilton’s dream fulfilled: quaternion multiplication actually harbors inside of it important parts of 3-dimensional geometry, as well as physics. Quaternions can be used in electrodynamics, for example. They are also frequently used in computer graphics, as a convenient way to represent and interpolate 3-D rotations.</p><img alt="" loading="lazy" src="img/6c52d780c70cb1.jpg"/><p>(<a href="http://blog.wolframalpha.com/2011/08/25/quaternion-properties-and-interactive-rotations-with-wolframalpha/" rel="noopener" target="_blank"><i>Source</i></a>)</p><p>In mathematics, quaternions are a centerpiece of non-commutative algebra, number theory, geometry and many, many other things. The “next” algebra of their ilk, the Cayley numbers or Octonions, already gives up on another property, associativity, and this makes them far less useful. Quaternions may not be as useful as the ubiquitous complex numbers, but they are awesome.</p><p>We should really spend time digging deeper into the uses of quaternions in mathematics and physics, but for a quick overview for the mathematical layperson, this may be a reasonable place to pause.</p><p>Footnotes</p><p class="citation" id="TBjsK"><a href="#cite-TBjsK">[1] </a><a href="https://en.wikipedia.org/wiki/William_Rowan_Hamilton" rel="noopener" target="_blank">William Rowan Hamilton - Wikipedia</a></p><p class="citation" id="ZvGoI"><a href="#cite-ZvGoI">[2] </a><a href="https://www.quora.com/Is-it-true-that-Einstein-rather-than-using-induction-or-deduction-first-had-flashes-of-insight-and-only-then-formulated-them-logically-formally-and-mathematically/answer/Alon-Amit" rel="noopener" target="_blank">‎Alon Amit (אלון עמית)‎'s answer to Is it true that Einstein, rather than using induction or deduction, first had flashes of insight, and only then formulated them logically, formally, and mathematically?</a></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzZQ" target="_blank" rel="noopener">https://qr.ae/pFmzZQ</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

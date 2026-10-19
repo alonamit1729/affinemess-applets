@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let a and b be positive integers such that ab+1 divides a^2+b^2. Why must \frac{a^2+b^2}{ab+1} be a perfect square? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2015-06-11</div>
+<h1>Let <span class="tex" data-tex="a"></span> and <span class="tex" data-tex="b"></span> be positive integers such that <span class="tex" data-tex="ab+1"></span> divides <span class="tex" data-tex="a^2+b^2"></span>. Why must <span class="tex" data-tex="\frac{a^2+b^2}{ab+1}"></span> be a perfect square?</h1>
+<div class="q-body"><p>This may be the single most famous elementary number theory problem of recent years, discussed <a href="http://math.stackexchange.com/questions/28438/alternative-proof-that-a2b2-ab1-is-a-square-when-its-an-integer" rel="noopener" target="_blank">many times</a> on forums such as artofproblemsolving, math.stackexchange and elsewhere. It was also problem 6 of the <a href="https://www.imo-official.org/year_statistics.aspx?year=1988" rel="noopener" target="_blank">1988 IMO</a>.</p><p>When I say "elementary" I mean that it can be solved without any advanced techniques that are common in modern number theory. I do not mean to say that it's <i>easy</i>. Several solutions to this problem can be comprehended by anyone with an understanding of basic notions of number theory, but <i>finding</i> those solutions is really, really hard.</p><p>How do I know?</p><p>Well, the problem was submitted to the IMO problem selection committee by West Germany (I'm guessing Don Zagier may have had something to do with it). Of the six committee members, precisely none could solve it. The problem was then sent to four leading number theorists in Australia, and none of them could solve it either in less than 6 hours. It was classified "superhard" but somehow eventually selected by the jury to be on the competition (those details can be found in Arthur Engel's book "<a href="http://www.amazon.com/Problem-Solving-Strategies-Problem-Books-Mathematics/dp/0387982191" rel="noopener" target="_blank">Problem-Solving Strategies</a>").</p><p>In the competition, the problem was solved perfectly by just 11 contestants. One of them was <a href="http://en.wikipedia.org/wiki/Ngô_Bảo_Châu" rel="noopener" target="_blank">Ngô Bảo Châu</a> who went on to win the Fields medal in 2010. Two other solvers were <a href="http://en.wikipedia.org/wiki/Ravi_Vakil" rel="noopener" target="_blank">Ravi Vakil</a> who is now an award-winning Stanford mathematician, and the inimitable <a href="http://www.proofschool.org/stankova/" rel="noopener" target="_blank">Zvezdelina Stankova</a>, a renowned researcher and Berkeley Math Circle powerhouse (I can't resist mentioning that Ravi is a fellow board member at <a href="http://www.proofschool.org/#we-love-math" rel="noopener" target="_blank">Proof School</a> and Zvezda is on the advisory board).</p><p>One of the people who <i>didn't</i> solve this problem, believe it or not, was <a href="http://en.wikipedia.org/wiki/Terence_Tao" rel="noopener" target="_blank">Terry Tao</a> (he may be forgiven - he was only 13 at the time).</p><p>This may be a good time to say something about the solution.</p><br/><p>Let's restate the problem. We need to show that if <span class="tex" data-tex="a,b">a,b</span> are positive integers such that <span class="tex" data-tex="ab+1">ab+1</span> divides <span class="tex" data-tex="a^2+b^2">a^2+b^2</span>, then the quotient <span class="tex" data-tex="\frac{a^2+b^2}{ab+1}">\frac{a^2+b^2}{ab+1}</span> is not just an integer - it's a perfect square.</p><p>We will use the classical method of infinite descent. This method, usually attributed to Fermat, goes as follows: to show that no positive integer <span class="tex" data-tex="n">n</span> can have some property, we assume that some such integer does exist, and manipulate the information we have to produce yet another positive integer which A) also has this property and B) is strictly smaller than <span class="tex" data-tex="n">n</span>. Since we did it once, we can keep doing it over and over again and produce an infinite descending sequence of positive integers. But there <i>is</i> no infinite descending sequence of positive integers. Hence, our original assumption that a positive integer <span class="tex" data-tex="n">n</span> exists with our property cannot be true.</p><p>Another way of restating the same idea is this: if any positive integers exist which have the given property, there must be among them a smallest one. Choose it, call it <span class="tex" data-tex="n">n</span>, and use it to produce yet another one which is smaller. But this contradicts our original choice of <span class="tex" data-tex="n">n</span> as the smallest one. Therefore, no positive integers exist with our property.</p><p>Back to our problem: of all the possible pairs of positive integers <span class="tex" data-tex="a,b">a,b</span> which happen to yield a ratio <span class="tex" data-tex="k=\frac{a^2+b^2}{ab+1}">k=\frac{a^2+b^2}{ab+1}</span> that's <i>not</i> a perfect square, pick one such pair with <span class="tex" data-tex="a+b">a+b</span> minimal. If such pairs exist at all, they have various sums <span class="tex" data-tex="a+b">a+b</span>, and among all such sums we find the smallest one and fix our pair <span class="tex" data-tex="a,b">a,b</span> to yield that minimal sum.</p><p>Since the roles of <span class="tex" data-tex="a">a</span> and <span class="tex" data-tex="b">b</span> are symmetric in the expression defining <span class="tex" data-tex="k">k</span>, we may also assume that <span class="tex" data-tex="a \geq b">a \geq b</span>. Otherwise, swap them.</p><p>We can rewrite</p><p><span class="tex" data-tex="k=\frac{a^2+b^2}{ab+1}">k=\frac{a^2+b^2}{ab+1}</span></p><p>in the form</p><p><span class="tex" data-tex="a^2-kba+(b^2-k)=0">a^2-kba+(b^2-k)=0</span>.</p><p>In other words, <span class="tex" data-tex="a">a</span> is a solution of the quadratic equation</p><p><span class="tex" data-tex="X^2-kbX+(b^2-k)=0">X^2-kbX+(b^2-k)=0</span>.</p><p>If we have one solution of a quadratic equation, we have to be curious about the other. Let's call this other solution <span class="tex" data-tex="a'">a'</span>. From basic properties of quadratic equations (Vieta's formulas for the very simple case of degree 2), we can determine the sum <span class="tex" data-tex="a+a'">a+a'</span> and the product <span class="tex" data-tex="aa'">aa'</span> quite easily:</p><p><span class="tex" data-tex="a+a' = kb">a+a' = kb</span>.</p><p><span class="tex" data-tex="aa' = b^2-k">aa' = b^2-k</span>.</p><p>From the first equation we learn that <span class="tex" data-tex="a'">a'</span> is an integer (This shouldn't be a surprise: a monic integral quadratic either has two integer roots or two irrational ones; it cannot have one integer solution and another that's rational-but-not-an-integer).</p><p>From the second equation we learn that <span class="tex" data-tex="a'">a'</span> is not zero. Why? Because remember: <span class="tex" data-tex="k">k</span> is not a perfect square, so it cannot be equal to <span class="tex" data-tex="b^2">b^2</span>.</p><p><span class="tex" data-tex="a'">a'</span> can't be negative, either. If it were, then <span class="tex" data-tex="a'^2-kba'+(b^2-k)">a'^2-kba'+(b^2-k)</span> (which we know is 0) would be at least <span class="tex" data-tex="a'^2+k+(b^2-k)">a'^2+k+(b^2-k)</span> (we just replaced <span class="tex" data-tex="-kba'">-kba'</span> with <span class="tex" data-tex="k">k</span>, which isn't larger when <span class="tex" data-tex="a'">a'</span> is negative), and this is simply <span class="tex" data-tex="a'^2+b^2&lt;0">a'^2+b^2&lt;0</span>, contradiction.</p><p>So now we know that <span class="tex" data-tex="a'">a'</span> is a positive integer. Furthermore, notice that</p><p><span class="tex" data-tex="a' =\frac{b^2-k}{a} &lt; a">a' =\frac{b^2-k}{a} &lt; a</span></p><p>because we assumed <span class="tex" data-tex="a \geq b">a \geq b</span>. And finally, since <span class="tex" data-tex="a'">a'</span> was a root of the very same quadratic that <span class="tex" data-tex="a">a</span> was a root of, we see that the pair <span class="tex" data-tex="a',b">a',b</span> yields the same ratio as the pair <span class="tex" data-tex="a,b">a,b</span>:</p><p><span class="tex" data-tex="k=\frac{a'^2+b^2}{a'b+1}">k=\frac{a'^2+b^2}{a'b+1}</span></p><p>and this is a contradiction, because the pair <span class="tex" data-tex="a',b">a',b</span> has a smaller sum than the pair <span class="tex" data-tex="a,b">a,b</span> which we chose to be minimal. QED</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pKbN8C" target="_blank" rel="noopener">https://qr.ae/pKbN8C</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

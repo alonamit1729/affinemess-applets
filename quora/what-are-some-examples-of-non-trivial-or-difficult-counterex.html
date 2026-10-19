@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are some examples of non-trivial or difficult counterexamples to mathematical conjectures? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2016-06-10</div>
+<h1>What are some examples of non-trivial or difficult counterexamples to mathematical conjectures?</h1>
+<div class="q-body"><p>Oh, this is going to be fun.</p><p>First, a point of terminology: there are no “counterexamples to mathematical <i>theories</i>”, because a theory isn’t a single statement that can be refuted with a counterexample. Nor are there counterexamples to mathematical <i>theorems</i>, because theorems are true.</p><p>There do exist interesting, non-trivial and sometimes complicated counterexamples to mathematical statements which, of course, aren’t theorems. Many of those statements have stood as conjectures for a while, until someone found a counterexample.</p><p>Some of the following counterexamples are profound, some mundane. Some are easy to verify, some aren’t. Some are in Number Theory, some in the Theory of Computation, some in Logic and some in Topology (and maybe a few other fields, we’ll see).</p><br/><p><b>Claim</b>: <i>Every number of the form </i><span class="tex" data-tex="2^{2^n}+1">2^{2^n}+1</span><i> is prime. </i>(False!)</p><p>This was a genuine conjecture made by Pierre de Fermat, who verified that <span class="tex" data-tex="2^2+1=5">2^2+1=5</span>, <span class="tex" data-tex="2^4+1=17">2^4+1=17</span>, <span class="tex" data-tex="2^8+1=257">2^8+1=257</span> and <span class="tex" data-tex="2^{16}+1=65537">2^{16}+1=65537</span> are indeed primes.</p><p>The counterexample comes precisely at the next number, <span class="tex" data-tex="2^{32}+1=4294967297=641 \times 6700417">2^{32}+1=4294967297=641 \times 6700417</span>. This may seem trivial by today’s standards, but when Euler found this factorization it was quite a clever feat (he did this by recognizing that <span class="tex" data-tex="641=2^9+2^7+1">641=2^9+2^7+1</span> must divide that number).</p><p>In fact, Fermat was about as wrong about this as can be: as far as we can tell, past <span class="tex" data-tex="n\geq 5">n\geq 5</span> <i>none</i> of the numbers <span class="tex" data-tex="2^{2^n}+1">2^{2^n}+1</span> is prime. We don’t know this for sure, though. We know that <span class="tex" data-tex="2^{2^{32}}+1">2^{2^{32}}+1</span> is composite (as are all smaller numbers of this form), but nobody knows for sure if <span class="tex" data-tex="2^{2^{33}}+1">2^{2^{33}}+1</span> is or isn’t prime.</p><br/><p><b>Claim (Tait’s Conjecture)</b>: <i>Every planar, 3-connected cubic graph has a Hamiltonian cycle. </i>(False!)</p><p>This was proposed in 1884 by P. G. Tait as a way to prove the famous 4-Color Theorem: Tait showed (quite easily) that the 4-color theorem follows from this statement. It took more than 60 years for Bill Tutte to find this counterexample:</p><img alt="" loading="lazy" src="img/0051a4596c4639.png"/><p>This graph is obviously planar, it is obviously cubic (every vertex has exactly three neighbors), it is slightly less obviously 3-connected (it cannot be separated by removing one or two vertices), and it’s not Hamiltonian (there’s no way to visit all the vertices in one continuous path with no loops). This last part isn’t at all obvious but it’s not super difficult to prove, either. It’s <i>finding</i> this graph that’s the challenge.</p><br/><p><b>Claim</b>: <i>If you add up some </i><span class="tex" data-tex="k">k</span><i>th powers to get a </i><span class="tex" data-tex="k">k</span><i>th power, you must have added at least </i><span class="tex" data-tex="k">k</span><i> numbers. </i>(False!)</p><p>This conjecture was made by none other than Leonhard Euler, as a certain extension of Fermat’s Last Theorem.</p><p>Euler observed that it’s easy to add up two squares to get a square, as in <span class="tex" data-tex="3^2+4^2=5^2">3^2+4^2=5^2</span>, but you can’t add two cubes to get a cube: <span class="tex" data-tex="a^3+b^3=c^3">a^3+b^3=c^3</span> has no solution in positive integers (This is the case <span class="tex" data-tex="n=3">n=3</span> of Fermat’s Last Theorem, which Euler was the first to actually prove.) You <i>can</i>, however, add up <i>three</i> cubes to get a cube, for example <span class="tex" data-tex="3^3+4^3+5^3=6^3">3^3+4^3+5^3=6^3</span>. Well, thought Euler, there’s a pattern here: you can add up <span class="tex" data-tex="k">k</span> <span class="tex" data-tex="k">k</span>th powers to get a <span class="tex" data-tex="k">k</span>th power, but you can’t get away with fewer than <span class="tex" data-tex="k">k</span> of them.</p><p>This isn’t true, but it took almost 200 years to find a counterexample.</p><p>The first counterexample was found in 1966 by Lander and Parkin, using a computer search. They discovered that</p><p><span class="tex" data-tex="27^5+84^5+110^5+133^5=144^5">27^5+84^5+110^5+133^5=144^5</span>.</p><p>You can find their original paper <a href="http://www.ams.org/journals/mcom/1967-21-097/S0025-5718-1967-0220669-3/S0025-5718-1967-0220669-3.pdf" rel="noopener" target="_blank">here</a>. In 1966, this was quite a feat. Nowadays, you can find this example in just a few minutes of coding and running your code on a standard laptop, or even a smartphone (Try it!).</p><p>This shows that Euler was wrong when <span class="tex" data-tex="k=5">k=5</span>. He already knew that he was right for <span class="tex" data-tex="k=3">k=3</span>. What about <span class="tex" data-tex="k=4">k=4</span>?</p><p>That took considerably more ingenuity than a mere computer search. In 1986, 20-year-old <a href="https://en.wikipedia.org/wiki/Noam_Elkies" rel="noopener" target="_blank">Noam Elkies</a> used the theory of elliptic curves (plus some computer work) to find <a href="http://www.ams.org/journals/mcom/1988-51-184/S0025-5718-1988-0930224-9/S0025-5718-1988-0930224-9.pdf" rel="noopener" target="_blank">infinitely many counterexamples</a> to Euler’s conjecture for fourth powers. The smallest one is</p><p><span class="tex" data-tex="2682440^4+15365639^4+18796760^4=20615673^4">2682440^4+15365639^4+18796760^4=20615673^4</span>.</p><p>Finally, for <span class="tex" data-tex="k \geq 6">k \geq 6</span>, the situation is still unknown. It is possible, though in my mind unlikely, that Euler’s conjecture holds for 6th powers and beyond.</p><p>We aren’t quite done with Euler, though.</p><br/><p><b>Claim</b>: <i>There are no Orthogonal Squares of even order which is not divisible by 4</i>. (False!)</p><p>Look at the following array of cards.</p><p>A♠ K♥ Q♦ J♣<br/>Q♣ J♦ A♥ K♠<br/>J♥ Q♠ K♣ A♦<br/>K♦ A♣ J♠ Q♥</p><p>See how clever this is: every row contains each rank (J, Q, K, A) exactly once, as does each column. Also, every row contains each suit (♠,♥,♦,♣) exactly once, as does each column. But moreover, the two arrangements of rank and suits are so mixed up that no card appears twice in the entire array: the Jack of Hearts appears just once, as does the Queen of Spades, and so on for all possible combinations.</p><p>Without this last “orthogonality” condition, what you’d have here is just two superimposed Sudoku puzzles of order 4. But the requirement to have none of the pairs appear twice makes it a very hard puzzle, hard enough to interest the great Euler. He used latin and greek letters to build those arrays, earning them then name Graeco-Latin square. Here’s such an array of order 3.</p><img alt="" loading="lazy" src="img/f7e753b26bceb2.png"/><p>Euler was able to construct such arrays for every odd order and for every order divisible by 4. It’s easy to see that there’s no such array for order 2 (exercise!), and Euler was unable to build one of order 6, so he proposed that the orders 2, 6, 10, 14, … are impossible. Those are the even numbers that aren’t divisible by 4.</p><p>Euler was wrong about that, too, and once again it took more than 150 years for this conjecture to be refuted (at this point I should probably mention that Euler was one of the most profound and creative mathematicians of all time, and those conjectural snafus were quite uncharacteristic of him.)</p><p>Euler was right about order 6, though it was only in 1901 that this was proven. But in 1959, <a href="https://en.wikipedia.org/wiki/Raj_Chandra_Bose" rel="noopener" target="_blank">Raj Chandra Bose</a> and <a href="https://en.wikipedia.org/wiki/Sharadchandra_Shankar_Shrikhande" rel="noopener" target="_blank">Sharadchandra Shankar Shrikhande</a> constructed an orthogonal array of order 22. <a href="https://en.wikipedia.org/wiki/E._T._Parker" rel="noopener" target="_blank">E. T. Parker</a> found an example of order 10, and later the three of them proved that such arrays exist for every <span class="tex" data-tex="n">n</span> except the gaps at <span class="tex" data-tex="n=2">n=2</span> and <span class="tex" data-tex="n=6">n=6</span>.</p><p>Here’s an orthogonal array of order 10: every 2-digit combination appears exactly once, and every row and every column contain every digit in both the first and second places.</p><img alt="" loading="lazy" src="img/77a4d3dabf63b7.jpg"/><br/><img alt="" loading="lazy" src="img/5aadbe6096c5c1.jpg"/><br/><p><b>Claim</b>: <i>There are no </i><a href="https://en.wikipedia.org/wiki/Turing_degree" rel="noopener" target="_blank"><i>Turing degrees</i></a><i> between </i><b><i>0</i></b><i> and </i><b><i>0′</i></b>. (False)!</p><p>The theory of Turing degrees is a truly beautiful idea. It studies the computational aspects of sets of numbers, and reveals an amazingly intricate structure from a few simple definitions. Here are the minimum basics we need.</p><p>A set of natural numbers is called <i>computable</i> if you can write a computer program that checks for membership in the set. Since you can write a computer program that checks if a number is prime, the set of primes is computable. Since you can write a computer program that checks if a given number is even and is the sum of two primes, the set of even numbers which are the sum of two primes is computable (We don’t know if this set contains all even numbers greater than 2, which is Goldbach’s conjecture; but the set is nevertheless computable). The family of all computable sets is called <b>0</b>.</p><p>Not every set of natural numbers is computable, because there are far too many sets and far too few possible computer programs to detect them. As a concrete example of a non-computable set, consider the set of numbers which encode (in some way) computer programs which halt. No computer program can correctly determine if a number is or isn’t in the set .</p><p>Now, suppose you are given a magical gadget which <i>can</i>, actually, tell you if a program halts or not. Using this gadget as “black box” (or, in more common parlance, an “oracle”), you can now do better and write computer programs that decide membership in more sets than just the computable ones. Those sets are said to be “computable using a halting oracle”, and the family of those sets is denoted <b>0′</b>. It also carries the captivating name “The <a href="https://en.wikipedia.org/wiki/Turing_jump" rel="noopener" target="_blank">Turing jump</a> of <b>0</b>”.</p><p><a href="https://en.wikipedia.org/wiki/Emil_Leon_Post" rel="noopener" target="_blank">Emil Post</a> asked the question: are there sets that are harder to verify than <b>0</b> but easier to verify than <b>0′</b>? A bit more formally, is there a set which is not computable but is computable with a halting oracle, and which is itself not powerful enough to serve as a halting oracle? It seems a bit hard to imagine that such intermediate-level problems exist.</p><p>But they do. Richard Friedberg and Albert Muchnik, independently, developed the idea known as the Priority Method and constructed such peculiar sets. This opened a whole new field of study, exploring the rich structure of Turing degrees and their partial order.</p><br/><p><b>Claim</b><i>: There are no models of ZFC which violate the Continuum Hypothesis</i>. (False!)</p><p>Georg Cantor, the creator of the Theory of Sets, wondered if there’s an uncountable set of real numbers which cannot be put in correspondence with the real numbers. In other words, is there any cardinality between <span class="tex" data-tex="\aleph_0">\aleph_0</span> and <span class="tex" data-tex="2^{\aleph_0}">2^{\aleph_0}</span>?</p><p>This very famous conjecture became known as the Continuum Hypothesis (CH). In 1938, Kurt Gödel proved that this hypothesis is consistent with ZFC, which is the same thing as saying that there’s a model of ZFC – A “universe of sets” – in which CH is true. Some people believed this was an indication that CH is, indeed, true, which means that there are no models of ZFC in which CH is false.</p><p>In fact, people generally had no idea how to build models of ZFC other than the “natural” ones like <span class="tex" data-tex="L">L</span> which is the model built by Gödel. But <a href="https://en.wikipedia.org/wiki/Paul_Cohen" rel="noopener" target="_blank">Paul Cohen</a> succeeded in doing just that, inventing the fundamental technique of <a href="https://en.wikipedia.org/wiki/Forcing_(mathematics)" rel="noopener" target="_blank">Forcing</a> in 1963. For this he was awarded the Fields medal.</p><p>People don’t usually think of a model of ZFC+<span class="tex" data-tex="\neg">\neg</span>CH is a “counterexample”, but formally it can be regarded as one: it is a counterexample to the claim that ZFC implies CH, namely that there are no models of ZFC where CH is false. There are, in fact, such models, so Cohen built what might be described as a counterexample.</p><br/><p><b>Claim</b>: <i>An uncountable group must have an uncountable proper subgroup</i>. (False!)</p><p>It’s very easy to construct uncountable groups: the circle, the torus, the group of <span class="tex" data-tex="n\times n">n\times n</span> real matrices of determinant 1, and so on. There are tons of such groups, and if you look at them, you’ll see that they all insist on containing uncountable subgroups. Is it possible to create an uncountable group without uncountable proper subgroups?</p><p>It’s possible, but very far from easy. The first counterexample, dubbed a “Kuroš monster”, was found by <a href="https://en.wikipedia.org/wiki/Saharon_Shelah" rel="noopener" target="_blank">Saharon Shelah</a> and published <a href="http://www.sciencedirect.com/science/article/pii/S0049237X08713466" rel="noopener" target="_blank">here</a>. It’s beyond my abilities to even sketch the construction.</p><br/><p><b>Claim</b>: <i>There are no books dedicated exclusively to counterexamples</i>. (False!)</p><p>Topology has so many counterexamples, there’s a whole <a href="https://www.amazon.com/Counterexamples-Topology-Dover-Books-Mathematics/dp/048668735X" rel="noopener" target="_blank">book</a> about them, and this book is so famous, there’s a Wikipedia <a href="https://en.wikipedia.org/wiki/Counterexamples_in_Topology" rel="noopener" target="_blank">article</a> about it. Following its success, other books with similar titles popped up in other fields of mathematics.</p><p>Some of the standard counterexamples in topology are the <a href="https://en.wikipedia.org/wiki/Cantor_set" rel="noopener" target="_blank">Cantor set</a>, the <a href="https://en.wikipedia.org/wiki/Long_line_(topology)" rel="noopener" target="_blank">long line</a> and the <a href="https://en.wikipedia.org/wiki/Hawaiian_earring" rel="noopener" target="_blank">Hawaiian earring</a>. A slightly more exotic counterexample is the “<a href="http://math.stackexchange.com/a/1336626" rel="noopener" target="_blank">Sticky foot</a>” space constructed by Bing as an example of a countable, connected Hausdorff space. It’s easy to suppose that a connected Hausdorff space must be uncountable, because all the connected spaces everyone knows are uncountable, and clearly the finite ones won’t do. But such weird spaces do exist, and the Sticky Foot space is one of them.</p><br/><p><b>Claim</b>:<i> This list is complete</i>. (False!)</p><p>This claim is nonsense. There are tons of other counterexamples in math, each of which serves as a counterexample to that claim.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pKmy91" target="_blank" rel="noopener">https://qr.ae/pKmy91</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

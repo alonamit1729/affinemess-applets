@@ -6,7 +6,7 @@
     const panels = root.querySelectorAll('.panel');
 
     /* ---------- viewer ----------
-       Any .tile[data-slug] opens in place at #<tab>/<slug>, where <tab> is the panel it sits in.
+       Any .tile/.qrow/.qotd with data-slug opens in place at #<tab>/<slug>, where <tab> is the panel it sits in.
        The iframe loads data-src if present (YouTube/Desmos embed URLs), otherwise the tile's href.
        "New tab" always uses href, so changing a tile's URL needs no script edit. */
     const viewer   = document.getElementById('am-viewer');
@@ -35,7 +35,7 @@
     function tileFor(tab, slug) {
       const panel = document.getElementById('am-panel-' + tab);
       if (!panel) return null;
-      return Array.from(panel.querySelectorAll('.tile[data-slug]'))
+      return Array.from(panel.querySelectorAll('[data-slug]'))
                   .find(t => t.dataset.slug === slug) || null;
     }
 
@@ -46,7 +46,7 @@
         viewerPushed = true;
       }
       if (currentKey === key && !viewer.hidden) return;
-      const name = (tile.querySelector('.title') || tile).textContent.trim();
+      const name = tile.dataset.name || (tile.querySelector('.title') || tile).textContent.trim();
       currentKey = key;
       currentTab = tab;
       lastTile = tile;
@@ -108,7 +108,7 @@
       if (frame) { frame.remove(); frame = null; }
     }
 
-    root.querySelectorAll('.tile[data-slug]').forEach(tile => {
+    root.querySelectorAll('.tile[data-slug], .qrow[data-slug], .qotd[data-slug]').forEach(tile => {
       tile.addEventListener('click', e => {
         // let ctrl/cmd/shift/middle-click do their normal new-tab thing
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -171,6 +171,66 @@
       activate(order[next], true);
       if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.tabs')) document.activeElement.blur();
     });
+
+
+    /* ---------- Quora: answer of the day, search, random ---------- */
+    (function () {
+      const panel = document.getElementById('am-panel-quora');
+      if (!panel) return;
+      const rows = Array.from(panel.querySelectorAll('.qrow'));
+      const qotd = panel.querySelector('.qotd');
+      const input = panel.querySelector('.qtools input');
+      const count = panel.querySelector('.qcount');
+      const none  = panel.querySelector('.qnone');
+      const rnd   = panel.querySelector('[data-q="random"]');
+      if (!rows.length) return;
+      // Same answer all day (local date), and the walk visits every answer before repeating.
+      const gcd = (a, b) => b ? gcd(b, a % b) : a;
+      const day = Math.floor((new Date().getTime() - new Date().getTimezoneOffset() * 60000) / 86400000);
+      let step = 29; while (gcd(step, rows.length) !== 1) step++;
+      const pick = rows[(day * step + 11) % rows.length];
+      if (qotd) {
+        qotd.dataset.slug = pick.dataset.slug;
+        qotd.dataset.name = pick.dataset.name;
+        qotd.href = pick.getAttribute('href');
+        qotd.querySelector('.title').innerHTML = pick.querySelector('.title').innerHTML;
+        qotd.querySelector('.desc').textContent = pick.dataset.excerpt || '';
+        // click is handled by the shared viewer binding above (qotd carries data-slug)
+      }
+      function filter() {
+        const words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+        let n = 0;
+        rows.forEach(r => {
+          const ok = words.every(w => r.dataset.find.indexOf(w) >= 0);
+          r.hidden = !ok; if (ok) n++;
+        });
+        count.textContent = n + (n === 1 ? ' answer' : ' answers');
+        none.hidden = n > 0;
+      }
+      input.addEventListener('input', filter);
+      filter();
+      rnd.addEventListener('click', () => openViewer(rows[Math.floor(Math.random() * rows.length)], true));
+      // Math in titles: load KaTeX (self-hosted next to the answers) the first time it's needed
+      const base = panel.dataset.base;
+      let kx = null;
+      function renderMath() {
+        panel.querySelectorAll('.tex:not([data-done])').forEach(el => {
+          try { window.katex.render(el.getAttribute('data-tex'), el, { throwOnError: false }); el.setAttribute('data-done', '1'); } catch (_) {}
+        });
+      }
+      function loadMath() {
+        if (kx) return kx;
+        kx = new Promise(res => {
+          if (window.katex) return res();
+          const c = document.createElement('link'); c.rel = 'stylesheet'; c.href = base + 'katex/katex.min.css'; document.head.appendChild(c);
+          const j = document.createElement('script'); j.src = base + 'katex/katex.min.js'; j.onload = res; j.onerror = res;
+          document.head.appendChild(j);
+        }).then(() => { if (window.katex) renderMath(); });
+        return kx;
+      }
+      new MutationObserver(() => { if (panel.classList.contains('active')) loadMath(); }).observe(panel, { attributes: true, attributeFilter: ['class'] });
+      if (panel.classList.contains('active')) loadMath();
+    })();
 
     /* ---------- routing: #applets, #applets/<slug>, #youtube/<slug>, ... ---------- */
     function route() {

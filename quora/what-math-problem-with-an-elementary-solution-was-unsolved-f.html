@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What math problem with an elementary solution was unsolved for the longest period? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2016-01-12</div>
+<h1>What math problem with an elementary solution was unsolved for the longest period?</h1>
+<div class="q-body"><p>Being a competitive guy, I'll offer a problem that I think stood the longest. Naturally, I'm going to stretch the meaning of "elementary solution" so much that it writhes in agony, but this is morally justified by the opportunity to talk about the difference between "recursive" and "recursively enumerable", about elliptic curves, and about Arab manuscripts from the year 972.</p><p>___________</p><p>Pick a number. Did you pick 5? Good. Now here's a question for you:</p><p><b>Can you find a right triangle with rational sides and area 5?</b></p><p>Simple question, right? A right triangle is a triangle with a right angle. "Rational sides" means that the sides have rational lengths. Here is an example of a right triangle with rational sides (in fact, integer sides, but integers qualify as rational numbers):</p><img alt="" loading="lazy" src="img/a0b72d05ad45b8.jpg"/><p>What is the area of this triangle? It is 6. If you had picked 6, this triangle would tell you that the answer is "Yes". But you didn't pick 6, did you. You picked 5. Is there a right triangle with rational sides and area 5?</p><p>The answer is also "Yes", but finding the right (haha) triangle isn't quite that easy. Here it is:</p><img alt="" loading="lazy" src="img/1eaf5ab174feb5.jpg"/><p>The sides are <span class="tex" data-tex="\frac{3}{2}, \frac{20}{3}">\frac{3}{2}, \frac{20}{3}</span> and <span class="tex" data-tex="\frac{41}{6}">\frac{41}{6}</span>. You can verify that this is indeed a right triangle by checking the well-known Pythagorean property:</p><p><span class="tex" data-tex="\displaystyle \left(\frac{3}{2}\right)^2+\left(\frac{20}{3}\right)^2 = \left(\frac{41}{6}\right)^2">\displaystyle \left(\frac{3}{2}\right)^2+\left(\frac{20}{3}\right)^2 = \left(\frac{41}{6}\right)^2</span>.</p><p>Numbers like 5 and 6 which are areas of right triangles with rational sides are called <i>congruent numbers</i>. An Arab manuscript, written no later than 972 AD, asks for a way to determine if a given number is congruent (the original phrasing was a bit different, but the property is equivalent to what we just described.)</p><p>It turns out that 1, 2, 3 and 4 aren't congruent, but 5, 6 and 7 are. We can build a sequence of congruent numbers, as did the Arabs in the 10th century, and we may wonder what to make of it. What's the pattern?</p><p><b>Question: How can you tell if a number is congruent?</b></p><p>This question stood for over 1,000 years, and it is now solved (almost), and the solution is elementary (except that its proof is far from it).</p><p>If you know something about Pythagorean triplets, you may know that there's a methodical way of generating all right triangles with <i>integer</i> sides. Every such triangle has an integer area, and sometimes this area can be written as <span class="tex" data-tex="a">a</span> times a square of <span class="tex" data-tex="b">b</span>. In that case, we can divide all the lengths by <span class="tex" data-tex="b">b</span>, and get a right triangle with rational sides and area <span class="tex" data-tex="a">a</span>.</p><p>For example, there's a right triangle with sides <span class="tex" data-tex="9, 40, 41">9, 40, 41</span> because <span class="tex" data-tex="9^2+40^2=41^2">9^2+40^2=41^2</span>. The area of this triangle is <span class="tex" data-tex="180">180</span>, which is <span class="tex" data-tex="5\times 6^2">5\times 6^2</span>. So we can divide the edges by <span class="tex" data-tex="6">6</span> and get a triangle with area <span class="tex" data-tex="5">5</span>. This is the same triangle we just looked at.</p><p>So we can methodically generate all triangles with integer sides, and then find all the areas that each of them supports after a possible division by some common denominator. Why isn't that a suitable algorithm?</p><p>Well, the problem is that this algorithm will eventually generate all congruent numbers, but <i>not in order</i>. So if you're considering a particular candidate number, you have no idea how long you might need to wait for it to come up. If it comes up, great: it's congruent. If it hadn't come up yet, you don't know if you should give up (because your number isn't congruent) or you just need a little more patience.</p><p>Did I say <i>a little</i>? Consider the number 157. Is it congruent? We can start generating Pythagorean triplets and wait for one with an area that is 157 times a square. We generate and wait, wait and generate, and eventually we die, thinking that surely 157 isn't congruent.</p><p>But it is. And do you know what is the length of the hypotenuse of the integer triangle you'll need to discover? It is 224403517704336969924557513090674863160948472041. I'm not even kidding. This is precisely it. This number has 48 digits. You'll need to live for billions of years until your supercomputer finds it.</p><img alt="" loading="lazy" src="img/a8bc8ec0c1558f.jpg"/><p>(This is the full rational right triangle with area 157).</p><p>The distinction between an algorithm that <i>generates</i> all numbers with a certain property, and an algorithm which <i>checks</i> if a given number has that property, is profound. It is the difference between "recursively enumerable" sequences and "recursive" or "computable" sequences. It is one of the most fundamental definitions in logic and the theory of computability.</p><p>So the question asked by the Arab scholars in 972 AD (or earlier) is simply: is the set of congruent numbers computable? And if so, what is the method to check, in a finite time, if a number is congruent or not?</p><p>The answer was (almost) found by <a href="https://en.wikipedia.org/wiki/Jerrold_B._Tunnell" rel="noopener" target="_blank">Jerrold B. Tunnell</a> in 1983. That's at least 1,011 years after the problem was stated. His answer is as follows:</p><p><b>An odd, squarefree number </b><span class="tex" data-tex="n">n</span><b> is congruent if, and only if, the number of ways of writing </b><span class="tex" data-tex="n">n</span><b> as </b><span class="tex" data-tex="2x^2+y^2+8z^2">2x^2+y^2+8z^2</span><b> is twice the number of ways of writing it as </b><span class="tex" data-tex="2x^2+y^2+32z^2">2x^2+y^2+32z^2</span><b>.</b></p><p>Here <span class="tex" data-tex="x, y, z">x, y, z</span> are integers. A similar condition is available for even numbers, and the "squarefree" part is just a technicality: the numbers <span class="tex" data-tex="n">n</span> and <span class="tex" data-tex="nd^2">nd^2</span> are either both congruent or both not, so you can always remove squares from a number.</p><p>A few comments are in order.</p><p>First, this strange statement about the number of solutions is awesome, because it can be easily checked in finite time. The point is that <span class="tex" data-tex="x^2, y^2">x^2, y^2</span> and <span class="tex" data-tex="z^2">z^2</span> are all positive, so there are only finitely many candidates to test. If we had third powers there, for example, things would have been very grim; for example, nobody knows if <span class="tex" data-tex="114">114</span> is the sum of three cubes of integers. But with squares, it's all easy. Just test all <span class="tex" data-tex="x, y, z">x, y, z</span> that lie between <span class="tex" data-tex="0">0</span> and <span class="tex" data-tex="\sqrt{n}">\sqrt{n}</span> and you're done.</p><p>Second, we must agree that this congruency criterion is as elementary as they come. It can be checked manually by a 10-year old who understands addition and multiplication. The actual algorithm that answers the question posed in 972 is fully and completely elementary.</p><p>Third, Tunnell's statement is <i>not yet fully proven</i>. This is the first way I'm lying in saying that I have an example of a long-standing problem with an elementary solution: the problem is not quite solved yet. If <span class="tex" data-tex="n">n</span> is congruent then we do know for sure that <span class="tex" data-tex="n">n</span> satisfies the condition on the number of solutions. But the other direction, concluding that <span class="tex" data-tex="n">n</span> is congruent if the condition holds, hinges on a special case of the <a href="https://en.wikipedia.org/wiki/Birch_and_Swinnerton-Dyer_conjecture" rel="noopener" target="_blank">Birch and Swinnerton-Dyer</a> conjecture, and that conjecture, and even that special case, are unsolved to date. So Tunnell's condition may in principle turn out to be false, but this is extremely unlikely.</p><p>Finally, and this is the second way I'm lying through my teeth when I'm calling this "an elementary solution": the <i>proof</i> of Tunnell's theorem (the parts of it that we do know how to prove) is very, very, <i>very</i> far from elementary. The conclusion of the proof is elementary, but the proof itself is not.</p><p>Through a sequence of elementary transformations, the property of <span class="tex" data-tex="n">n</span> being congruent can be transformed to the question of whether or not the equation <span class="tex" data-tex="y^2=x^3-n^2 x">y^2=x^3-n^2 x</span> has infinitely many solutions, or in other words if the corresponding elliptic curve has positive rank. It is remarkable that this ancient problem, which on the surface has nothing to do with elliptic curves, can be very effectively reduced to a problem about elliptic curves – much like another famous old problem, Fermat's Last Theorem.</p><p>At this point, we may start applying the massive amount of knowledge we have about elliptic curves to the congruent number problem. This Tunnell did, and through a series of ingenious reductions which, at one point, rely on a famous conjecture tying the rank to a certain modular form, was able to produce the elementary condition for congruency. It also enabled Don Zagier to <a href="http://mathoverflow.net/questions/223226/reference-to-a-don-zagier-result-and-the-congruent-number-problem" rel="noopener" target="_blank">discover</a>, using the method of Heegner points, the incredible triangle that has 157 as its area.</p><p>John Coates wrote a wonderful <a href="http://intlpress.com/site/pub/files/_fulltext/journals/pamq/2005/0001/0001/PAMQ-2005-0001-0001-a002.pdf" rel="noopener" target="_blank">survey</a> of the Congruent Number Problem. A more complete description of Tunnell's proof and the mathematics that went into it are in a highly recommended <a href="http://www.amazon.com/Introduction-Elliptic-Modular-Graduate-Mathematics/dp/0387979662/ref=sr_1_1?ie=UTF8&amp;qid=1452587866&amp;sr=8-1&amp;keywords=koblitz+modular+forms" rel="noopener" target="_blank">book</a> by Neal Koblitz, "Introduction to Elliptic Curves and Modular Forms". You should get this book. it has this picture by Anatoly Fomenko as its frontispiece, depicting the family of elliptic curves studied by Tunnell.</p><img alt="" loading="lazy" src="img/7d818aee9141b3.jpg"/><p>So, a thousand years. Kinda. Beat that.</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzS9" target="_blank" rel="noopener">https://qr.ae/pFmzS9</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

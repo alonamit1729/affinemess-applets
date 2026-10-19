@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2019-01-08</div>
+<h1>For any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes?</h1>
+<div class="q-body"><p>‘Hey, Salviati, can you estimate the next prime after <span class="tex" data-tex="100003">100003</span>?’</p><p>‘Sure. It’s <span class="tex" data-tex="100019">100019</span>.’</p><p>‘Wait, what? How did you know?’</p><p>‘Oh, easy. <span class="tex" data-tex="9991=100^2-9=(100-3)(100+3)">9991=100^2-9=(100-3)(100+3)</span>, so <span class="tex" data-tex="99910">99910</span> is divisible by both <span class="tex" data-tex="97">97</span> and <span class="tex" data-tex="103">103</span>, so neither <span class="tex" data-tex="99910+97">99910+97</span> nor <span class="tex" data-tex="99910+103">99910+103</span> can be prime. This takes care of <span class="tex" data-tex="100007">100007</span> and <span class="tex" data-tex="100013">100013</span>. Both <span class="tex" data-tex="100011">100011</span> and <span class="tex" data-tex="100017">100017</span> are obviously divisible by <span class="tex" data-tex="3">3</span>, while <span class="tex" data-tex="100009">100009</span> is divisible by <span class="tex" data-tex="7">7</span>, which leaves <span class="tex" data-tex="100019">100019</span>. I ran a quick primality test and it is, indeed, prime. So there you go.’</p><p>‘No no no no, you don’t understand! I didn’t want you to <i>find</i> the next prime with all these crazy computations, I wanted you to <i>estimate</i> it.’</p><p>‘Estimate? Why would I estimate if I can calculate?’</p><p>‘Because calculating is hard! I’m looking for an easy way, using patterns.’</p><p>‘What patterns?’</p><p>‘Patterns in the previous primes leading up to it.’</p><p>‘Simplicio, my good man. There are <span class="tex" data-tex="9593">9593</span> primes below <span class="tex" data-tex="100003">100003</span>. You want me to process nine <i>thousand</i> previous primes as an <i>easy</i> way to estimate the next prime?’</p><p>‘Well, I’m hoping there’s some pattern…’</p><p>‘Of course there’s a pattern. Those are the prime numbers, dude, they are among the simplest of sequences, determined by the simplest of rules. Rules are patterns.’</p><p>‘Ha, really? So what’s the pattern?’</p><p>‘If you actually gave me those <span class="tex" data-tex="9593">9593</span> previous primes, all I would have needed to do is skip-count from each of them to find their multiples, and then the first number left standing is your next prime. It’s a very nice pattern, really. Quite skippy-trippy.’</p><p>‘Oh well that’s because you pretend you already have all those earlier primes. What if you don’t?’</p><p>‘You want me to estimate the next prime after <span class="tex" data-tex="100003">100003</span> using patterns in the sequence of previous primes without having the sequence of previous primes? Where am I supposed to look for a pattern?’</p><p>‘Well, I… ugh, you make everything so complicated! I’m asking a simple question: can you *quickly* estimate the next prime using some *simple* pattern in the previous primes?’</p><p>‘Sure, I can very quickly estimate the next prime, much more quickly than actually finding it. The next prime after anything around <span class="tex" data-tex="100000">100000</span> is going to be about <span class="tex" data-tex="12">12</span> numbers ahead, because the natural log of <span class="tex" data-tex="100000">100000</span> is about <span class="tex" data-tex="11.5">11.5</span>. Here we had to skip <span class="tex" data-tex="16">16</span>, which is a bit more than expected but not by much.’</p><p>‘You didn’t use any pattern in the previous primes…’</p><p>‘I know. I don’t need to. I have a pretty good estimate just from the number itself.’</p><p>‘Ok, but can you find a <i>better</i> estimate if you <i>do</i> include the previous primes?’</p><p>‘The trouble with your question is that you want to gain speed by offering data, but the data is so large that doing anything with it is very time consuming, so we can’t expect to gain speed. The constraints of the question are unreasonable, if not downright self-contradictory.’</p><p>‘Ok, ok. I know you always end up talking about polynomial-time and stuff. Is this solvable in polynomial time?’</p><p>‘We don’t know. The question isn’t really about finding primes, since we already know how to do that in polynomial time. The question is about the size of the gaps. Is it true that every prime is followed by another prime no more than, say, <span class="tex" data-tex="O(\log^2 n)">O(\log^2 n)</span> away? If so, and it probably is, then a naive search would find the next prime in polynomial time. This is Cramèr’s conjecture, and it’s an interesting open problem.</p><p>However, (continued Salviati), there’s no meaningful way to define what a “pattern” might be beyond the simple pattern which is the very definition of the primes, and using previous primes cannot be much help in finding the next prime – mainly because you don’t <i>need</i> much help anyway. Algorithmically, it’s a fairly easy problem.’</p><p>‘So what’s the next prime after <span class="tex" data-tex="2^{82589933}-1">2^{82589933}-1</span>?’</p><p>‘Oh, it’s around <span class="tex" data-tex="2^{82589933}+57000000">2^{82589933}+57000000</span>, give or take.’</p><p>‘Really? Then find it!’</p><p>‘Simplicio, you’re simply insufferable.’</p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmzjH" target="_blank" rel="noopener">https://qr.ae/pFmzjH</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

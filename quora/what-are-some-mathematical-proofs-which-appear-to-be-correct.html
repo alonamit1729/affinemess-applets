@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are some mathematical proofs which appear to be correct, but are actually incorrect? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2019-01-28</div>
+<h1>What are some mathematical proofs which appear to be correct, but are actually incorrect?</h1>
+<div class="q-body"><p>The most fiendish false proofs are not proofs of incorrect assertions. They are <b>faulty proofs of correct assertions</b>.</p><p>When someone offers a proof of an incorrect assertion, you know that at some point in their chain of reasoning they must say something that’s wrong. Find that something, and you’ll see immediately where the proof fails.</p><p>But when someone “proves”, incorrectly, a <i>correct</i> statement, demonstrating the incorrectness of the proof can be anywhere from easy to extremely hard. The assertions made in the steps of the proof may, for all we know, all be correct: it’s the <i>implications</i> that are broken.</p><p>When students learn the idea of proofs, this is a point well worth emphasizing, and one of the tools is the study of incorrect proofs. It’s not used often enough, and that’s a shame. There’s much to be learned.</p><p>Here are some of the best examples I know.</p><br/><p>The first example is a faulty proof by none other than <b>Srinivasa Ramanujan</b>. Now, granted, rigor in proofs was never Ramanujan’s forte; his breakthroughs were almost universally discoveries and conjectures, not proofs, which were supplied by others (sometimes decades after his death). But it’s interesting to study this case because this proof, or variations of it, still show up all the time.</p><p>In 1911, Ramanujan published the following problem in the <i>Journal of the Indian Mathematical Society</i>: Evaluate the nested radicals</p><p><span class="tex" data-tex="\displaystyle \sqrt{1+2\sqrt{1+3\sqrt{1+4\sqrt{\cdots}}}}">\displaystyle \sqrt{1+2\sqrt{1+3\sqrt{1+4\sqrt{\cdots}}}}</span></p><p><span class="tex" data-tex="\displaystyle \sqrt{6+2\sqrt{7+3\sqrt{8+4\sqrt{\cdots}}}}">\displaystyle \sqrt{6+2\sqrt{7+3\sqrt{8+4\sqrt{\cdots}}}}</span></p><p>The practice of publishing problems and asking for solutions by readers is still common, and when no solutions are offered the proposer is often expected to submit their own. Ramanujan published 58 such problems between 1911 and 1919, many of which are deep and fascinating. A wonderful survey of these problems is in this paper<a href="#JgKBq">[1]</a> by Berndt, Choi and Kang.</p><p>Ramanujan’s own solution of these nested radicals runs as follows (we’ll do the first one; the other one is similar). Observe that</p><p><span class="tex" data-tex="\displaystyle n+2 = \sqrt{1+(n+1)(n+3)}">\displaystyle n+2 = \sqrt{1+(n+1)(n+3)}</span></p><p>Consequently, if we define <span class="tex" data-tex="f(n)=n(n+2)">f(n)=n(n+2)</span> then</p><p><span class="tex" data-tex="\displaystyle f(n) = n\sqrt{1+f(n+1)}">\displaystyle f(n) = n\sqrt{1+f(n+1)}</span></p><p>but then the same formula can be applied to the inner <span class="tex" data-tex="f(n+1)">f(n+1)</span>, yielding</p><p><span class="tex" data-tex="\displaystyle f(n) = n\sqrt{1+(n+1)\sqrt{1+f(n+2)}}">\displaystyle f(n) = n\sqrt{1+(n+1)\sqrt{1+f(n+2)}}</span></p><p>and this can be repeated indefinitely, yielding an infinite nested radical. Finally, setting <span class="tex" data-tex="n=1">n=1</span> yields</p><p><span class="tex" data-tex="\displaystyle f(1) = \sqrt{1+2\sqrt{1+3\sqrt{\cdots}}}">\displaystyle f(1) = \sqrt{1+2\sqrt{1+3\sqrt{\cdots}}}</span></p><p>which is the desired nested radical, and of course <span class="tex" data-tex="f(1)=3">f(1)=3</span>, so the answer is <span class="tex" data-tex="3">3</span>.</p><p>This seems both clever and convincing, but it’s incorrect – or at least, incomplete. Here’s the problem: we’ve managed to find one particular expression which, when repeatedly expanded, yields a sequence of nested radicals which approaches the desired one. But what if someone finds some <i>other</i> particular expression which also produces the same infinite nested radical, but with a different value?</p><p>Indeed, this can actually be done. For example:</p><p><span class="tex" data-tex="4 = \sqrt{1+2(15/2)} = \sqrt{1+2\sqrt{1+3(221/12)}}=\ldots">4 = \sqrt{1+2(15/2)} = \sqrt{1+2\sqrt{1+3(221/12)}}=\ldots</span></p><p>this can also be pushed further indefinitely, and it seems to say that the value of the same nested radical is <span class="tex" data-tex="4">4</span>! (I stole this example from Herschfeld’s paper “On Infinite Radicals<a href="#Euxwj">[2]</a>”).</p><p>Which is it then?</p><p>The situation may remind you of similar traps which come up with other infinite expressions. For example, when evaluating</p><p><span class="tex" data-tex="\displaystyle x = \sqrt{2}^{\sqrt{2}^{\sqrt{2}^\cdots}}">\displaystyle x = \sqrt{2}^{\sqrt{2}^{\sqrt{2}^\cdots}}</span></p><p>people often say that clearly <span class="tex" data-tex="x = \sqrt{2}^x">x = \sqrt{2}^x</span>, and this is satisfied by <span class="tex" data-tex="x=2">x=2</span> so the answer is <span class="tex" data-tex="2">2</span>. But the problem is that <span class="tex" data-tex="x=\sqrt{2}^x">x=\sqrt{2}^x</span> is also satisfied by <span class="tex" data-tex="x=4">x=4</span>, so which is it?</p><p>Part of the problem, of course, is that we need to carefully define what those infinite expressions even <i>mean</i>. This is typically done by declaring them to be limits of finite prefixes of themselves. Then, to evaluate them, we need to first prove that the limit exists, and then determine its value.</p><p>Sometimes pinpointing the value can be done by studying fixed points of the iteration, as is the case with the infinite tower of <span class="tex" data-tex="\sqrt{2}">\sqrt{2}</span>'s. Ramanujan’s radical is more subtle since the iteration keeps changing. A complete and correct proof that the value is indeed <span class="tex" data-tex="3">3</span> can be found in Herschfeld’s paper, and I think there’s also a question about this on Quora.</p><br/><p>The <b>Cayley-Hamilton</b> theorem (in its matrix formulation) states that if <span class="tex" data-tex="A">A</span> is a square matrix (over some field) and <span class="tex" data-tex="p_A(t)=\det(A-It)">p_A(t)=\det(A-It)</span> is its characteristic polynomial then <span class="tex" data-tex="p_A(A)=0">p_A(A)=0</span>.</p><p>This is not a terribly difficult theorem, but it’s not quite straightforward either. Most courses on linear algebra present one of the correct proofs, and the students move on.</p><p>However, few teachers pause to show the following incorrect argument: we want to show that <span class="tex" data-tex="p_A(A)=0">p_A(A)=0</span>. Well, what’s <span class="tex" data-tex="p_A(t)">p_A(t)</span>? Why, it is <span class="tex" data-tex="\det(A-It)">\det(A-It)</span> where <span class="tex" data-tex="I">I</span> is the identity matrix of the appropriate size. Ok, so what’s <span class="tex" data-tex="p_A(A)">p_A(A)</span>? Obviously, it is <span class="tex" data-tex="\det(A-IA) = \det(A-A)=0">\det(A-IA) = \det(A-A)=0</span>. Done, QED.</p><p>Here’s the thing: if any teacher actually walked their class through this “argument”, with a poker face and a confident attitude, I guarantee you nobody would raise their hand to protest. It seems clear, easy, obvious and straightforward. Doesn’t it? And furthermore, what it proves is actually true, so nobody can find a counterexample. This is most definitely a proof which “appears to be correct”.</p><p>It’s a really good exercise to ponder this “argument” and see why it fails. There’s actually a relatively easy howler here, created by our poor notation.</p><p>Ask yourself, what is “<span class="tex" data-tex="0">0</span>"?</p><p>Wait, what do you mean “what is <span class="tex" data-tex="0">0</span>"? Seems like a silly question. Well, look again at the statement <span class="tex" data-tex="p_A(A)=0">p_A(A)=0</span>. A careful teacher would write <span class="tex" data-tex="p_A(A) = \mathbf{0}">p_A(A) = \mathbf{0}</span>, a bold zero denoting <b>the zero matrix</b>. Indeed, what the Cayley-Hamilton theorem says it that if you calculate <span class="tex" data-tex="c_0I+c_1A+c_2A^2+\ldots+c_nA^n">c_0I+c_1A+c_2A^2+\ldots+c_nA^n</span> where <span class="tex" data-tex="c_i">c_i</span> are the coefficients of the characteristic polynomial, then you get the zero <i>matrix</i>. You get a matrix, not a number.</p><p>On the other hand, our “proof” ended with <span class="tex" data-tex="\det(A-A)=0">\det(A-A)=0</span>, the <i>number</i> zero. The number zero is not the matrix zero. Our “proof”, whatever it shows, only concludes that a certain number is zero. This isn’t what the theorem says.</p><p>Whenever I teach the C-H theorem to anyone I make a point of showing this silly non-proof. It’s actually not silly. It stresses the meaning of the theorem and lets students see how misleading proofs can be if we don’t pay careful attention.</p><br/><p>Famously, in 1879, Alfred Kempe published a proof of the 4-color theorem using the (very clever) idea of flipping colors along what are now known as Kempe Chains. The proof stood and was accepted for 11 years before Heawood found a critical error, in 1890.</p><p>Briefly, the proof runs as follows. Assume that the 4-color-theorem is false, and pick a minimal counterexample: a planar graph which is not 4-colorable. We may assume that the graph is that of a triangulation, and using Euler’s formula we show that the graph must contain a vertex <span class="tex" data-tex="v">v</span> of degree <span class="tex" data-tex="\le">\le</span> 5. If we remove vertex <span class="tex" data-tex="v">v</span> (and its incident edges), the leftover graph can be colored with 4 colors, since we picked a minimal counterexample. Our goal is to show that we can still use just 4 colors even if we put that vertex back.</p><p>If <span class="tex" data-tex="v">v</span> has degree 3 or less, that’s obvious: at worst, three colors are unavailable for our vertex, so we can use a fourth one.</p><p>If <span class="tex" data-tex="v">v</span> has degree 4, we may assume that the coloring of the leftover graph uses all four colors for its neighbors, let’s say Blue, Red, Green and Yellow as you walk around the vertex. Put yourself at the Blue vertex and attempt to walk all the way to the Green one only using Blue/Green vertices. Either you can or you can’t.</p><p>If you can’t, good news: flip all the colors along your walk from Blue to Green. Now our vertex sees only Red, Yellow and two Greens, so it can be colored Blue.</p><p>If you can complete the walk, the flipping doesn’t help, of course, because the Green became Blue but the Blue became Green. But now repeat the argument with the Red-Yellow vertices. It’s impossible for two closed loops to form, one Blue-Green and the other Red-Yellow, because planar graphs can’t have two such non-intersecting loops. This proves the reduction for the degree-4 case.</p><p><i>Everything up to this point is perfectly valid</i>.</p><p>Kempe then moved on to repeat the argument for degree 5, which is where he subtly tripped up. He considered a coloring around <span class="tex" data-tex="v">v</span> going R-B-R-G-Y, and worked with similar chains as before. If both the R vertices are surrounded by blocking chains, he attempted to create a R-G chain and a R-Y chain and simultaneously flip them; but this can’t work because the flips may clash with each other.</p><p>The error is subtle, but the proof is unfixable. It took over 80 years to produce a correct proof of 4CT, relying on extensive computer calculations. The basic logical structure of the proof can be traced back to Kempe’s original idea: we work with minimal counterexamples and “unavoidable configurations”, which for Kempe were simply vertices of degree at most 5, and we show that they can be “reduced”, meaning they can always be recolored with fewer colors. But the details of the eventual proof were much more complicated than Kempe believed.</p><br/><p>Finally, let’s recall that “proofs which appear to be correct” can be extremely serious and difficult affairs.</p><p>In 1993, Andrew Wiles had a proof of Fermat’s Last Theorem which he was completely confident in. He is a very, very careful mathematician, and quite shy; “coming out” with such a sensational proof was a difficult step, but he did it because he knew he had it. He presented the proof in a series of lectures, and submitted a full write-up for publication.</p><p>Nick Katz<a href="#FjKKH">[3]</a> began the monumental task of reviewing Wiles’ paper. Few people were even capable of doing that, but Katz had both the immense knowledge and the meticulous nature required to comprehend and check everything very, very carefully. He wrote to Wiles whenever something was unclear, and Wiles always responded with clarifications. Until that one time when he couldn’t. They discussed the point back and forth over weeks, and it became clear that there was a problem, and it was not a trifle, and then it became deep, and then it became an irreversible flaw that demolished the entire proof.</p><p>It wasn’t even directly something in Wiles’ proof, as far as my understanding goes: it was an issue with a construction by Flach<a href="#wNxOW">[4]</a>, then a young researcher, now himself a renowned mathematician at Caltech (we should hold none of that against him – these things happen). Wiles had to go back to the proverbial drawing board, now under immense pressure knowing that his edifice is out and the whole world is chasing the elusive proof. It was a terrible time.</p><p>Eventually, he made a dramatic breakthrough: the very thing that blocked Flach’s construction from working turned out to resurrect a completely different approach to the proof which Wiles abandoned years earlier. He rebuilt the whole thing, recruiting Richard Taylor for a difficult ring-theoretic argument, and successfully published a complete and correct proof in 1995.</p><p>His 1993 proof certainly “appeared to be correct” to his audience and the first round of readers, and most of all, to himself. It was incorrect, but from its ashes emerged the correct proof, one of the greatest mathematical breakthroughs of the 20th century.</p><p>Footnotes</p><p class="citation" id="JgKBq"><a href="#cite-JgKBq">[1] </a><a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.39.9228" rel="noopener" target="_blank">The Problems Submitted by Ramanujan to the Journal of the Indian Mathematical Society</a></p><p class="citation" id="Euxwj"><a href="#cite-Euxwj">[2] </a><a href="https://www.jstor.org/stable/2301294?seq=1#page_scan_tab_contents" rel="noopener" target="_blank">https://www.jstor.org/stable/230...</a></p><p class="citation" id="FjKKH"><a href="#cite-FjKKH">[3] </a><a href="https://en.wikipedia.org/wiki/Nick_Katz" rel="noopener" target="_blank">Nick Katz - Wikipedia</a></p><p class="citation" id="wNxOW"><a href="#cite-wNxOW">[4] </a><a href="https://en.wikipedia.org/wiki/Matthias_Flach_(mathematician)" rel="noopener" target="_blank">Matthias Flach (mathematician) - Wikipedia</a></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmQw8" target="_blank" rel="noopener">https://qr.ae/pFmQw8</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>

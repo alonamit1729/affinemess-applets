@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are x, y, and z in x^3+y^3+z^3=33? · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+
+/* App frame: a control bar on top, the picture fills the rest. No page scroll. */
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+
+/* Wordmark home link: only shown when the applet is opened on its own (not inside the site) */
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+
+/* Controls */
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible {
+  color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none;
+}
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input {
+  font-family:var(--mono); font-size:13px; color:var(--ink);
+  background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px;
+}
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+
+/* About drawer (opens over the picture, below the bar) */
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 {
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1;
+  font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px;
+}
+.am-about h3 {
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400; margin:22px 0 8px;
+}
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+html,body{height:auto}
+.q-wrap{max-width:720px;margin:0 auto;padding:28px 22px 60px}
+.q-wrap h1{font-style:italic;font-weight:400;font-size:28px;line-height:1.2;margin:6px 0 8px;font-variation-settings:"opsz" 144,"SOFT" 80;letter-spacing:-.01em}
+.q-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px}
+.q-body{font-size:17.5px;line-height:1.65}
+.q-body p{margin:0 0 1em}
+.q-body a{color:var(--accent-deep)}
+.q-body img{max-width:100%;height:auto;display:block;margin:1em auto;background:#fff;border-radius:2px}
+.q-body blockquote{margin:1em 0;padding:0 0 0 16px;border-left:3px solid var(--line);color:var(--ink-soft)}
+.q-body h3{font-size:20px;font-style:italic;font-weight:400;margin:1.4em 0 .5em}
+.q-body pre,.q-body code{font-family:var(--mono);font-size:14px;background:var(--paper-card);border-radius:3px}
+.q-body pre{padding:10px 12px;overflow-x:auto}
+.q-body .tex{white-space:nowrap}
+.q-body .katex-display,.q-body .tex-block{overflow-x:auto;overflow-y:hidden}
+.q-body p.citation{font-size:14px;color:var(--ink-soft);margin:0 0 .4em}
+.q-foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:15px;color:var(--ink-soft)}
+</style></head><body>
+<article class="q-wrap">
+<div class="q-meta">Alon Amit on Quora &middot; 2017-06-30</div>
+<h1>What are <span class="tex" data-tex="x"></span>, <span class="tex" data-tex="y"></span>, and <span class="tex" data-tex="z"></span> in <span class="tex" data-tex="x^3+y^3+z^3=33"></span>?</h1>
+<div class="q-body"><p><b>It depends.</b></p><p>If you want three <b>real</b> numbers <span class="tex" data-tex="x,y,z">x,y,z</span> satisfying <span class="tex" data-tex="x^3+y^3+z^3=33">x^3+y^3+z^3=33</span> then there are infinitely many, and they are very easy to find.</p><p>If you want three <b>rational</b> numbers <span class="tex" data-tex="x,y,z">x,y,z</span> satisfying <span class="tex" data-tex="x^3+y^3+z^3=33">x^3+y^3+z^3=33</span> then there are still infinitely many, though they are somewhat harder to find.</p><p>If you want three <b>integers</b>, or <b>whole numbers</b>, satisfying that equation, then you'll need to be patient: nobody knows if such three numbers exist. <span class="tex" data-tex="33">33</span> is the smallest natural number for which it is unknown if it can be represented as a sum of three cubes of integers.</p><p>UPDATE (March 2019): This was just solved!! Andrew Booker<a href="#cBKhm">[1]</a> just discovered how to represent <span class="tex" data-tex="33">33</span> as a sum of three integer cubes:</p><p><span class="tex" data-tex="\displaystyle \begin{aligned} a &amp;= 8866128975287528 \\ b &amp;= -8778405442862239 \\ c &amp;= -2736111468807040 \\ 33 &amp;=  a^3+b^3+c^3\end{aligned}">\displaystyle \begin{aligned} a &amp;= 8866128975287528 \\ b &amp;= -8778405442862239 \\ c &amp;= -2736111468807040 \\ 33 &amp;=  a^3+b^3+c^3\end{aligned}</span></p><br/><p>For real solutions, consider</p><p><span class="tex" data-tex="x=0, y=0, z=\sqrt[3]{33}">x=0, y=0, z=\sqrt[3]{33}</span></p><p>or</p><p><span class="tex" data-tex="x=y=z=\sqrt[3]{11}">x=y=z=\sqrt[3]{11}</span></p><p>or</p><p><span class="tex" data-tex="x=2, y=3, z=-\sqrt[3]{2}">x=2, y=3, z=-\sqrt[3]{2}</span>.</p><p>There clearly are infinitely many solutions: you can choose <span class="tex" data-tex="x">x</span> and <span class="tex" data-tex="y">y</span> to be whatever you want, and there's always exactly one <span class="tex" data-tex="z">z</span> that works, since every real number has exactly one real cube root.</p><br/><p>Want rational solutions? Here's a simple one:</p><p><span class="tex" data-tex="\displaystyle (-4)^3+\left(-\frac{5}{3}\right)^3+\left(\frac{14}{3}\right)^3=33">\displaystyle (-4)^3+\left(-\frac{5}{3}\right)^3+\left(\frac{14}{3}\right)^3=33</span>.</p><p>Once again, there are infinitely many such solutions, though that's not quite as obvious as the real case. If you pick <span class="tex" data-tex="x">x</span> and <span class="tex" data-tex="y">y</span> to be rational, there's generally no reason to assume that the corresponding <span class="tex" data-tex="z">z</span> will be rational as well – see the earlier examples of real solutions.</p><p>But in fact, there are infinitely many ways of representing <i>any</i> rational number as the sum of three cubes of rationals. This was first discovered in 1825 by a schoolmaster from Leeds named S. Ryley, who published this discovery in “The Ladies’ Diary”, a publication which ran annually in London from 1704 to 1841, carrying the subtitle</p><p>"Containing New Improvements in ARTS and SCIENCES, and many entertaining PARTICULARS: Designed for the USE AND DIVERSION OF THE FAIR SEX."</p><img alt="" loading="lazy" src="img/e7842f80530f28.jpg"/><p>One misses a time when the ladies of London were diverted by rational parametrizations of cubic equations.</p><br/><p>The problem of representing integers as sums of cubes of <i>integers</i> is very difficult.</p><p>By simple considerations of residues modulo <span class="tex" data-tex="9">9</span>, there are no such representations for numbers which leave a remainder of <span class="tex" data-tex="4">4</span> or <span class="tex" data-tex="5">5</span> upon division by <span class="tex" data-tex="9">9</span>. For all other numbers, it is believed that such representations exist, but they are chaotic in a rather… diverting manner.</p><ul><li><span class="tex" data-tex="1=1^3+0^3+0^3">1=1^3+0^3+0^3</span></li><li><span class="tex" data-tex="2=1^3+1^3+0^3">2=1^3+1^3+0^3</span></li><li><span class="tex" data-tex="3=1^3+1^3+1^3">3=1^3+1^3+1^3</span></li><li><span class="tex" data-tex="4">4</span> is ruled out</li><li><span class="tex" data-tex="5">5</span> is ruled out</li><li><span class="tex" data-tex="6=2^3+(-1)^3+(-1)^3">6=2^3+(-1)^3+(-1)^3</span></li><li><span class="tex" data-tex="7=2^3+(-1)^3+0^3">7=2^3+(-1)^3+0^3</span></li><li><span class="tex" data-tex="8=2^3+0^3+0^3">8=2^3+0^3+0^3</span></li><li><span class="tex" data-tex="9=2^3+1^3+0^3">9=2^3+1^3+0^3</span></li><li><span class="tex" data-tex="10=2^3+1^3+1^3">10=2^3+1^3+1^3</span></li><li><span class="tex" data-tex="11=3^3+(-2)^3+(-2)^3">11=3^3+(-2)^3+(-2)^3</span></li><li><span class="tex" data-tex="12=10^3+7^3+(-11)^3">12=10^3+7^3+(-11)^3</span></li><li><span class="tex" data-tex="13">13</span> is ruled out</li><li><span class="tex" data-tex="14">14</span> is ruled out</li><li><span class="tex" data-tex="15=2^3+2^3+(-1)^3">15=2^3+2^3+(-1)^3</span></li><li><span class="tex" data-tex="16=2^3+2^3+0^3">16=2^3+2^3+0^3</span></li><li><span class="tex" data-tex="17=2^3+2^3+1^3">17=2^3+2^3+1^3</span></li><li><span class="tex" data-tex="18=3^3+(-2)^3+(-1)^3">18=3^3+(-2)^3+(-1)^3</span></li><li><span class="tex" data-tex="19=3^3+(-2)^3+0^3">19=3^3+(-2)^3+0^3</span></li><li><span class="tex" data-tex="20=3^3+(-2)^3+1^3">20=3^3+(-2)^3+1^3</span></li><li><span class="tex" data-tex="21=16^3+(-14)^3+(-11)^3">21=16^3+(-14)^3+(-11)^3</span></li><li><span class="tex" data-tex="22">22</span> is ruled out</li><li><span class="tex" data-tex="23">23</span> is ruled out</li><li><span class="tex" data-tex="24=2^3+2^3+2^3">24=2^3+2^3+2^3</span></li><li><span class="tex" data-tex="25=3^3+(-1)^3+(-1)^3">25=3^3+(-1)^3+(-1)^3</span></li><li><span class="tex" data-tex="26=3^3+(-1)^3+0^3">26=3^3+(-1)^3+0^3</span></li><li><span class="tex" data-tex="27=3^3+0^3+0^3">27=3^3+0^3+0^3</span></li><li><span class="tex" data-tex="28=3^3+1^3+0^3">28=3^3+1^3+0^3</span></li><li><span class="tex" data-tex="29=3^3+1^3+1^3">29=3^3+1^3+1^3</span></li><li><span class="tex" data-tex="30=(-283059965)^3+(-2218888517)^3+2220422932^3">30=(-283059965)^3+(-2218888517)^3+2220422932^3</span></li><li><span class="tex" data-tex="31">31</span> is ruled out</li><li><span class="tex" data-tex="32">32</span> is ruled out</li><li><span class="tex" data-tex="33">33</span>=??? <b>Nobody knows</b>. (EDIT: See above – now solved!)</li><li><span class="tex" data-tex="34=3^3+2^3+(-1)^3">34=3^3+2^3+(-1)^3</span></li><li><span class="tex" data-tex="35=3^3+2^3+0^3">35=3^3+2^3+0^3</span></li><li><span class="tex" data-tex="36=3^3+2^3+1^3">36=3^3+2^3+1^3</span></li><li><span class="tex" data-tex="37=4^3+(-3)^3+0^3">37=4^3+(-3)^3+0^3</span></li><li><span class="tex" data-tex="38=4^3+(-3)^3+1^3">38=4^3+(-3)^3+1^3</span></li><li><span class="tex" data-tex="39=134476^3+117367^3+(-159380)^3">39=134476^3+117367^3+(-159380)^3</span></li><li><span class="tex" data-tex="40">40</span> is ruled out</li><li><span class="tex" data-tex="41">41</span> is ruled out</li><li><span class="tex" data-tex="42=">42=</span>??? <b>Nobody knows</b>.<b> </b>(EDIT: in Sep 2019, this was solved as well!)</li></ul><p>The solutions given here are the smallest possible. The representation of <span class="tex" data-tex="39">39</span> was found in 1992 by Heath-Brown, Lioen and te Riele. The representation of <span class="tex" data-tex="30">30</span> was found in 1999 by Beck, Pine, Tarrant and Yarbrough Jensen<a href="#JmHfx">[2]</a>.</p><p>It is possible that some number not ruled out by the congruence condition has no such representation, though I feel it's unlikely. It is also possible that the numbers involved are beyond reach with present or even future technologies. Such is math: there are no guarantees.</p><p>Footnotes</p><p class="citation" id="cBKhm"><a href="#cite-cBKhm">[1] </a><a href="https://people.maths.bris.ac.uk/~maarb/papers/cubesv1.pdf" rel="noopener" target="_blank">https://people.maths.bris.ac.uk/...</a></p><p class="citation" id="JmHfx"><a href="#cite-JmHfx">[2] </a><a href="http://www.ams.org/journals/mcom/2007-76-259/S0025-5718-07-01947-3/" rel="noopener" target="_blank">Mathematics of Computation</a></p></div>
+<div class="q-foot">Originally posted on Quora: <a href="https://qr.ae/pFmQ5c" target="_blank" rel="noopener">https://qr.ae/pFmQ5c</a></div>
+</article>
+<script src="katex/katex.min.js"></script>
+<script>
+document.querySelectorAll('.tex').forEach(function(e){try{katex.render(e.getAttribute('data-tex'),e,{throwOnError:false,displayMode:e.classList.contains('tex-block')||/\\tag/.test(e.getAttribute('data-tex'))});}catch(x){}});
+if(window.top===window)document.documentElement.classList.add('am-standalone');
+</script></body></html>
