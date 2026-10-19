@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbit Census · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px; }
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px; }
+.am-about h3 { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin:22px 0 8px; }
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+/* ---- this applet ---- */
+:root{
+  --per-1:#1E1810; --per-2:#B85820; --per-3:#35598F; --per-4:#4E7A3E;
+  --per-5:#7A4A6E; --per-6:#2F7A78; --per-7:#9A7420; --per-8:#A04A4A;
+}
+.am-about { width:min(560px, 100%); }
+.am-about code, .am-about .m { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper); padding:1px 4px; border-radius:2px; }
+.am-about ul { padding-left:20px; margin:0 0 12px; }
+.am-about .ord { font-family:var(--mono); font-size:12.5px; line-height:1.7; background:var(--paper); padding:8px 10px; border-radius:3px; margin:0 0 12px; }
+
+.oc-f { display:inline-flex; align-items:center; gap:7px; flex:0 1 auto; }
+.oc-f .am-input { width:clamp(170px, 24vw, 330px); }
+.oc-f .am-input.bad { border-color:var(--accent); background:var(--paper-hover); }
+.oc-ctx, .oc-params { display:inline-flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.oc-ctx:empty, .oc-params:empty { display:none; }
+.oc-ctx .am-input, .oc-params .am-input { width:66px; padding:6px 7px; font-size:12.5px; }
+.oc-ctx .sep { font-family:var(--mono); font-size:13px; color:var(--ink-faint); }
+.oc-par { display:inline-flex; align-items:center; gap:6px; }
+.oc-par input[type=range] { width:110px; }
+.oc-n { display:inline-flex; align-items:center; gap:7px; }
+.oc-n input[type=range] { width:96px; }
+.oc-n .val { font-family:var(--mono); font-size:12.5px; color:var(--ink); min-width:18px; }
+select.am-input { padding:6px 7px; font-size:11.5px; max-width:190px; cursor:pointer; }
+.oc-seg .am-btn { padding:8px 9px; font-size:12px; letter-spacing:.04em; text-transform:none; }
+
+.oc-main { position:absolute; inset:0; display:flex; }
+.oc-pic { position:relative; flex:1 1 auto; min-width:0; min-height:0; background:var(--paper-card); }
+.oc-pic canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:grab; display:block; }
+.oc-pic canvas.dragging { cursor:grabbing; }
+.oc-readout { position:absolute; left:10px; bottom:10px; max-width:calc(100% - 20px); font-family:var(--mono); font-size:11px; color:var(--ink-soft);
+  background:rgba(251,246,232,.92); border:1px solid var(--line-soft); border-radius:3px; padding:4px 8px; pointer-events:none; line-height:1.45; }
+.oc-readout:empty { display:none; }
+.oc-busy { position:absolute; left:10px; top:10px; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-deep);
+  background:var(--paper-hover); border:1px solid var(--accent); border-radius:3px; padding:4px 8px; pointer-events:none; }
+.oc-busy:empty { display:none; }
+.oc-fit { position:absolute; right:10px; top:10px; background:var(--paper-card); }
+.oc-panel { flex:0 0 340px; overflow-y:auto; background:var(--paper-card); border-left:1px solid var(--line); padding:12px 16px 26px; }
+.oc-panel section { padding:10px 0 12px; border-bottom:1px solid var(--line-soft); }
+.oc-panel section:last-child { border-bottom:0; }
+.oc-panel h4 { margin:0 0 7px; font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; }
+.oc-sig { font-family:var(--serif); font-style:italic; font-size:20px; line-height:1.2; font-variation-settings:"opsz" 144, "SOFT" 80; margin:2px 0 6px; }
+.oc-sig .fx { font-family:var(--mono); font-style:normal; font-size:12.5px; color:var(--ink-soft); display:block; margin-top:3px; word-break:break-all; }
+.oc-note { font-size:13.5px; line-height:1.45; color:var(--ink-soft); margin:0 0 6px; }
+.oc-note b { color:var(--ink); font-weight:500; }
+.oc-note.warn { color:var(--accent-deep); }
+.oc-err { font-size:14px; line-height:1.45; color:var(--accent-deep); }
+.oc-num { font-family:var(--mono); font-size:12px; }
+table.oc-pt { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12px; }
+.oc-pt th { font-weight:400; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); text-align:right; padding:2px 6px 4px; }
+.oc-pt th:first-child, .oc-pt td:first-child { text-align:left; }
+.oc-pt td { padding:3px 6px; text-align:right; border-top:1px solid var(--line-soft); color:var(--ink); }
+.oc-pt tr.row { cursor:pointer; }
+.oc-pt tr.row:hover td { background:var(--paper-hover); color:var(--accent-deep); }
+.oc-pt tr.sel td { background:var(--paper); }
+.oc-pt td.dim { color:var(--ink-faint); }
+.oc-pt td.tag { font-size:10px; letter-spacing:.06em; color:var(--accent-deep); }
+.chip { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:7px; vertical-align:-1px; }
+.chip.hollow { background:transparent !important; border:1.6px solid; }
+ul.oc-orbits { list-style:none; margin:0; padding:0; }
+.oc-orbits li { font-family:var(--mono); font-size:11.5px; line-height:1.45; padding:4px 6px; border-radius:3px; cursor:pointer; color:var(--ink); word-break:break-word; }
+.oc-orbits li:hover { background:var(--paper-hover); color:var(--accent-deep); }
+.oc-orbits li.sel { background:var(--paper); }
+.oc-orbits li .meta { color:var(--ink-faint); font-size:10.5px; display:block; }
+.oc-orbits .grp { font-family:var(--mono); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); padding:8px 6px 2px; cursor:default; }
+.oc-orbits .grp:hover { background:none; color:var(--ink-faint); }
+.oc-shark svg { display:block; width:100%; height:auto; margin:2px 0 6px; }
+.oc-legend { display:flex; flex-wrap:wrap; gap:4px 12px; font-family:var(--mono); font-size:10px; color:var(--ink-faint); margin:0 0 8px; }
+.oc-legend span { display:inline-flex; align-items:center; gap:5px; }
+.oc-legend i { display:inline-block; width:12px; height:10px; border-radius:2px; }
+.oc-stats { display:grid; grid-template-columns:auto 1fr; gap:2px 10px; font-family:var(--mono); font-size:11.5px; margin:4px 0 2px; }
+.oc-stats dt { color:var(--ink-faint); }
+.oc-stats dd { margin:0; color:var(--ink); text-align:right; }
+
+/* options drawer (left) */
+.oc-opts { position:absolute; top:0; left:0; bottom:0; z-index:19; width:min(320px,100%); overflow-y:auto;
+  background:var(--paper-card); border-right:1px solid var(--line); box-shadow:14px 0 30px -20px rgba(30,24,16,.45);
+  padding:18px 20px 24px; transform:translateX(-104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s; }
+.oc-opts.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.oc-opts h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:22px; margin:2px 0 12px; font-variation-settings:"opsz" 144, "SOFT" 80; }
+.oc-opts .am-close { float:right; }
+.oc-opt { margin:0 0 16px; }
+.oc-opt .am-label { display:block; margin-bottom:6px; }
+.oc-opt p { font-size:13px; line-height:1.45; color:var(--ink-soft); margin:6px 0 0; }
+.oc-opt .am-input { width:110px; }
+.oc-opt[hidden] { display:none; }
+
+@media (max-width:760px) {
+  .oc-main { flex-direction:column; }
+  .oc-panel { flex:0 0 44%; border-left:0; border-top:1px solid var(--line); padding:8px 14px 20px; }
+}
+@media (max-width:600px) {
+  .oc-f { flex:1 1 100%; }
+  .oc-f .am-input { width:auto; flex:1 1 auto; min-width:0; }
+  .oc-seg .am-btn { padding:7px 8px; }
+  select.am-input { max-width:150px; }
+  .oc-ctx .am-input, .oc-params .am-input { width:52px; }
+  .oc-n input[type=range] { width:76px; }
+  .oc-par input[type=range] { width:84px; }
+  .am-bar { gap:8px 10px; }
+  .oc-opts { width:100%; border-right:0; }
+}
+</style></head>
+<body>
+<div class="am-app">
+  <header class="am-bar">
+    <a class="am-home" href="https://affinemess.com/#applets/orbit-census" target="_top">affine<span class="sep">·</span>mess</a>
+    <label class="oc-f"><span class="am-label" id="fxLabel">f(x) =</span><input id="fx" class="am-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="formula for f"></label>
+    <div class="am-seg oc-seg" id="space" role="group" aria-label="space">
+      <button class="am-btn" data-space="R" title="the real line">ℝ</button><button class="am-btn" data-space="I" title="an interval [a, b]">[a,b]</button><button class="am-btn" data-space="Z" title="the integers">ℤ</button><button class="am-btn" data-space="ZN" title="integers mod n">ℤ/n</button><button class="am-btn" data-space="Q" title="the rationals">ℚ</button><button class="am-btn" data-space="C" title="the complex plane">ℂ</button>
+    </div>
+    <span class="oc-ctx" id="ctx"></span>
+    <label class="oc-n"><span class="am-label">periods ≤</span><input type="range" id="N" min="1" max="16" step="1" value="8"><span class="val" id="Nval">8</span></label>
+    <span class="oc-params" id="params"></span>
+    <select class="am-input" id="examples" aria-label="examples"></select>
+    <span class="am-spacer"></span>
+    <button class="am-btn" id="optBtn" aria-expanded="false" aria-controls="opts">Options</button>
+    <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+  </header>
+  <div class="am-stage">
+    <div class="oc-main">
+      <div class="oc-pic" id="pic">
+        <canvas id="cv" aria-label="picture of the dynamics"></canvas>
+        <div class="oc-busy" id="busy"></div>
+        <button class="am-btn oc-fit" id="fit" title="reset the view">Fit</button>
+        <div class="oc-readout" id="readout"></div>
+      </div>
+      <aside class="oc-panel" id="panel" aria-live="polite"></aside>
+    </div>
+    <aside class="oc-opts" id="opts" aria-hidden="true">
+      <button class="am-btn am-close" id="optClose">Close</button>
+      <h2>Options</h2>
+      <div class="oc-opt" data-for="R I">
+        <span class="am-label">Grid points for the root search</span>
+        <div class="am-seg" id="gridSeg"><button class="am-btn" data-grid="10000">10k</button><button class="am-btn" data-grid="40000">40k</button><button class="am-btn" data-grid="160000">160k</button></div>
+        <p>Periodic points of period n are the roots of f<sup>n</sup>(x) − x. They are bracketed on this grid and then polished by bisection. A finer grid finds the tightly packed ones of high period.</p>
+      </div>
+      <div class="oc-opt" data-for="C">
+        <span class="am-label">Search effort</span>
+        <div class="am-seg" id="effSeg"><button class="am-btn" data-eff="0.4">Low</button><button class="am-btn" data-eff="1">Normal</button><button class="am-btn" data-eff="2.5">High</button></div>
+        <p>Newton's method on f<sup>n</sup>(z) − z from a grid of starting points in the visible window, plus random restarts for polynomials until the count is complete or time runs out.</p>
+      </div>
+      <div class="oc-opt" data-for="C">
+        <span class="am-label">Background</span>
+        <div class="am-seg" id="shadeSeg"><button class="am-btn" data-shade="1">Escape time</button><button class="am-btn" data-shade="0">Plain</button></div>
+      </div>
+      <div class="oc-opt" data-for="Z">
+        <span class="am-label">Escape bound: |x| &gt; 10^k</span>
+        <input class="am-input" id="zEsc" inputmode="numeric" value="40">
+        <p>An orbit that grows past this bound is reported as escaping. All its values are exact integers.</p>
+      </div>
+      <div class="oc-opt" data-for="Z Q">
+        <span class="am-label">Escaping orbits</span>
+        <div class="am-seg" id="escSeg"><button class="am-btn" data-esc="auto">Auto</button><button class="am-btn" data-esc="draw">Draw</button><button class="am-btn" data-esc="hide">Collapse</button></div>
+        <p>Auto collapses them into the single node ∞ when they would crowd out the cycles.</p>
+      </div>
+      <div class="oc-opt" data-for="Z Q">
+        <span class="am-label">Max steps per orbit</span>
+        <input class="am-input" id="stepCap" inputmode="numeric" value="20000">
+      </div>
+      <div class="oc-opt" data-for="Q">
+        <span class="am-label">Starting window |x| ≤</span>
+        <input class="am-input" id="qW" inputmode="decimal" value="2">
+      </div>
+      <div class="oc-opt" data-for="Q">
+        <span class="am-label">Escape bound: height &gt; 10^k</span>
+        <input class="am-input" id="qEsc" inputmode="numeric" value="30">
+        <p>The height of p/q is max(|p|, q). Orbits whose height passes the bound are reported as escaping.</p>
+      </div>
+      <div class="oc-opt" data-for="ZN">
+        <p>Every point of ℤ/n is eventually periodic, so the census here is complete: every cycle is found, of every length. Trees are drawn when n ≤ 4000.</p>
+      </div>
+    </aside>
+    <aside class="am-about" id="am-about" aria-hidden="true">
+      <button class="am-btn am-close">Close</button>
+      <h2>Orbit Census</h2>
+      <p>Pick a space <i>X</i> and type a map <i>f</i> : <i>X</i> → <i>X</i>. Draw an arrow from every point <i>x</i> to <i>f</i>(<i>x</i>). Each connected piece of the resulting directed graph is a <em>cycle</em> with trees hanging off it, or a forward-infinite path that never closes up. This applet takes a census of the cycles: fixed points first, then cycles of length 2, 3, … up to the bound you set with <b>periods ≤</b>.</p>
+      <p>Cycles are colored by length. A filled dot is an <em>attracting</em> periodic point (the multiplier λ = <i>f</i>′(<i>x</i><sub>0</sub>)⋯<i>f</i>′(<i>x</i><sub>n−1</sub>) has |λ| &lt; 1), a hollow dot is <em>repelling</em>. Click a row of the table, an orbit in the list, or a point in the picture to highlight it.</p>
+
+      <h3>On ℝ and on an interval</h3>
+      <p>The picture is a cobweb plot: the graph of <i>f</i>, the diagonal, and each cycle drawn as a closed staircase between them. Points of period <i>n</i> are roots of <i>f</i><sup>n</sup>(<i>x</i>) − <i>x</i>. The applet evaluates this on a fine grid, brackets each sign change, polishes it by bisection, and also hunts tangential roots where the graph only touches the diagonal. It then sorts roots by their <em>least</em> period and merges points that belong to the same cycle. On ℝ the search window is whatever you see; drag and zoom to look elsewhere. On [<i>a</i>, <i>b</i>] the whole interval is searched, and cycles that leave it are discarded.</p>
+      <p>For a polynomial of degree <i>d</i> ≥ 2 the table also shows the most cycles a period can possibly have (see the count over ℂ below), so you can see when the real line has all of them, as for the logistic map at <i>r</i> = 4.</p>
+
+      <h3>Sharkovsky's theorem</h3>
+      <p>Order the positive integers like this:</p>
+      <div class="ord">3 ▷ 5 ▷ 7 ▷ 9 ▷ … ▷ 2·3 ▷ 2·5 ▷ … ▷ 4·3 ▷ 4·5 ▷ … ▷ 2<sup>k</sup>·3 ▷ … ▷ 2<sup>3</sup> ▷ 2<sup>2</sup> ▷ 2 ▷ 1</div>
+      <p>Odd numbers first, then twice the odds, then four times the odds, and so on, with the powers of 2 last, in decreasing order. <em>Sharkovsky's theorem</em> (1964): if a continuous map of an interval into ℝ has a point of least period <i>m</i>, it has points of least period <i>n</i> for every <i>n</i> with <i>m</i> ▷ <i>n</i>. In particular, period 3 forces every period (Li and Yorke rediscovered this in 1975 under the title <i>Period three implies chaos</i>). The theorem is sharp: for every <i>m</i> there is a continuous map whose set of periods is exactly {<i>n</i> : <i>m</i> ⊵ <i>n</i>}. The example <span class="m">pl(x, 1,3, 2,5, 3,4, 4,2, 5,1)</span> is the classic one with period 5 and no period 3.</p>
+      <p>The proof only looks at the intervals between consecutive points of the given orbit and how <i>f</i> stretches them over each other. So it is enough that <i>f</i> is continuous on the smallest interval containing that orbit, and the forced orbits live inside that interval too. The applet uses exactly this: it takes the Sharkovsky-strongest period it found, checks numerically that <i>f</i> has no jumps or poles on the span of a witnessing orbit, and lights up every period that orbit forces, including periods beyond your search bound. Forced periods that the numerical search did not find are not errors in the theorem; they exist, usually in very thin windows.</p>
+      <p>A corollary worth knowing: if a continuous map has only finitely many periods, they are 1, 2, 4, …, 2<sup>k</sup>. The logistic map at <i>r</i> = 3.5 is an example.</p>
+
+      <h3>On ℤ, ℤ/n and ℚ</h3>
+      <p>Here arithmetic is exact (big integers and fractions), and the picture is the functional graph itself: cycles as rings, trees of preimages hanging off them.</p>
+      <p><b>ℤ/n.</b> The formula is evaluated as an exact rational at <i>x</i> = 0, 1, …, <i>n</i> − 1 and reduced mod <i>n</i> (a denominator must be invertible mod <i>n</i>). Since <i>X</i> is finite, every orbit ends in a cycle and the census is complete. The panel also reports the size of the image <i>f</i>(<i>X</i>) and the number of points with no preimage.</p>
+      <p><b>ℤ.</b> Every orbit starting in the window |<i>x</i>| ≤ <i>M</i> is followed exactly until it closes a cycle, joins an orbit already seen, or passes the escape bound. Every cycle that meets the window is therefore found. Points outside the window are not drawn; a dashed arrow labeled <span class="m">+k</span> means the orbit spent <i>k</i> − 1 steps outside before coming back. Orbits that pass the escape bound all flow into one node, ∞. For a polynomial that is honest: ∞ is a fixed point of the map extended to the projective line. The <b>basin</b> column counts the starting points that end up in each cycle. The Collatz map has exactly five known cycles on ℤ, of lengths 1, 2, 3, 5 and 18, and the conjecture is that there are no others.</p>
+      <p><b>ℚ.</b> The starting points are the fractions <i>p</i>/<i>q</i> with <i>q</i> up to the bound and |<i>p</i>/<i>q</i>| ≤ the window. For a polynomial with rational coefficients, Northcott's theorem says the rational periodic points have bounded height, so an orbit whose height blows up is genuinely wandering. For <i>x</i><sup>2</sup> + <i>c</i> one can have rational cycles of length 1, 2 and 3 (try <i>c</i> = −29/16). Poonen conjectured that no other lengths occur; lengths 4 and 5 are proven impossible, and length 6 is impossible under standard conjectures.</p>
+
+      <h3>On ℂ</h3>
+      <p>Periodic points are found with Newton's method applied to <i>f</i><sup>n</sup>(<i>z</i>) − <i>z</i>, started from a grid filling the visible window. For a polynomial of degree <i>d</i> ≥ 2, <i>f</i><sup>n</sup>(<i>z</i>) = <i>z</i> has <i>d</i><sup>n</sup> solutions with multiplicity, and Möbius inversion gives the number with least period exactly <i>n</i>:</p>
+      <div class="ord">ν(n) = Σ<sub>k | n</sub> μ(n/k) d<sup>k</sup>, so for d = 2: 2, 2, 6, 12, 30, 54, 126, 240, …</div>
+      <p>The table shows found / expected cycles (ν(n)/<i>n</i>), so you can see whether the hunt was complete. The background shades the escape time; the dark set is where orbits stay bounded (the filled Julia set, for a polynomial). Sharkovsky's theorem is a fact about the line and has no analogue here: <i>z</i> ↦ ω<i>z</i> with ω a primitive cube root of unity has the fixed point 0 and every other point has period 3, with no period 2 anywhere.</p>
+
+      <h3>Writing f</h3>
+      <p>Use <span class="m">x</span> (or <span class="m">z</span>), numbers, <span class="m">+ − * / ^</span>, implicit multiplication (<span class="m">3x</span>, <span class="m">r x(1-x)</span>), constants <span class="m">pi</span>, <span class="m">e</span>, <span class="m">i</span>. Functions: <span class="m">sin cos tan exp log sqrt abs floor ceil round sign frac min max mod gcd</span>, and the hyperbolic and inverse trig functions. <span class="m">a % b</span> is the remainder in [0, b). Comparisons <span class="m">&lt; &lt;= == != &gt;= &gt;</span> give 1 or 0, and <span class="m">if(cond, a, b)</span> picks a branch. <span class="m">pl(x, x1,y1, x2,y2, …)</span> is the piecewise-linear map through the given points. Single letters such as <span class="m">r</span>, <span class="m">c</span>, <span class="m">a</span>, <span class="m">k</span> become parameters with sliders; their boxes accept fractions like <span class="m">-29/16</span>, which stay exact over ℤ and ℚ.</p>
+
+      <h3>Fine print</h3>
+      <p>On ℝ and ℂ everything is floating point. Roots are verified by their residual, discontinuities are detected numerically, and two cycles closer than about 10<sup>−8</sup> are merged. On ℤ and ℚ only the explicitly listed operations are exact; a formula with <span class="m">sqrt</span> or <span class="m">sin</span> over ℤ falls back to floating point and must land on integers.</p>
+    </aside>
+  </div>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+</script>
+<script>
+/* Orbit Census engine: parsing, evaluation in R / C / exact Q, cycle finding, Sharkovsky. No DOM. */
+(function (G) {
+'use strict';
+
+class DynErr extends Error {
+  constructor(kind, msg, data) { super(msg); this.kind = kind; this.data = data; }
+}
+
+/* ===================== parsing ===================== */
+const FUNCS = {
+  sin: [1, 1], cos: [1, 1], tan: [1, 1], asin: [1, 1], acos: [1, 1], atan: [1, 1],
+  sinh: [1, 1], cosh: [1, 1], tanh: [1, 1], exp: [1, 1], log: [1, 1], ln: [1, 1],
+  sqrt: [1, 1], cbrt: [1, 1], abs: [1, 1], floor: [1, 1], ceil: [1, 1], round: [1, 1],
+  sign: [1, 1], frac: [1, 1], min: [2, 99], max: [2, 99], mod: [2, 2], if: [3, 3],
+  pl: [5, 99], gcd: [2, 2]
+};
+const PARAM_LETTERS = 'abcdkmprstuvw';
+const ATOMS = ['pi', 'e', 'i', 'x', 'z'].concat(PARAM_LETTERS.split(''));
+
+function normalizeSrc(s) {
+  return s.replace(/[−–—]/g, '-').replace(/[×·⋅∙]/g, '*')
+    .replace(/÷/g, '/').replace(/π/g, 'pi').replace(/≤/g, '<=').replace(/≥/g, '>=')
+    .replace(/≠/g, '!=').replace(/²/g, '^2').replace(/³/g, '^3').replace(/\*\*/g, '^');
+}
+
+function tokenize(src) {
+  const s = normalizeSrc(src);
+  const raw = [];
+  let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    const rest = s.slice(i);
+    let m;
+    if ((m = /^(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/.exec(rest))) { raw.push({ t: 'num', s: m[0], pos: i }); i += m[0].length; continue; }
+    if ((m = /^[A-Za-z_]+/.exec(rest))) {
+      const id = m[0];
+      if (FUNCS[id]) raw.push({ t: 'fn', s: id, pos: i });
+      else {
+        // split into atoms: pi, e, i, x, z, parameter letters
+        let p = 0;
+        while (p < id.length) {
+          let hit = null;
+          for (const a of ATOMS) if (id.startsWith(a, p)) { hit = a; break; }
+          if (!hit) throw new DynErr('parse', 'Unknown name “' + id + '”. Variable is x (or z); parameters are single letters like r, c, a.');
+          raw.push({ t: 'atom', s: hit, pos: i + p });
+          p += hit.length;
+        }
+      }
+      i += id.length; continue;
+    }
+    const two = s.substr(i, 2);
+    if (['<=', '>=', '==', '!='].includes(two)) { raw.push({ t: 'op', s: two, pos: i }); i += 2; continue; }
+    if ('+-*/%^(),<>|'.includes(c)) { raw.push({ t: 'op', s: c, pos: i }); i++; continue; }
+    throw new DynErr('parse', 'Unexpected character “' + c + '” at position ' + (i + 1));
+  }
+  // classify | as open/close, insert implicit multiplication
+  const out = [];
+  let absDepth = 0;
+  const endsOperand = t => t && (t.t === 'num' || t.t === 'atom' || (t.t === 'op' && (t.s === ')' || t.s === '|c')));
+  for (const t of raw) {
+    if (t.t === 'op' && t.s === '|') {
+      const prev = out[out.length - 1];
+      if (absDepth > 0 && endsOperand(prev)) { t.s = '|c'; absDepth--; }
+      else { t.s = '|o'; absDepth++; }
+    }
+    const prev = out[out.length - 1];
+    const startsOperand = t.t === 'atom' || t.t === 'fn' || (t.t === 'op' && (t.s === '(' || t.s === '|o')) ||
+      (t.t === 'num' && prev && prev.t !== 'num');
+    if (endsOperand(prev) && startsOperand) out.push({ t: 'op', s: '*', pos: t.pos, implicit: true });
+    out.push(t);
+  }
+  return out;
+}
+
+function parse(src) {
+  if (!src || !src.trim()) throw new DynErr('parse', 'Type a formula for f.');
+  const toks = tokenize(src);
+  let k = 0;
+  const peek = () => toks[k];
+  const isOp = (s) => toks[k] && toks[k].t === 'op' && toks[k].s === s;
+  const fail = (msg) => { throw new DynErr('parse', msg); };
+  const where = () => toks[k] ? ' at position ' + (toks[k].pos + 1) : ' at the end';
+  const expect = (s) => { if (!isOp(s)) fail('Expected “' + s.replace(/\|[oc]/, '|') + '”' + where()); k++; };
+
+  function pCmp() {
+    const a = pAdd();
+    const t = peek();
+    if (t && t.t === 'op' && ['<', '>', '<=', '>=', '==', '!='].includes(t.s)) { k++; const b = pAdd(); return { t: 'cmp', op: t.s, a, b }; }
+    return a;
+  }
+  function pAdd() {
+    let a = pMul();
+    while (isOp('+') || isOp('-')) { const op = toks[k++].s; a = { t: 'bin', op, a, b: pMul() }; }
+    return a;
+  }
+  function pMul() {
+    let a = pUnary();
+    while (isOp('*') || isOp('/') || isOp('%')) { const op = toks[k++].s; a = { t: 'bin', op, a, b: pUnary() }; }
+    return a;
+  }
+  function pUnary() {
+    if (isOp('-')) { k++; return { t: 'neg', a: pUnary() }; }
+    if (isOp('+')) { k++; return pUnary(); }
+    return pPow();
+  }
+  function pPow() {
+    const a = pPrim();
+    if (isOp('^')) { k++; return { t: 'bin', op: '^', a, b: pUnary() }; }
+    return a;
+  }
+  function pPrim() {
+    const t = peek();
+    if (!t) fail('Unexpected end of formula');
+    if (t.t === 'num') { k++; return { t: 'num', s: t.s, v: Number(t.s) }; }
+    if (t.t === 'atom') { k++; return { t: 'atom', s: t.s }; }
+    if (t.t === 'fn') {
+      k++;
+      if (!isOp('(')) fail('Write ' + t.s + '(…) with parentheses');
+      k++;
+      const args = [pCmp()];
+      while (isOp(',')) { k++; args.push(pCmp()); }
+      expect(')');
+      const [lo, hi] = FUNCS[t.s];
+      if (args.length < lo || args.length > hi) fail(t.s + ' takes ' + (lo === hi ? lo : lo + ' or more') + ' argument' + (lo === 1 && hi === 1 ? '' : 's'));
+      if (t.s === 'pl' && args.length % 2 === 0) fail('pl(x, x1, y1, x2, y2, …) needs x and then pairs of numbers');
+      return { t: 'call', f: t.s === 'ln' ? 'log' : t.s, args };
+    }
+    if (t.t === 'op' && t.s === '(') { k++; const e = pCmp(); expect(')'); return e; }
+    if (t.t === 'op' && t.s === '|o') { k++; const e = pCmp(); expect('|c'); return { t: 'call', f: 'abs', args: [e] }; }
+    fail('Unexpected “' + t.s.replace(/\|[oc]/, '|') + '”' + where());
+  }
+  const ast = pCmp();
+  if (k < toks.length) fail('Unexpected “' + toks[k].s.replace(/\|[oc]/, '|') + '”' + where());
+  const params = new Set(); let usesI = false, usesVar = false;
+  walk(ast, n => {
+    if (n.t === 'atom') {
+      if (PARAM_LETTERS.includes(n.s)) params.add(n.s);
+      if (n.s === 'i') usesI = true;
+      if (n.s === 'x' || n.s === 'z') usesVar = true;
+    }
+  });
+  return { ast, params: [...params].sort(), usesI, usesVar };
+}
+
+function walk(n, fn) {
+  fn(n);
+  if (n.a) walk(n.a, fn);
+  if (n.b) walk(n.b, fn);
+  if (n.args) n.args.forEach(c => walk(c, fn));
+}
+
+/* properties of an expression */
+const DISCONT_FUNCS = new Set(['floor', 'ceil', 'round', 'sign', 'frac', 'mod', 'if', 'gcd']);
+const HOLO_FUNCS = new Set(['sin', 'cos', 'tan', 'exp', 'log', 'sqrt', 'sinh', 'cosh', 'tanh']);
+function structurallyContinuous(ast) {
+  let ok = true;
+  walk(ast, n => {
+    if (n.t === 'cmp') ok = false;
+    if (n.t === 'bin' && n.op === '%') ok = false;
+    if (n.t === 'call' && DISCONT_FUNCS.has(n.f)) ok = false;
+  });
+  return ok;
+}
+function holomorphicCheck(ast) {
+  let bad = null;
+  walk(ast, n => {
+    if (bad) return;
+    if (n.t === 'cmp') bad = 'comparisons';
+    else if (n.t === 'bin' && n.op === '%') bad = 'mod';
+    else if (n.t === 'call' && !HOLO_FUNCS.has(n.f)) bad = n.f + '()';
+  });
+  return bad; // null if fine
+}
+/* degree if f is a polynomial in x with constant coefficients, else null */
+function polyDegree(ast) {
+  function d(n) {
+    switch (n.t) {
+      case 'num': return 0;
+      case 'atom': return (n.s === 'x' || n.s === 'z') ? 1 : 0;
+      case 'neg': return d(n.a);
+      case 'bin': {
+        const a = d(n.a), b = d(n.b);
+        if (a === null || b === null) return null;
+        if (n.op === '+' || n.op === '-') return Math.max(a, b);
+        if (n.op === '*') return a + b;
+        if (n.op === '/') return b === 0 ? a : null;
+        if (n.op === '^') {
+          if (b !== 0) return null;
+          if (a === 0) return 0;
+          const e = constValue(n.b);
+          if (e === null || !Number.isInteger(e) || e < 0 || e > 64) return null;
+          return a * e;
+        }
+        return null;
+      }
+      default: return null;
+    }
+  }
+  return d(ast);
+}
+function constValue(n) {
+  if (n.t === 'num') return n.v;
+  if (n.t === 'neg') { const v = constValue(n.a); return v === null ? null : -v; }
+  return null;
+}
+
+/* ===================== real evaluation (code generation) ===================== */
+function pl(x) {
+  // pl(x, x1, y1, x2, y2, ...): piecewise-linear interpolation, constant outside
+  const n = (arguments.length - 1) / 2;
+  const P = [];
+  for (let j = 0; j < n; j++) P.push([arguments[1 + 2 * j], arguments[2 + 2 * j]]);
+  P.sort((u, v) => u[0] - v[0]);
+  if (x <= P[0][0]) return P[0][1];
+  if (x >= P[n - 1][0]) return P[n - 1][1];
+  for (let j = 0; j < n - 1; j++) {
+    if (x <= P[j + 1][0]) {
+      const [x1, y1] = P[j], [x2, y2] = P[j + 1];
+      return x2 === x1 ? y2 : y1 + (y2 - y1) * (x - x1) / (x2 - x1);
+    }
+  }
+  return P[n - 1][1];
+}
+const HR = {
+  sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan,
+  sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh, exp: Math.exp, log: Math.log, sqrt: Math.sqrt,
+  cbrt: Math.cbrt, abs: Math.abs, floor: Math.floor, ceil: Math.ceil, round: Math.round, sign: Math.sign,
+  frac: x => x - Math.floor(x), min: Math.min, max: Math.max,
+  mod: (a, b) => a - b * Math.floor(a / b),
+  gcd: (a, b) => {
+    if (!Number.isInteger(a) || !Number.isInteger(b)) return NaN;
+    a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a;
+  },
+  pl
+};
+function genReal(n) {
+  switch (n.t) {
+    case 'num': return '(' + n.v + ')';
+    case 'atom':
+      if (n.s === 'x' || n.s === 'z') return 'x';
+      if (n.s === 'pi') return '3.141592653589793';
+      if (n.s === 'e') return '2.718281828459045';
+      if (n.s === 'i') throw new DynErr('unsupported', 'The imaginary unit i only makes sense over ℂ.');
+      return 'P.' + n.s;
+    case 'neg': return '(-' + genReal(n.a) + ')';
+    case 'bin': {
+      const a = genReal(n.a), b = genReal(n.b);
+      if (n.op === '%') return 'H.mod(' + a + ',' + b + ')';
+      if (n.op === '^') return 'Math.pow(' + a + ',' + b + ')';
+      return '(' + a + n.op + b + ')';
+    }
+    case 'cmp': {
+      const op = n.op === '==' ? '===' : n.op === '!=' ? '!==' : n.op;
+      return '((' + genReal(n.a) + ')' + op + '(' + genReal(n.b) + ')?1:0)';
+    }
+    case 'call': {
+      const A = n.args.map(genReal);
+      if (n.f === 'if') return '((' + A[0] + ')!==0?(' + A[1] + '):(' + A[2] + '))';
+      return 'H.' + n.f + '(' + A.join(',') + ')';
+    }
+  }
+  throw new DynErr('parse', 'bad node');
+}
+function compileReal(ast, P) {
+  const code = genReal(ast);
+  const f = new Function('H', 'P', '"use strict";return function(x){return ' + code + ';};')(HR, Object.assign({}, P));
+  return f;
+}
+
+/* ===================== complex evaluation (code generation) ===================== */
+const HC = {
+  R: 0, I: 0,
+  cdiv(a, b, c, d) {
+    if (Math.abs(c) >= Math.abs(d)) { const r = d / c, den = c + d * r; this.R = (a + b * r) / den; this.I = (b - a * r) / den; }
+    else { const r = c / d, den = c * r + d; this.R = (a * r + b) / den; this.I = (b * r - a) / den; }
+  },
+  cpowi(a, b, n) {
+    let neg = n < 0; n = Math.abs(n);
+    let rr = 1, ri = 0, pr = a, pi = b;
+    while (n > 0) {
+      if (n & 1) { const t = rr * pr - ri * pi; ri = rr * pi + ri * pr; rr = t; }
+      n >>= 1;
+      if (n) { const t = pr * pr - pi * pi; pi = 2 * pr * pi; pr = t; }
+    }
+    if (neg) this.cdiv(1, 0, rr, ri); else { this.R = rr; this.I = ri; }
+  },
+  clog(a, b) { this.R = Math.log(Math.hypot(a, b)); this.I = Math.atan2(b, a); },
+  cexp(a, b) { const m = Math.exp(a); this.R = m * Math.cos(b); this.I = m * Math.sin(b); },
+  cpow(a, b, c, d) {
+    if (a === 0 && b === 0) { this.R = (c > 0) ? 0 : NaN; this.I = 0; return; }
+    const lr = Math.log(Math.hypot(a, b)), li = Math.atan2(b, a);
+    this.cexp(c * lr - d * li, c * li + d * lr);
+  },
+  csqrt(a, b) {
+    const m = Math.hypot(a, b);
+    let r = Math.sqrt((m + a) / 2), s = Math.sqrt(Math.max(0, (m - a) / 2));
+    if (b < 0) s = -s;
+    this.R = r; this.I = s;
+  },
+  csin(a, b) { this.R = Math.sin(a) * Math.cosh(b); this.I = Math.cos(a) * Math.sinh(b); },
+  ccos(a, b) { this.R = Math.cos(a) * Math.cosh(b); this.I = -Math.sin(a) * Math.sinh(b); },
+  csinh(a, b) { this.R = Math.sinh(a) * Math.cos(b); this.I = Math.cosh(a) * Math.sin(b); },
+  ccosh(a, b) { this.R = Math.cosh(a) * Math.cos(b); this.I = Math.sinh(a) * Math.sin(b); },
+  ctan(a, b) { this.csin(a, b); const sr = this.R, si = this.I; this.ccos(a, b); this.cdiv(sr, si, this.R, this.I); },
+  ctanh(a, b) { this.csinh(a, b); const sr = this.R, si = this.I; this.ccosh(a, b); this.cdiv(sr, si, this.R, this.I); }
+};
+function compileComplex(ast, P) {
+  const bad = holomorphicCheck(ast);
+  if (bad) throw new DynErr('unsupported', 'Over ℂ the map must be holomorphic, so ' + bad + ' is not allowed here.');
+  const lines = []; let k = 0;
+  const tmp = () => { const r = 'r' + k, s = 's' + k; k++; return [r, s]; };
+  function g(n) {
+    switch (n.t) {
+      case 'num': return ['(' + n.v + ')', '0'];
+      case 'atom':
+        if (n.s === 'x' || n.s === 'z') return ['zr', 'zi'];
+        if (n.s === 'pi') return ['3.141592653589793', '0'];
+        if (n.s === 'e') return ['2.718281828459045', '0'];
+        if (n.s === 'i') return ['0', '1'];
+        return ['P.' + n.s, '0'];
+      case 'neg': { const [a, b] = g(n.a); const [r, s] = tmp(); lines.push(`var ${r}=-(${a}),${s}=-(${b});`); return [r, s]; }
+      case 'bin': {
+        const [a, b] = g(n.a);
+        if (n.op === '^') {
+          const e = constValue(n.b);
+          const [r, s] = tmp();
+          if (e !== null && Number.isInteger(e) && Math.abs(e) <= 1024) { lines.push(`H.cpowi(${a},${b},${e});var ${r}=H.R,${s}=H.I;`); return [r, s]; }
+          const [c, d] = g(n.b);
+          lines.push(`H.cpow(${a},${b},${c},${d});var ${r}=H.R,${s}=H.I;`); return [r, s];
+        }
+        const [c, d] = g(n.b);
+        const [r, s] = tmp();
+        if (n.op === '+') lines.push(`var ${r}=${a}+${c},${s}=${b}+${d};`);
+        else if (n.op === '-') lines.push(`var ${r}=${a}-${c},${s}=${b}-${d};`);
+        else if (n.op === '*') lines.push(`var ${r}=${a}*${c}-${b}*${d},${s}=${a}*${d}+${b}*${c};`);
+        else if (n.op === '/') lines.push(`H.cdiv(${a},${b},${c},${d});var ${r}=H.R,${s}=H.I;`);
+        return [r, s];
+      }
+      case 'call': {
+        const [a, b] = g(n.args[0]);
+        const [r, s] = tmp();
+        const fn = { sin: 'csin', cos: 'ccos', tan: 'ctan', exp: 'cexp', log: 'clog', sqrt: 'csqrt', sinh: 'csinh', cosh: 'ccosh', tanh: 'ctanh' }[n.f];
+        lines.push(`H.${fn}(${a},${b});var ${r}=H.R,${s}=H.I;`);
+        return [r, s];
+      }
+    }
+    throw new DynErr('unsupported', 'not supported over ℂ');
+  }
+  const [re, im] = g(ast);
+  const body = lines.join('') + `H.R=${re};H.I=${im};`;
+  return new Function('H', 'P', '"use strict";return function(zr,zi){' + body + '};')(HC, Object.assign({}, P));
+}
+
+/* ===================== exact rationals (BigInt) ===================== */
+const MAXBITS = 300000;
+function bgcd(a, b) { if (a < 0n) a = -a; if (b < 0n) b = -b; while (b) { const t = a % b; a = b; b = t; } return a; }
+function babs(a) { return a < 0n ? -a : a; }
+function bitlen(a) { a = babs(a); return a === 0n ? 0 : a.toString(16).length * 4; }
+const Q = {
+  ZERO: { n: 0n, d: 1n }, ONE: { n: 1n, d: 1n },
+  make(n, d) {
+    if (d === 0n) throw new DynErr('undef', 'division by zero');
+    if (d < 0n) { n = -n; d = -d; }
+    if (d !== 1n) { const g = bgcd(n, d); if (g !== 1n) { n /= g; d /= g; } }
+    return { n, d };
+  },
+  int(n) { return { n: BigInt(n), d: 1n }; },
+  lit(s) {
+    const m = /^(\d*)\.?(\d*)(?:[eE]([+-]?\d+))?$/.exec(s);
+    let n = BigInt((m[1] || '0') + (m[2] || '')), d = 10n ** BigInt((m[2] || '').length);
+    const e = m[3] ? parseInt(m[3], 10) : 0;
+    if (Math.abs(e) > 400) throw new DynErr('overflow', 'exponent too large');
+    if (e > 0) n *= 10n ** BigInt(e); else if (e < 0) d *= 10n ** BigInt(-e);
+    return Q.make(n, d);
+  },
+  add(a, b) { return (a.d === 1n && b.d === 1n) ? { n: a.n + b.n, d: 1n } : Q.make(a.n * b.d + b.n * a.d, a.d * b.d); },
+  sub(a, b) { return (a.d === 1n && b.d === 1n) ? { n: a.n - b.n, d: 1n } : Q.make(a.n * b.d - b.n * a.d, a.d * b.d); },
+  mul(a, b) { return (a.d === 1n && b.d === 1n) ? { n: a.n * b.n, d: 1n } : Q.make(a.n * b.n, a.d * b.d); },
+  div(a, b) { if (b.n === 0n) throw new DynErr('undef', 'division by zero'); return Q.make(a.n * b.d, a.d * b.n); },
+  neg(a) { return { n: -a.n, d: a.d }; },
+  cmp(a, b) { const t = a.n * b.d - b.n * a.d; return t > 0n ? 1 : t < 0n ? -1 : 0; },
+  floor(a) { if (a.d === 1n) return a; let q = a.n / a.d; if (a.n < 0n) q -= 1n; return { n: q, d: 1n }; },
+  ceil(a) { if (a.d === 1n) return a; let q = a.n / a.d; if (a.n > 0n) q += 1n; return { n: q, d: 1n }; },
+  mod(a, b) { if (b.n === 0n) throw new DynErr('undef', 'mod by zero'); return Q.sub(a, Q.mul(b, Q.floor(Q.div(a, b)))); },
+  iroot(a, k) { // exact k-th root of nonnegative BigInt, or null
+    if (a < 0n) return null;
+    if (a < 2n) return a;
+    const K = BigInt(k);
+    let x = 1n << BigInt(Math.ceil(bitlen(a) / k) + 1);
+    while (true) {
+      const y = ((K - 1n) * x + a / (x ** (K - 1n))) / K;
+      if (y >= x) break;
+      x = y;
+    }
+    return x ** K === a ? x : null;
+  },
+  root(a, k) {
+    if (a.n < 0n) {
+      if (k % 2 === 0) throw new DynErr('undef', 'even root of a negative number');
+      return Q.neg(Q.root(Q.neg(a), k));
+    }
+    const p = Q.iroot(a.n, k), q = Q.iroot(a.d, k);
+    if (p === null || q === null) throw new DynErr('nonexact', 'irrational root');
+    return { n: p, d: q };
+  },
+  pow(a, e) {
+    if (e.d !== 1n) {
+      if (e.d > 12n) throw new DynErr('nonexact', 'non-integer power');
+      return Q.pow(Q.root(a, Number(e.d)), { n: e.n, d: 1n });
+    }
+    let k = e.n;
+    if (k < 0n) { if (a.n === 0n) throw new DynErr('undef', 'division by zero'); a = { n: a.d, d: a.n }; if (a.d < 0n) a = { n: -a.n, d: -a.d }; k = -k; }
+    if (k === 0n) return Q.ONE;
+    const bits = Math.max(bitlen(a.n), bitlen(a.d));
+    if (bits > 1 && Number(k) * bits > MAXBITS) throw new DynErr('overflow', 'number too large');
+    if (k > 1000000n) {
+      if (a.d === 1n && (a.n === 0n || a.n === 1n)) return a;
+      if (a.d === 1n && a.n === -1n) return (k % 2n === 0n) ? Q.ONE : a;
+      throw new DynErr('overflow', 'exponent too large');
+    }
+    return { n: a.n ** k, d: a.d ** k };
+  },
+  isInt(a) { return a.d === 1n; },
+  str(a) { return a.d === 1n ? a.n.toString() : a.n.toString() + '/' + a.d.toString(); },
+  toNumber(a) {
+    const bn = bitlen(a.n), bd = bitlen(a.d);
+    if (bn < 1000 && bd < 1000) return Number(a.n) / Number(a.d);
+    const sh = BigInt(Math.max(bn, bd) - 900);
+    return Number(a.n >> sh) / Number(a.d >> sh);
+  }
+};
+
+function compileExact(ast, P) {
+  const ONE = Q.ONE, ZERO = Q.ZERO;
+  function g(n) {
+    switch (n.t) {
+      case 'num': { const v = Q.lit(n.s); return () => v; }
+      case 'atom': {
+        if (n.s === 'x' || n.s === 'z') return x => x;
+        if (n.s === 'pi' || n.s === 'e' || n.s === 'i') throw new DynErr('nonexact', n.s + ' is not rational');
+        const v = P[n.s]; if (!v) throw new DynErr('nonexact', 'parameter ' + n.s);
+        return () => v;
+      }
+      case 'neg': { const a = g(n.a); return x => Q.neg(a(x)); }
+      case 'bin': {
+        const a = g(n.a), b = g(n.b);
+        switch (n.op) {
+          case '+': return x => Q.add(a(x), b(x));
+          case '-': return x => Q.sub(a(x), b(x));
+          case '*': return x => Q.mul(a(x), b(x));
+          case '/': return x => Q.div(a(x), b(x));
+          case '%': return x => Q.mod(a(x), b(x));
+          case '^': return x => Q.pow(a(x), b(x));
+        }
+        break;
+      }
+      case 'cmp': {
+        const a = g(n.a), b = g(n.b);
+        const test = { '<': c => c < 0, '>': c => c > 0, '<=': c => c <= 0, '>=': c => c >= 0, '==': c => c === 0, '!=': c => c !== 0 }[n.op];
+        return x => test(Q.cmp(a(x), b(x))) ? ONE : ZERO;
+      }
+      case 'call': {
+        const A = n.args.map(g);
+        switch (n.f) {
+          case 'abs': return x => { const v = A[0](x); return v.n < 0n ? Q.neg(v) : v; };
+          case 'floor': return x => Q.floor(A[0](x));
+          case 'ceil': return x => Q.ceil(A[0](x));
+          case 'round': return x => Q.floor(Q.add(A[0](x), { n: 1n, d: 2n }));
+          case 'sign': return x => { const v = A[0](x); return Q.int(v.n > 0n ? 1 : v.n < 0n ? -1 : 0); };
+          case 'frac': return x => { const v = A[0](x); return Q.sub(v, Q.floor(v)); };
+          case 'min': return x => A.map(h => h(x)).reduce((u, v) => Q.cmp(u, v) <= 0 ? u : v);
+          case 'max': return x => A.map(h => h(x)).reduce((u, v) => Q.cmp(u, v) >= 0 ? u : v);
+          case 'mod': return x => Q.mod(A[0](x), A[1](x));
+          case 'if': return x => (A[0](x).n !== 0n ? A[1](x) : A[2](x));
+          case 'sqrt': return x => Q.root(A[0](x), 2);
+          case 'cbrt': return x => Q.root(A[0](x), 3);
+          case 'gcd': return x => {
+            const u = A[0](x), v = A[1](x);
+            if (u.d !== 1n || v.d !== 1n) throw new DynErr('undef', 'gcd of non-integers');
+            return { n: bgcd(u.n, v.n), d: 1n };
+          };
+          case 'pl': return x => {
+            const t = A[0](x);
+            const pts = [];
+            for (let j = 1; j < A.length; j += 2) pts.push([A[j](x), A[j + 1](x)]);
+            pts.sort((u, v) => Q.cmp(u[0], v[0]));
+            const m = pts.length;
+            if (Q.cmp(t, pts[0][0]) <= 0) return pts[0][1];
+            if (Q.cmp(t, pts[m - 1][0]) >= 0) return pts[m - 1][1];
+            for (let j = 0; j < m - 1; j++) {
+              if (Q.cmp(t, pts[j + 1][0]) <= 0) {
+                const [x1, y1] = pts[j], [x2, y2] = pts[j + 1];
+                if (Q.cmp(x1, x2) === 0) return y2;
+                return Q.add(y1, Q.div(Q.mul(Q.sub(y2, y1), Q.sub(t, x1)), Q.sub(x2, x1)));
+              }
+            }
+            return pts[m - 1][1];
+          };
+          default: throw new DynErr('nonexact', n.f + '() is not exact');
+        }
+      }
+    }
+    throw new DynErr('nonexact', 'unsupported');
+  }
+  return g(ast);
+}
+
+function parseParamValue(str) {
+  const s = normalizeSrc(String(str)).trim();
+  const m = /^(-?)(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?(?:\s*\/\s*(\d+\.?\d*|\.\d+))?$/.exec(s);
+  if (!m) return null;
+  let q = Q.lit(m[2] + (m[3] || ''));
+  if (m[4]) { const d = Q.lit(m[4]); if (d.n === 0n) return null; q = Q.div(q, d); }
+  if (m[1]) q = Q.neg(q);
+  return { q, v: Q.toNumber(q) };
+}
+
+/* ===================== Sharkovsky ===================== */
+function v2(n) { let k = 0; while (n % 2 === 0) { n /= 2; k++; } return [k, n]; }
+function sharkKey(n) { const [k, m] = v2(n); return m > 1 ? [0, k, m] : [1, -k, 0]; }
+/* negative if a comes first in the Sharkovsky order (a forces b) */
+function sharkCmp(a, b) {
+  const A = sharkKey(a), B = sharkKey(b);
+  for (let i = 0; i < 3; i++) if (A[i] !== B[i]) return A[i] - B[i];
+  return 0;
+}
+function sharkForces(m, n) { return sharkCmp(m, n) <= 0; }
+function sharkDescribe(m) {
+  const [k, o] = v2(m);
+  if (o === 1) {
+    const pw = []; for (let j = 0; j <= k; j++) pw.push(1 << j);
+    return 'periods ' + pw.join(', ') + (k === 0 ? ' (only that)' : '');
+  }
+  if (k === 0) {
+    if (o === 3) return 'every period n ≥ 1';
+    const odd = []; for (let q = 3; q < o; q += 2) odd.push(q);
+    const ex = odd.length <= 4 ? (odd.length === 1 ? '' + odd[0] : odd.slice(0, -1).join(', ') + ' and ' + odd[odd.length - 1]) : '3, 5, …, ' + (o - 2);
+    return 'every period except ' + ex;
+  }
+  const tk = 1 << k, tk1 = 1 << (k + 1);
+  return 'every power of 2, every multiple of ' + tk1 + ', and ' + tk + '·q for odd q ≥ ' + o;
+}
+
+/* ===================== continuity on an interval (numerical) ===================== */
+function continuityOn(f, p, q, structCont, K) {
+  K = K || 2000;
+  if (!(q > p)) {
+    const y = f(p);
+    return isFinite(y) ? { ok: true } : { ok: false, why: 'undefined', at: p };
+  }
+  const xs = new Float64Array(K + 1), ys = new Float64Array(K + 1);
+  let maxAbs = 0;
+  for (let j = 0; j <= K; j++) {
+    const x = p + (q - p) * j / K; xs[j] = x; const y = f(x); ys[j] = y;
+    if (!isFinite(y)) return { ok: false, why: 'undefined', at: x };
+    maxAbs = Math.max(maxAbs, Math.abs(y));
+  }
+  const diffs = [];
+  for (let j = 0; j < K; j++) diffs.push(Math.abs(ys[j + 1] - ys[j]));
+  const sorted = diffs.slice().sort((u, v) => u - v);
+  const med = sorted[K >> 1];
+  const scale = 1 + maxAbs;
+  const thresh = Math.max(40 * med, 1e-9 * scale);
+  const cand = [];
+  for (let j = 0; j < K; j++) if (diffs[j] > thresh) cand.push(j);
+  if (cand.length > 200) cand.length = 200;
+  for (const j of cand) {
+    let a = xs[j], b = xs[j + 1], fa = ys[j], fb = ys[j + 1];
+    for (let it = 0; it < 80; it++) {
+      const m = (a + b) / 2;
+      if (m <= a || m >= b) break;
+      const fm = f(m);
+      if (!isFinite(fm)) return { ok: false, why: 'undefined', at: m };
+      if (Math.abs(fm - fa) >= Math.abs(fb - fm)) { b = m; fb = fm; } else { a = m; fa = fm; }
+    }
+    const jump = Math.abs(fb - fa);
+    if (structCont) {
+      if (Math.max(Math.abs(fa), Math.abs(fb)) > 1e7 * scale) return { ok: false, why: 'pole', at: (a + b) / 2 };
+    } else if (jump > 1e-7 * scale) {
+      return { ok: false, why: 'jump', at: (a + b) / 2, jump };
+    }
+  }
+  return { ok: true };
+}
+
+/* ===================== real periodic orbits ===================== */
+function divisors(n) { const d = []; for (let k = 1; k <= n; k++) if (n % k === 0) d.push(k); return d; }
+
+async function findRealCycles(f, opt) {
+  const { lo, hi, N, G } = opt;
+  const tick = opt.tick || (async () => {});
+  const domain = opt.domain || null;      // [a,b]: orbits must stay inside
+  const maxOrbits = opt.maxOrbits || 6000;
+  const xs = new Float64Array(G + 1), cur = new Float64Array(G + 1), g = new Float64Array(G + 1);
+  for (let j = 0; j <= G; j++) { xs[j] = lo + (hi - lo) * j / G; cur[j] = xs[j]; }
+  const iter = (x, n) => { for (let k = 0; k < n; k++) { x = f(x); if (!(x > -Infinity && x < Infinity)) return NaN; } return x; };
+  const periods = new Map();   // p -> {orbits, pts:[{x,o}] sorted, full}
+  const notes = [];
+  let leftDomain = 0;
+  const per = p => { if (!periods.has(p)) periods.set(p, { p, orbits: [], pts: [], full: false, continuum: false }); return periods.get(p); };
+  const findNear = (P, x, tol) => {
+    const a = P.pts; let l = 0, h = a.length;
+    while (l < h) { const m = (l + h) >> 1; if (a[m].x < x - tol) l = m + 1; else h = m; }
+    return (l < a.length && a[l].x <= x + tol) ? a[l] : null;
+  };
+  const insert = (P, x, o) => {
+    const a = P.pts; let l = 0, h = a.length;
+    while (l < h) { const m = (l + h) >> 1; if (a[m].x < x) l = m + 1; else h = m; }
+    a.splice(l, 0, { x, o });
+  };
+  // derivative; at a jump use the one-sided difference from the continuous side (or from inside the interval)
+  const deriv = x => {
+    const h = 1e-6 * (1 + Math.abs(x)), y = f(x);
+    const dm = (y - f(x - h)) / h, dp = (f(x + h) - y) / h;
+    const inR = !domain || x - h >= domain[0], inL = !domain || x + h <= domain[1];
+    if (!inR || !isFinite(dm)) return dp;
+    if (!inL || !isFinite(dp)) return dm;
+    if (Math.abs(dm) > 1e3 * Math.max(1, Math.abs(dp))) return dp;
+    if (Math.abs(dp) > 1e3 * Math.max(1, Math.abs(dm))) return dm;
+    return (f(x + h) - f(x - h)) / (2 * h);
+  };
+
+  function addRoot(r, n, err) {
+    const o = [r];
+    for (let k = 1; k <= n; k++) { const y = f(o[k - 1]); if (!isFinite(y)) return; o.push(y); }
+    const res = Math.abs(o[n] - r);
+    const tolP = 1e-8 * (1 + Math.abs(r)) + 10 * res + err;
+    let p = n;
+    for (const d of divisors(n)) { if (Math.abs(o[d] - r) <= tolP) { p = d; break; } }
+    const P = per(p);
+    const tolD = Math.max(1e-8, 10 * err) * (1 + Math.abs(r));
+    if (findNear(P, r, tolD)) return;
+    if (P.orbits.length >= maxOrbits) { P.full = true; return; }
+    const pts = o.slice(0, p);
+    if (domain && pts.some(x => x < domain[0] - 1e-12 * (1 + Math.abs(x)) || x > domain[1] + 1e-12 * (1 + Math.abs(x)))) { leftDomain++; return; }
+    let lr = 1;
+    for (const x of pts) lr *= deriv(x);
+    const al = Math.abs(lr);
+    const kind = al < 1 - 1e-6 ? 'attracting' : al > 1 + 1e-6 ? 'repelling' : 'neutral';
+    let mn = Infinity, mx = -Infinity;
+    for (const x of pts) { mn = Math.min(mn, x); mx = Math.max(mx, x); }
+    // rotate so the orbit starts at its least element
+    const s = pts.indexOf(mn);
+    const rot = pts.slice(s).concat(pts.slice(0, s));
+    const orb = { p, pts: rot, lambda: lr, kind, min: mn, max: mx, approx: err > 1e-10 };
+    P.orbits.push(orb);
+    for (const x of rot) insert(P, x, orb);
+  }
+
+  function bisect(a, b, ga, n) {
+    for (let it = 0; it < 200; it++) {
+      const m = 0.5 * (a + b);
+      if (m <= a || m >= b) break;
+      const gm = iter(m, n) - m;
+      if (!isFinite(gm)) return null;
+      if (gm === 0) { a = b = m; break; }
+      if ((gm < 0) === (ga < 0)) { a = m; ga = gm; } else b = m;
+    }
+    const ra = Math.abs(iter(a, n) - a), rb = Math.abs(iter(b, n) - b);
+    const r = ra <= rb ? a : b, res = Math.min(ra, rb);
+    if (!(res <= 1e-6 * (1 + Math.abs(r)))) return null;   // jump discontinuity, not a root
+    return r;
+  }
+  function golden(a, c, n) {
+    const phi = 0.6180339887498949;
+    const h = x => { const y = iter(x, n) - x; return isFinite(y) ? Math.abs(y) : Infinity; };
+    let x1 = c - phi * (c - a), x2 = a + phi * (c - a), f1 = h(x1), f2 = h(x2);
+    for (let it = 0; it < 120 && c - a > 1e-15 * (1 + Math.abs(a)); it++) {
+      if (f1 < f2) { c = x2; x2 = x1; f2 = f1; x1 = c - phi * (c - a); f1 = h(x1); }
+      else { a = x1; x1 = x2; f1 = f2; x2 = a + phi * (c - a); f2 = h(x2); }
+    }
+    const r = f1 < f2 ? x1 : x2, v = Math.min(f1, f2);
+    if (!(v <= 1e-10 * (1 + Math.abs(r)))) return null;
+    // a genuine (tangential) root has small |g| on both sides; a one-sided limit at a jump does not
+    const d = 1e-10 * (1 + Math.abs(r));
+    if (!(h(r - d) <= 1e-8 * (1 + Math.abs(r)) && h(r + d) <= 1e-8 * (1 + Math.abs(r)))) return null;
+    return r;
+  }
+
+  for (let n = 1; n <= N; n++) {
+    await tick('period ' + n);
+    let tiny = 0;
+    for (let j = 0; j <= G; j++) {
+      const c = cur[j];
+      const y = (c > -Infinity && c < Infinity) ? f(c) : NaN;
+      cur[j] = (y > -Infinity && y < Infinity) ? y : NaN;
+      g[j] = cur[j] - xs[j];
+      if (Math.abs(g[j]) <= 1e-11 * (1 + Math.abs(xs[j]))) tiny++;
+    }
+    if (tiny > Math.max(50, G * 0.01)) {
+      per(n).continuum = true;
+      notes.push('f^' + n + '(x) = x on whole intervals (period-' + n + ' points form a continuum); skipped');
+      continue;
+    }
+    let found = 0;
+    for (let j = 0; j < G; j++) {
+      const a = g[j], b = g[j + 1];
+      if (!(isFinite(a) && isFinite(b))) continue;
+      if (a === 0) { addRoot(xs[j], n, 0); found++; continue; }
+      if ((a < 0 && b > 0) || (a > 0 && b < 0)) {
+        const r = bisect(xs[j], xs[j + 1], a, n);
+        if (r !== null) { addRoot(r, n, 0); found++; }
+      }
+      if ((found & 1023) === 1023) await tick('period ' + n);
+    }
+    if (g[G] === 0) addRoot(xs[G], n, 0);
+    for (let j = 1; j < G; j++) {
+      const a = g[j - 1], b = g[j], c = g[j + 1];
+      if (!(isFinite(a) && isFinite(b) && isFinite(c))) continue;
+      if (!(a * b > 0 && b * c > 0)) continue;
+      const ab = Math.abs(b);
+      if (ab < Math.abs(a) && ab <= Math.abs(c) && ab <= Math.max(Math.abs(a - b), Math.abs(c - b))) {
+        const r = golden(xs[j - 1], xs[j + 1], n);
+        if (r !== null) addRoot(r, n, 1e-7 * (1 + Math.abs(r)));
+      }
+    }
+  }
+  const out = [];
+  for (const [p, P] of periods) out.push({ p, orbits: P.orbits, full: P.full, continuum: P.continuum });
+  out.sort((u, v) => u.p - v.p);
+  return { periods: out, notes, leftDomain, lo, hi, G };
+}
+
+/* Sharkovsky: strongest found period whose orbit hull carries a continuous f */
+function sharkovskyAnalysis(periods, f, structCont) {
+  const ps = periods.filter(P => P.orbits.length).map(P => P.p).sort(sharkCmp);
+  const rejected = [];
+  for (const p of ps) {
+    const P = periods.find(Q => Q.p === p);
+    const tryN = Math.min(P.orbits.length, 30);
+    for (let i = 0; i < tryN; i++) {
+      const o = P.orbits[i];
+      const c = continuityOn(f, o.min, o.max, structCont);
+      if (c.ok) return { best: p, witness: o, rejected };
+      if (rejected.length < 3) rejected.push({ p, orbit: o, why: c });
+    }
+  }
+  return { best: null, witness: null, rejected };
+}
+
+/* ===================== complex periodic orbits ===================== */
+function mobius(n) {
+  let m = 1;
+  for (let p = 2; p * p <= n; p++) {
+    if (n % p === 0) { n /= p; if (n % p === 0) return 0; m = -m; }
+  }
+  if (n > 1) m = -m;
+  return m;
+}
+/* number of points of exact period n for a degree-d polynomial (with multiplicity) */
+function exactPeriodCount(d, n) {
+  let s = 0;
+  for (const k of divisors(n)) s += mobius(n / k) * Math.pow(d, k);
+  return s;
+}
+
+async function findComplexCycles(fc, opt) {
+  const { x0, x1, y0, y1, N } = opt;
+  const deg = opt.deg;
+  const tick = opt.tick || (async () => {});
+  const H = HC;
+  const density = opt.density || 1;
+  const periods = [];
+  const notes = [];
+  const all = new Map();  // spatial hash for dedupe, per period
+  const cell = 1e-6;
+  const hashKey = (a, b) => Math.round(a / cell) + ',' + Math.round(b / cell);
+  function nearExisting(map, a, b, tol) {
+    const i = Math.round(a / cell), j = Math.round(b / cell);
+    const r = Math.ceil(tol / cell);
+    if (r > 3) { for (const v of map.values()) if (Math.hypot(v.re - a, v.im - b) <= tol) return v; return null; }
+    for (let di = -r; di <= r; di++) for (let dj = -r; dj <= r; dj++) {
+      const v = map.get((i + di) + ',' + (j + dj));
+      if (v && Math.hypot(v.re - a, v.im - b) <= tol) return v;
+    }
+    return null;
+  }
+  const deriv = (a, b) => {
+    const h = 1e-7 * (1 + Math.hypot(a, b));
+    fc(a + h, b); const ur = H.R, ui = H.I;
+    fc(a - h, b); const vr = H.R, vi = H.I;
+    return [(ur - vr) / (2 * h), (ui - vi) / (2 * h)];
+  };
+  const span = Math.max(x1 - x0, y1 - y0);
+  const maxStep = span;
+  const byP = new Map();
+  const getP = p => { if (!byP.has(p)) byP.set(p, { p, orbits: [], map: new Map(), full: false }); return byP.get(p); };
+
+  function addRoot(zr, zi, n) {
+    const ore = [zr], oim = [zi];
+    for (let k = 1; k <= n; k++) { fc(ore[k - 1], oim[k - 1]); if (!isFinite(H.R) || !isFinite(H.I)) return; ore.push(H.R); oim.push(H.I); }
+    const mod = Math.hypot(zr, zi);
+    const res = Math.hypot(ore[n] - zr, oim[n] - zi);
+    const tolP = 1e-8 * (1 + mod) + 10 * res;
+    let p = n;
+    for (const d of divisors(n)) if (Math.hypot(ore[d] - zr, oim[d] - zi) <= tolP) { p = d; break; }
+    const P = getP(p);
+    if (nearExisting(P.map, zr, zi, 1e-7 * (1 + mod))) return;
+    if (P.orbits.length >= 3000) { P.full = true; return; }
+    let lr = 1, li = 0;
+    const pts = [];
+    for (let k = 0; k < p; k++) {
+      const [dr, di] = deriv(ore[k], oim[k]);
+      const t = lr * dr - li * di; li = lr * di + li * dr; lr = t;
+      pts.push([ore[k], oim[k]]);
+    }
+    const al = Math.hypot(lr, li);
+    const kind = al < 1 - 1e-6 ? 'attracting' : al > 1 + 1e-6 ? 'repelling' : 'neutral';
+    const orb = { p, pts, lambda: [lr, li], absLambda: al, kind };
+    P.orbits.push(orb);
+    for (const [a, b] of pts) P.map.set(hashKey(a, b), { re: a, im: b, o: orb });
+  }
+
+  function countPts(n) {
+    // points of exact period n found so far
+    const P = byP.get(n); return P ? P.orbits.length * n : 0;
+  }
+  function newton(zr, zi, n) {
+    let ok = false;
+    for (let it = 0; it < 80; it++) {
+      let wr = zr, wi = zi, Dr = 1, Di = 0, bad = false;
+      for (let k = 0; k < n; k++) {
+        const [dr, di] = deriv(wr, wi);
+        fc(wr, wi);
+        const nr = H.R, ni = H.I;
+        const t = Dr * dr - Di * di; Di = Dr * di + Di * dr; Dr = t;
+        wr = nr; wi = ni;
+        if (!isFinite(wr) || !isFinite(wi) || !isFinite(Dr) || !isFinite(Di) || Math.abs(wr) + Math.abs(wi) > 1e150) { bad = true; break; }
+      }
+      if (bad) return;
+      const gr = wr - zr, gi = wi - zi, hr = Dr - 1, hi = Di;
+      const den = hr * hr + hi * hi;
+      if (den === 0) return;
+      let sr = (gr * hr + gi * hi) / den, si = (gi * hr - gr * hi) / den;
+      const sm = Math.hypot(sr, si);
+      if (sm > maxStep) { sr *= maxStep / sm; si *= maxStep / sm; }
+      zr -= sr; zi -= si;
+      if (sm < 1e-14 * (1 + Math.hypot(zr, zi))) { ok = true; break; }
+      if (Math.hypot(zr, zi) > 1e8) return;
+    }
+    let wr = zr, wi = zi;
+    for (let k = 0; k < n; k++) { fc(wr, wi); wr = H.R; wi = H.I; }
+    const res = Math.hypot(wr - zr, wi - zi), sc = 1 + Math.hypot(zr, zi);
+    if (!(res <= (ok ? 1e-7 : 1e-10) * sc)) return;
+    addRoot(zr, zi, n);
+  }
+
+  for (let n = 1; n <= N; n++) {
+    await tick('period ' + n);
+    let expected = null;
+    if (deg && deg >= 2) {
+      if (Math.pow(deg, n) > 30000) { notes.push('period ' + n + ' and up skipped: ' + deg + '^' + n + ' is too many points to hunt'); break; }
+      expected = exactPeriodCount(deg, n);
+    }
+    const ex0 = x0 - 0.1 * (x1 - x0), ex1 = x1 + 0.1 * (x1 - x0), ey0 = y0 - 0.1 * (y1 - y0), ey1 = y1 + 0.1 * (y1 - y0);
+    const S = expected ? Math.min(160, Math.max(36, Math.ceil(Math.sqrt(6 * expected * density)))) : Math.round(48 * Math.sqrt(density));
+    for (let a = 0; a < S; a++) {
+      for (let b = 0; b < S; b++) {
+        newton(ex0 + (ex1 - ex0) * (a + 0.5 + 0.13 * Math.sin(7 * b + a)) / S,
+               ey0 + (ey1 - ey0) * (b + 0.5 + 0.13 * Math.cos(5 * a + b)) / S, n);
+      }
+      if ((a & 7) === 7) await tick('period ' + n);
+    }
+    // polynomial: keep hunting with random starts until the count is complete (time-boxed)
+    if (expected) {
+      const t0 = Date.now();
+      const budget = 900 * density;
+      let seed = 12345 + n;
+      const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+      while (countPts(n) < expected && Date.now() - t0 < budget) {
+        for (let t = 0; t < 400; t++) newton(ex0 + (ex1 - ex0) * rnd(), ey0 + (ey1 - ey0) * rnd(), n);
+        await tick('period ' + n);
+      }
+    }
+  }
+  for (let n = 1; n <= N; n++) {
+    const P = byP.get(n);
+    const expected = (deg && deg >= 2 && Math.pow(deg, n) <= 30000) ? exactPeriodCount(deg, n) : null;
+    periods.push({ p: n, orbits: P ? P.orbits : [], full: P ? P.full : false, expected });
+  }
+  for (const [p, P] of byP) if (p > N) periods.push({ p, orbits: P.orbits, full: P.full, expected: null });
+  return { periods, notes };
+}
+
+/* ===================== discrete spaces: Z, Z/n, Q ===================== */
+function modinv(a, n) {
+  let [r0, r1] = [((a % n) + n) % n, n], [s0, s1] = [1n, 0n];
+  while (r1) { const q = r0 / r1; [r0, r1] = [r1, r0 - q * r1]; [s0, s1] = [s1, s0 - q * s1]; }
+  if (r0 !== 1n) return null;
+  return ((s0 % n) + n) % n;
+}
+function exactOrNull(ast, P) {
+  try { return compileExact(ast, P); } catch (e) { if (e.kind === 'nonexact') return null; throw e; }
+}
+function realOrNull(ast, P) { try { return compileReal(ast, P); } catch (e) { return null; } }
+
+function makeZMap(ast, Pq, Pf) {
+  const fe = exactOrNull(ast, Pq), fr = realOrNull(ast, Pf);
+  const LIM = 9007199254740991n;
+  let usedFloat = false;
+  const F = function (x) {
+    if (fe) {
+      try {
+        const r = fe({ n: x, d: 1n });
+        if (r.d !== 1n) throw new DynErr('notinX', 'f(' + x + ') = ' + Q.str(r) + ' is not an integer, so f does not map ℤ to ℤ.', { x });
+        return r.n;
+      } catch (e) {
+        if (e.kind === 'undef') throw new DynErr('undef', 'f(' + x + ') is undefined (' + e.message + ').', { x });
+        if (e.kind !== 'nonexact') throw e;
+      }
+    }
+    if (!fr) throw new DynErr('notinX', 'cannot evaluate f(' + x + ').');
+    if (x > LIM || x < -LIM) throw new DynErr('overflow', 'beyond floating-point range');
+    usedFloat = true;
+    const y = fr(Number(x));
+    if (!isFinite(y)) throw new DynErr('undef', 'f(' + x + ') is undefined.', { x });
+    const k = Math.round(y);
+    if (Math.abs(y - k) > 1e-9 * Math.max(1, Math.abs(y))) throw new DynErr('notinX', 'f(' + x + ') ≈ ' + y.toPrecision(8) + ' is not an integer, so f does not map ℤ to ℤ.', { x });
+    if (Math.abs(k) > 9007199254740991) throw new DynErr('overflow', 'beyond floating-point range');
+    return BigInt(k);
+  };
+  F.usedFloat = () => usedFloat;
+  F.exact = !!fe;
+  return F;
+}
+function makeZnMap(ast, Pq, Pf, n) {
+  const N = BigInt(n);
+  const fe = exactOrNull(ast, Pq), fr = realOrNull(ast, Pf);
+  let usedFloat = false;
+  const F = function (x) {
+    if (fe) {
+      try {
+        const r = fe({ n: x, d: 1n });
+        const a = ((r.n % N) + N) % N;
+        if (r.d === 1n) return a;
+        const inv = modinv(r.d, N);
+        if (inv === null) throw new DynErr('undef', 'f(' + x + ') = ' + Q.str(r) + ', and ' + r.d + ' is not invertible mod ' + n + '.', { x });
+        return (a * inv) % N;
+      } catch (e) {
+        if (e.kind === 'undef' && e.data) throw e;
+        if (e.kind === 'undef') throw new DynErr('undef', 'f(' + x + ') is undefined (' + e.message + ').', { x });
+        if (e.kind !== 'nonexact') throw e;
+      }
+    }
+    if (!fr) throw new DynErr('notinX', 'cannot evaluate f(' + x + ').');
+    usedFloat = true;
+    const y = fr(Number(x));
+    if (!isFinite(y)) throw new DynErr('undef', 'f(' + x + ') is undefined.', { x });
+    const k = Math.round(y);
+    if (Math.abs(y - k) > 1e-9 * Math.max(1, Math.abs(y)) || Math.abs(k) > 9007199254740991) throw new DynErr('notinX', 'f(' + x + ') ≈ ' + y.toPrecision(8) + ' is not an integer, so it has no value mod ' + n + '.', { x });
+    return ((BigInt(k) % N) + N) % N;
+  };
+  F.usedFloat = () => usedFloat;
+  F.exact = !!fe;
+  return F;
+}
+function makeQMap(ast, Pq) {
+  let fe;
+  try { fe = compileExact(ast, Pq); }
+  catch (e) {
+    if (e.kind === 'nonexact') throw new DynErr('notinX', 'Over ℚ the formula must use exact operations (+ − × ÷, integer powers, floor, mod, abs, min, max, if, pl). ' + e.message + '.');
+    throw e;
+  }
+  const F = function (x) {
+    try { return fe(x); }
+    catch (e) {
+      if (e.kind === 'nonexact') throw new DynErr('notinX', 'f(' + Q.str(x) + ') is not rational, so f does not map ℚ to ℚ.', { x });
+      if (e.kind === 'undef') throw new DynErr('undef', 'f(' + Q.str(x) + ') is undefined (' + e.message + ').', { x });
+      throw e;
+    }
+  };
+  F.exact = true;
+  F.usedFloat = () => false;
+  return F;
+}
+function rationalStarts(maxDen, W) {
+  const out = [];
+  for (let q = 1; q <= maxDen; q++) {
+    const B = Math.floor(W * q);
+    for (let p = -B; p <= B; p++) {
+      if (bgcd(BigInt(p), BigInt(q)) !== 1n) continue;
+      out.push({ n: BigInt(p), d: BigInt(q), h: Math.max(Math.abs(p), q), v: p / q });
+    }
+  }
+  out.sort((a, b) => a.h - b.h || Math.abs(a.v) - Math.abs(b.v) || a.v - b.v);
+  return out.map(o => ({ n: o.n, d: o.d }));
+}
+
+/* Follow orbits from every start; classify; find all cycles that are reached. */
+async function analyzeDiscrete(F, starts, keyOf, tooBig, opt) {
+  const tick = opt.tick || (async () => {});
+  const stepCap = opt.stepCap || 20000, totalCap = opt.totalCap || 3000000;
+  const nodes = new Map();
+  const cycles = [], terms = [];
+  let total = 0, error = null;
+  let lastTick = 0;
+  outer:
+  for (let si = 0; si < starts.length; si++) {
+    if (si - lastTick >= 64) { lastTick = si; await tick('orbit ' + si + ' of ' + starts.length); }
+    const x0 = starts[si];
+    const k0 = keyOf(x0);
+    const known = nodes.get(k0);
+    if (known) { known.start = true; continue; }
+    const path = [];
+    const idx = new Map();
+    let v = x0, k = k0;
+    while (true) {
+      if (idx.has(k)) {
+        const j = idx.get(k);
+        const cid = cycles.length;
+        const cyc = path.slice(j);
+        cycles.push({ len: cyc.length, keys: cyc.map(p => p.key), vals: cyc.map(p => p.v), basin: 0 });
+        for (let i = 0; i < path.length; i++) {
+          const p = path[i]; p.term = 'cyc'; p.cyc = cid; p.depth = i >= j ? 0 : j - i;
+        }
+        break;
+      }
+      const r = nodes.get(k);
+      if (r) {
+        for (let i = path.length - 1, d = 1; i >= 0; i--, d++) {
+          const p = path[i]; p.term = r.term; p.cyc = r.cyc; p.tid = r.tid; p.depth = r.depth + d;
+        }
+        break;
+      }
+      if (path.length >= stepCap || total >= totalCap) {
+        const tid = terms.push({ kind: 'unres' }) - 1;
+        for (let i = 0; i < path.length; i++) { const p = path[i]; p.term = 'unres'; p.tid = tid; p.depth = -1; }
+        break;
+      }
+      const node = { key: k, v, next: null, cyc: -1, depth: 0, term: null, tid: -1, start: path.length === 0 };
+      idx.set(k, path.length); path.push(node); nodes.set(k, node);
+      let nv;
+      try { nv = F(v); }
+      catch (e) {
+        if (e.kind === 'overflow') { nv = null; }
+        else { error = e; for (const p of path) nodes.delete(p.key); break outer; }
+      }
+      total++;
+      if (nv === null || tooBig(nv)) {
+        const tid = terms.push({ kind: 'esc' }) - 1;
+        for (let i = 0; i < path.length; i++) { const p = path[i]; p.term = 'esc'; p.tid = tid; p.depth = path.length - i; }
+        break;
+      }
+      const nk = keyOf(nv);
+      node.next = nk;
+      v = nv; k = nk;
+    }
+  }
+  // basins and counts over starts
+  const counts = { periodic: 0, pre: 0, esc: 0, unres: 0, starts: 0 };
+  for (const nd of nodes.values()) {
+    if (!nd.start) continue;
+    counts.starts++;
+    if (nd.term === 'cyc') { if (nd.depth === 0) counts.periodic++; else counts.pre++; cycles[nd.cyc].basin++; }
+    else if (nd.term === 'esc') counts.esc++;
+    else counts.unres++;
+  }
+  return { nodes, cycles, terms, error, total, counts };
+}
+
+/* Graph shown on screen: displayed nodes = starts (or all) plus cycle points; edges = first return. */
+function buildDisplayGraph(res, opt) {
+  const { nodes, cycles } = res;
+  const showAll = !!opt.showAll, maxNodes = opt.maxNodes || 4000;
+  const disp = new Map(); // key -> id
+  const G = { nodes: [], next: [], steps: [], cycles: [], terms: new Map(), truncated: false };
+  const addNode = (key, nd, extra) => {
+    const id = G.nodes.length;
+    G.nodes.push(Object.assign({ id, key, v: nd ? nd.v : null, cyc: -1, term: nd ? nd.term : null, depth: nd ? nd.depth : 0, start: nd ? nd.start : false }, extra || {}));
+    disp.set(key, id);
+    G.next.push(-1); G.steps.push(1);
+    return id;
+  };
+  // cycles first
+  cycles.forEach((c, ci) => {
+    const ids = c.keys.map(k => addNode(k, nodes.get(k), { cyc: ci, period: c.len }));
+    G.cycles.push(ids);
+    ids.forEach((id, i) => { G.next[id] = ids[(i + 1) % ids.length]; });
+  });
+  let count = 0;
+  for (const nd of nodes.values()) {
+    if (disp.has(nd.key)) continue;
+    if (opt.cyclesOnly || !(showAll || nd.start)) continue;
+    if (opt.hideEsc && nd.term === 'esc') continue;
+    if (G.nodes.length >= maxNodes) { G.truncated = true; break; }
+    addNode(nd.key, nd);
+    count++;
+  }
+  // all escaping orbits flow into one node "infinity" (a fixed point of the extended map), undecided ones into "?"
+  const termId = (tid, kind) => {
+    if (G.terms.has(kind)) return G.terms.get(kind);
+    const id = G.nodes.length;
+    G.nodes.push({ id, key: '#' + kind, v: null, cyc: -1, term: kind, pseudo: kind });
+    G.next.push(-1); G.steps.push(1);
+    G.terms.set(kind, id);
+    return id;
+  };
+  if (opt.hideEsc && res.counts.esc) { const id = termId(-1, 'esc'); G.nodes[id].collapsed = res.counts.esc; }
+  const memo = new Map(); // key -> [targetId, steps] for intermediate nodes
+  const n0 = G.nodes.length;
+  for (let id = 0; id < n0; id++) {
+    const u = G.nodes[id];
+    if (u.cyc >= 0 || u.pseudo) continue;
+    const nd = nodes.get(u.key);
+    let k = nd.next, steps = 1;
+    const trail = [];
+    let target = -1, tsteps = 0;
+    while (true) {
+      if (k === null || k === undefined) { target = termId(nd.tid, nd.term === 'unres' ? 'unres' : 'esc'); tsteps = steps; break; }
+      if (disp.has(k) && !G.nodes[disp.get(k)].pseudo) { target = disp.get(k); tsteps = steps; break; }
+      const m = memo.get(k);
+      if (m) { target = m[0]; tsteps = steps + m[1]; break; }
+      const w = nodes.get(k);
+      if (!w) { target = termId(nd.tid, 'unres'); tsteps = steps; break; }
+      trail.push([k, steps]);
+      k = w.next; steps++;
+    }
+    for (const [kk, s] of trail) memo.set(kk, [target, tsteps - s]);
+    G.next[id] = target; G.steps[id] = tsteps;
+  }
+  return G;
+}
+
+/* ===================== layout of a functional graph ===================== */
+function layoutGraph(G) {
+  const n = G.nodes.length;
+  const children = Array.from({ length: n }, () => []);
+  const onCycle = new Uint8Array(n);
+  for (const c of G.cycles) for (const id of c) onCycle[id] = 1;
+  for (let u = 0; u < n; u++) {
+    const v = G.next[u];
+    if (v < 0 || onCycle[u]) continue;
+    children[v].push(u);
+  }
+  // weights (leaf counts) via iterative post-order from roots
+  const weight = new Float64Array(n), depth = new Int32Array(n);
+  const roots = [];
+  G.cycles.forEach((c, ci) => roots.push({ kind: 'cyc', ids: c, ci }));
+  for (const [, id] of G.terms) roots.push({ kind: 'term', ids: [id] });
+  const order = [];
+  for (const r of roots) {
+    const stack = r.ids.slice();
+    while (stack.length) { const u = stack.pop(); order.push(u); for (const c of children[u]) { depth[c] = depth[u] + 1; stack.push(c); } }
+  }
+  for (let i = order.length - 1; i >= 0; i--) {
+    const u = order[i];
+    let w = 0; for (const c of children[u]) w += weight[c];
+    weight[u] = Math.max(1, w);
+  }
+  const X = new Float64Array(n), Y = new Float64Array(n), ANG = new Float64Array(n);
+  const placed = new Uint8Array(n);
+  const DR = 26, SP = 26, MINARC = 10;
+  const comps = [];
+  for (const r of roots) {
+    const L = r.ids.length;
+    const isCyc = r.kind === 'cyc';
+    const rc = isCyc ? (L === 1 ? 0 : Math.max(18, L * SP / (2 * Math.PI))) : 0;
+    let maxD = 0;
+    const local = [];
+    const sectors = [];
+    if (isCyc && L > 1) {
+      for (let i = 0; i < L; i++) { const th = -Math.PI / 2 + 2 * Math.PI * i / L; sectors.push([r.ids[i], th - Math.PI / L, th + Math.PI / L, rc, th]); }
+    } else {
+      sectors.push([r.ids[0], -Math.PI / 2 - Math.PI, -Math.PI / 2 + Math.PI, 0, -Math.PI / 2]);
+    }
+    // tree minimum angular width so leaves at depth d are at least ~SP apart is not enforced; we expand radius instead
+    const queue = [];
+    for (const [id, a0, a1, rad, th] of sectors) {
+      local.push([id, rad * Math.cos(th), rad * Math.sin(th), th]);
+      queue.push([id, a0, a1, rad]);
+    }
+    while (queue.length) {
+      const [u, a0, a1, rad] = queue.shift();
+      const ch = children[u].slice().sort((p, q) => weight[q] - weight[p]);
+      if (!ch.length) continue;
+      // keep heavy children in the middle
+      const arr = [];
+      ch.forEach((c, i) => { if (i % 2) arr.push(c); else arr.unshift(c); });
+      const W = weight[u] > 0 ? arr.reduce((s, c) => s + weight[c], 0) : 1;
+      let a = a0;
+      const nr = Math.max(rad + DR, MINARC * W / Math.max(1e-6, a1 - a0));
+      for (const c of arr) {
+        const span = (a1 - a0) * weight[c] / W;
+        const th = a + span / 2;
+        local.push([c, nr * Math.cos(th), nr * Math.sin(th), th]);
+        queue.push([c, a, a + span, nr]);
+        a += span;
+        maxD = Math.max(maxD, nr);
+      }
+    }
+    let R = Math.max(rc, maxD) + 22;
+    comps.push({ local, R, root: r, rc });
+  }
+  // packing: shelves
+  comps.sort((a, b) => (a.root.kind === b.root.kind) ? b.R - a.R : (a.root.kind === 'cyc' ? -1 : 1));
+  const area = comps.reduce((s, c) => s + 4 * c.R * c.R, 0);
+  const rowW = Math.max(comps.length ? 2 * comps[0].R : 100, Math.sqrt(area) * 1.4);
+  let cx = 0, cy = 0, rowH = 0;
+  const pad = 8;
+  const compOf = new Int32Array(n).fill(-1);
+  const cycGeom = [];
+  comps.forEach((c, ci) => {
+    const d = 2 * c.R;
+    if (cx > 0 && cx + d > rowW) { cx = 0; cy += rowH + pad; rowH = 0; }
+    c.cx = cx + c.R; c.cy = cy + c.R;
+    for (const [id, x, y, th] of c.local) { X[id] = c.cx + x; Y[id] = c.cy + y; ANG[id] = th; placed[id] = 1; compOf[id] = ci; }
+    if (c.root.kind === 'cyc') cycGeom[c.root.ci] = [c.cx, c.cy, c.rc];
+    cx += d + pad; rowH = Math.max(rowH, d);
+  });
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (let i = 0; i < n; i++) if (placed[i]) { x0 = Math.min(x0, X[i]); x1 = Math.max(x1, X[i]); y0 = Math.min(y0, Y[i]); y1 = Math.max(y1, Y[i]); }
+  if (!isFinite(x0)) { x0 = y0 = 0; x1 = y1 = 1; }
+  return { X, Y, ANG, placed, comps, compOf, cycGeom, bbox: [x0 - 20, y0 - 20, x1 + 20, y1 + 20], children };
+}
+
+G.DynEngine = {
+  DynErr, parse, tokenize, structurallyContinuous, holomorphicCheck, polyDegree,
+  compileReal, compileComplex, compileExact, HC, Q, parseParamValue,
+  sharkKey, sharkCmp, sharkForces, sharkDescribe, v2,
+  continuityOn, findRealCycles, sharkovskyAnalysis,
+  mobius, exactPeriodCount, findComplexCycles,
+  makeZMap, makeZnMap, makeQMap, rationalStarts, analyzeDiscrete, buildDisplayGraph, layoutGraph, divisors
+};
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+'use strict';
+const E = window.DynEngine;
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const root = document.documentElement;
+
+/* ---------------- colors ---------------- */
+let C = {};
+function readColors() {
+  const cs = getComputedStyle(root);
+  const v = n => cs.getPropertyValue(n).trim();
+  C = { paper: v('--paper'), card: v('--paper-card'), hover: v('--paper-hover'), ink: v('--ink'), soft: v('--ink-soft'),
+    faint: v('--ink-faint'), accent: v('--accent'), deep: v('--accent-deep'), grid: v('--grid'), line: v('--line'),
+    lsoft: v('--line-soft'), per: [1, 2, 3, 4, 5, 6, 7, 8].map(i => v('--per-' + i)) };
+}
+const perColor = p => p <= C.per.length ? C.per[p - 1] : C.soft;
+function hexRGB(h) { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+
+/* ---------------- examples ---------------- */
+const EXAMPLES = [
+  { g: 'Real line & intervals', items: [
+    { label: 'Logistic map, period-3 window', src: 'r x (1 - x)', space: 'I', lo: '0', hi: '1', params: { r: ['3.83', 2.8, 4] }, N: 10 },
+    { label: 'Logistic map, r = 3.5', src: 'r x (1 - x)', space: 'I', lo: '0', hi: '1', params: { r: ['3.5', 2.8, 4] }, N: 10 },
+    { label: 'Logistic map, r = 4', src: 'r x (1 - x)', space: 'I', lo: '0', hi: '1', params: { r: ['4', 2.8, 4] }, N: 8 },
+    { label: 'Tent map', src: 'min(2x, 2 - 2x)', space: 'I', lo: '0', hi: '1', N: 8 },
+    { label: 'Period 5, no period 3', src: 'pl(x, 1,3, 2,5, 3,4, 4,2, 5,1)', space: 'I', lo: '1', hi: '5', N: 10 },
+    { label: 'x² + c on ℝ', src: 'x^2 + c', space: 'R', params: { c: ['-1.76', -2, 0.25] }, view: { cx: 0, cy: 0, span: 4.6 }, N: 8 },
+    { label: 'cos x', src: 'cos(x)', space: 'R', view: { cx: 0.6, cy: 0.6, span: 4 }, N: 6 },
+    { label: 'Doubling map (has a jump)', src: '2x % 1', space: 'I', lo: '0', hi: '1', N: 6 }
+  ] },
+  { g: 'Integers', items: [
+    { label: 'Collatz map on ℤ', src: 'if(x % 2 == 0, x/2, 3x + 1)', space: 'Z', zM: '200', N: 12 },
+    { label: 'x² − 1 on ℤ', src: 'x^2 - 1', space: 'Z', zM: '40', N: 6 },
+    { label: 'x² + 1 mod 211', src: 'x^2 + 1', space: 'ZN', mod: '211', N: 8 },
+    { label: 'x² mod 1001', src: 'x^2', space: 'ZN', mod: '1001', N: 8 },
+    { label: '2x mod 97 (a permutation)', src: '2x', space: 'ZN', mod: '97', N: 8 }
+  ] },
+  { g: 'Rationals', items: [
+    { label: 'x² − 29/16: a rational 3-cycle', src: 'x^2 + c', space: 'Q', qDen: '16', qW: '2', params: { c: ['-29/16', -2, 0.25] }, N: 6 },
+    { label: 'x² − 21/16', src: 'x^2 - 21/16', space: 'Q', qDen: '16', qW: '2', N: 6 }
+  ] },
+  { g: 'Complex plane', items: [
+    { label: 'Douady rabbit', src: 'z^2 + (-0.1226 + 0.7449i)', space: 'C', view: { cx: 0, cy: 0, span: 3.2 }, N: 6 },
+    { label: 'Basilica z² − 1', src: 'z^2 - 1', space: 'C', view: { cx: 0, cy: 0, span: 3.6 }, N: 7 },
+    { label: 'Newton’s method for z³ − 1', src: 'z - (z^3 - 1)/(3 z^2)', space: 'C', view: { cx: 0, cy: 0, span: 3.6 }, N: 4 }
+  ] }
+];
+const DEFAULT_RANGES = { r: [0, 4], c: [-2, 0.5] };
+
+/* ---------------- state ---------------- */
+const S = {
+  src: '', space: 'I', N: 10, lo: '0', hi: '1', mod: '211', zM: '200', qDen: '16', qW: '2',
+  zEsc: 40, qEsc: 30, stepCap: 20000, escMode: 'auto', grid: 40000, eff: 1, shade: true,
+  params: {},          // name -> {text, min, max}
+  views: { R: { cx: 0, cy: 0, span: 5 }, I: null, C: { cx: 0, cy: 0, span: 4 }, G: null },
+  res: null, hl: null, parsed: null
+};
+
+/* ---------------- formatting ---------------- */
+function fmtR(x, d) {
+  d = d || 6;
+  if (!isFinite(x)) return '—';
+  if (x === 0 || Math.abs(x) < 1e-13) return '0';
+  const a = Math.abs(x);
+  if (a >= 1e6 || a < 1e-4) return x.toExponential(Math.max(1, d - 3)).replace('e', '·10^').replace('+', '');
+  let s = x.toPrecision(d);
+  if (s.includes('.')) s = s.replace(/0+$/, '').replace(/\.$/, '');
+  return s.replace('-', '−');
+}
+function fmtC(re, im, d) {
+  d = d || 5;
+  if (Math.abs(im) < 1e-12 * (1 + Math.abs(re))) return fmtR(re, d);
+  if (Math.abs(re) < 1e-12 * (1 + Math.abs(im))) return fmtR(im, d) + 'i';
+  return fmtR(re, d) + (im < 0 ? ' − ' : ' + ') + fmtR(Math.abs(im), d) + 'i';
+}
+function abbrev(s, max) {
+  max = max || 16;
+  const neg = s[0] === '-';
+  const t = neg ? s.slice(1) : s;
+  if (t.length <= max) return s.replace('-', '−');
+  return (neg ? '−' : '') + t.slice(0, 6) + '…' + t.slice(-4) + ' (' + t.length + ' digits)';
+}
+function fmtVal(v) {
+  if (typeof v === 'bigint') return abbrev(v.toString());
+  if (v && typeof v.n === 'bigint') {
+    if (v.d === 1n) return abbrev(v.n.toString());
+    const ns = v.n.toString(), ds = v.d.toString();
+    if (ns.length + ds.length > 22) return abbrev(ns, 8) + '/' + abbrev(ds, 8);
+    return ns.replace('-', '−') + '/' + ds;
+  }
+  return String(v);
+}
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const numStr = n => n.toLocaleString('en-US');
+
+/* ---------------- bar ---------------- */
+const fxIn = $('#fx'), Nin = $('#N'), Nval = $('#Nval'), ctxEl = $('#ctx'), parEl = $('#params'), exSel = $('#examples');
+let recomputeTimer = null;
+function schedule(ms) { clearTimeout(recomputeTimer); recomputeTimer = setTimeout(recompute, ms == null ? 350 : ms); }
+
+function buildExamples() {
+  let h = '<option value="">Examples…</option>';
+  EXAMPLES.forEach((g, gi) => {
+    h += '<optgroup label="' + esc(g.g) + '">';
+    g.items.forEach((it, ii) => { h += '<option value="' + gi + ':' + ii + '">' + esc(it.label) + '</option>'; });
+    h += '</optgroup>';
+  });
+  exSel.innerHTML = h;
+}
+function applyExample(ex) {
+  S.src = ex.src; fxIn.value = ex.src;
+  S.space = ex.space;
+  if (ex.lo != null) { S.lo = ex.lo; S.hi = ex.hi; }
+  if (ex.mod) S.mod = ex.mod;
+  if (ex.zM) S.zM = ex.zM;
+  if (ex.qDen) S.qDen = ex.qDen;
+  if (ex.qW) { S.qW = ex.qW; $('#qW').value = ex.qW; }
+  if (ex.N) S.N = ex.N;
+  S.params = {};
+  if (ex.params) for (const k in ex.params) { const [t, a, b] = ex.params[k]; S.params[k] = { text: t, min: a, max: b }; }
+  if (ex.view) S.views[ex.space === 'C' ? 'C' : 'R'] = Object.assign({}, ex.view);
+  if (ex.space === 'I') S.views.I = null;
+  S.views.G = null;
+  S.hl = null;
+  syncBar();
+  recompute();
+}
+function syncBar() {
+  $$('#space .am-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.space === S.space ? 'true' : 'false'));
+  $('#fxLabel').textContent = S.space === 'C' ? 'f(z) =' : 'f(x) =';
+  const maxN = S.space === 'C' ? 12 : 16;
+  Nin.max = maxN;
+  if (S.N > maxN) S.N = maxN;
+  Nin.value = S.N; Nval.textContent = S.N;
+  let h = '';
+  if (S.space === 'I') h = '<span class="am-label">on</span><span class="sep">[</span><input class="am-input" id="lo" value="' + esc(S.lo) + '" aria-label="left end"><span class="sep">,</span><input class="am-input" id="hi" value="' + esc(S.hi) + '" aria-label="right end"><span class="sep">]</span>';
+  else if (S.space === 'ZN') h = '<span class="am-label">n =</span><input class="am-input" id="mod" inputmode="numeric" value="' + esc(S.mod) + '" aria-label="modulus">';
+  else if (S.space === 'Z') h = '<span class="am-label">start |x| ≤</span><input class="am-input" id="zM" inputmode="numeric" value="' + esc(S.zM) + '" aria-label="search window">';
+  else if (S.space === 'Q') h = '<span class="am-label">denominators ≤</span><input class="am-input" id="qDen" inputmode="numeric" value="' + esc(S.qDen) + '" aria-label="max denominator">';
+  ctxEl.innerHTML = h;
+  ['lo', 'hi', 'mod', 'zM', 'qDen'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => { S[id] = el.value; if (id === 'lo' || id === 'hi') S.views.I = null; S.views.G = null; schedule(500); });
+  });
+  $$('#opts .oc-opt').forEach(o => { o.hidden = !o.dataset.for.split(' ').includes(S.space); });
+  $$('#gridSeg .am-btn').forEach(b => b.setAttribute('aria-pressed', +b.dataset.grid === S.grid ? 'true' : 'false'));
+  $$('#effSeg .am-btn').forEach(b => b.setAttribute('aria-pressed', +b.dataset.eff === S.eff ? 'true' : 'false'));
+  $$('#escSeg .am-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.esc === S.escMode ? 'true' : 'false'));
+  $$('#shadeSeg .am-btn').forEach(b => b.setAttribute('aria-pressed', (b.dataset.shade === '1') === S.shade ? 'true' : 'false'));
+  $('#fit').style.display = '';
+  syncParams();
+}
+function syncParams() {
+  let parsed = null;
+  try { parsed = E.parse(S.src); } catch (e) { /* keep sliders as they are */ return; }
+  const names = parsed.params;
+  for (const n of names) if (!S.params[n]) {
+    const r = DEFAULT_RANGES[n] || [-3, 3];
+    S.params[n] = { text: String(n === 'r' ? 3.5 : n === 'c' ? -1 : 1), min: r[0], max: r[1] };
+  }
+  const cur = Array.from(parEl.querySelectorAll('.oc-par')).map(e => e.dataset.p).join(',');
+  if (cur === names.join(',')) { names.forEach(n => updateParamWidgets(n, true)); return; }
+  parEl.innerHTML = names.map(n => {
+    const P = S.params[n];
+    return '<span class="oc-par" data-p="' + n + '"><span class="am-label">' + n + ' =</span><input class="am-input" data-pt="' + n + '" value="' + esc(P.text) + '" aria-label="parameter ' + n + '">' +
+      '<input type="range" data-pr="' + n + '" min="' + P.min + '" max="' + P.max + '" step="' + ((P.max - P.min) / 1000) + '" aria-label="slider for ' + n + '"></span>';
+  }).join('');
+  names.forEach(n => updateParamWidgets(n, true));
+  parEl.querySelectorAll('[data-pt]').forEach(el => el.addEventListener('input', () => {
+    const n = el.dataset.pt; S.params[n].text = el.value;
+    const pv = E.parseParamValue(el.value);
+    el.classList.toggle('bad', !pv);
+    if (pv) {
+      if (pv.v < S.params[n].min) S.params[n].min = pv.v;
+      if (pv.v > S.params[n].max) S.params[n].max = pv.v;
+      updateParamWidgets(n, false);
+      schedule(450);
+    }
+  }));
+  parEl.querySelectorAll('[data-pr]').forEach(el => el.addEventListener('input', () => {
+    const n = el.dataset.pr; const v = +el.value;
+    const t = String(+v.toFixed(4));
+    S.params[n].text = t;
+    const ti = parEl.querySelector('[data-pt="' + n + '"]'); if (ti) { ti.value = t; ti.classList.remove('bad'); }
+    schedule(S.space === 'C' ? 300 : 120);
+  }));
+}
+function updateParamWidgets(n, setText) {
+  const P = S.params[n];
+  const r = parEl.querySelector('[data-pr="' + n + '"]');
+  const pv = E.parseParamValue(P.text);
+  if (r) { r.min = P.min; r.max = P.max; r.step = (P.max - P.min) / 1000; if (pv) r.value = pv.v; }
+  if (setText) { const t = parEl.querySelector('[data-pt="' + n + '"]'); if (t && t.value !== P.text) t.value = P.text; }
+}
+function paramValues() {
+  const Pf = {}, Pq = {};
+  for (const n of (S.parsed ? S.parsed.params : [])) {
+    const pv = E.parseParamValue(S.params[n] ? S.params[n].text : '');
+    if (!pv) throw new E.DynErr('parse', 'Parameter ' + n + ' needs a number (decimals or a fraction like -29/16).');
+    Pf[n] = pv.v; Pq[n] = pv.q;
+  }
+  return { Pf, Pq };
+}
+
+/* ---------------- canvas ---------------- */
+const pic = $('#pic'), cv = $('#cv'), ctx = cv.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  const r = pic.getBoundingClientRect();
+  DPR = Math.min(2.5, window.devicePixelRatio || 1);
+  W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  draw();
+  if (S.space === 'C') scheduleShade(150);
+}
+new ResizeObserver(resize).observe(pic);
+
+function niceStep(raw) {
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const m = raw / p;
+  return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p;
+}
+function contView() {
+  const key = S.space === 'C' ? 'C' : S.space === 'I' ? 'I' : 'R';
+  if (!S.views[key]) {
+    const lo = numOr(S.lo, 0), hi = numOr(S.hi, 1);
+    const m = (lo + hi) / 2, w = Math.max(1e-9, hi - lo);
+    S.views.I = { cx: m, cy: m, span: w * 1.16 };
+  }
+  const v = S.views[key];
+  const s = Math.min(W, H) / v.span;
+  return { v, s, X: x => W / 2 + (x - v.cx) * s, Y: y => H / 2 - (y - v.cy) * s,
+    x0: v.cx - W / 2 / s, x1: v.cx + W / 2 / s, y0: v.cy - H / 2 / s, y1: v.cy + H / 2 / s,
+    inv: (px, py) => [v.cx + (px - W / 2) / s, v.cy - (py - H / 2) / s] };
+}
+function numOr(t, d) { const pv = E.parseParamValue(t); return pv ? pv.v : d; }
+
+function drawAxes(T, complex) {
+  const { X, Y, x0, x1, y0, y1 } = T;
+  const step = niceStep((x1 - x0) / Math.max(3, W / 110));
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = C.lsoft;
+  ctx.globalAlpha = 0.55;
+  ctx.beginPath();
+  for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) { const px = Math.round(X(x)) + 0.5; ctx.moveTo(px, 0); ctx.lineTo(px, H); }
+  for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) { const py = Math.round(Y(y)) + 0.5; ctx.moveTo(0, py); ctx.lineTo(W, py); }
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = C.line;
+  ctx.beginPath();
+  if (y0 < 0 && y1 > 0) { const py = Math.round(Y(0)) + 0.5; ctx.moveTo(0, py); ctx.lineTo(W, py); }
+  if (x0 < 0 && x1 > 0) { const px = Math.round(X(0)) + 0.5; ctx.moveTo(px, 0); ctx.lineTo(px, H); }
+  ctx.stroke();
+  ctx.fillStyle = C.faint;
+  ctx.font = '10px "JetBrains Mono", ui-monospace, monospace';
+  const ay = Math.min(H - 6, Math.max(12, Y(0) + 13));
+  let ax = X(0) - 4, yAlign = 'right';
+  if (ax < 40) { ax = Math.max(4, X(0) + 4); yAlign = 'left'; }
+  if (ax > W - 4) { ax = W - 4; yAlign = 'right'; }
+  ctx.textAlign = 'center';
+  const dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+  for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) {
+    if (Math.abs(x) < step / 2) continue;
+    ctx.fillText(x.toFixed(dec).replace('-', '−'), X(x), ay);
+  }
+  ctx.textAlign = yAlign;
+  for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) {
+    if (Math.abs(y) < step / 2) continue;
+    ctx.fillText(y.toFixed(dec).replace('-', '−') + (complex ? 'i' : ''), ax, Y(y) + 3.5);
+  }
+}
+
+function plotFn(T, fn, color, width, alpha, xa, xb) {
+  const { X, Y } = T;
+  const a = xa == null ? T.x0 : Math.max(T.x0, xa), b = xb == null ? T.x1 : Math.min(T.x1, xb);
+  if (!(b > a)) return;
+  const n = Math.ceil((X(b) - X(a)) * 1.5) + 2;
+  ctx.strokeStyle = color; ctx.lineWidth = width; ctx.globalAlpha = alpha;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  let pen = false, py = 0;
+  for (let i = 0; i <= n; i++) {
+    const x = a + (b - a) * i / n;
+    const y = fn(x);
+    if (!isFinite(y)) { pen = false; continue; }
+    let sy = Y(y);
+    if (sy < -4 * H) sy = -4 * H; else if (sy > 5 * H) sy = 5 * H;
+    if (pen && Math.abs(sy - py) > 0.6 * H) pen = false;
+    if (!pen) { ctx.moveTo(X(x), sy); pen = true; } else ctx.lineTo(X(x), sy);
+    py = sy;
+  }
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+function dot(px, py, r, color, kind, ring) {
+  ctx.beginPath(); ctx.arc(px, py, r, 0, 2 * Math.PI);
+  if (kind === 'attracting') { ctx.fillStyle = color; ctx.fill(); }
+  else if (kind === 'neutral') { ctx.fillStyle = C.card; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = color; ctx.stroke(); ctx.beginPath(); ctx.arc(px, py, r, Math.PI / 2, 3 * Math.PI / 2); ctx.fillStyle = color; ctx.fill(); }
+  else { ctx.fillStyle = C.card; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = color; ctx.stroke(); }
+  if (ring) { ctx.beginPath(); ctx.arc(px, py, r + 3.5, 0, 2 * Math.PI); ctx.lineWidth = 1.4; ctx.strokeStyle = C.accent; ctx.stroke(); }
+}
+
+function allOrbits() {
+  const R = S.res; if (!R || !R.periods) return [];
+  const out = [];
+  R.periods.forEach(P => P.orbits.forEach((o, i) => out.push({ P, o, i })));
+  return out;
+}
+function iterFn(f, n) { return x => { for (let k = 0; k < n; k++) { x = f(x); if (!isFinite(x)) return NaN; } return x; }; }
+
+function drawReal() {
+  const T = contView();
+  const { X, Y } = T;
+  ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, H);
+  const R = S.res;
+  const interval = S.space === 'I' && R && R.kind === 'real' ? [R.lo, R.hi] : null;
+  if (interval) {
+    ctx.fillStyle = C.hover; ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    const ax = X(interval[0]), bx = X(interval[1]), ay = Y(interval[1]), by = Y(interval[0]);
+    ctx.fillRect(ax, ay, bx - ax, by - ay);
+  }
+  drawAxes(T, false);
+  if (interval) {
+    ctx.strokeStyle = C.line; ctx.setLineDash([]);
+    const ax = X(interval[0]), bx = X(interval[1]), ay = Y(interval[1]), by = Y(interval[0]);
+    ctx.strokeRect(Math.round(ax) + 0.5, Math.round(ay) + 0.5, Math.round(bx - ax), Math.round(by - ay));
+  }
+  // diagonal
+  ctx.strokeStyle = C.faint; ctx.lineWidth = 1; ctx.setLineDash([5, 5]);
+  ctx.beginPath(); ctx.moveTo(X(T.x0), Y(T.x0)); ctx.lineTo(X(T.x1), Y(T.x1)); ctx.stroke(); ctx.setLineDash([]);
+  if (!R || R.kind !== 'real') return;
+  const f = R.f;
+  // highlighted period: graph of f^n
+  const hlP = S.hl ? S.hl.p : null;
+  if (hlP && hlP > 1) plotFn(T, iterFn(f, hlP), perColor(hlP), 1.3, 0.6, interval ? interval[0] : null, interval ? interval[1] : null);
+  if (interval) {
+    plotFn(T, f, C.ink, 1.4, 0.28);
+    plotFn(T, f, C.ink, 1.8, 1, interval[0], interval[1]);
+  } else plotFn(T, f, C.ink, 1.8, 1);
+  // cobwebs
+  const all = allOrbits();
+  let cob;
+  if (S.hl && S.hl.i != null) cob = all.filter(e => e.P.p === S.hl.p && e.i === S.hl.i);
+  else if (hlP) cob = all.filter(e => e.P.p === hlP).slice(0, 80);
+  else if (all.length <= 12) cob = all.filter(e => e.P.p > 1);
+  else cob = all.filter(e => e.P.p > 1 && e.o.kind !== 'repelling').slice(0, 20);
+  for (const { o } of cob) {
+    const p = o.pts.length;
+    ctx.strokeStyle = perColor(o.p); ctx.lineWidth = (S.hl && S.hl.i != null) ? 2 : 1.4; ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.moveTo(X(o.pts[0]), Y(o.pts[0]));
+    for (let k = 0; k < p; k++) { const x = o.pts[k], y = o.pts[(k + 1) % p]; ctx.lineTo(X(x), Y(y)); ctx.lineTo(X(y), Y(y)); }
+    ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  // periodic points on the diagonal
+  const npts = all.reduce((t, e) => t + e.o.pts.length, 0);
+  const rDot = npts > 600 ? 2.2 : npts > 150 ? 3 : 4.2;
+  for (const { P, o, i } of all.slice().sort((a, b) => b.P.p - a.P.p)) {
+    const sel = S.hl && S.hl.p === P.p && (S.hl.i == null || S.hl.i === i);
+    const dim = S.hl && !sel;
+    ctx.globalAlpha = dim ? 0.35 : 1;
+    for (const x of o.pts) {
+      const px = X(x), py = Y(x);
+      if (px < -10 || px > W + 10 || py < -10 || py > H + 10) continue;
+      dot(px, py, sel ? 4.2 : rDot, perColor(o.p), o.kind, false);
+    }
+  }
+  ctx.globalAlpha = 1;
+  if (S.hl && S.hl.i != null) {
+    const e = all.find(e => e.P.p === S.hl.p && e.i === S.hl.i);
+    if (e) {
+      ctx.font = '11px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+      e.o.pts.forEach((x, k) => { if (e.o.pts.length <= 12) ctx.fillText('x' + sub(k), X(x) + 8, Y(x) + 14); });
+    }
+  }
+}
+const SUBS = '₀₁₂₃₄₅₆₇₈₉';
+const sub = k => String(k).split('').map(c => SUBS[+c]).join('');
+
+/* ---- complex: escape-time background ---- */
+let shade = null, shadeTimer = null;
+function scheduleShade(ms) { clearTimeout(shadeTimer); shadeTimer = setTimeout(computeShade, ms); }
+function computeShade() {
+  if (S.space !== 'C' || !S.res || S.res.kind !== 'complex') { shade = null; return; }
+  if (!S.shade) { shade = null; draw(); return; }
+  const fc = S.res.fc, H2 = E.HC;
+  const T = contView();
+  const cell = (W * H > 500000) ? 3 : 2;
+  const w = Math.ceil(W / cell), h = Math.ceil(H / cell);
+  const off = document.createElement('canvas'); off.width = w; off.height = h;
+  const octx = off.getContext('2d');
+  const img = octx.createImageData(w, h);
+  const card = hexRGB(C.card), gridc = hexRGB(C.grid), lsoft = hexRGB(C.line), soft = hexRGB(C.faint);
+  const maxIt = 80, Resc = Math.max(1e3, 10 * T.v.span);
+  const t0 = performance.now();
+  for (let j = 0; j < h; j++) {
+    const yi = T.y1 - (j + 0.5) * cell / T.s;
+    for (let i = 0; i < w; i++) {
+      let zr = T.x0 + (i + 0.5) * cell / T.s, zi = yi, k = 0;
+      for (; k < maxIt; k++) {
+        fc(zr, zi); zr = H2.R; zi = H2.I;
+        if (!(Math.abs(zr) + Math.abs(zi) < Resc)) break;
+      }
+      let rgb, a;
+      if (k >= maxIt) { rgb = gridc; a = 0.95; }
+      else { const t = Math.log(k + 1) / Math.log(maxIt + 1); rgb = t > 0.55 ? soft : lsoft; a = 0.12 + 0.55 * t * t; }
+      const o = 4 * (j * w + i);
+      img.data[o] = Math.round(card[0] * (1 - a) + rgb[0] * a);
+      img.data[o + 1] = Math.round(card[1] * (1 - a) + rgb[1] * a);
+      img.data[o + 2] = Math.round(card[2] * (1 - a) + rgb[2] * a);
+      img.data[o + 3] = 255;
+    }
+    if (performance.now() - t0 > 2500) break;
+  }
+  octx.putImageData(img, 0, 0);
+  shade = { canvas: off, x0: T.x0, x1: T.x0 + w * cell / T.s, y1: T.y1, y0: T.y1 - h * cell / T.s };
+  draw();
+}
+function drawComplex() {
+  const T = contView();
+  const { X, Y } = T;
+  ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, H);
+  if (shade && S.shade && S.res && S.res.kind === 'complex') {
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(shade.canvas, X(shade.x0), Y(shade.y1), X(shade.x1) - X(shade.x0), Y(shade.y0) - Y(shade.y1));
+  }
+  drawAxes(T, true);
+  // unit circle, faint
+  ctx.strokeStyle = C.line; ctx.globalAlpha = 0.5; ctx.setLineDash([3, 4]); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(X(0), Y(0), T.s, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  const R = S.res; if (!R || R.kind !== 'complex') return;
+  const all = allOrbits();
+  const hl = S.hl;
+  const showPoly = e => hl && e.P.p === hl.p && (hl.i == null || hl.i === e.i);
+  for (const e of all) {
+    if (!showPoly(e) || e.o.pts.length < 2) continue;
+    ctx.strokeStyle = perColor(e.o.p); ctx.lineWidth = hl.i != null ? 1.8 : 1.1; ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    e.o.pts.forEach(([a, b], k) => { if (k) ctx.lineTo(X(a), Y(b)); else ctx.moveTo(X(a), Y(b)); });
+    ctx.closePath(); ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  const big = all.length > 200;
+  // draw high periods first so short cycles sit on top
+  const order = all.slice().sort((a, b) => b.P.p - a.P.p);
+  for (const e of order) {
+    const sel = hl && e.P.p === hl.p && (hl.i == null || hl.i === e.i);
+    ctx.globalAlpha = hl && !sel ? 0.35 : 1;
+    const r = sel ? 4.4 : big ? 2.4 : 3.6;
+    for (const [a, b] of e.o.pts) {
+      const px = X(a), py = Y(b);
+      if (px < -10 || px > W + 10 || py < -10 || py > H + 10) continue;
+      dot(px, py, r, perColor(e.o.p), e.o.kind, false);
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ---- discrete: functional graph ---- */
+function graphView() {
+  const L = S.res.layout;
+  if (!S.views.G) fitGraph();
+  const v = S.views.G;
+  return { v, X: x => W / 2 + (x - v.cx) * v.s, Y: y => H / 2 + (y - v.cy) * v.s, inv: (px, py) => [v.cx + (px - W / 2) / v.s, v.cy + (py - H / 2) / v.s], L };
+}
+function fitGraph() {
+  const L = S.res.layout;
+  const [x0, y0, x1, y1] = L.bbox;
+  const s = Math.min(W / (x1 - x0), H / (y1 - y0), 2.2);
+  S.views.G = { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, s: s * 0.96 };
+}
+function arrowHead(x, y, ang, size, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x - size * Math.cos(ang - 0.42), y - size * Math.sin(ang - 0.42));
+  ctx.lineTo(x - size * Math.cos(ang + 0.42), y - size * Math.sin(ang + 0.42));
+  ctx.closePath(); ctx.fill();
+}
+function nodeHL(id) {
+  const R = S.res, g = R.graph;
+  if (!S.hl) return true;
+  const comp = R.layout.compOf[id];
+  return R.hlComps.has(comp);
+}
+function drawGraph() {
+  ctx.fillStyle = C.card; ctx.fillRect(0, 0, W, H);
+  const R = S.res; if (!R || R.kind !== 'discrete') return;
+  const T = graphView();
+  const { X, Y, v, L } = T;
+  const g = R.graph;
+  const s = v.s;
+  const nr = Math.max(1.6, Math.min(5.5, 3.6 * s));
+  const showArrows = s > 0.3;
+  const inView = id => { const x = X(L.X[id]), y = Y(L.Y[id]); return x > -60 && x < W + 60 && y > -60 && y < H + 60; };
+  // tree edges
+  ctx.lineWidth = Math.max(0.6, Math.min(1.3, s));
+  for (let u = 0; u < g.nodes.length; u++) {
+    const w = g.next[u];
+    if (w < 0 || !L.placed[u] || !L.placed[w] || g.nodes[u].cyc >= 0) continue;
+    if (!inView(u) && !inView(w)) continue;
+    const ax = X(L.X[u]), ay = Y(L.Y[u]), bx = X(L.X[w]), by = Y(L.Y[w]);
+    const d = Math.hypot(bx - ax, by - ay); if (d < 0.5) continue;
+    const ux = (bx - ax) / d, uy = (by - ay) / d;
+    const rr = g.nodes[w].pseudo ? Math.max(nr + 4, 8 * s) : nr + 1;
+    const ex = bx - ux * rr, ey = by - uy * rr;
+    const on = nodeHL(u);
+    ctx.globalAlpha = on ? 0.9 : 0.25;
+    ctx.strokeStyle = g.steps[u] > 1 ? C.faint : C.line;
+    ctx.setLineDash(g.steps[u] > 1 ? [3, 3] : []);
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ex, ey); ctx.stroke();
+    ctx.setLineDash([]);
+    if (showArrows) arrowHead(ex, ey, Math.atan2(uy, ux), Math.min(7, 2.4 + 3 * s), g.steps[u] > 1 ? C.faint : C.line);
+    if (g.steps[u] > 1 && s > 0.9) {
+      ctx.fillStyle = C.faint; ctx.font = '9.5px "JetBrains Mono", ui-monospace, monospace'; ctx.textAlign = 'center';
+      ctx.fillText('+' + g.steps[u], (ax + ex) / 2 + uy * 7, (ay + ey) / 2 - ux * 7 + 3);
+    }
+  }
+  ctx.globalAlpha = 1;
+  // cycles
+  g.cycles.forEach((ids, ci) => {
+    const len = ids.length, col = perColor(len);
+    const on = !S.hl || R.hlComps.has(L.compOf[ids[0]]);
+    ctx.globalAlpha = on ? 1 : 0.3;
+    ctx.strokeStyle = col; ctx.lineWidth = Math.max(1, Math.min(2.4, 1.8 * s));
+    const geo = L.cycGeom[ci]; if (!geo) return;
+    if (len === 1) {
+      const id = ids[0], px = X(L.X[id]), py = Y(L.Y[id]);
+      const lr = Math.max(5, 8 * s);
+      ctx.beginPath(); ctx.arc(px, py - lr - nr * 0.4, lr, 0, 2 * Math.PI); ctx.stroke();
+    } else {
+      const cx = X(geo[0]), cy = Y(geo[1]), rc = geo[2] * s;
+      const gap = Math.min(0.5, (nr + 2) / Math.max(rc, 1));
+      for (let i = 0; i < len; i++) {
+        const a0 = L.ANG[ids[i]], a1raw = L.ANG[ids[(i + 1) % len]];
+        let a1 = a1raw; while (a1 <= a0) a1 += 2 * Math.PI;
+        if (a1 - a0 - 2 * gap <= 0.01) continue;
+        ctx.beginPath(); ctx.arc(cx, cy, rc, a0 + gap, a1 - gap); ctx.stroke();
+        if (showArrows) {
+          const ae = a1 - gap;
+          arrowHead(cx + rc * Math.cos(ae), cy + rc * Math.sin(ae), ae + Math.PI / 2, Math.min(8, 3 + 3 * s), col);
+        }
+      }
+    }
+  });
+  ctx.globalAlpha = 1;
+  // nodes
+  const nCycPts = g.cycles.reduce((t, c) => t + c.length, 0);
+  const showLabelsAll = s >= 1.15, showCycLabels = s >= 0.45 || nCycPts <= 60;
+  ctx.font = Math.round(Math.min(12, Math.max(9, 8 * s))) + 'px "JetBrains Mono", ui-monospace, monospace';
+  for (let id = 0; id < g.nodes.length; id++) {
+    if (!L.placed[id] || !inView(id)) continue;
+    const nd = g.nodes[id];
+    const px = X(L.X[id]), py = Y(L.Y[id]);
+    const on = nodeHL(id);
+    ctx.globalAlpha = on ? 1 : 0.3;
+    if (nd.pseudo) {
+      const rr = Math.max(nr + 4, 8 * s);
+      ctx.beginPath(); ctx.arc(px, py, rr, 0, 2 * Math.PI); ctx.fillStyle = C.hover; ctx.fill();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = nd.pseudo === 'esc' ? C.accent : C.faint; ctx.stroke();
+      ctx.fillStyle = nd.pseudo === 'esc' ? C.deep : C.faint; ctx.textAlign = 'center';
+      const fs = Math.max(9, Math.min(15, rr * 1.2));
+      ctx.font = fs + 'px "JetBrains Mono", ui-monospace, monospace';
+      ctx.fillText(nd.pseudo === 'esc' ? '∞' : '?', px, py + fs * 0.35);
+      if (nd.collapsed) {
+        ctx.font = '11px "JetBrains Mono", ui-monospace, monospace'; ctx.textAlign = 'left'; ctx.fillStyle = C.deep;
+        ctx.fillText(numStr(nd.collapsed) + ' starts escape', px + rr + 6, py + 4);
+      }
+      ctx.font = Math.round(Math.min(12, Math.max(9, 8 * s))) + 'px "JetBrains Mono", ui-monospace, monospace';
+      continue;
+    }
+    if (nd.cyc >= 0) {
+      const col = perColor(nd.period);
+      ctx.beginPath(); ctx.arc(px, py, nr + 1, 0, 2 * Math.PI); ctx.fillStyle = col; ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.arc(px, py, nr * 0.8, 0, 2 * Math.PI);
+      const leaf = R.leafHollow && L.children[id].length === 0;
+      if (leaf) { ctx.fillStyle = C.card; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = C.soft; ctx.stroke(); }
+      else { ctx.fillStyle = C.soft; ctx.fill(); }
+    }
+    if ((nd.cyc >= 0 && showCycLabels) || showLabelsAll) {
+      const lab = R.label(nd);
+      const a = L.ANG[id];
+      const off = nr + 5;
+      let lx = px + Math.cos(a) * off, ly = py + Math.sin(a) * off;
+      ctx.textAlign = Math.cos(a) > 0.3 ? 'left' : Math.cos(a) < -0.3 ? 'right' : 'center';
+      ctx.fillStyle = nd.cyc >= 0 ? C.ink : C.soft;
+      if (nd.cyc >= 0 && g.cycles[nd.cyc].length === 1) { ctx.textAlign = 'left'; lx = px + nr + 5; ly = py + 4; }
+      else ly += Math.sin(a) > 0.3 ? 9 : Math.sin(a) < -0.3 ? -2 : 3.5;
+      ctx.fillText(lab, lx, ly);
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+function draw() {
+  if (!W || !C.ink) return;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (S.space === 'R' || S.space === 'I') drawReal();
+  else if (S.space === 'C') drawComplex();
+  else drawGraph();
+}
+
+/* ---------------- computation ---------------- */
+let job = 0;
+const CANCEL = { cancel: true };
+const busy = $('#busy');
+function setBusy(t) { busy.textContent = t || ''; }
+
+async function recompute() {
+  clearTimeout(recomputeTimer);
+  const my = ++job;
+  let last = performance.now();
+  const tick = async (msg) => {
+    if (my !== job) throw CANCEL;
+    const now = performance.now();
+    if (now - last < 40) return;
+    setBusy('Computing ' + msg + '…');
+    await new Promise(r => setTimeout(r, 0));
+    last = performance.now();
+    if (my !== job) throw CANCEL;
+  };
+  S.src = fxIn.value;
+  let res;
+  try {
+    S.parsed = E.parse(S.src);
+    fxIn.classList.remove('bad');
+    syncParams();
+    const { Pf, Pq } = paramValues();
+    setBusy('Computing…');
+    await new Promise(r => setTimeout(r, 0));
+    if (my !== job) return;
+    if (S.space === 'R' || S.space === 'I') res = await computeReal(Pf, tick);
+    else if (S.space === 'C') res = await computeComplex(Pf, tick);
+    else res = await computeDiscrete(Pf, Pq, tick);
+  } catch (e) {
+    if (e === CANCEL) return;
+    if (my !== job) return;
+    if (!(e instanceof E.DynErr)) console.error(e);
+    if (e.kind === 'parse') fxIn.classList.add('bad');
+    res = { kind: 'error', msg: e.message || String(e) };
+  }
+  if (my !== job) return;
+  setBusy('');
+  readout.textContent = '';
+  const prevKind = S.res && S.res.kind;
+  S.res = res;
+  if (S.hl && !hlValid()) S.hl = null;
+  if (res.kind === 'discrete') { if (!S.views.G || prevKind !== 'discrete') fitGraph(); updateHlComps(); }
+  if (res.kind === 'complex') scheduleShade(30); else shade = null;
+  renderPanel();
+  draw();
+}
+function hlValid() {
+  const R = S.res; if (!R || !R.periods) return false;
+  const P = R.periods.find(q => q.p === S.hl.p);
+  if (S.hl.ci != null) return !!(P && P.cis && P.cis.includes(S.hl.ci));
+  return !!(P && P.orbits.length && (S.hl.i == null || S.hl.i < P.orbits.length));
+}
+
+async function computeReal(Pf, tick) {
+  const ast = S.parsed.ast;
+  const f = E.compileReal(ast, Pf);
+  const structCont = E.structurallyContinuous(ast);
+  let lo, hi, domain = null;
+  if (S.space === 'I') {
+    const a = E.parseParamValue(S.lo), b = E.parseParamValue(S.hi);
+    if (!a || !b) throw new E.DynErr('input', 'The interval endpoints need to be numbers.');
+    lo = a.v; hi = b.v;
+    if (!(hi > lo)) throw new E.DynErr('input', 'The interval [a, b] needs a < b.');
+    domain = [lo, hi];
+  } else {
+    const T = contView(); lo = T.x0; hi = T.x1;
+  }
+  const r = await E.findRealCycles(f, { lo, hi, N: S.N, G: S.grid, domain, tick });
+  // checks on the window / interval
+  const K = 4000;
+  let undef = null, mn = Infinity, mx = -Infinity, argMn = lo, argMx = lo;
+  for (let j = 0; j <= K; j++) {
+    const x = lo + (hi - lo) * j / K, y = f(x);
+    if (!isFinite(y)) { if (!undef) undef = x; continue; }
+    if (y < mn) { mn = y; argMn = x; } if (y > mx) { mx = y; argMx = x; }
+  }
+  const cont = E.continuityOn(f, lo, hi, structCont);
+  let invariant = null;
+  if (domain) {
+    const tol = 1e-9 * (1 + Math.abs(hi) + Math.abs(lo));
+    invariant = (!undef && mn >= lo - tol && mx <= hi + tol) ? { ok: true } :
+      { ok: false, x: mx > hi + tol ? argMx : argMn, y: mx > hi + tol ? mx : mn };
+  }
+  await tick('Sharkovsky');
+  const shark = E.sharkovskyAnalysis(r.periods, f, structCont);
+  const deg = E.polyDegree(ast);
+  // pad empty periods 1..N
+  const periods = [];
+  for (let n = 1; n <= S.N; n++) periods.push(r.periods.find(P => P.p === n) || { p: n, orbits: [], full: false, continuum: false });
+  return { kind: 'real', f, periods, notes: r.notes, leftDomain: r.leftDomain, lo, hi, cont, structCont, undef, invariant, shark, deg, G: r.G };
+}
+
+async function computeComplex(Pf, tick) {
+  const ast = S.parsed.ast;
+  const fc = E.compileComplex(ast, Pf);
+  const T = contView();
+  const deg = E.polyDegree(ast);
+  const r = await E.findComplexCycles(fc, { x0: T.x0, x1: T.x1, y0: T.y0, y1: T.y1, N: S.N, deg, density: S.eff, tick });
+  return { kind: 'complex', fc, periods: r.periods, notes: r.notes, deg, rect: [T.x0, T.x1, T.y0, T.y1] };
+}
+
+async function computeDiscrete(Pf, Pq, tick) {
+  const ast = S.parsed.ast;
+  const sp = S.space;
+  let F, starts, keyOf, tooBig, header, scope, label;
+  const intIn = (t, name, lo, hi) => {
+    const v = parseInt(String(t).trim(), 10);
+    if (!(v >= lo && v <= hi) || !/^\s*\d+\s*$/.test(String(t))) throw new E.DynErr('input', name + ' must be a whole number from ' + numStr(lo) + ' to ' + numStr(hi) + '.');
+    return v;
+  };
+  const stepCap = intIn(S.stepCap, 'Max steps', 10, 1000000);
+  if (sp === 'Z') {
+    const M = intIn(S.zM, 'The window', 0, 50000);
+    const ek = intIn(S.zEsc, 'The escape exponent', 2, 2000);
+    const B = 10n ** BigInt(ek);
+    F = E.makeZMap(ast, Pq, Pf);
+    starts = [0n]; for (let k = 1; k <= M; k++) { starts.push(BigInt(k)); starts.push(BigInt(-k)); }
+    keyOf = v => v.toString(); tooBig = v => v > B || v < -B;
+    label = nd => fmtVal(nd.v);
+    header = { sig: 'f : ℤ → ℤ', scope: 'Starting points: every integer with |x| ≤ ' + numStr(M) + ' (' + numStr(starts.length) + ' of them). Escape: |x| > 10^' + ek + '.' };
+  } else if (sp === 'ZN') {
+    const n = intIn(S.mod, 'n', 1, 200000);
+    F = E.makeZnMap(ast, Pq, Pf, n);
+    starts = []; for (let k = 0; k < n; k++) starts.push(BigInt(k));
+    keyOf = v => v.toString(); tooBig = () => false;
+    label = nd => nd.v.toString();
+    header = { sig: 'f : ℤ/' + n + ' → ℤ/' + n, scope: '' };
+  } else {
+    const D = intIn(S.qDen, 'The denominator bound', 1, 400);
+    const Wq = E.parseParamValue(S.qW);
+    if (!Wq || !(Wq.v > 0)) throw new E.DynErr('input', 'The starting window |x| ≤ w needs a positive number.');
+    const ek = intIn(S.qEsc, 'The height exponent', 2, 2000);
+    const B = 10n ** BigInt(ek);
+    F = E.makeQMap(ast, Pq);
+    starts = E.rationalStarts(D, Wq.v);
+    if (starts.length > 60000) throw new E.DynErr('input', 'That is ' + numStr(starts.length) + ' starting fractions; lower the denominator bound or the window.');
+    keyOf = v => v.n + '/' + v.d;
+    tooBig = v => v.d > B || v.n > B || v.n < -B;
+    label = nd => fmtVal(nd.v);
+    header = { sig: 'f : ℚ → ℚ', scope: 'Starting points: fractions p/q with q ≤ ' + D + ' and |p/q| ≤ ' + esc(S.qW) + ' (' + numStr(starts.length) + ' of them). Escape: height > 10^' + ek + '.' };
+  }
+  const res = await E.analyzeDiscrete(F, starts, keyOf, tooBig, { tick, stepCap, totalCap: 4000000 });
+  if (res.error) throw new E.DynErr('notinX', res.error.message);
+  await tick('layout');
+  const tooMany = starts.length > 4000;
+  const cyclePts = res.cycles.reduce((t, c) => t + c.len, 0);
+  const hideEsc = S.escMode === 'hide' || (S.escMode === 'auto' && res.counts.esc > 40 && res.counts.esc > 2 * (res.counts.starts - res.counts.esc + cyclePts));
+  const graph = E.buildDisplayGraph(res, { showAll: sp === 'ZN' && !tooMany, cyclesOnly: tooMany, maxNodes: 4500, hideEsc });
+  const layout = E.layoutGraph(graph);
+  // periods table data
+  const byLen = new Map();
+  res.cycles.forEach((c, ci) => { if (!byLen.has(c.len)) byLen.set(c.len, []); byLen.get(c.len).push(ci); });
+  const periods = [];
+  for (let n = 1; n <= S.N; n++) periods.push({ p: n, orbits: (byLen.get(n) || []).map(ci => res.cycles[ci]), cis: byLen.get(n) || [] });
+  const longer = [...byLen.keys()].filter(l => l > S.N).sort((a, b) => a - b);
+  for (const l of longer) periods.push({ p: l, orbits: byLen.get(l).map(ci => res.cycles[ci]), cis: byLen.get(l), longer: true });
+  // stats for Z/n
+  let stats = null;
+  if (sp === 'ZN') {
+    const img = new Set(); let maxTail = 0;
+    for (const nd of res.nodes.values()) { img.add(nd.next); if (nd.depth > maxTail) maxTail = nd.depth; }
+    const onCyc = res.cycles.reduce((s, c) => s + c.len, 0);
+    stats = { n: res.nodes.size, image: img.size, eden: res.nodes.size - img.size, cycles: res.cycles.length, onCyc, maxTail, perm: img.size === res.nodes.size };
+  }
+  return { kind: 'discrete', space: sp, res, graph, layout, periods, header, label, stats, tooMany, hideEsc, usedFloat: F.usedFloat(), leafHollow: sp === 'ZN' && !tooMany };
+}
+
+/* ---------------- highlight ---------------- */
+function updateHlComps() {
+  const R = S.res; if (!R || R.kind !== 'discrete') return;
+  R.hlComps = new Set();
+  if (!S.hl) return;
+  const L = R.layout, g = R.graph;
+  g.cycles.forEach((ids, ci) => {
+    const len = ids.length;
+    if (len !== S.hl.p) return;
+    if (S.hl.ci != null && S.hl.ci !== ci) return;
+    R.hlComps.add(L.compOf[ids[0]]);
+  });
+}
+function setHL(h) {
+  S.hl = h;
+  updateHlComps();
+  renderPanel();
+  draw();
+}
+
+/* ---------------- panel ---------------- */
+const panel = $('#panel');
+function chip(p, kind) {
+  const col = perColor(p);
+  return '<span class="chip' + (kind === 'repelling' ? ' hollow' : '') + '" style="background:' + col + ';border-color:' + col + '"></span>';
+}
+function renderPanel() {
+  const R = S.res;
+  if (!R) { panel.innerHTML = ''; return; }
+  if (R.kind === 'error') { panel.innerHTML = '<section><div class="oc-sig">Hmm.</div><p class="oc-err">' + esc(R.msg) + '</p></section>'; return; }
+  if (R.kind === 'real') panel.innerHTML = panelReal(R);
+  else if (R.kind === 'complex') panel.innerHTML = panelComplex(R);
+  else panel.innerHTML = panelDiscrete(R);
+}
+
+function periodsTableReal(R) {
+  const shark = R.shark;
+  let h = '<table class="oc-pt"><thead><tr><th>period</th><th>cycles</th>' + (R.deg >= 2 ? '<th>max</th>' : '') + '<th>Sharkovsky</th></tr></thead><tbody>';
+  for (const P of R.periods) {
+    const n = P.p, cnt = P.orbits.length;
+    const forced = shark.best != null && E.sharkForces(shark.best, n);
+    const sel = S.hl && S.hl.p === n && S.hl.i == null;
+    const tag = cnt ? (n === shark.best ? 'strongest' : '') : (forced ? 'forced, hiding' : '');
+    const maxc = R.deg >= 2 ? E.exactPeriodCount(R.deg, n) / n : null;
+    h += '<tr class="' + (cnt ? 'row' : '') + (sel ? ' sel' : '') + '" data-p="' + n + '"><td>' + (cnt ? chip(n) : '<span class="chip" style="background:transparent"></span>') + n + '</td>' +
+      '<td class="' + (cnt ? '' : 'dim') + '">' + (P.continuum ? '∞' : cnt + (P.full ? '+' : '')) + '</td>' +
+      (R.deg >= 2 ? '<td class="dim">' + (maxc > 1e6 ? maxc.toExponential(1) : numStr(maxc)) + '</td>' : '') +
+      '<td class="tag">' + tag + '</td></tr>';
+  }
+  return h + '</tbody></table>';
+}
+function sharkSVG(found, best, N) {
+  const cw = 36, ch = 23, gap = 3, lw = 50, ew = 18;
+  const rows = [];
+  for (let k = 0; k < 4; k++) rows.push({ label: k === 0 ? 'odd' : (1 << k) + '·odd', vals: [3, 5, 7, 9, 11, 13].map(o => (1 << k) * o), tail: true });
+  rows.push({ label: '2^k', vals: [32, 16, 8, 4, 2, 1], tail: false });
+  const width = lw + ew + 6 * (cw + gap);
+  const height = rows.length * (ch + gap) + 2;
+  let s = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="Sharkovsky ordering">';
+  rows.forEach((r, ri) => {
+    const y = 1 + ri * (ch + gap);
+    s += '<text x="0" y="' + (y + 15) + '" font-family="JetBrains Mono, monospace" font-size="9.5" fill="' + C.faint + '">' + (r.label === '2^k' ? '2ᵏ' : r.label) + '</text>';
+    const x0 = lw + (r.tail ? 0 : ew);
+    r.vals.forEach((n, i) => {
+      const x = x0 + i * (cw + gap);
+      const isF = found.has(n), forced = best != null && E.sharkForces(best, n), searched = n <= N;
+      let fill = 'none', stroke = C.lsoft, text = C.faint, sw = 1, dash = '';
+      if (isF) { fill = C.ink; stroke = C.ink; text = C.card; }
+      else if (forced) { fill = C.hover; text = C.deep; }
+      if (!searched && !isF && !forced) dash = ' stroke-dasharray="2 2"';
+      s += '<rect x="' + x + '" y="' + y + '" width="' + cw + '" height="' + ch + '" rx="2.5" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + dash + '/>';
+      if (forced) s += '<rect x="' + (x + 0.9) + '" y="' + (y + 0.9) + '" width="' + (cw - 1.8) + '" height="' + (ch - 1.8) + '" rx="2" fill="none" stroke="' + C.accent + '" stroke-width="1.8"/>';
+      if (n === best) s += '<circle cx="' + (x + cw - 5) + '" cy="' + (y + 5) + '" r="2.4" fill="' + C.accent + '"/>';
+      s += '<text x="' + (x + cw / 2) + '" y="' + (y + 15.5) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="' + text + '"' + (searched || isF || forced ? '' : ' opacity=".7"') + '>' + n + '</text>';
+    });
+    const ex = r.tail ? x0 + 6 * (cw + gap) + 2 : lw + 2;
+    s += '<text x="' + ex + '" y="' + (y + 15) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="' + C.faint + '">…</text>';
+  });
+  return s + '</svg>';
+}
+function orbitText(pts, fmt, max) {
+  max = max || 6;
+  const show = pts.length <= max ? pts : pts.slice(0, max - 1);
+  return show.map(fmt).join(' → ') + (pts.length > max ? ' → … (' + pts.length + ')' : ' → ↺');
+}
+function panelReal(R) {
+  const isI = S.space === 'I';
+  const iv = '[' + fmtR(R.lo, 5) + ', ' + fmtR(R.hi, 5) + ']';
+  let h = '<section><div class="oc-sig">' + (isI ? 'f : ' + iv + ' → ' + iv : 'f : ℝ → ℝ') + '<span class="fx">f(x) = ' + esc(S.src) + '</span></div>';
+  if (isI) {
+    if (R.invariant && R.invariant.ok) h += '<p class="oc-note">f maps ' + iv + ' into itself.</p>';
+    else if (R.undef != null) h += '<p class="oc-note warn">f is undefined near x ≈ ' + fmtR(R.undef) + ', inside the interval.</p>';
+    else if (R.invariant) h += '<p class="oc-note warn">f does not map the interval into itself: f(' + fmtR(R.invariant.x) + ') ≈ ' + fmtR(R.invariant.y) + '. Cycles that leave ' + iv + ' are ignored' + (R.leftDomain ? ' (' + R.leftDomain + ' so far)' : '') + '.</p>';
+  } else {
+    h += '<p class="oc-note">Searching the visible window x ∈ ' + iv + '. Drag or zoom to search elsewhere.</p>';
+    if (R.undef != null) h += '<p class="oc-note warn">f is undefined at some points of the window (near x ≈ ' + fmtR(R.undef) + ').</p>';
+  }
+  if (R.cont.ok) h += '<p class="oc-note">f is continuous on ' + (isI ? 'the interval' : 'the window') + (R.structCont ? '' : ' (checked numerically)') + '.</p>';
+  else if (R.cont.why !== 'undefined') h += '<p class="oc-note warn">f has a ' + (R.cont.why === 'pole' ? 'pole' : 'jump') + ' near x ≈ ' + fmtR(R.cont.at) + '.</p>';
+  if (R.deg >= 2) h += '<p class="oc-note">f is a polynomial of degree ' + R.deg + ', so period n has at most ν(n)/n cycles (column “max”).</p>';
+  R.notes.forEach(t => { h += '<p class="oc-note warn">' + esc(t) + '</p>'; });
+  h += '</section>';
+  h += '<section><h4>Cycles by period</h4>' + periodsTableReal(R) + '</section>';
+  // Sharkovsky
+  const found = new Set(R.periods.filter(P => P.orbits.length).map(P => P.p));
+  const sh = R.shark;
+  h += '<section class="oc-shark"><h4>Sharkovsky’s theorem</h4>' + sharkSVG(found, sh.best, S.N);
+  h += '<div class="oc-legend"><span><i style="background:' + C.ink + '"></i>found</span><span><i style="background:' + C.hover + ';border:1.8px solid ' + C.accent + '"></i>forced</span><span><i style="border:1px dashed ' + C.lsoft + '"></i>not searched</span></div>';
+  if (sh.best != null) {
+    const w = sh.witness;
+    h += '<p class="oc-note">Strongest period found: <b>' + sh.best + '</b>' + (w.pts.length > 1 ? ', on the cycle ' + orbitText(w.pts, x => fmtR(x, 4), 5) : '') + '. ';
+    if (w.pts.length > 1) h += 'Since f is continuous on [' + fmtR(w.min, 4) + ', ' + fmtR(w.max, 4) + '], ';
+    if (sh.best === 1) h += 'A fixed point by itself forces nothing further.</p>';
+    else h += 'Sharkovsky guarantees ' + E.sharkDescribe(sh.best) + ', all inside that interval.</p>';
+    if (sh.best === 3) h += '<p class="oc-note">Period three implies chaos (Li–Yorke).</p>';
+    const hiding = R.periods.filter(P => !P.orbits.length && !P.continuum && E.sharkForces(sh.best, P.p)).map(P => P.p);
+    if (hiding.length) h += '<p class="oc-note warn">Forced but not found by the search: ' + hiding.join(', ') + '. They exist; they are packed too tightly for this grid' + (S.grid < 160000 ? ' (try 160k in Options)' : '') + '.</p>';
+    const [k, o] = E.v2(sh.best);
+    if (o === 1) {
+      const extra = R.periods.filter(P => P.orbits.length && !E.sharkForces(sh.best, P.p)).length;
+      if (!extra) h += '<p class="oc-note">Only powers of 2 so far. A continuous map with finitely many periods always looks like this.</p>';
+    }
+  } else if (found.size) {
+    h += '<p class="oc-note">No usable orbit: f is not continuous on the span of any cycle found.</p>';
+  } else h += '<p class="oc-note">No periodic points found in the ' + (isI ? 'interval' : 'window') + '.</p>';
+  if (sh.rejected.length && sh.best != null && sh.rejected.some(r => E.sharkCmp(r.p, sh.best) < 0)) {
+    const r0 = sh.rejected.find(r => E.sharkCmp(r.p, sh.best) < 0);
+    h += '<p class="oc-note">Period ' + r0.p + ' orbits were found, but f ' + (r0.why.why === 'pole' ? 'has a pole' : r0.why.why === 'undefined' ? 'is undefined' : 'jumps') + ' near x ≈ ' + fmtR(r0.why.at, 4) + ' inside their span, so Sharkovsky says nothing about them.</p>';
+  }
+  h += '</section>';
+  h += orbitList(R, x => fmtR(x, 5), o => 'λ = ' + fmtR(o.lambda, 4) + ' · ' + o.kind + (o.approx ? ' · tangential' : ''));
+  return h;
+}
+function orbitList(R, fmt, meta) {
+  let h = '<section><h4>Orbits</h4><ul class="oc-orbits">';
+  let shown = 0;
+  for (const P of R.periods) {
+    if (!P.orbits.length) continue;
+    h += '<li class="grp">period ' + P.p + ' · ' + P.orbits.length + (P.full ? '+' : '') + ' cycle' + (P.orbits.length === 1 ? '' : 's') + '</li>';
+    const lim = Math.min(P.orbits.length, P.p <= 2 ? 40 : 16);
+    for (let i = 0; i < lim; i++) {
+      const o = P.orbits[i];
+      const sel = S.hl && S.hl.p === P.p && S.hl.i === i;
+      h += '<li class="' + (sel ? 'sel' : '') + '" data-p="' + P.p + '" data-i="' + i + '">' + chip(P.p, o.kind) + orbitText(o.pts, fmt) + '<span class="meta">' + meta(o) + '</span></li>';
+      if (++shown > 400) break;
+    }
+    if (P.orbits.length > lim) h += '<li class="grp">… and ' + (P.orbits.length - lim) + ' more</li>';
+  }
+  if (!shown) h += '<li class="grp">none found</li>';
+  return h + '</ul></section>';
+}
+function panelComplex(R) {
+  const T = R.rect;
+  let h = '<section><div class="oc-sig">f : ℂ → ℂ<span class="fx">f(z) = ' + esc(S.src) + '</span></div>';
+  h += '<p class="oc-note">Newton’s method started across the visible window [' + fmtR(T[0], 4) + ', ' + fmtR(T[1], 4) + '] × [' + fmtR(T[2], 4) + ', ' + fmtR(T[3], 4) + ']i. Drag or zoom to search elsewhere.</p>';
+  if (R.deg >= 2) h += '<p class="oc-note">f is a polynomial of degree ' + R.deg + ': the column “of” is the exact number of cycles of that period in all of ℂ (counted with multiplicity).</p>';
+  else h += '<p class="oc-note">f is not a polynomial, so there is no exact count to compare against.</p>';
+  R.notes.forEach(t => { h += '<p class="oc-note warn">' + esc(t) + '</p>'; });
+  h += '</section><section><h4>Cycles by period</h4><table class="oc-pt"><thead><tr><th>period</th><th>found</th>' + (R.deg >= 2 ? '<th>of</th>' : '') + '<th>attracting</th></tr></thead><tbody>';
+  for (const P of R.periods) {
+    const cnt = P.orbits.length, sel = S.hl && S.hl.p === P.p && S.hl.i == null;
+    const exp = P.expected != null ? P.expected / P.p : null;
+    const att = P.orbits.filter(o => o.kind === 'attracting').length;
+    h += '<tr class="' + (cnt ? 'row' : '') + (sel ? ' sel' : '') + '" data-p="' + P.p + '"><td>' + (cnt ? chip(P.p) : '<span class="chip"></span>') + P.p + '</td><td class="' + (cnt ? '' : 'dim') + '">' + cnt + (P.full ? '+' : '') + '</td>' +
+      (R.deg >= 2 ? '<td class="dim">' + (exp == null ? '—' : numStr(exp)) + '</td>' : '') + '<td class="' + (att ? 'tag' : 'dim') + '">' + (att || '·') + '</td></tr>';
+  }
+  h += '</tbody></table>';
+  if (R.deg >= 2) {
+    const short = R.periods.filter(P => P.expected != null && P.orbits.length * P.p < P.expected);
+    if (!short.length) h += '<p class="oc-note" style="margin-top:8px">Every periodic point up to period ' + Math.max(...R.periods.filter(P => P.expected != null).map(P => P.p)) + ' accounted for.</p>';
+    else h += '<p class="oc-note" style="margin-top:8px">Missing a few at period ' + short.map(P => P.p).join(', ') + ' (outside the window, coincident, or just elusive). More effort in Options.</p>';
+  }
+  h += '</section>';
+  h += orbitList(R, ([a, b]) => fmtC(a, b, 4), o => '|λ| = ' + fmtR(o.absLambda, 4) + ' · ' + o.kind);
+  return h;
+}
+function panelDiscrete(R) {
+  const res = R.res, sp = R.space;
+  let h = '<section><div class="oc-sig">' + R.header.sig + '<span class="fx">f(x) = ' + esc(S.src) + '</span></div>';
+  if (R.header.scope) h += '<p class="oc-note">' + R.header.scope + '</p>';
+  if (sp === 'ZN') {
+    const st = R.stats;
+    h += '<p class="oc-note">Every point is eventually periodic, so this census is complete.' + (st.perm ? ' f is a bijection: the whole graph is cycles.' : '') + '</p>';
+    h += '<dl class="oc-stats"><dt>cycles</dt><dd>' + numStr(st.cycles) + '</dd><dt>periodic points</dt><dd>' + numStr(st.onCyc) + '</dd><dt>image size |f(X)|</dt><dd>' + numStr(st.image) + '</dd><dt>no preimage</dt><dd>' + numStr(st.eden) + '</dd><dt>longest tail</dt><dd>' + numStr(st.maxTail) + '</dd></dl>';
+  } else {
+    const c = res.counts;
+    h += '<dl class="oc-stats"><dt>periodic</dt><dd>' + numStr(c.periodic) + '</dd><dt>pre-periodic</dt><dd>' + numStr(c.pre) + '</dd><dt>escaping</dt><dd>' + numStr(c.esc) + '</dd>' + (c.unres ? '<dt>undecided</dt><dd>' + numStr(c.unres) + '</dd>' : '') + '</dl>';
+    if (sp === 'Z') h += '<p class="oc-note">Every cycle that meets the window is found (values below the escape bound).</p>';
+    if (c.unres) h += '<p class="oc-note warn">' + c.unres + ' starting points neither cycled nor escaped within the step limit.</p>';
+  }
+  if (R.usedFloat) h += '<p class="oc-note warn">Some values were computed in floating point (the formula is not exact over ℤ) and checked to be integers.</p>';
+  if (R.tooMany) h += '<p class="oc-note">Too many points to draw trees; the picture shows the cycles only.</p>';
+  else if (R.hideEsc && R.res.counts.esc) h += '<p class="oc-note">The ' + numStr(R.res.counts.esc) + ' escaping orbits are collapsed into the node ∞ (Options to draw them).</p>';
+  h += '</section>';
+  // table
+  h += '<section><h4>Cycles by length</h4><table class="oc-pt"><thead><tr><th>length</th><th>cycles</th><th>points</th><th>basin</th></tr></thead><tbody>';
+  for (const P of R.periods) {
+    if (P.longer && P === R.periods.find(q => q.longer)) h += '<tr><td colspan="4" class="dim" style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding-top:8px">longer cycles</td></tr>';
+    const cnt = P.orbits.length, sel = S.hl && S.hl.p === P.p && S.hl.ci == null;
+    const basin = P.orbits.reduce((s, c) => s + c.basin, 0);
+    h += '<tr class="' + (cnt ? 'row' : '') + (sel ? ' sel' : '') + '" data-p="' + P.p + '"><td>' + (cnt ? chip(P.p, 'attracting') : '<span class="chip"></span>') + P.p + '</td><td class="' + (cnt ? '' : 'dim') + '">' + cnt + '</td><td class="' + (cnt ? '' : 'dim') + '">' + (cnt * P.p) + '</td><td class="' + (cnt ? '' : 'dim') + '">' + (cnt ? numStr(basin) : '·') + '</td></tr>';
+  }
+  h += '</tbody></table></section>';
+  // list
+  h += '<section><h4>Cycles</h4><ul class="oc-orbits">';
+  let shown = 0;
+  for (const P of R.periods) {
+    if (!P.orbits.length) continue;
+    h += '<li class="grp">length ' + P.p + ' · ' + P.orbits.length + '</li>';
+    P.orbits.slice(0, 30).forEach((c, k) => {
+      const ci = P.cis[k];
+      const sel = S.hl && S.hl.p === P.p && S.hl.ci === ci;
+      h += '<li class="' + (sel ? 'sel' : '') + '" data-p="' + P.p + '" data-ci="' + ci + '">' + chip(P.p, 'attracting') + orbitText(c.vals, fmtVal, 7) + '<span class="meta">' + (sp === 'ZN' ? 'basin: ' : 'reached from ') + numStr(c.basin) + (sp === 'ZN' ? ' point' : ' start') + (c.basin === 1 ? '' : 's') + '</span></li>';
+      shown++;
+    });
+    if (P.orbits.length > 30) h += '<li class="grp">… and ' + (P.orbits.length - 30) + ' more</li>';
+  }
+  if (!shown) h += '<li class="grp">none found</li>';
+  return h + '</ul></section>';
+}
+panel.addEventListener('click', e => {
+  const li = e.target.closest('li[data-p]');
+  if (li) {
+    const p = +li.dataset.p;
+    if (li.dataset.ci != null) { const ci = +li.dataset.ci; setHL(S.hl && S.hl.ci === ci ? null : { p, ci }); }
+    else { const i = +li.dataset.i; setHL(S.hl && S.hl.p === p && S.hl.i === i ? null : { p, i }); }
+    return;
+  }
+  const tr = e.target.closest('tr.row[data-p]');
+  if (tr) { const p = +tr.dataset.p; setHL(S.hl && S.hl.p === p && S.hl.i == null && S.hl.ci == null ? null : { p }); }
+});
+
+/* ---------------- interaction ---------------- */
+const readout = $('#readout');
+const ptrs = new Map();
+let drag = null, moved = false, pinch = null;
+const isCont = () => S.space === 'R' || S.space === 'I' || S.space === 'C';
+function localXY(e) { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+function viewChanged() {
+  draw();
+  if (S.space === 'R' || S.space === 'C') schedule(400);
+  if (S.space === 'C') scheduleShade(420);
+}
+function zoomAt(px, py, factor) {
+  if (isCont()) {
+    const T = contView();
+    const [wx, wy] = T.inv(px, py);
+    const v = T.v;
+    v.span = Math.min(1e7, Math.max(1e-9, v.span / factor));
+    const s = Math.min(W, H) / v.span;
+    v.cx = wx - (px - W / 2) / s; v.cy = wy + (py - H / 2) / s;
+  } else if (S.res && S.res.kind === 'discrete') {
+    const v = S.views.G;
+    const wx = v.cx + (px - W / 2) / v.s, wy = v.cy + (py - H / 2) / v.s;
+    v.s = Math.min(20, Math.max(0.005, v.s * factor));
+    v.cx = wx - (px - W / 2) / v.s; v.cy = wy - (py - H / 2) / v.s;
+  } else return;
+  viewChanged();
+}
+function panBy(dx, dy) {
+  if (isCont()) { const T = contView(); T.v.cx -= dx / T.s; T.v.cy += dy / T.s; }
+  else if (S.res && S.res.kind === 'discrete') { const v = S.views.G; v.cx -= dx / v.s; v.cy -= dy / v.s; }
+  else return;
+  draw();
+}
+cv.addEventListener('pointerdown', e => {
+  cv.setPointerCapture(e.pointerId);
+  const [x, y] = localXY(e);
+  ptrs.set(e.pointerId, { x, y });
+  if (ptrs.size === 1) { drag = { x, y }; moved = false; }
+  else if (ptrs.size === 2) {
+    const [a, b] = [...ptrs.values()];
+    pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) }; moved = true;
+  }
+});
+cv.addEventListener('pointermove', e => {
+  const [x, y] = localXY(e);
+  if (ptrs.has(e.pointerId)) {
+    ptrs.set(e.pointerId, { x, y });
+    if (ptrs.size === 2 && pinch) {
+      const [a, b] = [...ptrs.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinch.d > 0) zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, d / pinch.d);
+      pinch.d = d;
+      return;
+    }
+    if (drag) {
+      const dx = x - drag.x, dy = y - drag.y;
+      if (!moved && Math.hypot(dx, dy) > 4) { moved = true; cv.classList.add('dragging'); }
+      if (moved) { panBy(dx, dy); drag = { x, y }; }
+      return;
+    }
+  }
+  hover(x, y);
+});
+function endPtr(e) {
+  const wasDrag = drag && moved;
+  const [x, y] = localXY(e);
+  if (ptrs.has(e.pointerId) && ptrs.size === 1 && !moved) click(x, y);
+  ptrs.delete(e.pointerId);
+  if (ptrs.size < 2) pinch = null;
+  if (ptrs.size === 0) {
+    cv.classList.remove('dragging');
+    if (wasDrag || moved) { if (S.space === 'R' || S.space === 'C') schedule(250); if (S.space === 'C') scheduleShade(260); }
+    drag = null; moved = false;
+  }
+}
+cv.addEventListener('pointerup', endPtr);
+cv.addEventListener('pointercancel', endPtr);
+cv.addEventListener('pointerleave', () => { if (!ptrs.size) readout.textContent = ''; });
+cv.addEventListener('wheel', e => {
+  e.preventDefault();
+  const [x, y] = localXY(e);
+  zoomAt(x, y, Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0016)));
+}, { passive: false });
+
+function nearestOrbitPoint(x, y) {
+  const R = S.res; if (!R || !R.periods) return null;
+  const T = contView();
+  let best = null, bd = 12;
+  R.periods.forEach(P => P.orbits.forEach((o, i) => o.pts.forEach(pt => {
+    const px = R.kind === 'real' ? T.X(pt) : T.X(pt[0]), py = R.kind === 'real' ? T.Y(pt) : T.Y(pt[1]);
+    const d = Math.hypot(px - x, py - y);
+    if (d < bd) { bd = d; best = { P, o, i, pt }; }
+  })));
+  return best;
+}
+function nearestNode(x, y) {
+  const R = S.res; if (!R || R.kind !== 'discrete') return null;
+  const T = graphView(); const L = R.layout;
+  let best = -1, bd = 14;
+  for (let id = 0; id < R.graph.nodes.length; id++) {
+    if (!L.placed[id]) continue;
+    const d = Math.hypot(T.X(L.X[id]) - x, T.Y(L.Y[id]) - y);
+    if (d < bd) { bd = d; best = id; }
+  }
+  return best < 0 ? null : best;
+}
+function nodeInfo(id) {
+  const R = S.res, nd = R.graph.nodes[id];
+  if (nd.pseudo === 'esc') return nd.collapsed ? numStr(nd.collapsed) + ' starting points escape; their orbits are hidden (see Options)' : '∞: where escaping orbits go (they pass the escape bound)';
+  if (nd.pseudo) return 'orbits undecided within the step limit';
+  const raw = R.res.nodes.get(nd.key);
+  let t = 'x = ' + R.label(nd);
+  if (raw && raw.next != null && R.res.nodes.get(raw.next)) t += '   f(x) = ' + R.label({ v: R.res.nodes.get(raw.next).v });
+  if (!raw) return t;
+  if (raw.term === 'cyc') {
+    const c = R.res.cycles[raw.cyc];
+    t += raw.depth === 0 ? '   on a ' + c.len + '-cycle' : '   reaches a ' + c.len + '-cycle in ' + numStr(raw.depth) + ' step' + (raw.depth === 1 ? '' : 's');
+  } else if (raw.term === 'esc') t += '   escapes after ' + numStr(raw.depth) + ' step' + (raw.depth === 1 ? '' : 's');
+  else t += '   undecided';
+  return t;
+}
+function hover(x, y) {
+  const R = S.res;
+  if (!R || R.kind === 'error') { readout.textContent = ''; return; }
+  if (R.kind === 'real') {
+    const T = contView(); const [wx] = T.inv(x, y);
+    const hit = nearestOrbitPoint(x, y);
+    if (hit) readout.textContent = 'period ' + hit.P.p + ': x = ' + fmtR(hit.pt, 8) + '   λ = ' + fmtR(hit.o.lambda, 5) + ' (' + hit.o.kind + ')';
+    else readout.textContent = 'x = ' + fmtR(wx, 5) + '   f(x) = ' + fmtR(R.f(wx), 5);
+  } else if (R.kind === 'complex') {
+    const T = contView(); const [a, b] = T.inv(x, y);
+    const hit = nearestOrbitPoint(x, y);
+    if (hit) readout.textContent = 'period ' + hit.P.p + ': z = ' + fmtC(hit.pt[0], hit.pt[1], 7) + '   |λ| = ' + fmtR(hit.o.absLambda, 4) + ' (' + hit.o.kind + ')';
+    else { R.fc(a, b); readout.textContent = 'z = ' + fmtC(a, b, 5) + '   f(z) = ' + fmtC(E.HC.R, E.HC.I, 5); }
+  } else if (R.kind === 'discrete') {
+    const id = nearestNode(x, y);
+    readout.textContent = id == null ? '' : nodeInfo(id);
+  }
+}
+function click(x, y) {
+  const R = S.res; if (!R) return;
+  if (R.kind === 'real' || R.kind === 'complex') {
+    const hit = nearestOrbitPoint(x, y);
+    if (hit) setHL(S.hl && S.hl.p === hit.P.p && S.hl.i === hit.i ? null : { p: hit.P.p, i: hit.i });
+    else if (S.hl) setHL(null);
+  } else if (R.kind === 'discrete') {
+    const id = nearestNode(x, y);
+    if (id == null) { if (S.hl) setHL(null); return; }
+    const raw = R.res.nodes.get(R.graph.nodes[id].key);
+    if (raw && raw.term === 'cyc') {
+      const c = R.res.cycles[raw.cyc];
+      setHL(S.hl && S.hl.ci === raw.cyc ? null : { p: c.len, ci: raw.cyc });
+    } else if (S.hl) setHL(null);
+    readout.textContent = nodeInfo(id);
+  }
+}
+$('#fit').addEventListener('click', () => {
+  if (S.space === 'I') S.views.I = null;
+  else if (S.space === 'R') S.views.R = { cx: 0, cy: 0, span: 5 };
+  else if (S.space === 'C') S.views.C = { cx: 0, cy: 0, span: 4 };
+  else if (S.res && S.res.kind === 'discrete') fitGraph();
+  viewChanged();
+});
+
+/* ---------------- controls wiring ---------------- */
+fxIn.addEventListener('input', () => { S.src = fxIn.value; exSel.value = ''; schedule(500); });
+fxIn.addEventListener('keydown', e => { if (e.key === 'Enter') recompute(); });
+Nin.addEventListener('input', () => { S.N = +Nin.value; Nval.textContent = S.N; schedule(300); });
+$$('#space .am-btn').forEach(b => b.addEventListener('click', () => {
+  if (S.space === b.dataset.space) return;
+  S.space = b.dataset.space; S.hl = null; S.views.G = null; exSel.value = '';
+  syncBar(); recompute();
+}));
+exSel.addEventListener('change', () => {
+  if (!exSel.value) return;
+  const [gi, ii] = exSel.value.split(':').map(Number);
+  applyExample(EXAMPLES[gi].items[ii]);
+});
+$$('#gridSeg .am-btn').forEach(b => b.addEventListener('click', () => { S.grid = +b.dataset.grid; syncBar(); recompute(); }));
+$$('#effSeg .am-btn').forEach(b => b.addEventListener('click', () => { S.eff = +b.dataset.eff; syncBar(); recompute(); }));
+$$('#escSeg .am-btn').forEach(b => b.addEventListener('click', () => { S.escMode = b.dataset.esc; S.views.G = null; syncBar(); recompute(); }));
+$$('#shadeSeg .am-btn').forEach(b => b.addEventListener('click', () => { S.shade = b.dataset.shade === '1'; syncBar(); if (S.shade) computeShade(); else { shade = null; draw(); } }));
+[['zEsc', 'zEsc'], ['stepCap', 'stepCap'], ['qW', 'qW'], ['qEsc', 'qEsc']].forEach(([id, key]) => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => { S[key] = el.value; S.views.G = null; schedule(600); });
+});
+const opts = $('#opts'), optBtn = $('#optBtn');
+function setOpts(open) {
+  opts.classList.toggle('open', open);
+  optBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  opts.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
+optBtn.addEventListener('click', () => setOpts(!opts.classList.contains('open')));
+$('#optClose').addEventListener('click', () => setOpts(false));
+addEventListener('keydown', e => { if (e.key === 'Escape') setOpts(false); });
+
+/* ---------------- start ---------------- */
+function start() {
+  readColors();
+  resize();
+  buildExamples();
+  applyExample(EXAMPLES[0].items[0]);
+  exSel.value = '0:0';
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw());
+start();
+})();
+
+</script>
+</body></html>
