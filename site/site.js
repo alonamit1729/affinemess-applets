@@ -57,7 +57,7 @@
       if (tile.dataset.note) vNote.appendChild(document.createElement('span')).textContent = tile.dataset.note;
       vNote.hidden = !tile.dataset.note;
       vNote.classList.remove('open');
-      viewer.classList.toggle('is-video', tab === 'youtube');
+      viewer.classList.toggle('is-video', !!tile.querySelector('.media.video'));
       mountFrame(tile.dataset.src || tile.getAttribute('href'), name);
       viewer.hidden = false;
       root.classList.add('am-viewing');
@@ -232,9 +232,10 @@
       if (panel.classList.contains('active')) loadMath();
     })();
 
-    /* ---------- routing: #applets, #applets/<slug>, #youtube/<slug>, ... ---------- */
+    /* ---------- routing: #applets, #applets/<slug>, #media/<slug>, ... ---------- */
     function route() {
-      const h = (location.hash || '').replace(/^#\/?/, '');
+      let h = (location.hash || '').replace(/^#\/?/, '');
+      h = h.replace(/^youtube(?=\/|$)/, 'media');   // old links from when the tab was called YouTube
       const m = h.match(/^([a-z]+)\/(.+?)\/*$/);
       if (m) {
         let slug = m[2];
