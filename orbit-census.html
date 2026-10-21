@@ -2716,13 +2716,17 @@ function periodsTableReal(R) {
   const shark = R.shark;
   let h = '<table class="oc-pt"><thead><tr><th>period</th><th>cycles</th>' + (R.deg >= 2 ? '<th>max</th>' : '') + '<th>Sharkovsky</th></tr></thead><tbody>';
   const ncol = R.deg >= 2 ? 4 : 3;
+  const anyUnusable = R.periods.some(P => P.orbits.length && (shark.best == null || E.sharkCmp(P.p, shark.best) < 0));
   for (const P of R.periods) {
     const n = P.p, cnt = P.orbits.length;
     if (P.longer && P === R.periods.find(q => q.longer)) h += '<tr><td colspan="' + ncol + '" class="dim" style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding-top:8px">found by following orbits</td></tr>';
     const forced = shark.best != null && E.sharkForces(shark.best, n);
     const sel = S.hl && S.hl.p === n && S.hl.i == null;
     const undrawn = cnt && R.drawnP && !R.drawnP.has(n);
-    const tag = cnt ? (n === shark.best ? 'strongest' : undrawn ? '<span class="dim">click to draw</span>' : '') : (forced ? 'forced, hiding' : '');
+    const unusable = cnt && (shark.best == null || E.sharkCmp(n, shark.best) < 0);
+    const tag = cnt ? (n === shark.best ? (anyUnusable ? 'strongest usable' : 'strongest')
+      : unusable ? '<span title="every cycle of this period found has a pole or jump of f between its points">discontinuous</span>'
+      : undrawn ? '<span class="dim">click to draw</span>' : '') : (forced ? 'forced, hiding' : '');
     const maxc = R.deg >= 2 && !P.longer ? E.exactPeriodCount(R.deg, n) / n : null;
     h += '<tr class="' + (cnt ? 'row' : '') + (sel ? ' sel' : '') + '" data-p="' + n + '"><td>' + (cnt ? chip(n) : '<span class="chip" style="background:transparent"></span>') + n + '</td>' +
       '<td class="' + (cnt ? '' : 'dim') + '">' + (P.continuum ? '∞' : cnt + (P.full ? '+' : '')) + '</td>' +
@@ -2791,9 +2795,14 @@ function panelReal(R) {
   const sh = R.shark;
   h += '<section class="oc-shark"><h4>Sharkovsky’s theorem</h4>' + sharkSVG(found, sh.best, S.N);
   h += '<div class="oc-legend"><span><i style="background:' + C.ink + '"></i>found</span><span><i style="background:' + C.hover + ';border:1.8px solid ' + C.accent + '"></i>forced</span><span><i style="border:1px dashed ' + C.lsoft + '"></i>not searched</span></div>';
+  const unusableP = R.periods.filter(P => P.orbits.length && sh.best != null && E.sharkCmp(P.p, sh.best) < 0).map(P => P.p);
+  if (unusableP.length) {
+    const r0 = sh.rejected.find(r => E.sharkCmp(r.p, sh.best) < 0);
+    h += '<p class="oc-note warn">Periods ' + unusableP.join(', ') + ' were found, but every such cycle has ' + (r0 && r0.why.why === 'jump' ? 'a jump of f' : r0 && r0.why.why === 'undefined' ? 'a point where f blows up or is undefined' : 'a pole of f') + ' between its points' + (r0 ? ' (for instance near x ≈ ' + fmtR(r0.why.at, 4) + ')' : '') + '. Sharkovsky’s theorem needs f continuous on the span of the orbit, so it says nothing about these periods' + (sh.best === 1 ? ', or about which others exist.' : '.') + '</p>';
+  }
   if (sh.best != null) {
     const w = sh.witness;
-    h += '<p class="oc-note">Strongest period found: <b>' + sh.best + '</b>' + (w.pts.length > 1 ? ', on the cycle ' + orbitText(w.pts, x => fmtR(x, 4), 5) : '') + '. ';
+    h += '<p class="oc-note">Strongest ' + (unusableP.length ? 'usable ' : '') + 'period found: <b>' + sh.best + '</b>' + (w.pts.length > 1 ? ', on the cycle ' + orbitText(w.pts, x => fmtR(x, 4), 5) : '') + '. ';
     if (w.pts.length > 1) h += 'Since f is continuous on [' + fmtR(w.min, 4) + ', ' + fmtR(w.max, 4) + '], ';
     if (sh.best === 1) h += 'A fixed point by itself forces nothing further.</p>';
     else h += 'Sharkovsky guarantees ' + E.sharkDescribe(sh.best) + ', all inside that interval.</p>';
@@ -2803,15 +2812,11 @@ function panelReal(R) {
     const [k, o] = E.v2(sh.best);
     if (o === 1) {
       const extra = R.periods.filter(P => P.orbits.length && !E.sharkForces(sh.best, P.p)).length;
-      if (!extra) h += '<p class="oc-note">Only powers of 2 so far. A continuous map with finitely many periods always looks like this.</p>';
+      if (!extra && !unusableP.length) h += '<p class="oc-note">Only powers of 2 so far. A continuous map with finitely many periods always looks like this.</p>';
     }
   } else if (found.size) {
     h += '<p class="oc-note">No usable orbit: f is not continuous on the span of any cycle found.</p>';
   } else h += '<p class="oc-note">No periodic points found in the ' + (isI ? 'interval' : 'window') + '.</p>';
-  if (sh.rejected.length && sh.best != null && sh.rejected.some(r => E.sharkCmp(r.p, sh.best) < 0)) {
-    const r0 = sh.rejected.find(r => E.sharkCmp(r.p, sh.best) < 0);
-    h += '<p class="oc-note">Period ' + r0.p + ' orbits were found, but f ' + (r0.why.why === 'pole' ? 'has a pole' : r0.why.why === 'undefined' ? 'is undefined' : 'jumps') + ' near x ≈ ' + fmtR(r0.why.at, 4) + ' inside their span, so Sharkovsky says nothing about them.</p>';
-  }
   h += '</section>';
   h += orbitList(R, x => fmtR(x, 5), o => 'λ = ' + fmtR(o.lambda, 4) + ' · ' + o.kind + (o.approx ? ' · tangential' : '') + (o.src === 'orbit' ? ' · found by following orbits' : ''));
   return h;
