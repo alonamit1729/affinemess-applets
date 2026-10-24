@@ -204,7 +204,15 @@ def main():
     for d in (4,5,6,7):
         # certified classification (msolve + Singular) when complete; numerical samples only supply representatives
         cert=json.load(open(f'cert5{d}.json')) if os.path.exists(f'cert5{d}.json') else []
-        certified=len(cert)==NCLS[d] and not any(r.get('unresolved') for r in cert)
+        e=2*5-4-10+d
+        stub={}
+        for r in cert:
+            if r.get('unresolved'):
+                fn=f'stubborn_{d}_{r["idx"]}.json'
+                if os.path.exists(fn):
+                    sb=json.load(open(fn))
+                    if sb['dim_saturated']==e and sb['slice_hits']>0 and sb['ranks'] and all(rk==7+d-1-e for rk,_ in sb['ranks']) : stub[r['idx']]=sb
+        certified=len(cert)==NCLS[d] and all((not r.get('unresolved')) or r['idx'] in stub for r in cert)
         N={tuple(r['col']):r for r in json.load(open(f'strata_5_{d}_1.json'))['realizable']}
         if not certified:
             numeric_cell(d,N); continue
@@ -213,6 +221,8 @@ def main():
         for r in cert:
             col=tuple(r['col']); sizes=sorted([col.count(k) for k in range(d)],reverse=True)
             realdims=set()
+            if r['idx'] in stub:
+                realdims.add(e); r=dict(r,primes=[{'real':True,'dim':e,'point':stub[r['idx']]['points'][0]}])
             for p in r['primes']:
                 if p.get('real') and p['dim']>=1: realdims.add(p['dim'])
             if d==4:
@@ -238,6 +248,7 @@ def main():
         note=(f'Certified by exact computation: for each of the {ncls} colourings of K₅ with {d} colours (up to symmetry) the polynomial system was solved exactly '
               f'(msolve for zero-dimensional systems with certified real-root isolation; Singular minimal primes for positive-dimensional ones, each component tested for real points). '
               f'{nreal} types are realizable. Every component has dimension ≥ {e}' + (', so there are no rigid configurations' if e>=1 else '') + '.')
+        if stub: note+=f' For {len(stub)} type{"s" if len(stub)>1 else ""} the primary decomposition did not finish; there the certificate is weaker: the saturated ideal (inequations enforced) has dimension exactly {e}, so every component has dimension {e}, real points were certified by random slices, and the Jacobian has full rank at them numerically (a smooth point of an {e}-dimensional component).'
         if d==4: note+=' The earlier random search had found 468 of the 481 rigid configurations and had misclassified two rigid types as families; the equally spaced collinear quintuple, which the search reported as rigid, in fact lies on a one-parameter family (the lattice piece 0, −u, v, u+v, −u−v with the angle between u and v free).'
         cell(5,d,dims,'exact',marks='‡',note=note)
         cat(5,d,items,True,f'Five points, {d} distances',listing_note(len(rig),sum(fams.values()),True)+' Types are described by the sizes of the distance classes.',sources=('cert',))

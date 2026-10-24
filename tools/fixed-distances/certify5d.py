@@ -49,6 +49,7 @@ def parse_real(out):
     if s.startswith('[-1]'): return 'empty',[]
     if s.startswith('[1,'): return 'posdim',[]
     tokens=re.findall(r'-?\d+/2\^\d+|-?\d+/\d+|-?\d+|[\[\],]',s.rstrip(':'))
+    if not tokens or tokens[0]!='[': return 'error',[]
     def build(i):
         if tokens[i]=='[':
             lst=[]; i+=1
@@ -65,7 +66,7 @@ def parse_real(out):
     return 'zerodim',[[(lo+hi)/2 for lo,hi in sol] for sol in sols]
 def decompose(eqs):
     ring='ring r=0,('+','.join(V)+'),dp;'
-    for algo,tmo in (('minAssGTZ',60),('minAssChar',120),('minAssGTZ',900)):
+    for algo,tmo in (('minAssGTZ',60),('minAssChar',120)):
         script=ring+'\nLIB "primdec.lib";\nideal i='+',\n'.join(eqs)+';\nlist L='+algo+'(i);\nint k; ideal G; int bad;\nfor(k=1;k<=size(L);k++){ G=std(L[k]); print("PRIME"); print(dim(G)); bad=0; '+' '.join(f'if(reduce({f},G)==0){{bad=1;}}' for f in facs)+' print(bad); print(L[k]); }\nquit;\n'
         open('sg_in5.sing','w').write(script)
         try:
@@ -118,7 +119,8 @@ for ci,col in enumerate(classes):
                 hits=0
                 for _ in range(4):
                     lins=['+'.join(f'({random.randint(-5,5)})*{v}' for v in XV)+f'-({random.randint(-3,3)})' for _ in range(p['dim'])]
-                    st,md=parse_real(run_msolve(p['gens']+[expand(l) for l in lins],V))
+                    try: st,md=parse_real(run_msolve(p['gens']+[expand(l) for l in lins],V))
+                    except Exception as ex: print('   slice failed',ex,flush=True); st,md='error',[]
                     good=[]
                     for mid in (md if st=='zerodim' else []):
                         vals=[1.0]+[float(v) for v in mid[7:7+d-1]]
