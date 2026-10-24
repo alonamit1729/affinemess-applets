@@ -23,3 +23,7 @@ inside this folder after copying `data/*` here (or symlink).
 - `extend.py`, `examples.py`, `lattice.py` — one-point extensions, regular-polygon subsets, lattice pieces.
 - `line.py n` — collinear case (flats of the difference arrangement), used for the table of mixed dimensions.
 - `exactify.py` — natural frames and exact coordinate strings for the catalog.
+- `lat16.py` — clique search in the triangular lattice for 16-point 7-distance pieces (`data/lattice_16_7.json`, the two
+  Erdős–Fishburn examples); the same search with distance set {1,√3,2,√7,3} gives `data/lattice_11_5.json` (Wei's three).
+- `data/eight4_shinohara.json` — the 15 eight-point four-distance sets assembled from Shinohara (2008), Theorem 1.2.
+- `LITERATURE.md` — what each paper establishes and how the cells cite it.

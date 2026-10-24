@@ -1,5 +1,6 @@
 """Assemble applet_data.json with per-dimension counts/bounds."""
 import json, math, itertools, os, glob
+from collections import Counter
 import build_data as B
 from build_data import item, poly, SRC, same, dvals, pd
 import examples as EX
@@ -180,7 +181,7 @@ def main():
     for g in FP:
         if g['title'] in ('Six points','Seven points'): continue
         for it in g['items']: items.append(item(precise(it['pts'],FIVE),f"{g['title']}: {it['label']}",note=it['dist']))
-    cell(5,3,{0:E(34)},'exact',marks='†',note='Finite: 34 rigid configurations, found by two independent computations (extension of the four-point families, and exhaustive colouring enumeration). Shinohara (2004) classified these sets; his count has not been checked against ours.')
+    cell(5,3,{0:E(34)},'exact',note='Finite: 34 rigid configurations (Shinohara 2004, Theorem 1), found here by two independent computations (extension of the four-point families, and exhaustive colouring enumeration). Each of our 34 sets was matched to one of Shinohara’s figures 501–534 by its pair of distance ratios (α, β); all 34 correspond (his table gives 2 sin 4π/9 for the β of fig. 524, where the construction in the text yields 2 sin 7π/18).')
     cat(5,3,items,True,'The 34 five-point three-distance sets','Grouped by the figure they come from.',sources=('Sh04','us'))
     def numeric_cell(d,N):
         R=list(N.values()); ncls=json.load(open(f'strata_5_{d}_1.json'))['classes']
@@ -242,7 +243,7 @@ def main():
         cat(5,d,items,True,f'Five points, {d} distances',listing_note(len(rig),sum(fams.values()),True)+' Types are described by the sizes of the distance classes.',sources=('cert',))
     # ---------- (6,3), (7,3) ----------
     six=[g for g in FP if g['title']=='Six points'][0]['items']; seven=[g for g in FP if g['title']=='Seven points'][0]['items']
-    cell(6,3,{0:E(9)},'exact',marks='†',note='Nine rigid configurations (our enumeration by extension of the 34 five-point sets; Shinohara 2004 classified these).')
+    cell(6,3,{0:E(9)},'exact',marks='†',note='Nine rigid configurations: Shinohara (2004, Theorem 2) lists the six maximal six-point sets (his figs. 601–606); the other three are the six-point subsets of the two seven-point sets (the regular hexagon, the heptagon minus a vertex, the hexagon-with-centre minus a vertex). Our enumeration by extension of the 34 five-point sets gives the same nine.')
     cat(6,3,[item(precise(it['pts'],SIX),it['label'],note=it['dist']) for it in six],True,'The nine six-point three-distance sets',sources=('Sh04','us'))
     cell(7,3,{0:E(2)},'exact',note='The regular heptagon and the regular hexagon with its centre; g(3) = 7.')
     cat(7,3,[item(precise(it['pts'],[HEPT,HEXC]),it['label'],note=it['dist'],Nhint=7 if 'hept' in it['label'] else 6) for it in seven],True,'The two seven-point three-distance sets',sources=('EF','Sh04'))
@@ -258,14 +259,40 @@ def main():
         m=min(pd(P)); deg=max(sum(1 for q in P if abs(math.dist(p,q)-m)<1e-6) for p in P)
         return 'piece of the triangular lattice: a regular hexagon, its centre, and two adjacent points of the next ring' if deg>=6 else 'piece of the triangular lattice: rows of 1, 3, 3 and 2 points'
     FOUR=[(1,0),(0,1),(-1,0),(0,-1),(0,-S3),((S3-1)/2,-(S3-1)/2),(-(S3-1)/2,-(S3-1)/2),((S3+1)/2,-(S3+1)/2),(-(S3+1)/2,-(S3+1)/2)]
-    it4=item(FOUR,'square ABCD (side √2); on sides AD and CD the outward equilateral apexes H, I and the inward apexes F, G of isosceles triangles with apex angle 150°; E on the axis beyond D with DE = DF = √3 − 1. Distances √3−1, √2, 2, √3+1 (the 12-gon chords c₁, c₂, c₃, c₅).')
+    it4=item(FOUR,'three equilateral triangles with a common centre and parallel sides (Erdős–Fishburn’s description; 3-fold symmetry about (0, −1/√3)). Equivalently: square ABCD (side √2); on sides AD and CD the outward equilateral apexes H, I and the inward apexes F, G of isosceles triangles with apex angle 150°; E on the axis beyond D with DE = DF = √3 − 1. Distances √3−1, √2, 2, √3+1 (the 12-gon chords c₁, c₂, c₃, c₅).')
     it4['exact']=[['1','0'],['0','1'],['−1','0'],['0','−1'],['0','−√3'],['(√3−1)/2','−(√3−1)/2'],['−(√3−1)/2','−(√3−1)/2'],['(√3+1)/2','−(√3+1)/2'],['−(√3+1)/2','−(√3+1)/2']]
     it4['frame']='square ABCD inscribed in the unit circle, D at the bottom'
-    cell(9,4,{0:E(4)},'exact',note='g(4) = 9. Erdős–Fishburn: exactly four configurations (the regular nonagon, two lattice pieces, and one more, recovered here by a symmetric search). Finite, so no families.',finite=True)
+    cell(9,4,{0:E(4)},'exact',note='g(4) = 9. Erdős–Fishburn (1996, Theorem 1): exactly four configurations — the regular nonagon, two pieces of the triangular lattice, and three concentric equilateral triangles with parallel sides (the only known maximum set for any k that is neither a regular polygon, with or without centre, nor a lattice piece). Finite, so no families.',finite=True)
     cat(9,4,[item(poly(9,range(9)),'regular nonagon',Nhint=9)]+[item(P,lat_label(P)) for P in L94]+[it4],True,'The four nine-point four-distance sets',sources=('EF',))
+    # (8,4): Shinohara 2008, Theorem 1.2(a)
+    NINE=[poly(9,range(9))]+L94+[FOUR]
+    h=.5+S3/2; FIGE=[(.5,.5),(-.5,.5),(-.5,-.5),(.5,-.5),(0,h),(0,-h),(h,0),(-h,0)]
+    eight=[(poly(8,range(8)),'regular octagon',8),(poly(7,range(7))+[(0,0)],'regular heptagon with its centre',7),(FIGE,'square with the four outward equilateral apexes (Shinohara’s fig. 1(e)); distances 1, √2, √(2+√3), 1+√3',None)]
+    nine_names=['the regular nonagon','the lattice piece (hexagon, centre, two adjacent outer points)','the lattice piece (rows 1, 3, 3, 2)','the three concentric triangles']
+    nine_names=[nine_names[0]]+[('the lattice piece (hexagon, centre, two adjacent outer points)' if 'hexagon' in lat_label(P) else 'the lattice piece (rows 1, 3, 3, 2)') for P in L94]+[nine_names[3]]
+    for P,name in zip(NINE,nine_names):
+        for i in range(9):
+            Q=[p for j,p in enumerate(P) if j!=i]
+            if len(dvals(Q))!=4 or any(same(Q,R) for R,_,_ in eight): continue
+            eight.append((Q,f'{name} minus one point',9 if name.startswith('the regular') else None))
+    assert len(eight)==15, len(eight)
+    cell(8,4,{0:E(15)},'exact',marks='†',note='Shinohara (2008, Theorem 1.2): every eight-point four-distance set is the regular octagon, the regular heptagon with its centre, the square with four outward equilateral apexes, or an eight-point subset of one of the four nine-point four-distance sets. Deleting one point from each nine-point set and keeping the subsets with exactly four distances gives twelve more up to congruence (one from the nonagon, eight from the two lattice pieces, three from the concentric triangles): 15 in all. Our earlier extension search had found 14 of them.',finite=True)
+    cat(8,4,[item(P,lab,Nhint=N) if N else item(P,lab) for P,lab,N in eight],True,'The fifteen eight-point four-distance sets',sources=('Sh08','EF'))
     L125=uniq(json.load(open('lattice_12_5.json'))['tri'])
     cell(12,5,{0:E(1)},'exact',note='g(5) = 12; the unique maximum five-distance set is a piece of the triangular lattice (Shinohara 2008).',finite=True)
     cat(12,5,[item(P,'piece of the triangular lattice: rows of 3, 4, 3 and 2 points') for P in L125],True,'The unique twelve-point five-distance set',sources=('Sh08',))
+    # (11,5): Wei 2011, Theorem 13
+    L115=uniq(json.load(open('lattice_11_5.json')))
+    assert len(L115)==3
+    def lab115(P):
+        T=L125[0]
+        for i in range(12):
+            if same([p for j,p in enumerate(T) if j!=i],P):
+                k=sum(1 for j in range(12) if j!=i and abs(math.dist(T[i],T[j])-1)<1e-6)
+                return f'the twelve-point five-distance set minus a point that had {k} nearest neighbours'
+        raise SystemExit('11-set not a subset of the 12-set')
+    cell(11,5,{0:E(4)},'exact',note='Wei (2011, Theorem 13): exactly four eleven-point five-distance sets — the regular 11-gon and three pieces of the triangular lattice (all three are subsets of the unique twelve-point five-distance set). The lattice pieces were re-derived here by a clique search in the lattice with distance set {1, √3, 2, √7, 3}.',finite=True)
+    cat(11,5,[item(poly(11,range(11)),'regular 11-gon',Nhint=11)]+[item(P,lab115(P)) for P in L115],True,'The four eleven-point five-distance sets',sources=('Wei11',))
     L136=uniq(json.load(open('lattice_13_6.json'))['tri'])
     cell(13,6,{0:E(3)},'exact',note='g(6) = 13; exactly three configurations (Wei 2012, confirmed by Szöllősi–Östergård 2020).',finite=True)
     cat(13,6,[item(poly(13,range(13)),'regular 13-gon',Nhint=13),item(poly(12,range(12))+[(0,0)],'regular 12-gon with its centre',Nhint=12)]+[item(P,'piece of the triangular lattice: a regular hexagon, its centre and the six points of the next ring') for P in L136],True,'The three thirteen-point six-distance sets',sources=('Wei12','SO20'))
@@ -276,13 +303,16 @@ def main():
         for k,v in json.load(open(fn)).items(): SYM.setdefault(k,[]).extend(v)
     EXT=json.load(open('ext4.json')); EXT.update(json.load(open('ext5.json')))
     finite_cells={(7,4):('Lan and Wei (2013) classify the seven-point four-distance sets: there are exactly 42. Only the ones we could reconstruct are shown.',('LW13',)),
-                  (8,4):('Finite: every 8-point 4-distance set extends a 7-point set with 3 or 4 distances, both finite lists (Erdős–Fishburn; Lan–Wei), by a point determined up to finitely many choices. The count is not known to us.',('LW13','EF')),
-                  (11,5):('Finite: classified by Wei (2011); the number of configurations is not available to us.',('Wei11',))}
+                  }
     for n in range(6,17):
         for d in range(1,8):
             key=f'{n},{d}'
             if key in cells or d<fmin[n] or n>gmax[d]: continue
             pool=Pool()
+            if (n,d)==(16,7):
+                for P in uniq(json.load(open('lattice_16_7.json'))):
+                    rows=sorted(Counter(round(y*2/S3) for x,y in P).values(),reverse=True)
+                    pool.add(P,'piece of the triangular lattice with distances 1, √3, 2, √7, 3, √12, √13 (Erdős–Fishburn, Fig. 4): rows of '+', '.join(map(str,rows))+' points','ef')
             # extension-built rigid sets
             for P in EXT.get(f'{n}{d}',[]): pool.add(P,'built by one-point extension of a smaller set','ext')
             for lab,P,N,S in EX.polygon_examples(n,d,limit=4): pool.add(P,lab,'poly')
@@ -297,6 +327,7 @@ def main():
                 if (n,d)==(7,4): dims={0:E(42)}
             e=2*n-4-math.comb(n,2)+d
             note,srcs=finite_cells.get((n,d),('',()))
+            if (n,d)==(16,7): srcs=('EF',)
             if not fin:
                 note='Exact counts unknown; the bounds come from the configurations shown (each verified numerically to have the stated local dimension). '
                 if e>=1: note+=f'Every component has dimension ≥ {e}, so there are no rigid configurations. '
