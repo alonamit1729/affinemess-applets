@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planar sets with a fixed number of distances · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px; }
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px; }
+.am-about h3 { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin:22px 0 8px; }
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+/* ---- this applet ---- */
+:root{
+  --series-1:#35598F; --series-2:#B85820; --series-3:#3C7A4A; --series-4:#7A4D8A; --series-5:#8A6A1E; --series-6:#A33B3B; --series-7:#2F7F86;
+  --open-bg:#EFD9C2; --open-ink:#8A3F12;
+  --dim1:#DCE3EC; --dim2:#DCE8DB; --dim3:#E6DDE8; --dim4:#D9E6E6;
+}
+.am-about{ width:min(560px,100%); }
+.am-about p.src{ font-size:13.5px; color:var(--ink-soft); }
+.fd-view{ position:absolute; inset:0; overflow:auto; }
+.fd-view[hidden]{ display:none !important; }
+/* table */
+#fd-table{ padding:12px 16px 10px; display:flex; flex-direction:row; align-items:flex-start; justify-content:center; gap:10px 28px; min-height:100%; flex-wrap:wrap; }
+.fd-grid{ display:grid; grid-template-columns:44px repeat(7, minmax(84px, 1fr)); gap:3px; width:min(100%, 900px); flex:0 1 900px; }
+.fd-corner{ display:flex; flex-direction:column; justify-content:flex-end; align-items:flex-end; padding:2px 6px 4px 0; }
+.fd-corner span{ font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--ink-faint); line-height:1.2; }
+.fd-colhead, .fd-rowhead{ font-family:var(--mono); font-size:12px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; }
+.fd-colhead{ padding:4px 0 6px; border-bottom:1px solid var(--line); }
+.fd-colhead i, .fd-corner i{ font-style:italic; font-family:var(--serif); font-size:15px; color:var(--ink); margin-right:3px; font-weight:400; }
+.fd-rowhead{ justify-content:flex-end; padding-right:10px; border-right:1px solid var(--line); }
+.fd-cell{ position:relative; min-height:40px; border:1px solid transparent; border-radius:3px; display:flex; flex-direction:column; align-items:stretch; justify-content:center; gap:1px; padding:4px 6px; font-family:var(--mono); line-height:1.15; }
+.fd-line{ display:flex; justify-content:space-between; gap:4px; font-size:11.5px; color:var(--ink); white-space:nowrap; }
+.fd-line .k{ color:var(--ink-faint); }
+.fd-line .v{ font-weight:500; }
+.fd-line .mk{ font-size:10px; color:var(--accent-deep); margin-left:1px; }
+.fd-cell.st-bounds .fd-line .v{ font-weight:400; color:var(--ink-soft); }
+.fd-cell.st-open .fd-line .v, .fd-cell.st-open .fd-line .k{ color:var(--open-ink); }
+.fd-cell.is-cell{ background:var(--paper-card); border-color:var(--line-soft); cursor:pointer; transition:border-color .2s, background .2s; }
+.fd-cell.is-cell:hover, .fd-cell.is-cell:focus-visible{ border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.fd-cell.is-cell:focus-visible .fd-line .v{ color:var(--accent); }
+.fd-cell .fd-sub{ font-size:9.5px; color:var(--ink-faint); text-align:center; letter-spacing:.02em; line-height:1.15; }
+.fd-cell.st-bounds{ border-style:dashed; border-color:var(--line); }
+.fd-cell.st-open{ background:var(--open-bg); border-color:var(--open-ink); }
+.fd-cell.st-open:hover{ background:var(--open-bg); }
+.fd-cell.st-impossible{ background:transparent; }
+.fd-cell.st-impossible::after{ content:""; width:4px; height:4px; border-radius:50%; background:var(--grid); }
+.fd-legend{ display:flex; flex-direction:column; gap:8px; font-size:12.5px; color:var(--ink-soft); padding:30px 2px 0; flex:0 1 230px; min-width:180px; }
+.fd-legend .k{ display:flex; align-items:flex-start; gap:8px; }
+.fd-legend .k .t{ flex:1 1 auto; }
+.fd-legend .sw, .fd-legend .mk{ flex:0 0 auto; margin-top:2px; }
+.fd-legend .mk{ font-family:var(--mono); color:var(--accent-deep); width:22px; text-align:center; }
+.fd-legend .sw{ width:22px; height:14px; border:1px solid var(--line-soft); border-radius:2px; background:var(--paper-card); display:inline-block; }
+.fd-legend .sw.b{ border-style:dashed; border-color:var(--line); }
+.fd-legend .sw.o{ background:var(--open-bg); border-color:var(--open-ink); }
+.fd-legend .sw.i{ background:transparent; border-color:transparent; position:relative; }
+.fd-legend .sw.i::after{ content:""; position:absolute; left:9px; top:5px; width:4px; height:4px; border-radius:50%; background:var(--grid); }
+.fd-legend code{ font-family:var(--mono); font-size:11.5px; color:var(--ink); }
+/* catalog */
+.fd-cell.dim-1.is-cell{ background:var(--dim1); } .fd-cell.dim-2.is-cell{ background:var(--dim2); } .fd-cell.dim-3.is-cell{ background:var(--dim3); } .fd-cell.dim-4.is-cell{ background:var(--dim4); }
+.fd-cell.dim-1.is-cell:hover, .fd-cell.dim-2.is-cell:hover, .fd-cell.dim-3.is-cell:hover, .fd-cell.dim-4.is-cell:hover{ filter:brightness(1.03); }
+.fd-legend .sw.d1{ background:var(--dim1); } .fd-legend .sw.d2{ background:var(--dim2); } .fd-legend .sw.d3{ background:var(--dim3); } .fd-legend .sw.d4{ background:var(--dim4); }
+.fd-card.flex{ cursor:pointer; }
+.fd-card.flex.dim-1{ background:var(--dim1); } .fd-card.flex.dim-2{ background:var(--dim2); } .fd-card.flex.dim-3{ background:var(--dim3); } .fd-card.flex.dim-4{ background:var(--dim4); }
+.fd-card.flex .fd-coords{ background:var(--paper-card); }
+.fd-card .fam{ display:flex; justify-content:space-between; gap:6px; }
+.fd-card .fam .play{ color:var(--ink-faint); }
+.fd-card.playing .fam .play{ color:var(--accent-deep); }
+.fd-card.playing svg .vlabels{ display:none; }
+.fd-card .fam{ flex-wrap:wrap; }
+.fd-card .fam .play{ text-align:right; }
+
+#fd-catalog{ padding:16px 18px 30px; }
+.fd-cathead{ max-width:1100px; margin:0 auto 14px; display:grid; grid-template-columns:1fr auto; gap:4px 18px; align-items:baseline; }
+.fd-cathead h2{ font-family:var(--serif); font-style:italic; font-weight:400; font-size:24px; line-height:1.15; margin:0; font-variation-settings:"opsz" 144, "SOFT" 80; }
+.fd-cathead .st{ font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); white-space:nowrap; }
+.fd-cathead .st.complete{ color:var(--ink); }
+.fd-cathead .st.open{ color:var(--open-ink); }
+.fd-cathead p{ grid-column:1/3; margin:0; font-size:14.5px; color:var(--ink-soft); max-width:78ch; }
+.fd-cathead p.src{ font-size:12.5px; color:var(--ink-faint); }
+.fd-cards{ max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:12px; align-items:start; }
+.fd-card{ background:var(--paper-card); border:1px solid var(--line-soft); border-radius:3px; padding:9px 9px 8px; display:flex; flex-direction:column; gap:5px; min-width:0; }
+.fd-card svg{ width:100%; height:auto; display:block; }
+.fd-card .lab{ font-size:13px; line-height:1.3; color:var(--ink); overflow-wrap:anywhere; }
+.fd-card .lab .num{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-right:5px; }
+.fd-card .rat{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); overflow-wrap:anywhere; }
+.fd-card .rat span{ font-weight:500; }
+.fd-card .fam{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-deep); }
+.fd-card .am-btn{ align-self:flex-start; padding:5px 8px; font-size:9.5px; }
+.fd-coords{ font-family:var(--mono); font-size:10.5px; line-height:1.45; color:var(--ink); background:var(--paper); border:1px solid var(--line-soft); border-radius:3px; padding:7px 8px; margin:0; white-space:pre; overflow-x:auto; cursor:copy; }
+.fd-coords .fr{ color:var(--ink-faint); white-space:normal; display:block; margin-bottom:4px; }
+.fd-coords .ok{ color:var(--accent-deep); display:block; margin-top:4px; }
+.fd-coords[hidden]{ display:none; }
+.fd-empty{ max-width:1100px; margin:0 auto; font-size:15px; color:var(--ink-soft); }
+#fd-back[hidden]{ display:none; }
+#fd-where{ font-family:var(--mono); font-size:12px; color:var(--ink); }
+#fd-where[hidden]{ display:none; }
+@media (max-width:600px){
+  #fd-table{ padding:10px 8px 8px; align-items:flex-start; justify-content:flex-start; }
+  .fd-grid{ grid-template-columns:40px repeat(7, 74px); width:auto; }
+  .fd-corner span{ font-size:9px; letter-spacing:.06em; }
+  .fd-cell{ min-height:36px; padding:3px 4px; }
+  .fd-line{ font-size:10px; }
+  .fd-cell .fd-sub{ display:none; }
+  .fd-rowhead{ padding-right:6px; font-size:11px; }
+  .fd-legend{ font-size:11.5px; gap:4px; padding-top:6px; flex:1 1 100%; }
+  .fd-cards{ grid-template-columns:repeat(2, 1fr); gap:8px; }
+  #fd-catalog{ padding:12px 10px 24px; }
+}
+@media (prefers-reduced-motion: reduce){ .am-about{ transition:none; } }
+</style></head>
+<body>
+<div class="am-app">
+  <header class="am-bar">
+    <a class="am-home" href="https://affinemess.com/#applets/fixed-distances" target="_top">affine<span class="sep">·</span>mess</a>
+    <button class="am-btn" id="fd-back" hidden>← Table</button>
+    <span id="fd-where" hidden></span>
+    <span class="am-hint" id="fd-hint"><b>n</b> points in the plane with exactly <b>d</b> distinct distances. Click a cell for its catalog.</span>
+    <span class="am-spacer"></span>
+    <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+  </header>
+  <div class="am-stage">
+    <div class="fd-view" id="fd-table"></div>
+    <div class="fd-view" id="fd-catalog" hidden></div>
+    <aside class="am-about" id="am-about" aria-hidden="true">
+      <button class="am-btn am-close">Close</button>
+      <h2>Planar sets with a fixed number of distances</h2>
+      <p>Take <em>n</em> points in the plane and count the distinct distances between them, <em>d</em>. The table shows, for each pair (<em>n</em>, <em>d</em>), how many configurations there are up to similarity. Click a cell to see them.</p>
+      <h3>Reading a cell</h3>
+      <p>Each line of a cell is one dimension of the solution set. <code>0d: 34</code> means 34 rigid configurations; <code>1d: 27</code> means 27 one-parameter families; <code>2d: [3, 20]</code> means between 3 and 20 two-parameter families; <code>≥ 3</code> means no upper bound is known. A <em>family</em> is a realizable pattern of which pairs of points are at equal distance (an edge colouring of K<sub>n</sub> up to symmetry), and its dimension is that of its solution set modulo similarity, measured in the full configuration space. Solid cells are known exactly; dashed cells carry bounds from constructed examples, each verified numerically to be isolated or to lie on a family of the stated dimension; a dimension that is not listed simply has no known example (and is excluded where a cell is marked finite). The ochre cell is the open case, where it is not known whether any configuration exists. Blank cells are impossible.</p>
+      <p>Marks: <em>*</em> the count comes from our own numerical computation and we found nothing published for it; <em>†</em> a published classification exists but the number shown is from our computation and was not checked against the paper; <em>‡</em> the count is certified by exact computation: for every colouring type the polynomial system was solved symbolically, so unrealizable types are proved unrealizable, rigid configurations are isolated as real algebraic numbers, and each positive-dimensional component was decomposed and tested for real points.</p>
+      <h3>Why the dimensions</h3>
+      <p>Modulo similarity, <em>n</em> points have 2<em>n</em> − 4 degrees of freedom and C(<em>n</em>,2) distances. Asking for exactly <em>d</em> values imposes C(<em>n</em>,2) − <em>d</em> coincidences, so one expects a solution set of dimension 2<em>n</em> − 4 − C(<em>n</em>,2) + <em>d</em>. No component can be smaller than that, but symmetric configurations give bigger ones, which is why some cells mix rigid configurations with families (three and four points are the only cases where that never happens).</p>
+      <h3>What is known</h3>
+      <p>The maximum number of points for <em>d</em> distances is g(<em>d</em>) = 3, 5, 7, 9, 12, 13 for <em>d</em> = 1, …, 6 (Erdős–Fishburn 1996 for <em>d</em> ≤ 4, Shinohara 2008 for 5, Wei 2012 for 6), with the extremal configurations classified. For <em>d</em> = 7 a 16-point example is known and nothing larger; the general bound gives at most 36. Two-distance sets were classified by Einhorn and Schoenberg (1966), three-distance sets with at least five points by Shinohara (2004).</p>
+      <p>For the dashed cells the lower bounds come from explicit constructions: subsets of regular polygons, pieces of the triangular lattice, one-point extensions of the smaller complete lists, and a systematic search over configurations with a cyclic or dihedral symmetry (orbit structures with up to five parameters and up to two extra coincidences). Every configuration in a catalog was checked numerically to have exactly the stated number of distances and the stated local dimension. Upper bounds are shown only where a classification or a finiteness argument exists: Lan and Wei (2013) count 42 seven-point four-distance sets; eight-point four-distance sets are finite because they extend a seven-point set with three or four distances by a point with finitely many positions; Wei (2011) classifies eleven-point five-distance sets.</p>
+      <p>The five-point row with four to seven distances is certified (‡). For each colouring type of K₅ the squared-distance equations, with the scale fixed and the inequations “all values distinct and nonzero” imposed through a Rabinowitsch variable, were handed to msolve: an empty Gröbner basis proves the type unrealizable, a zero-dimensional system yields its real solutions with certified isolating intervals, and a positive-dimensional one is decomposed into minimal primes with Singular, each prime checked for degeneracy and probed for real points by random hyperplane slices; real-isolated points of the curves were excluded by checking that every curve is smooth. This corrected the numerical search in both directions: for five points and four distances it had found 468 of the 481 rigid configurations, had reported two rigid types as families, and had called the equally spaced collinear quintuple rigid when it in fact lies on a one-parameter family.</p>
+      <p>The cells for four points, and the counts 34 and 9 for five and six points with three distances, come from a numerical computation made for this applet (October 2026): every colouring of the edges of K<sub>n</sub> with <em>d</em> colours up to symmetry was tested for realizability by random-start least squares, the dimension of the solution set was measured at each solution, and rigid solutions were clustered by congruence. For five points with four distances the run was repeated with a second random seed, and the 34 five-point three-distance sets were also obtained by a second, independent method (extending the four-point families). The fourth nine-point four-distance set, which Erdős and Fishburn count but which we could not find described anywhere accessible, was recovered by a search over mirror-symmetric configurations. These counts are numerical and have not been proved by hand; the lists are exhaustive only up to the reliability of a random search.</p>
+      <h3>Flexing</h3>
+      <p>Tinted cards are families. Hovering (or tapping, on a touch screen) makes the configuration move along its family: at each frame the tangent space of the solution set is computed from the Jacobian of the equal-distance equations, the configuration takes a small step along it and is projected back onto the constraint set by a few Newton iterations, so the equalities hold exactly throughout. One-parameter families glide back and forth along their curve, turning around before two points merge or two distance values coincide, so the motion loops; higher-dimensional families wander within the same bounds. Only one card moves at a time; tapping a moving card restarts it from its resting shape. Where branches of a family cross, the motion may switch branches.</p>
+      <h3>Coordinates</h3>
+      <p>Each catalog entry has a coordinate list in a natural frame: a regular-polygon frame (circumradius 1) or a lattice frame when the configuration has one, otherwise the shortest distance is 1 with the first point at the origin. Exact expressions are given where the frame allows; clicking the list copies the decimal coordinates as JSON.</p>
+      <h3>Sources</h3>
+      <p class="src">S. J. Einhorn, I. J. Schoenberg, Indag. Math. 28 (1966). · P. Erdős, P. Fishburn, Discrete Math. 160 (1996) 115–125. · M. Shinohara, European J. Combin. 25 (2004) 1039–1058; Discrete Math. 308 (2008) 3048–3055. · X. Wei, Ars Combin. 102 (2011); Electron. J. Combin. 19(4) (2012) P38. · W. Lan, X. Wei, Math. Notes (2013). · F. Szöllősi, P. R. J. Östergård, Electron. J. Combin. 27(1) (2020) P1.23. · E. Bannai, E. Bannai, D. Stanton (1983); A. Blokhuis (1984). · L.-R. Bao, W.-H. Yu, arXiv:2509.00880 (2025). · K. Balaji et al., arXiv:1911.11688.</p>
+    </aside>
+  </div>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+</script>
+<script>
+const DATA = __DATA__;
+(function(){
+  const cells=DATA.cells, cats=DATA.cats, meta=DATA.meta;
+  const SUP=['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹'];
+  const sup=k=>String(k).split('').map(c=>SUP[+c]).join('');
+  const tableEl=document.getElementById('fd-table'), catEl=document.getElementById('fd-catalog');
+  const backBtn=document.getElementById('fd-back'), whereEl=document.getElementById('fd-where'), hintEl=document.getElementById('fd-hint');
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function boundText(b){ if(b.hi!=null&&b.hi===b.lo) return String(b.lo); if(b.hi!=null) return `[${b.lo}, ${b.hi}]`; return `≥ ${b.lo}`; }
+  function cellHTML(key,c){
+    const marks=(c.marks||[]).map(m=>`<span class="mk">${m}</span>`).join('');
+    if(c.status==='open') return `<div class="fd-line"><span class="k">0d:</span> <span class="v">0 – ?</span></div><div class="fd-sub">≤ 36 points</div>`;
+    const ks=Object.keys(c.dims).map(Number).sort((a,b)=>a-b);
+    let h=ks.map((k,i)=>`<div class="fd-line"><span class="k">${k}d:</span> <span class="v">${boundText(c.dims[k])}</span>${i===0?marks:''}</div>`).join('');
+    if(c.finite&&c.status==='bounds') h+=`<div class="fd-sub">finite: no families</div>`;
+    return h;
+  }
+  function renderTable(){
+    let h='<div class="fd-grid">';
+    h+='<div class="fd-corner"><span><i>d</i> →</span><span><i>n</i> ↓</span></div>';
+    for(const d of meta.cols) h+=`<div class="fd-colhead">${d}</div>`;
+    for(const row of meta.rows){
+      h+=`<div class="fd-rowhead">${row}</div>`;
+      for(const d of meta.cols){
+        const key=(row==='17–36'?'17-36':row)+','+d; const c=cells[key];
+        if(!c){ h+='<div class="fd-cell st-impossible" title="impossible"></div>'; continue; }
+        const dmax=c.status==='open'?0:Math.max(0,...Object.keys(c.dims).map(Number)); const dcls=dmax>0?' dim-'+Math.min(dmax,4):'';
+        h+=`<div class="fd-cell is-cell st-${c.status}${dcls}" role="button" tabindex="0" data-key="${key}" title="${esc(c.note||'')}">${cellHTML(key,c)}</div>`;
+      }
+    }
+    h+='</div>';
+    h+=`<div class="fd-legend">
+      <span class="k"><span class="sw"></span><span class="t">known exactly. <code>0d: 6</code> = six rigid configurations; <code>2d: 7</code> = seven families with two continuous parameters</span></span>
+      <span class="k"><span class="sw b"></span><span class="t">bounds only: <code>≥ 3</code> from constructed examples, <code>[a, b]</code> when an upper bound is known; dimensions not listed have no known example</span></span>
+      <span class="k"><span class="sw d1"></span><span class="t">tint = highest dimension present: <span class="sw d1" style="width:12px;height:10px"></span> 1 · <span class="sw d2" style="width:12px;height:10px"></span> 2 · <span class="sw d3" style="width:12px;height:10px"></span> 3 · <span class="sw d4" style="width:12px;height:10px"></span> 4; untinted cells are rigid. In a catalog, hover or tap a tinted card to watch the configuration flex</span></span>
+      <span class="k"><span class="sw o"></span><span class="t">existence open: the count may be 0</span></span>
+      <span class="k"><span class="sw i"></span><span class="t">impossible</span></span>
+      <span class="k"><span class="mk">*</span><span class="t">our computation; nothing published found</span></span>
+      <span class="k"><span class="mk">†</span><span class="t">published classification; the count shown is ours</span></span>
+      <span class="k"><span class="mk">‡</span><span class="t">certified by exact computation (msolve / Singular), one polynomial system per colouring type</span></span></div>`;
+    tableEl.innerHTML=h;
+    tableEl.querySelectorAll('.is-cell').forEach(el=>{
+      el.addEventListener('click',()=>open(el.dataset.key));
+      el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(el.dataset.key);} });
+    });
+  }
+  const COL=['var(--series-1)','var(--series-2)','var(--series-3)','var(--series-4)','var(--series-5)','var(--series-6)','var(--series-7)'];
+  function svg(it){
+    const P=it.draw, n=P.length; let s=`<svg viewBox="-0.68 -0.68 1.36 1.36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(it.label)}"><g transform="scale(1,-1)">`;
+    let k=0;
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){ const a=P[i],b=P[j]; s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${COL[it.cls[k]%7]}" stroke-width="${n>9?0.007:0.011}" stroke-linecap="round" stroke-opacity="0.85"/>`; k++; }
+    for(const p of P) s+=`<circle cx="${p[0]}" cy="${p[1]}" r="${n>9?0.02:0.026}" fill="var(--ink)"/>`;
+    // vertex labels, pushed outward from the centroid (hidden while the configuration flexes)
+    const cx=P.reduce((t,p)=>t+p[0],0)/n, cy=P.reduce((t,p)=>t+p[1],0)/n, fs=n>9?0.075:0.095, off=n>9?0.07:0.085;
+    s+='<g class="vlabels">';
+    P.forEach((p,i)=>{ let dx=p[0]-cx, dy=p[1]-cy, L=Math.hypot(dx,dy); if(L<1e-6){dx=0;dy=1;L=1;} const lx=p[0]+off*dx/L, ly=p[1]+off*dy/L;
+      s+=`<text x="${lx}" y="${-ly}" transform="scale(1,-1)" font-size="${fs}" font-family="JetBrains Mono, ui-monospace, monospace" fill="var(--ink-soft)" text-anchor="middle" dominant-baseline="central">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i]}</text>`; });
+    s+='</g>';
+    return s+'</g></svg>';
+  }
+  function coordsHTML(it){
+    const L='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let lines=[`<span class="fr">${esc(it.frame)}</span>`];
+    it.coords.forEach((c,i)=>{
+      if(it.exact && it.exact[i]){ lines.push(esc(`${L[i]}  (${it.exact[i][0]}, ${it.exact[i][1]})`)); const nm=t=>t.replace('−','-'); if(nm(it.exact[i][0])!==nm(c[0])||nm(it.exact[i][1])!==nm(c[1])) lines.push(esc(`   ≈ (${c[0]}, ${c[1]})`)); }
+      else lines.push(esc(`${L[i]}  (${c[0]}, ${c[1]})`));
+    });
+    return lines.join('\n');
+  }
+
+  const HOVER=matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ACTIVE=new Set();
+  function stopAll(){ for(const f of Array.from(ACTIVE)) f.stop(); }
+  // ---- small dense linear algebra ----
+  function symEig(A){ // Jacobi eigenvalue algorithm for symmetric A (array of rows); returns {vals, vecs(columns)}
+    const N=A.length; const V=A.map((_,i)=>A.map((_,j)=>i===j?1:0)); const M=A.map(r=>r.slice());
+    for(let sweep=0;sweep<60;sweep++){
+      let off=0; for(let i=0;i<N;i++) for(let j=i+1;j<N;j++) off+=M[i][j]*M[i][j];
+      if(off<1e-22) break;
+      for(let p=0;p<N;p++) for(let q=p+1;q<N;q++){
+        if(Math.abs(M[p][q])<1e-300) continue;
+        const th=(M[q][q]-M[p][p])/(2*M[p][q]); const t=Math.sign(th||1)/(Math.abs(th)+Math.sqrt(th*th+1)); const c=1/Math.sqrt(t*t+1), s=t*c;
+        for(let k=0;k<N;k++){ const mkp=M[k][p], mkq=M[k][q]; M[k][p]=c*mkp-s*mkq; M[k][q]=s*mkp+c*mkq; }
+        for(let k=0;k<N;k++){ const mpk=M[p][k], mqk=M[q][k]; M[p][k]=c*mpk-s*mqk; M[q][k]=s*mpk+c*mqk; }
+        for(let k=0;k<N;k++){ const vkp=V[k][p], vkq=V[k][q]; V[k][p]=c*vkp-s*vkq; V[k][q]=s*vkp+c*vkq; }
+      }
+    }
+    const vals=M.map((r,i)=>r[i]); const idx=vals.map((v,i)=>i).sort((a,b)=>vals[a]-vals[b]);
+    return {vals:idx.map(i=>vals[i]), vecs:idx.map(i=>V.map(r=>r[i]))};
+  }
+  function solveSym(A,b){ // Gaussian elimination with partial pivoting
+    const N=A.length; const M=A.map((r,i)=>r.concat([b[i]]));
+    for(let c=0;c<N;c++){ let p=c; for(let r=c+1;r<N;r++) if(Math.abs(M[r][c])>Math.abs(M[p][c])) p=r; [M[c],M[p]]=[M[p],M[c]];
+      const piv=M[c][c]||1e-300; for(let r=0;r<N;r++){ if(r===c) continue; const f=M[r][c]/piv; if(!f) continue; for(let k=c;k<=N;k++) M[r][k]-=f*M[c][k]; } }
+    return M.map((r,i)=>r[N]/(r[i]||1e-300));
+  }
+  function makeFlexer(it,svgEl){
+    const n=it.n, d=it.d, cls=it.cls, k=it.dim; const E=[]; for(let i=0;i<n;i++) for(let j=i+1;j<n;j++) E.push([i,j]);
+    const NV=2*n-3, N=NV+d, m=E.length;
+    // initial z from exact-frame coordinates: P0 origin, P1 on x-axis
+    let P0=it.coords.map(c=>[+c[0],+c[1]]);
+    const ang=Math.atan2(P0[1][1]-P0[0][1],P0[1][0]-P0[0][0]), co=Math.cos(-ang), si=Math.sin(-ang);
+    P0=P0.map(p=>{const x=p[0]-P0[0][0], y=p[1]-P0[0][1]; return [x*co-y*si, x*si+y*co];});
+    const unpack=z=>{ const P=[[0,0],[z[0],0]]; for(let i=2;i<n;i++) P.push([z[2*i-3],z[2*i-2]]); return P; };
+    let z=[P0[1][0]]; for(let i=2;i<n;i++) z.push(P0[i][0],P0[i][1]);
+    const vals=new Array(d).fill(0), cnt=new Array(d).fill(0);
+    E.forEach(([i,j],e)=>{ vals[cls[e]]+=Math.hypot(P0[i][0]-P0[j][0],P0[i][1]-P0[j][1]); cnt[cls[e]]++; });
+    for(let c=0;c<d;c++) z.push(vals[c]/cnt[c]);
+    const v0=z[NV];
+    function F(z){ const P=unpack(z); const r=new Array(m+1); E.forEach(([i,j],e)=>{ r[e]=Math.hypot(P[i][0]-P[j][0],P[i][1]-P[j][1])-z[NV+cls[e]]; }); r[m]=z[NV]-v0; return r; }
+    function jac(z){ const f0=F(z), h=1e-7, J=[]; for(let r=0;r<=m;r++) J.push(new Array(N)); for(let c=0;c<N;c++){ const zz=z.slice(); zz[c]+=h; const f=F(zz); for(let r=0;r<=m;r++) J[r][c]=(f[r]-f0[r])/h; } return J; }
+    function project(z){ for(let it_=0;it_<6;it_++){ const f=F(z); let nrm=0; for(const x of f) nrm=Math.max(nrm,Math.abs(x)); if(nrm<1e-10) break; const J=jac(z);
+        const A=[],b=[]; for(let c=0;c<N;c++){ A.push(new Array(N).fill(0)); b.push(0); }
+        for(let r=0;r<=m;r++) for(let c=0;c<N;c++){ const jrc=J[r][c]; if(!jrc) continue; b[c]-=jrc*f[r]; for(let c2=0;c2<N;c2++) A[c][c2]+=jrc*J[r][c2]; }
+        for(let c=0;c<N;c++) A[c][c]+=1e-9;
+        const delta=solveSym(A,b); for(let c=0;c<N;c++) z[c]+=delta[c]; }
+      return z; }
+    function tangent(z){ const J=jac(z); const A=[]; for(let c=0;c<N;c++) A.push(new Array(N).fill(0));
+      for(let r=0;r<=m;r++) for(let c=0;c<N;c++){ const jrc=J[r][c]; if(!jrc) continue; for(let c2=0;c2<N;c2++) A[c][c2]+=jrc*J[r][c2]; }
+      const eg=symEig(A); return eg.vecs.slice(0,k); }
+    const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);
+    let basis=null, dir=null, phase=0, speed=0.012, running=false, raf=0, last=0, prevDrawn=null;
+    project(z);
+    function gaps(z){ const P=unpack(z); let mn=Infinity,mx=0; E.forEach(([i,j])=>{ const dd=Math.hypot(P[i][0]-P[j][0],P[i][1]-P[j][1]); mn=Math.min(mn,dd); mx=Math.max(mx,dd); }); const vs=z.slice(NV); let sep=Infinity; for(let a=0;a<d;a++) for(let b=a+1;b<d;b++) sep=Math.min(sep,Math.abs(vs[a]-vs[b])/mx); return [mn/mx,sep]; }
+    let minRatio=0.1, minSep=0.012;
+    function score(z){ const g=gaps(z); return Math.min(g[0]/minRatio,g[1]/minSep); }
+    function valid(z){ return score(z)>=1; }
+    let z0=null, prepared=false;
+    function prepare(){ // move a poorly placed representative to a comfortable point of its family, then remember it as the origin
+      let sc=score(z), tries=0;
+      while(sc<1.4 && tries<400){ tries++;
+        const U=tangent(z); let best=null, bs=sc;
+        for(const u of U){ for(const sg of [1,-1]){ const zt=z.slice(); for(let c=0;c<N;c++) zt[c]+=sg*0.03*u[c]; project(zt); const st=score(zt); if(st>bs){bs=st;best=zt;} } }
+        if(!best) break; z=best; sc=bs; }
+      if(sc<1.4){ const g=gaps(z); minRatio=Math.min(minRatio,0.6*g[0]); minSep=Math.min(minSep,0.6*g[1]); } // a family confined to a thin region keeps moving inside it
+      z0=z.slice(); prepared=true;
+    }
+    function reset(){ if(z0) z=z0.slice(); basis=null; dir=null; phase=0; speed=0.012; prevDrawn=origDots(); }
+    function step(){
+      let U=tangent(z);
+      if(basis){ // align with previous basis for continuity
+        const U2=[]; for(let i=0;i<k;i++){ let best=null,bd=-1; for(const u of U){ const dd=Math.abs(dot(u,basis[i])); if(dd>bd){bd=dd;best=u;} } U2.push(dot(best,basis[i])<0?best.map(x=>-x):best); U=U.filter(u=>u!==best); } U=U2; }
+      basis=U;
+      let w; if(k===1) w=U[0]; else { phase+=0.015; w=U[0].map((x,i)=>Math.cos(phase)*x+Math.sin(phase)*U[1][i]); }
+      if(dir && dot(w,dir)<0) w=w.map(x=>-x);
+      const z0=z.slice(); for(let c=0;c<N;c++) z[c]+=speed*w[c]; project(z);
+      if(!valid(z)){ for(let c=0;c<N;c++) z[c]=z0[c]; dir=w.map(x=>-x); phase+=Math.PI; return; }
+      dir=w;
+    }
+    const lines=Array.from(svgEl.querySelectorAll('line')), dots=Array.from(svgEl.querySelectorAll('circle'));
+    const orig=lines.map(L=>['x1','y1','x2','y2'].map(a=>L.getAttribute(a))).concat(dots.map(c=>['cx','cy'].map(a=>c.getAttribute(a))));
+    function origDots(){ return orig.slice(lines.length).map(a=>[+a[0],+a[1]]); }
+    function restore(){ lines.forEach((L,i)=>{ ['x1','y1','x2','y2'].forEach((a,j)=>L.setAttribute(a,orig[i][j])); }); dots.forEach((c,i)=>{ ['cx','cy'].forEach((a,j)=>c.setAttribute(a,orig[lines.length+i][j])); }); }
+    function draw(){
+      let P=unpack(z); // align to previous drawn frame (centroid + rotation), then fit the box
+      const cx=P.reduce((s,p)=>s+p[0],0)/n, cy=P.reduce((s,p)=>s+p[1],0)/n; P=P.map(p=>[p[0]-cx,p[1]-cy]);
+      if(prevDrawn){ const qx=prevDrawn.reduce((t,p)=>t+p[0],0)/n, qy=prevDrawn.reduce((t,p)=>t+p[1],0)/n; let a=0,b=0; for(let i=0;i<n;i++){ const px=prevDrawn[i][0]-qx, py=prevDrawn[i][1]-qy; a+=px*P[i][0]+py*P[i][1]; b+=px*P[i][1]-py*P[i][0]; } const t=-Math.atan2(b,a), c=Math.cos(t), s2=Math.sin(t); P=P.map(p=>[p[0]*c-p[1]*s2,p[0]*s2+p[1]*c]); }
+      { const xs=P.map(p=>p[0]), ys=P.map(p=>p[1]); const bx=(Math.max(...xs)+Math.min(...xs))/2, by=(Math.max(...ys)+Math.min(...ys))/2; const ext=Math.max(Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys))||1; P=P.map(p=>[(p[0]-bx)/ext,(p[1]-by)/ext]); }
+      if(prevDrawn){ let mv=0; for(let i=0;i<n;i++) mv=Math.max(mv,Math.hypot(P[i][0]-prevDrawn[i][0],P[i][1]-prevDrawn[i][1])); if(mv>1e-9){ const f=Math.min(1.3,Math.max(0.7,0.0045/mv)); speed=Math.min(0.25,Math.max(0.0005,speed*f)); } }
+      prevDrawn=P;
+      E.forEach(([i,j],e)=>{ const L=lines[e]; L.setAttribute('x1',P[i][0]); L.setAttribute('y1',P[i][1]); L.setAttribute('x2',P[j][0]); L.setAttribute('y2',P[j][1]); });
+      dots.forEach((c,i)=>{ c.setAttribute('cx',P[i][0]); c.setAttribute('cy',P[i][1]); });
+    }
+    function frame(t){ if(!running) return; if(t-last>28){ last=t; step(); draw(); } raf=requestAnimationFrame(frame); }
+    const fl={ running:false,
+      start(){ stopAll(); if(!prepared) prepare(); reset(); fl.running=running=true; ACTIVE.add(fl); svgEl.closest('.fd-card').classList.add('playing'); last=0; raf=requestAnimationFrame(frame); },
+      stop(){ fl.running=running=false; ACTIVE.delete(fl); cancelAnimationFrame(raf); reset(); restore(); const card=svgEl.closest('.fd-card'); if(card) card.classList.remove('playing'); } };
+    return fl;
+  }
+  function setHash(h){ /* best effort: some previewers (sandboxed srcdoc or blob frames, notably on iOS) forbid history edits */
+    try{ history.replaceState(null,'',h||(location.pathname+location.search)); }catch(_){}
+  }
+  function open(key){
+    const c=cells[key], cat=cats[key]; if(!c||!cat) return;
+    const nLabel=c.n, dLabel=c.d;
+    let st= c.status==='open'?'<span class="st open">open</span>': cat.complete?'<span class="st complete">complete list</span>':'<span class="st">known configurations · lower bounds</span>';
+    let h=`<div class="fd-cathead"><h2>${esc(cat.title)}</h2>${st}<p>${esc(c.note||'')} ${esc(cat.note||'')}</p>${cat.sources.length?`<p class="src">${cat.sources.map(esc).join(' · ')}</p>`:''}</div>`;
+    if(!cat.items.length){ h+=`<div class="fd-empty">No configuration is known in this range.</div>`; }
+    else{
+      h+='<div class="fd-cards">';
+      cat.items.forEach((it,i)=>{
+        const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
+        const fx=it.kind==='family'&&it.dim>=1;
+        h+=`<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div><button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
+      });
+      h+='</div>';
+    }
+    catEl.innerHTML=h; catEl.scrollTop=0;
+    stopAll();
+    catEl.querySelectorAll('.fd-card.flex').forEach(card=>{
+      const it=cat.items[+card.dataset.card]; const svgEl=card.querySelector('svg');
+      const fl=makeFlexer(it,svgEl); card._flexer=fl;
+      if(HOVER){ card.addEventListener('pointerenter',()=>fl.start()); card.addEventListener('pointerleave',()=>fl.stop()); }
+      card.addEventListener('click',e=>{ if(e.target.closest('button,pre')) return; if(HOVER) return; fl.start(); });
+    });
+    catEl.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>{
+      const pre=catEl.querySelector(`pre[data-i="${b.dataset.i}"]`); const show=pre.hidden; pre.hidden=!show; b.setAttribute('aria-expanded',show?'true':'false'); b.textContent=show?'Hide coordinates':'Coordinates';
+    }));
+    catEl.querySelectorAll('pre[data-i]').forEach(pre=>pre.addEventListener('click',()=>{
+      const it=cat.items[+pre.dataset.i]; const txt=JSON.stringify(it.coords.map(c=>[+c[0],+c[1]]));
+      const done=()=>{ let ok=pre.querySelector('.ok'); if(!ok){ ok=document.createElement('span'); ok.className='ok'; pre.appendChild(ok);} ok.textContent='copied'; setTimeout(()=>ok.remove(),1400); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{ const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(pre); sel.removeAllRanges(); sel.addRange(rg); }); }
+      else { const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(pre); sel.removeAllRanges(); sel.addRange(rg); }
+    }));
+    tableEl.hidden=true; catEl.hidden=false; backBtn.hidden=false; hintEl.hidden=true;
+    whereEl.hidden=false; whereEl.innerHTML=`n = ${esc(nLabel)}, d = ${dLabel}`;
+    const hk='n'+String(nLabel).replace('–','-')+'d'+dLabel; if(location.hash!=='#'+hk) setHash('#'+hk);
+  }
+  function closeCat(){ catEl.hidden=true; tableEl.hidden=false; backBtn.hidden=true; whereEl.hidden=true; hintEl.hidden=false; if(location.hash&&location.hash!=='#about') setHash(''); }
+  backBtn.addEventListener('click',closeCat);
+  renderTable();
+  function fromHash(){ const m=/^#n([\d-]+)d(\d)$/.exec(location.hash); if(m&&cells[m[1]+','+m[2]]) open(m[1]+','+m[2]); else if(!location.hash||location.hash==='#about') { if(!catEl.hidden) closeCat(); } }
+  addEventListener('hashchange',fromHash); fromHash();
+})();
+</script>
+</body></html>
