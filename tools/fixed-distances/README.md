@@ -44,3 +44,10 @@ inside this folder after copying `data/*` here (or symlink).
 - `hidden.py d` — no hidden rigid configurations for d ≥ 5: equations + all 10×10 Jacobian minors + inequation
   solved with msolve for every type; real rank-deficient points, if any, tested for isolation by sphere tests
   (`data/hidden_{d}.json`).
+
+**msolve input rule.** msolve accepts only expanded polynomials with integer (or standalone rational) coefficients. It
+does not report an error on input such as `(x-1/2)^2` or `3*y/7`: it silently returns "no solutions". Every polynomial
+handed to msolve in these scripts is therefore expanded by sympy and, where rational centres occur (sphere tests),
+denominators are cleared with `Poly.clear_denoms()`. The first version of the sphere test in `hidden.py` violated this
+and reported a non-isolated point as isolated; it was caught by an independent geometric check (the zigzag family of
+type 28 at d = 5) and fixed.
