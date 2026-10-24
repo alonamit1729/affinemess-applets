@@ -17,7 +17,9 @@ inside this folder after copying `data/*` here (or symlink).
   (`repair.py` recomputes dimensions at singular points).
 - `certify54.py`, `isolated54.py` — exact certification of (5,4) with msolve + Singular: `data/cert54.json`,
   `data/cert54_rigid.json` (481 rigid), `data/isolated54.json` (empty: no real-isolated points on the curves).
-- `certify5d.py d` — same pipeline for (5,d), d = 5,6,7 (`data/cert5{d}.json` once complete).
+- `certify5d.py d` — same pipeline for (5,d), d = 5,6,7: `data/cert55.json`, `data/cert56.json`, `data/cert57.json` (complete).
+- `stubborn.py d idx` — fallback for the 21 types whose primary decomposition did not finish: dimension of the saturated
+  ideal, certified real points on random slices, Jacobian rank (`data/stubborn_*.json`).
 - `five.py`, `five_brute.py`, `five_id.py`, `gen5.py` — the 34 five-point and 9 six-point three-distance sets.
 - `symfam.py` — symmetric constructions (cyclic/dihedral orbit structures + extra coincidences): `data/symfam_*.json`.
 - `extend.py`, `examples.py`, `lattice.py` — one-point extensions, regular-polygon subsets, lattice pieces.
