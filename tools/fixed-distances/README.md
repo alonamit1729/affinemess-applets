@@ -51,3 +51,7 @@ handed to msolve in these scripts is therefore expanded by sympy and, where rati
 denominators are cleared with `Poly.clear_denoms()`. The first version of the sphere test in `hidden.py` violated this
 and reported a non-isolated point as isolated; it was caught by an independent geometric check (the zigzag family of
 type 28 at d = 5) and fixed.
+
+**Concurrency rule.** All msolve/Singular scratch files are now process-unique (`tmp/ms_in_<pid>.txt` etc., see
+`certify5d.py`). Earlier runs of the hygiene scripts shared `ms_in5.txt`/`ms_out5.txt`; results produced while two such
+jobs overlapped were discarded and recomputed by `hygiene_run.sh`, which runs everything strictly sequentially.
