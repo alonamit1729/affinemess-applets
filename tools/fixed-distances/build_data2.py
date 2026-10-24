@@ -214,6 +214,9 @@ def main():
                     if sb['dim_saturated']==e and sb['slice_hits']>0 and sb['ranks'] and all(rk==7+d-1-e for rk,_ in sb['ranks']) : stub[r['idx']]=sb
         certified=len(cert)==NCLS[d] and all((not r.get('unresolved')) or r['idx'] in stub for r in cert)
         N={tuple(r['col']):r for r in json.load(open(f'strata_5_{d}_1.json'))['realizable']}
+        if d==4:   # exact similarity classes of the rigid roots (dedup54.py: group orbits with interval arithmetic)
+            EXACT={x['idx']:x['rigid'] for x in json.load(open('cert54_rigid_exact.json'))}
+            for r in cert: r['rigid']=EXACT.get(r['idx'],[])
         if not certified:
             numeric_cell(d,N); continue
         ncls=len(cert)
@@ -249,7 +252,7 @@ def main():
               f'(msolve for zero-dimensional systems with certified real-root isolation; Singular minimal primes for positive-dimensional ones, each component tested for real points). '
               f'{nreal} types are realizable. Every component has dimension ≥ {e}' + (', so there are no rigid configurations' if e>=1 else '') + '.')
         if stub: note+=f' For {len(stub)} type{"s" if len(stub)>1 else ""} the primary decomposition did not finish; there the certificate is weaker: the saturated ideal (inequations enforced) has dimension exactly {e}, so every component has dimension {e}, real points were certified by random slices, and the Jacobian has full rank at them numerically (a smooth point of an {e}-dimensional component).'
-        if d==4: note+=' The earlier random search had found 468 of the 481 rigid configurations and had misclassified two rigid types as families; the equally spaced collinear quintuple, which the search reported as rigid, in fact lies on a one-parameter family (the lattice piece 0, −u, v, u+v, −u−v with the angle between u and v free).'
+        if d==4: note+=' Rigid configurations are counted up to similarity: the real roots of each type were grouped into orbits of the colour-permuting automorphisms of the colouring (with rescaling) by interval arithmetic on the certified isolating boxes, and the real-root counts were confirmed by Sturm sequences on msolve’s rational parametrizations. (A first version of this cell reported 481: its dedup compared distances without rescaling and counted thirteen configurations twice.) The earlier random search had the right total but had misclassified two rigid types as families, and had called the equally spaced collinear quintuple rigid when it in fact lies on a one-parameter family (the lattice piece 0, −u, v, u+v, −u−v with the angle between u and v free).'
         cell(5,d,dims,'exact',marks='‡',note=note)
         cat(5,d,items,True,f'Five points, {d} distances',listing_note(len(rig),sum(fams.values()),True)+' Types are described by the sizes of the distance classes.',sources=('cert',))
     # ---------- (6,3), (7,3) ----------
