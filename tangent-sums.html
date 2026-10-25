@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Partial sums of tan n · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px; }
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px; }
+.am-about h3 { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin:22px 0 8px; }
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+
+/* ---- this applet ---- */
+:root { --curve:#35598F; }
+.am-about { width:min(560px, 100%); }
+.am-about .jump { font-family:var(--mono); font-size:13px; color:var(--accent-deep); cursor:pointer; text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:3px; white-space:nowrap; }
+.am-about .jump:hover { color:var(--accent); text-decoration-color:var(--accent); }
+.am-about .m { font-style:italic; white-space:nowrap; }
+.am-about sup, .am-about sub { font-size:.72em; line-height:0; }
+.am-about table { border-collapse:collapse; font-family:var(--mono); font-size:12.5px; margin:4px 0 14px; width:100%; }
+.am-about td, .am-about th { padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:right; }
+.am-about th { font-weight:400; color:var(--ink-faint); font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
+.am-about td:first-child, .am-about th:first-child { text-align:left; }
+
+.formula { font-size:15px; color:var(--ink-soft); white-space:nowrap; }
+.formula b { font-weight:500; font-style:italic; color:var(--ink); }
+.formula i { color:var(--ink); }
+.rng { display:inline-flex; align-items:center; gap:6px; }
+.rng .am-input { width:138px; text-align:right; }
+.rng .am-input.bad { border-color:var(--accent); color:var(--accent-deep); background:var(--paper-hover); }
+.rng .dash { font-family:var(--mono); color:var(--ink-faint); }
+select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:pointer; }
+.yctl { display:inline-flex; align-items:center; gap:7px; }
+
+#plot { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+#plot.grabbing { cursor:grabbing; }
+#plot.boxing { cursor:col-resize; }
+#prog { position:absolute; left:0; top:0; height:2px; background:var(--accent); width:0; transition:width .25s, opacity .6s; z-index:5; pointer-events:none; }
+.overlay { position:absolute; z-index:4; pointer-events:none; font-family:var(--mono); font-size:11.5px; color:var(--ink-soft);
+  background:rgba(251,246,232,.9); border:1px solid var(--line-soft); border-radius:3px; padding:4px 8px; white-space:nowrap; }
+.overlay .k { color:var(--ink-faint); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; margin-right:5px; }
+.overlay .v { color:var(--ink); margin-right:12px; }
+.overlay .v:last-child { margin-right:0; }
+#readout { display:none; }
+#status { right:16px; display:none; }
+#readout { white-space:normal; }
+.overlay .k, .overlay .v { white-space:nowrap; display:inline-block; }
+#status .v { color:var(--accent-deep); }
+@media (max-width:600px) {
+  .formula { display:none; }
+  .rng .am-input { width:120px; font-size:12px; padding:7px 6px; }
+  select.am-input { max-width:138px; }
+  .overlay { font-size:10.5px; }
+}
+</style></head>
+<body>
+<div class="am-app">
+  <header class="am-bar">
+    <a class="am-home" href="https://affinemess.com/#applets/tangent-sums" target="_top">affine<span class="sep">·</span>mess</a>
+    <span class="formula"><b>f</b>(<i>N</i>) = Σ<sub style="font-size:.7em"><i>k</i>≤<i>N</i></sub> tan <i>k</i></span>
+    <span class="rng">
+      <span class="am-label">N</span>
+      <input class="am-input" id="inA" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Range start A">
+      <span class="dash">–</span>
+      <input class="am-input" id="inB" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Range end B">
+      <button class="am-btn" id="go">Go</button>
+    </span>
+    <span class="am-seg" role="group" aria-label="Zoom">
+      <button class="am-btn" id="zin" title="Zoom in (+)">In</button>
+      <button class="am-btn" id="zout" title="Zoom out (−)">Out</button>
+      <button class="am-btn" id="full" title="Show 1 to 10^8">All</button>
+    </span>
+    <button class="am-btn" id="ext" title="Compute f up to 10^9 (about 60 MB of memory, tens of seconds)">Extend to 10⁹</button>
+    <select class="am-input" id="jump" aria-label="Jump to a landmark">
+      <option value="">Jump to…</option>
+    </select>
+    <span class="yctl">
+      <span class="am-label">Y</span>
+      <span class="am-seg" role="group" aria-label="Vertical scale">
+        <button class="am-btn" id="yfull" aria-pressed="true" title="Fit every value in view">Fit all</button>
+        <button class="am-btn" id="ytrim" aria-pressed="false" title="Ignore the top and bottom 1% of columns">Trim</button>
+      </span>
+    </span>
+    <span class="am-spacer"></span>
+    <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+  </header>
+  <div class="am-stage" id="stage">
+    <canvas id="plot" tabindex="0" aria-label="Graph of the partial sums of tan k"></canvas>
+    <div id="prog"></div>
+    <div class="overlay" id="readout"></div>
+    <div class="overlay" id="status"></div>
+    <aside class="am-about" id="am-about" aria-hidden="true">
+      <button class="am-btn am-close">Close</button>
+      <h2>The partial sums of tan&nbsp;<i>n</i></h2>
+      <p>The graph of <span class="m">f(N) = tan 1 + tan 2 + ⋯ + tan N</span> for 1&nbsp;≤&nbsp;N&nbsp;≤&nbsp;10<sup>8</sup>, or up to 10<sup>9</sup> after <em>Extend to 10<sup>9</sup></em> (asking for any range past 10<sup>8</sup> extends automatically). Drag to pan; scroll or pinch to zoom; double-click to zoom in (shift-double-click to zoom out); shift-drag across a stretch of N to zoom into it. You can also type the range: entries like <code>1e6</code>, <code>10^7</code> or <code>2,500,000</code> work. The vertical scale always refits to what is on screen.</p>
+
+      <h3>Why it looks self-similar</h3>
+      <p>Since π is irrational, <span class="m">n mod π</span> is equidistributed, so the values tan&nbsp;<i>n</i> are distributed like the tangent of a uniformly random angle: a standard <em>Cauchy</em> distribution. A sum of <i>N</i> independent Cauchy variables is again Cauchy, scaled by <i>N</i>: no averaging out, no √<i>N</i>. So, heuristically, <i>f</i> behaves like a Cauchy process, which is self-similar with exponent 1. Stretch the horizontal axis by λ and the typical vertical size grows by λ as well, which is why an auto-scaled window looks alike at every scale. It is only a heuristic: the terms are deterministic and highly correlated, and the correlations are exactly what makes the picture interesting.</p>
+
+      <h3>Where the cliffs come from</h3>
+      <p>|tan&nbsp;<i>n</i>| is large when <i>n</i> is close to an odd multiple of π/2, that is, when <span class="m">2n/(2m+1)</span> is an unusually good approximation of π. The record values of |tan&nbsp;<i>n</i>| line up with convergents and semiconvergents of π that have odd denominators:</p>
+      <table>
+        <tr><th>n</th><th>tan n</th><th>2n / (2m+1)</th></tr>
+        <tr><td><span class="jump" data-a="1" data-b="40">11</span></td><td>−225.95</td><td>22 / 7</td></tr>
+        <tr><td><span class="jump" data-a="52100" data-b="52250">52,174</span></td><td>−181,570</td><td>104,348 / 33,215</td></tr>
+        <tr><td><span class="jump" data-a="260440" data-b="260590">260,515</span></td><td>383,611</td><td>521,030 / 165,849</td></tr>
+        <tr><td><span class="jump" data-a="573130" data-b="573280">573,204</span></td><td>−3,402,634</td><td>1,146,408 / 364,913</td></tr>
+        <tr><td><span class="jump" data-a="42781530" data-b="42781680">42,781,604</span></td><td>−85,369,290</td><td>85,563,208 / 27,235,615</td></tr>
+        <tr><td><span class="jump" data-a="122925390" data-b="122925540">122,925,461</span></td><td>326,900,724</td><td>245,850,922 / 78,256,779</td></tr>
+        <tr><td><span class="jump" data-a="534483375" data-b="534483525">534,483,448</span></td><td>1,914,547,469</td><td>1,068,966,896 / 340,262,731</td></tr>
+      </table>
+      <p>The last two lie beyond 10<sup>8</sup>; clicking them extends the range.</p>
+
+      <h3>Staircases</h3>
+      <p>Because 355 ≈ 113π (off by 3.0·10<sup>−5</sup>), tan(<i>n</i>+355) is almost tan&nbsp;<i>n</i>, with the angle nudged slightly toward the pole. Starting from <i>n</i> = 344 the terms at 344, 699, 1054, … all sit just below a pole, with values 227.5, 229.1, 230.7, … creeping upward, and the partial sums climb a long staircase. After 146 steps, at <i>n</i> = 52,174, the angle crosses the pole, tan flips to −181,570, and the whole climb is undone in a single term. <span class="jump" data-a="1" data-b="60000">See it on [1, 60,000]</span>.</p>
+      <p>The same thing happens one level up with 5,419,351 ≈ 1,725,033π: large positive terms at 4,846,147, 10,265,498, …, 37,362,253 build the climb across the full range, and the term at 42,781,604 brings it down. <span class="jump" data-a="1" data-b="100000000">See [1, 10<sup>8</sup>]</span>. Zoom far in anywhere and the near-periods 22 ≈ 7π and 355 ≈ 113π show up as approximate repetitions: <span class="jump" data-a="1" data-b="400">[1, 400]</span>.</p>
+      <h3>Beyond 10<sup>8</sup></h3>
+      <p>Between 10<sup>8</sup> and 10<sup>9</sup> the picture is dominated by two convergents of π, and this time both terms are positive: tan&nbsp;122,925,461 ≈ 3.27·10<sup>8</sup> and tan&nbsp;534,483,448 ≈ 1.91·10<sup>9</sup>, a single term more than three times its own index. They lift the curve to <span class="m">f(10<sup>9</sup>) ≈ 1.626·10<sup>9</sup></span>. <span class="jump" data-a="1" data-b="1000000000">See [1, 10<sup>9</sup>]</span>.</p>
+
+      <h3>How big can tan n be?</h3>
+      <p>If |<i>n</i> − (2<i>m</i>+1)π/2| = δ then |tan&nbsp;<i>n</i>| ≈ 1/δ, so the question is how well π can be approximated by rationals. With the irrationality measure bound μ(π) ≤ 7.103 (Zeilberger and Zudilin, 2020), one gets |tan&nbsp;<i>n</i>| &lt; <i>n</i><sup>6.11</sup> for all large <i>n</i>. If, as expected, μ(π) = 2, then |tan&nbsp;<i>n</i>| = <i>O</i>(<i>n</i><sup>1+ε</sup>), consistent with the table above.</p>
+
+      <h3>How it is computed</h3>
+      <p>Every term is computed once, in background threads, using compensated (Neumaier) summation in double precision; JavaScript's <code>Math.tan</code> reduces integer arguments modulo π accurately. The applet stores <i>f</i> at every 256th <i>N</i>, plus the minimum and maximum of <i>f</i> within each block of 256: about 6&nbsp;MB for 10<sup>8</sup> and 60&nbsp;MB for 10<sup>9</sup>. Windows up to 400,000 wide are recomputed term by term from the nearest checkpoint, so every plotted point is exact; wider windows are drawn from the block extremes, which still show every spike. An independent extended-precision computation agrees to about 15 significant digits; for instance <span class="m">f(10<sup>8</sup>) = −55,500,322.5230…</span> On a typical laptop 10<sup>8</sup> takes a few seconds and 10<sup>9</sup> roughly ten times as long; anything already computed can be explored right away.</p>
+      <p>Hover (or tap) to read off <i>N</i> and <i>f</i>(<i>N</i>). Keys: ← → pan, + − zoom. The URL keeps the current range, so a view can be shared.</p>
+    </aside>
+  </div>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+</script>
+<script>
+(function () {
+'use strict';
+
+/* ------------------------------------------------------------------ data */
+var N_DEFAULT = 1e8, N_EXT = 1e9;
+var NMAX = N_DEFAULT;        // current upper limit (10^8, or 10^9 once extended)
+var BS = 256;                // block size
+var NB = NMAX / BS;          // number of blocks (exact)
+var SEG = 800000;            // indices per work unit; divides 10^8 and is a multiple of BS
+var NSEG = NMAX / SEG;
+var DIRECT_MAX = 400000;     // windows at most this wide are computed term by term
+var MINW = 8;                // narrowest window
+var extended = false;
+
+// bStart[j] = f(BS j) (double); bMinR/bMaxR[j] = min/max over the block of f(N) - bStart[j] (float32)
+var bStart = new Float64Array(NB + 1);
+var bMinR = new Float32Array(NB);
+var bMaxR = new Float32Array(NB);
+var readyBlocks = 0;         // blocks 0..readyBlocks-1 are known
+var frontierN = 0;           // f(N) known for N <= frontierN
+
+// One work unit: N in (n0, n1], both multiples of 256. Values relative to f(n0).
+// Shared verbatim between the workers and the main-thread fallback.
+function computeSeg(n0, n1) {
+  var nb = ((n1 - n0) / 256) | 0;
+  var st = new Float64Array(nb), mn = new Float32Array(nb), mx = new Float32Array(nb);
+  var s = 0, c = 0, k = n0;
+  for (var j = 0; j < nb; j++) {
+    st[j] = s + c;
+    var loc = 0, lo = Infinity, hi = -Infinity;
+    for (var i = 0; i < 256; i++) {
+      k++;
+      var t = Math.tan(k);
+      var u = s + t;                                    // Neumaier summation
+      if ((s < 0 ? -s : s) >= (t < 0 ? -t : t)) c += (s - u) + t; else c += (t - u) + s;
+      s = u;
+      loc += t;                                         // within-block, same order as evalS
+      if (loc < lo) lo = loc;
+      if (loc > hi) hi = loc;
+    }
+    mn[j] = lo; mx[j] = hi;
+  }
+  return { st: st, mn: mn, mx: mx, total: s + c };
+}
+
+var pending = new Map(), nextSeg = 0, segOff = 0, nextAssign = 0, workers = [], idle = [], doneAll = false;
+function segRange(i) { return [i * SEG, (i + 1) * SEG]; }
+
+function onSeg(m) {
+  pending.set(m.seg, m);
+  while (pending.has(nextSeg)) {
+    var r = pending.get(nextSeg); pending.delete(nextSeg);
+    var g = (nextSeg * SEG) / BS, nb = r.st.length;
+    for (var j = 0; j < nb; j++) bStart[g + j] = segOff + r.st[j];
+    bMinR.set(r.mn, g); bMaxR.set(r.mx, g);
+    segOff += r.total;
+    bStart[g + nb] = segOff;
+    readyBlocks = g + nb;
+    nextSeg++;
+  }
+  frontierN = readyBlocks * BS;
+  doneAll = nextSeg >= NSEG;
+  if (doneAll && extended) { workers.forEach(function (w) { w.terminate(); }); workers = []; idle = []; }
+  updateProgress();
+  if (frontierN > view.a - 1) schedule();
+}
+
+function startCompute() {
+  var nW = Math.max(1, Math.min(6, (navigator.hardwareConcurrency || 4) - 1));
+  var src = computeSeg.toString() +
+    '\nself.onmessage=function(e){var d=e.data;var r=computeSeg(d.n0,d.n1);' +
+    'self.postMessage({seg:d.seg,st:r.st,mn:r.mn,mx:r.mx,total:r.total},[r.st.buffer,r.mn.buffer,r.mx.buffer]);};';
+  try {
+    var url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+    for (var i = 0; i < nW; i++) {
+      var w = new Worker(url);
+      w.onmessage = (function (w) { return function (e) { onSeg(e.data); feed(w); }; })(w);
+      w.onerror = function (e) { if (e && e.preventDefault) e.preventDefault(); toFallback(); };
+      workers.push(w);
+      feed(w);
+    }
+  } catch (e) { toFallback(); }
+}
+function feed(w) {
+  if (fellBack) return;
+  if (nextAssign >= NSEG) { idle.push(w); return; }
+  var i = nextAssign++, r = segRange(i);
+  w.postMessage({ seg: i, n0: r[0], n1: r[1] });
+}
+var fellBack = false, fbRunning = false;
+function toFallback() {
+  if (!fellBack) {
+    fellBack = true;
+    workers.forEach(function (w) { try { w.terminate(); } catch (_) {} });
+    workers = []; idle = [];
+  }
+  if (fbRunning) return;
+  fbRunning = true;
+  var i = nextSeg;
+  (function step() {
+    while (i < NSEG && pending.has(i)) i++;
+    if (i >= NSEG) { fbRunning = false; return; }
+    var r = segRange(i), res = computeSeg(r[0], r[1]);
+    res.seg = i; i++;
+    onSeg(res);
+    setTimeout(step, 4);
+  })();
+}
+
+function grow(arr, n) { var b = new arr.constructor(n); b.set(arr.subarray(0, Math.min(arr.length, n))); return b; }
+function extend() {
+  if (extended) return;
+  extended = true;
+  NMAX = N_EXT; NB = NMAX / BS; NSEG = NMAX / SEG;
+  bStart = grow(bStart, NB + 1); bMinR = grow(bMinR, NB); bMaxR = grow(bMaxR, NB);
+  doneAll = false;
+  extBtn.style.display = 'none';
+  fullBtn.title = 'Show 1 to 10^9';
+  prog.style.opacity = '1';
+  if (fellBack) toFallback();
+  else { var w = idle.splice(0); w.forEach(feed); }
+  refreshJump();
+  updateProgress(); schedule();
+}
+
+// f(N) for every N in [lo, hi], kept around so that panning a narrow window stays cheap
+var dc = { lo: 1, hi: 0, v: new Float64Array(0) };
+function direct(nLo, nHi) {             // requires nHi <= frontierN
+  if (dc.lo <= nLo && dc.hi >= nHi) return dc;
+  var half = Math.floor((nHi - nLo + 1) / 2);
+  var j0 = Math.floor((Math.max(1, nLo - half) - 1) / BS);
+  var lo = j0 * BS + 1, hi = Math.min(frontierN, nHi + half);
+  var len = hi - lo + 1;
+  if (dc.v.length < len) dc.v = new Float64Array(Math.max(len, 2 * DIRECT_MAX + 4 * BS));
+  var v = dc.v;
+  outer: for (var j = j0; ; j++) {
+    var base = bStart[j], loc = 0, k0 = j * BS;
+    for (var i = 1; i <= BS; i++) {
+      var k = k0 + i;
+      if (k > hi) break outer;
+      loc += Math.tan(k);
+      v[k - lo] = base + loc;
+    }
+  }
+  dc.lo = lo; dc.hi = hi;
+  return dc;
+}
+
+// f(N) exactly as drawn: checkpoint + in-block sum
+function evalS(N) {
+  if (N >= dc.lo && N <= dc.hi) return dc.v[N - dc.lo];
+  var j = Math.floor((N - 1) / BS), loc = 0;
+  for (var k = j * BS + 1; k <= N; k++) loc += Math.tan(k);
+  return bStart[j] + loc;
+}
+
+/* ------------------------------------------------------------------ view */
+var view = { a: 1, b: 100000 };
+var yMode = 'full';
+var cv = document.getElementById('plot'), ctx = cv.getContext('2d');
+var stage = document.getElementById('stage');
+var inA = document.getElementById('inA'), inB = document.getElementById('inB');
+var readout = document.getElementById('readout'), statusEl = document.getElementById('status'), prog = document.getElementById('prog');
+var css = getComputedStyle(document.documentElement);
+function cssv(n) { return css.getPropertyValue(n).trim(); }
+var C = {
+  paper: cssv('--paper'), card: cssv('--paper-card'), ink: cssv('--ink'), soft: cssv('--ink-soft'),
+  faint: cssv('--ink-faint'), accent: cssv('--accent'), line: cssv('--line'), lineSoft: cssv('--line-soft'),
+  grid: cssv('--grid'), curve: cssv('--curve') || '#35598F'
+};
+var MONO = "'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+
+var M = { l: 70, r: 14, t: 12, b: 28 };   // margins in CSS px (left is adaptive)
+var PAD = 6;                                // inner horizontal padding, CSS px
+var hover = null;                           // {x} in CSS px, or null
+var box = null;                             // {x0,x1} while shift-dragging
+
+function plotRect() {
+  var W = cv.clientWidth, H = cv.clientHeight;
+  return { x: M.l, y: M.t, w: Math.max(10, W - M.l - M.r), h: Math.max(10, H - M.t - M.b), W: W, H: H };
+}
+function xToN(x) { var p = plotRect(); return view.a + (x - p.x - PAD) / (p.w - 2 * PAD) * (view.b - view.a); }
+
+function setView(a, b, opts) {
+  var R = b - a;
+  if (!(R > 0)) R = MINW;
+  R = Math.min(NMAX - 1, Math.max(MINW, R));
+  var c = (a + b) / 2;
+  if (opts && opts.keepA) c = a + R / 2;
+  a = c - R / 2; b = c + R / 2;
+  if (a < 1) { a = 1; b = 1 + R; }
+  if (b > NMAX) { b = NMAX; a = NMAX - R; }
+  view.a = a; view.b = b;
+  syncInputs(); syncURL(); schedule();
+}
+function setViewExact(a, b) {          // used when the user types or picks a range
+  if (b > NMAX && !extended && b <= N_EXT) extend();
+  a = Math.max(1, Math.min(NMAX, a)); b = Math.max(1, Math.min(NMAX, b));
+  if (b - a < MINW) { var c = (a + b) / 2; a = c - MINW / 2; b = c + MINW / 2; }
+  setView(a, b);
+}
+function zoomAt(N, f) {
+  var R = view.b - view.a;
+  var R2 = Math.min(NMAX - 1, Math.max(MINW, R * f)), g = R2 / R;
+  var a = N - (N - view.a) * g, b = a + R2;
+  if (a < 1) { b += 1 - a; a = 1; }
+  if (b > NMAX) { a -= b - NMAX; b = NMAX; }
+  setView(a, b);
+}
+
+/* ------------------------------------------------------------------ format */
+function fmt(v, dec) {
+  var s = Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  return (v < 0 && /[1-9]/.test(s) ? '−' : '') + s;
+}
+function niceStep(raw) {
+  var mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+  return (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * mag;
+}
+function niceStepUp(raw) {
+  var mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+}
+function decFor(step) { return Math.max(0, -Math.floor(Math.log10(step) + 1e-9)); }
+function ticks(lo, hi, step) {
+  var out = [], c = Math.ceil(lo / step - 1e-9);
+  for (var i = 0; i < 200; i++) { var t = (c + i) * step; if (t > hi + step * 1e-9) break; out.push(t); }
+  return out;
+}
+function parseN(s) {
+  s = String(s).trim().replace(/[,_\s ]/g, '').replace(/[×x·]/g, '*');
+  var m = s.match(/^(\d+(?:\.\d+)?)?\*?10(?:\^|\*\*)(\d+)$/);
+  if (m) return (m[1] ? +m[1] : 1) * Math.pow(10, +m[2]);
+  if (s === '') return NaN;
+  var v = Number(s);
+  return isFinite(v) ? v : NaN;
+}
+
+/* ------------------------------------------------------------------ drawing */
+var bins = null, nbins = 0;
+function ensureBins(n) {
+  if (!bins || bins.cap < n) bins = { cap: n, mn: new Float64Array(n), mx: new Float64Array(n), fi: new Float64Array(n), la: new Float64Array(n), has: new Uint8Array(n) };
+  nbins = n; bins.has.fill(0, 0, n);
+}
+var pts = { n: new Float64Array(0), v: new Float64Array(0), len: 0 };
+
+var raf = 0;
+function schedule() { if (!raf) raf = requestAnimationFrame(function () { raf = 0; draw(); }); }
+
+var binW = 1;                 // width of a bin in device pixels
+function collect(p, dpr) {
+  // returns {mode, lo, hi}
+  var a = view.a, b = view.b, R = b - a;
+  var nLo = Math.max(1, Math.floor(a)), nHi = Math.min(NMAX, Math.ceil(b));
+  var avail = Math.min(nHi, frontierN);
+  var innerW = (p.w - 2 * PAD) * dpr;
+  var nb = Math.max(1, Math.round(innerW));
+  var count = nHi - nLo + 1;
+  var res = { mode: 'none', lo: Infinity, hi: -Infinity, avail: avail };
+  if (avail < nLo) return res;
+
+  if (count <= DIRECT_MAX) {
+    var D = direct(nLo, avail), V = D.v, off = D.lo;
+    if (count <= (p.w - 2 * PAD) / 5) {
+      // sparse: individual points
+      var len = avail - nLo + 1;
+      if (pts.n.length < len) { pts.n = new Float64Array(len); pts.v = new Float64Array(len); }
+      pts.len = len;
+      var vals = [];
+      for (var q = 0; q < len; q++) {
+        var k = nLo + q, v = V[k - off];
+        pts.n[q] = k; pts.v[q] = v;
+        if (k >= a - 1e-9 && k <= b + 1e-9) { if (v < res.lo) res.lo = v; if (v > res.hi) res.hi = v; vals.push(v); }
+      }
+      res.mode = 'points';
+      if (yMode === 'trim' && vals.length > 20) { vals.sort(function (x, y) { return x - y; }); res.lo = vals[Math.floor(vals.length * 0.01)]; res.hi = vals[Math.ceil(vals.length * 0.99) - 1]; }
+      return res;
+    }
+    // dense but exact: bin every N
+    ensureBins(nb); binW = innerW / nb;
+    var B = bins, sc = nb / R;
+    for (var kd = nLo; kd <= avail; kd++) {
+      var vd = V[kd - off];
+      var bi = Math.floor((kd - a) * sc);
+      if (bi < 0) bi = 0; else if (bi >= nb) bi = nb - 1;
+      if (!B.has[bi]) { B.has[bi] = 1; B.mn[bi] = B.mx[bi] = B.fi[bi] = vd; }
+      else { if (vd < B.mn[bi]) B.mn[bi] = vd; if (vd > B.mx[bi]) B.mx[bi] = vd; }
+      B.la[bi] = vd;
+    }
+    res.mode = 'exact';
+  } else {
+    // wide: block envelopes, each block assigned to the column holding its midpoint;
+    // columns are at least two blocks wide
+    nb = Math.max(1, Math.min(nb, Math.floor(R / (2 * BS))));
+    ensureBins(nb); binW = innerW / nb;
+    var Bb = bins, scb = nb / R, mid = BS / 2 + 0.5;
+    var jb0 = Math.max(0, Math.floor((nLo - 1) / BS)), jb1 = Math.min(readyBlocks - 1, Math.floor((nHi - 1) / BS));
+    for (var jb = jb0; jb <= jb1; jb++) {
+      var bib = Math.floor((jb * BS + mid - a) * scb);
+      if (bib < 0) bib = 0; else if (bib >= nb) bib = nb - 1;
+      var s0 = bStart[jb], lo = s0 + bMinR[jb], hi = s0 + bMaxR[jb];
+      if (!Bb.has[bib]) { Bb.has[bib] = 1; Bb.mn[bib] = lo; Bb.mx[bib] = hi; Bb.fi[bib] = s0; }
+      else { if (lo < Bb.mn[bib]) Bb.mn[bib] = lo; if (hi > Bb.mx[bib]) Bb.mx[bib] = hi; }
+      Bb.la[bib] = bStart[jb + 1];
+    }
+    res.mode = 'blocks';
+  }
+  // y-range from bins
+  var Bx = bins, mins = yMode === 'trim' ? [] : null, maxs = yMode === 'trim' ? [] : null;
+  for (var t = 0; t < nbins; t++) if (Bx.has[t]) {
+    if (Bx.mn[t] < res.lo) res.lo = Bx.mn[t];
+    if (Bx.mx[t] > res.hi) res.hi = Bx.mx[t];
+    if (mins) { mins.push(Bx.mn[t]); maxs.push(Bx.mx[t]); }
+  }
+  if (mins && mins.length > 20) {
+    mins.sort(function (x, y) { return x - y; }); maxs.sort(function (x, y) { return x - y; });
+    res.lo = mins[Math.floor(mins.length * 0.01)];
+    res.hi = maxs[Math.ceil(maxs.length * 0.99) - 1];
+  }
+  return res;
+}
+
+function draw() {
+  var dpr = Math.min(2.5, window.devicePixelRatio || 1);
+  var W = cv.clientWidth, H = cv.clientHeight;
+  if (W < 2 || H < 2) return;
+  var Wd = Math.round(W * dpr), Hd = Math.round(H * dpr);
+  if (cv.width !== Wd || cv.height !== Hd) { cv.width = Wd; cv.height = Hd; }
+  var p = plotRect();
+  var res = collect(p, dpr);
+
+  // y range
+  var lo = res.lo, hi = res.hi;
+  if (!(hi >= lo)) { lo = -1; hi = 1; }
+  var span = hi - lo;
+  if (span < 1e-9 * Math.max(1, Math.abs(hi))) { span = Math.max(1e-6, Math.abs(hi) * 1e-6); lo -= span / 2; hi += span / 2; }
+  var pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+
+  // y ticks and adaptive left margin
+  var fontPx = 11;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.font = fontPx + 'px ' + MONO;
+  var ys = niceStep((hi - lo) / Math.max(2, Math.floor(p.h / 46)));
+  var yt = ticks(lo, hi, ys), yd = decFor(ys);
+  var yl = yt.map(function (t) { return fmt(t, yd); });
+  var maxw = 0; yl.forEach(function (s) { maxw = Math.max(maxw, ctx.measureText(s).width); });
+  var want = Math.ceil(maxw) + 16;
+  if (Math.abs(want - M.l) > 1) { M.l = Math.max(40, want); p = plotRect(); res = collect(p, dpr); }
+
+  var X0 = p.x + PAD, XW = p.w - 2 * PAD;
+  function X(n) { return X0 + (n - view.a) / (view.b - view.a) * XW; }
+  function Y(v) { return p.y + (hi - v) / (hi - lo) * p.h; }
+
+  // background
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = C.card; ctx.fillRect(p.x, p.y, p.w, p.h);
+
+  // x ticks
+  var R = view.b - view.a;
+  var sampleLbl = fmt(Math.round(view.b), 0);
+  var lw = ctx.measureText(sampleLbl).width + 28;
+  var xs = Math.max(1, niceStepUp(R / Math.max(1, Math.floor(XW / lw))));
+  if (xs < 1) xs = 1;
+  var xt = ticks(view.a, view.b, xs);
+
+  // grid
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = C.lineSoft;
+  ctx.beginPath();
+  yt.forEach(function (t) { var y = Math.round(Y(t)) + 0.5; ctx.moveTo(p.x, y); ctx.lineTo(p.x + p.w, y); });
+  xt.forEach(function (t) { var x = Math.round(X(t)) + 0.5; ctx.moveTo(x, p.y); ctx.lineTo(x, p.y + p.h); });
+  ctx.stroke();
+  if (lo < 0 && hi > 0) {
+    ctx.strokeStyle = C.line; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); var y0 = Math.round(Y(0)) + 0.5; ctx.moveTo(p.x, y0); ctx.lineTo(p.x + p.w, y0); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // labels
+  ctx.fillStyle = C.faint;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  if (res.mode !== 'none') yt.forEach(function (t, i) { var y = Y(t); if (y > p.y + 4 && y < p.y + p.h - 4) ctx.fillText(yl[i], p.x - 8, y); });
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  var xd = decFor(xs);
+  xt.forEach(function (t) {
+    var x = X(t); if (x < p.x || x > p.x + p.w) return;
+    var s = fmt(t, xd), hw = ctx.measureText(s).width / 2;
+    ctx.fillText(s, Math.max(hw + 2, Math.min(W - hw - 2, x)), p.y + p.h + 7);
+  });
+
+  // frame
+  ctx.strokeStyle = C.line; ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
+
+  // curve (device pixels)
+  ctx.save();
+  ctx.beginPath(); ctx.rect(p.x + 1, p.y + 1, p.w - 2, p.h - 2); ctx.clip();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.strokeStyle = C.curve; ctx.fillStyle = C.curve;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  var yScale = p.h * dpr / (hi - lo), yTop = p.y * dpr;
+  function Yd(v) { var y = yTop + (hi - v) * yScale; return y < -1e6 ? -1e6 : y > 1e6 ? 1e6 : y; }
+  if (res.mode === 'points') {
+    ctx.lineWidth = 1.3 * dpr;
+    ctx.beginPath();
+    for (var q = 0; q < pts.len; q++) { var px = X(pts.n[q]) * dpr, py = Yd(pts.v[q]); if (q) ctx.lineTo(px, py); else ctx.moveTo(px, py); }
+    ctx.globalAlpha = 0.55; ctx.stroke(); ctx.globalAlpha = 1;
+    var rr = (pts.len < 120 ? 2.6 : 1.9) * dpr;
+    ctx.beginPath();
+    for (var q2 = 0; q2 < pts.len; q2++) { var qx = X(pts.n[q2]) * dpr, qy = Yd(pts.v[q2]); ctx.moveTo(qx + rr, qy); ctx.arc(qx, qy, rr, 0, 6.2832); }
+    ctx.fill();
+  } else if (res.mode === 'exact' || res.mode === 'blocks') {
+    var B = bins, first = true;
+    var xd0 = X0 * dpr;
+    ctx.lineWidth = Math.max(1, dpr * 0.9);
+    ctx.beginPath();
+    for (var t = 0; t < nbins; t++) if (B.has[t]) {
+      var xx = xd0 + (t + 0.5) * binW;
+      if (first) { ctx.moveTo(xx, Yd(B.fi[t])); first = false; } else ctx.lineTo(xx, Yd(B.fi[t]));
+      ctx.lineTo(xx, Yd(B.mn[t])); ctx.lineTo(xx, Yd(B.mx[t])); ctx.lineTo(xx, Yd(B.la[t]));
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // not yet computed
+  if (frontierN < view.b) {
+    var xf = Math.max(p.x, Math.min(p.x + p.w, X(frontierN)));
+    ctx.save();
+    ctx.beginPath(); ctx.rect(xf, p.y + 1, p.x + p.w - xf - 1, p.h - 2); ctx.clip();
+    ctx.fillStyle = 'rgba(242,235,217,.75)'; ctx.fillRect(xf, p.y, p.x + p.w - xf, p.h);
+    ctx.strokeStyle = C.lineSoft; ctx.lineWidth = 1; ctx.beginPath();
+    for (var h = xf - p.h; h < p.x + p.w; h += 9) { ctx.moveTo(h, p.y + p.h); ctx.lineTo(h + p.h, p.y); }
+    ctx.stroke();
+    if (p.x + p.w - xf > 90) {
+      ctx.fillStyle = C.faint; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = 'italic 15px ' + "'Fraunces', Georgia, serif";
+      ctx.fillText('computing…', (xf + p.x + p.w) / 2, p.y + p.h / 2);
+      ctx.font = fontPx + 'px ' + MONO;
+    }
+    ctx.restore();
+  }
+
+  // shift-drag selection
+  if (box) {
+    var bx0 = Math.max(p.x, Math.min(box.x0, box.x1)), bx1 = Math.min(p.x + p.w, Math.max(box.x0, box.x1));
+    ctx.fillStyle = 'rgba(184,88,32,.10)'; ctx.fillRect(bx0, p.y, bx1 - bx0, p.h);
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(bx0) + .5, p.y); ctx.lineTo(Math.round(bx0) + .5, p.y + p.h);
+    ctx.moveTo(Math.round(bx1) - .5, p.y); ctx.lineTo(Math.round(bx1) - .5, p.y + p.h); ctx.stroke();
+  }
+
+  // hover marker and readout
+  readout.style.left = (p.x + 8) + 'px'; readout.style.top = (p.y + 8) + 'px'; readout.style.maxWidth = (p.w - 16) + 'px';
+  statusEl.style.top = 'auto'; statusEl.style.bottom = (H - p.y - p.h + 8) + 'px'; statusEl.style.right = (W - p.x - p.w + 8) + 'px';
+  if (hover && !box && hover.x >= p.x && hover.x <= p.x + p.w) {
+    var N = Math.round(xToN(hover.x));
+    N = Math.max(Math.max(1, Math.ceil(view.a - 1e-9)), Math.min(Math.floor(view.b + 1e-9), N));
+    if (N >= 1 && N <= frontierN) {
+      var v = evalS(N), hx = X(N), hy = Y(v);
+      ctx.strokeStyle = C.accent; ctx.globalAlpha = 0.5; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(Math.round(hx) + .5, p.y); ctx.lineTo(Math.round(hx) + .5, p.y + p.h); ctx.stroke();
+      ctx.globalAlpha = 1;
+      if (hy >= p.y && hy <= p.y + p.h) {
+        ctx.fillStyle = C.card; ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(hx, hy, 4, 0, 6.2832); ctx.fill(); ctx.stroke();
+      }
+      var tn = Math.tan(N);
+      readout.innerHTML = '<span class="k">N</span><span class="v">' + fmt(N, 0) + '</span>' +
+        '<span class="k">f(N)</span><span class="v">' + fmt(v, Math.abs(v) < 1e7 ? 4 : 2) + '</span>' +
+        '<span class="k">tan N</span><span class="v">' + fmt(tn, Math.abs(tn) < 1e4 ? 4 : 1) + '</span>';
+      readout.style.display = 'block';
+    } else readout.style.display = 'none';
+  } else readout.style.display = 'none';
+}
+
+/* ------------------------------------------------------------------ progress, inputs, URL */
+function updateProgress() {
+  var frac = frontierN / NMAX;
+  prog.style.width = (frac * 100).toFixed(2) + '%';
+  if (doneAll) {
+    prog.style.opacity = '0';
+    statusEl.style.display = 'none';
+  } else {
+    statusEl.style.display = 'block';
+    statusEl.innerHTML = '<span class="k">computed to</span><span class="v">' + fmtShort(frontierN) + '</span>';
+  }
+}
+function fmtShort(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M';
+  if (n >= 1e3) return Math.round(n / 1e3) + 'k';
+  return String(n);
+}
+function syncInputs() {
+  if (document.activeElement !== inA) { inA.value = fmt(Math.round(view.a), 0); inA.classList.remove('bad'); }
+  if (document.activeElement !== inB) { inB.value = fmt(Math.round(view.b), 0); inB.classList.remove('bad'); }
+}
+var urlT = 0;
+function syncURL() {
+  clearTimeout(urlT);
+  urlT = setTimeout(function () {
+    try {
+      var q = '?a=' + Math.round(view.a) + '&b=' + Math.round(view.b) + (yMode === 'trim' ? '&y=trim' : '');
+      history.replaceState(null, '', location.pathname + q + location.hash);
+    } catch (_) {}
+  }, 350);
+}
+function applyInputs() {
+  var A = parseN(inA.value), B = parseN(inB.value);
+  var okA = isFinite(A) && A >= 1 && A <= N_EXT, okB = isFinite(B) && B >= 1 && B <= N_EXT;
+  if (okA && okB && Math.round(A) >= Math.round(B)) okA = okB = false;
+  inA.classList.toggle('bad', !okA); inB.classList.toggle('bad', !okB);
+  if (!okA || !okB) return;
+  inA.blur(); inB.blur();
+  setViewExact(Math.round(A), Math.round(B));
+}
+document.getElementById('go').addEventListener('click', applyInputs);
+[inA, inB].forEach(function (el) {
+  el.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); applyInputs(); } });
+  el.addEventListener('input', function () { el.classList.remove('bad'); });
+});
+function centerN() { return (view.a + view.b) / 2; }
+document.getElementById('zin').addEventListener('click', function () { zoomAt(centerN(), 0.25); });
+document.getElementById('zout').addEventListener('click', function () { zoomAt(centerN(), 4); });
+var fullBtn = document.getElementById('full'), extBtn = document.getElementById('ext');
+fullBtn.addEventListener('click', function () { setViewExact(1, NMAX); });
+extBtn.addEventListener('click', function () { extend(); });
+var yF = document.getElementById('yfull'), yT = document.getElementById('ytrim');
+function setY(m) { yMode = m; yF.setAttribute('aria-pressed', m === 'full'); yT.setAttribute('aria-pressed', m === 'trim'); syncURL(); schedule(); }
+yF.addEventListener('click', function () { setY('full'); });
+yT.addEventListener('click', function () { setY('trim'); });
+
+var LANDMARKS = [
+  ['First pole, near 11', 1, 40],
+  ['Periods 22 and 355', 1, 400],
+  ['The 355-staircase', 1, 60000],
+  ['Cliff at 52,174', 52100, 52250],
+  ['1 to 10^6', 1, 1000000],
+  ['Spike at 573,204', 573130, 573280],
+  ['1 to 10^7', 1, 10000000],
+  ['Cliff at 42,781,604', 42781530, 42781680],
+  ['All: 1 to 10^8', 1, 100000000],
+  ['Cliff at 122,925,461', 122925390, 122925540],
+  ['Cliff at 534,483,448', 534483375, 534483525],
+  ['All: 1 to 10^9', 1, 1000000000]
+];
+var jumpSel = document.getElementById('jump');
+LANDMARKS.forEach(function (L, i) { var o = document.createElement('option'); o.value = i; jumpSel.appendChild(o); });
+function refreshJump() {
+  Array.prototype.forEach.call(jumpSel.options, function (o) {
+    var L = LANDMARKS[+o.value]; if (o.value === '' || !L) return;
+    o.textContent = L[0] + (L[2] > NMAX ? '  (extends to 10⁹)' : '');
+  });
+}
+refreshJump();
+jumpSel.addEventListener('change', function () {
+  var L = LANDMARKS[+jumpSel.value]; if (L) { hover = null; setViewExact(L[1], L[2]); }
+  jumpSel.value = ''; jumpSel.blur();
+});
+Array.prototype.forEach.call(document.querySelectorAll('.am-about .jump'), function (el) {
+  el.addEventListener('click', function () { setViewExact(+el.dataset.a, +el.dataset.b); });
+});
+
+/* ------------------------------------------------------------------ pointer interaction */
+var ptrs = new Map(), gesture = null;
+function pos(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+cv.addEventListener('pointerdown', function (e) {
+  if (e.button !== 0 && e.pointerType === 'mouse') return;
+  try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+  var q = pos(e); ptrs.set(e.pointerId, q);
+  if (ptrs.size === 1) {
+    if (e.shiftKey && e.pointerType === 'mouse') { gesture = { type: 'box' }; box = { x0: q.x, x1: q.x }; cv.classList.add('boxing'); }
+    else { gesture = { type: 'pan', x0: q.x, y0: q.y, a0: view.a, b0: view.b, moved: false, ptype: e.pointerType }; cv.classList.add('grabbing'); }
+  } else if (ptrs.size === 2) {
+    var v = Array.from(ptrs.values());
+    gesture = { type: 'pinch', n1: xToN(v[0].x), n2: xToN(v[1].x) };
+    hover = null;
+  }
+  schedule();
+});
+cv.addEventListener('pointermove', function (e) {
+  var q = pos(e);
+  if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, q);
+  if (!gesture) { if (e.pointerType === 'mouse') { hover = { x: q.x }; schedule(); } return; }
+  var p = plotRect(), XW = p.w - 2 * PAD;
+  if (gesture.type === 'pan') {
+    var dxp = q.x - gesture.x0;
+    if (Math.abs(dxp) > 3 || Math.abs(q.y - gesture.y0) > 3) gesture.moved = true;
+    var dx = dxp / XW * (gesture.b0 - gesture.a0);
+    var R = gesture.b0 - gesture.a0, a = gesture.a0 - dx;
+    if (a < 1) a = 1; if (a + R > NMAX) a = NMAX - R;
+    view.a = a; view.b = a + R;
+    if (e.pointerType === 'mouse') hover = { x: q.x };
+    syncInputs(); syncURL(); schedule();
+  } else if (gesture.type === 'pinch') {
+    var v = Array.from(ptrs.values());
+    if (v.length < 2) return;
+    var x1 = v[0].x, x2 = v[1].x;
+    if (Math.abs(x2 - x1) < 12) return;
+    var Rn = (gesture.n2 - gesture.n1) * XW / (x2 - x1);
+    if (!(Rn > 0)) return;
+    Rn = Math.min(NMAX - 1, Math.max(MINW, Rn));
+    var an = gesture.n1 - (x1 - p.x - PAD) / XW * Rn;
+    if (an < 1) an = 1; if (an + Rn > NMAX) an = NMAX - Rn;
+    view.a = an; view.b = an + Rn;
+    syncInputs(); syncURL(); schedule();
+  } else if (gesture.type === 'box') {
+    box.x1 = q.x; schedule();
+  }
+});
+function endPointer(e) {
+  var q = pos(e);
+  ptrs.delete(e.pointerId);
+  if (!gesture) return;
+  if (gesture.type === 'box') {
+    var n0 = xToN(Math.min(box.x0, box.x1)), n1 = xToN(Math.max(box.x0, box.x1));
+    if (Math.abs(box.x1 - box.x0) > 5) setViewExact(Math.max(1, n0), Math.min(NMAX, n1));
+    box = null; gesture = null; cv.classList.remove('boxing'); schedule();
+    return;
+  }
+  if (gesture.type === 'pan') {
+    if (!gesture.moved && gesture.ptype !== 'mouse') hover = { x: q.x };   // tap shows the readout
+    gesture = null; cv.classList.remove('grabbing'); schedule();
+    return;
+  }
+  if (gesture.type === 'pinch') {
+    if (ptrs.size === 1) {
+      var rest = Array.from(ptrs.values())[0];
+      gesture = { type: 'pan', x0: rest.x, y0: rest.y, a0: view.a, b0: view.b, moved: true, ptype: 'touch' };
+    } else { gesture = null; cv.classList.remove('grabbing'); }
+  }
+}
+cv.addEventListener('pointerup', endPointer);
+cv.addEventListener('pointercancel', endPointer);
+cv.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !gesture) { hover = null; schedule(); } });
+cv.addEventListener('wheel', function (e) {
+  e.preventDefault();
+  var unit = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 400 : 1;
+  var dy = e.deltaY * unit, dx = e.deltaX * unit;
+  var q = pos(e);
+  if (Math.abs(dx) > Math.abs(dy) && !e.ctrlKey) {
+    var p = plotRect(), R = view.b - view.a;
+    var a = view.a + dx / (p.w - 2 * PAD) * R;
+    if (a < 1) a = 1; if (a + R > NMAX) a = NMAX - R;
+    view.a = a; view.b = a + R; syncInputs(); syncURL(); schedule();
+    return;
+  }
+  var f = Math.exp(dy * (e.ctrlKey ? 0.01 : 0.0018));
+  var N = Math.max(view.a, Math.min(view.b, xToN(q.x)));
+  zoomAt(N, f);
+  if (e.pointerType !== 'touch') hover = { x: q.x };
+}, { passive: false });
+cv.addEventListener('dblclick', function (e) {
+  var q = pos(e);
+  zoomAt(Math.max(view.a, Math.min(view.b, xToN(q.x))), e.shiftKey ? 4 : 0.25);
+});
+addEventListener('keydown', function (e) {
+  var t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) return;
+  var R = view.b - view.a;
+  if (e.key === 'ArrowLeft') { setView(view.a - R * 0.1, view.b - R * 0.1); e.preventDefault(); }
+  else if (e.key === 'ArrowRight') { setView(view.a + R * 0.1, view.b + R * 0.1); e.preventDefault(); }
+  else if (e.key === '+' || e.key === '=') zoomAt(centerN(), 0.5);
+  else if (e.key === '-' || e.key === '_') zoomAt(centerN(), 2);
+});
+
+new ResizeObserver(function () { schedule(); }).observe(stage);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { M.l = 70; schedule(); });
+
+/* ------------------------------------------------------------------ start */
+(function init() {
+  var a = 1, b = 100000;
+  try {
+    var sp = new URLSearchParams(location.search);
+    var qa = parseN(sp.get('a') || ''), qb = parseN(sp.get('b') || '');
+    if (isFinite(qa) && isFinite(qb) && qa >= 1 && qb <= N_EXT && qb > qa) { a = qa; b = qb; }
+    if (sp.get('y') === 'trim') setY('trim');
+  } catch (_) {}
+  view.a = a; view.b = b;
+  setViewExact(a, b);
+  updateProgress();
+  startCompute();
+})();
+
+// test hook
+window.__tanSums = { view: view, evalS: evalS, setView: setViewExact, state: function () { return { frontierN: frontierN, doneAll: doneAll, fellBack: fellBack, workers: workers.length }; } };
+})();
+</script>
+</body></html>
