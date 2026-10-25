@@ -156,22 +156,22 @@ def main():
     cell(3,1,{0:E(1)},'exact',note='The equilateral triangle.'); cat(3,1,[item([(0,0),(1,0),(.5,S3/2)],'equilateral triangle')],True,'The equilateral triangle')
     cell(3,2,{1:E(1)},'exact',note='Isosceles triangles: one parameter (the apex angle).'); cat(3,2,[item([(0,0),(1,0),(.5,1.1)],'isosceles triangle (apex angle free)','family',1)],True,'Isosceles triangles')
     cell(3,3,{2:E(1)},'exact',note='Scalene triangles: two parameters.'); cat(3,3,[item([(0,0),(1,0),(.3,.8)],'scalene triangle','family',2)],True,'Scalene triangles')
-    cell(4,2,{0:E(6)},'exact',note='The six two-distance quadruples (Einhorn–Schoenberg 1966).'); cat(4,2,[item(P,l) for l,P in B.two],True,'The six two-distance quadruples',sources=('ES',))
-    cell(4,3,{1:E(9)},'exact',marks='*',note='Nine one-parameter families, one per realizable 3-colouring of the edges of K₄; no rigid configurations (every component has dimension ≥ 2·4−4−6+3 = 1). The six two-distance quadruples are where families meet.')
+    cell(4,2,{0:E(6)},'exact',marks='†',note='The six two-distance quadruples (Einhorn–Schoenberg 1966); re-verified by exact computation (5 colouring types, 6 rigid configurations up to similarity).'); cat(4,2,[item(P,l) for l,P in B.two],True,'The six two-distance quadruples',sources=('ES',))
+    cell(4,3,{1:E(9)},'exact',marks='‡',note='Nine one-parameter families, one per realizable 3-colouring of the edges of K₄ (all nine types are realizable; certified by exact computation); no rigid configurations (every component has dimension ≥ 2·4−4−6+3 = 1). The six two-distance quadruples are where families meet.')
     cat(4,3,[item(P,l,'family',1) for l,P in B.fam43],True,'Nine one-parameter families','One representative per family; the family is traced by moving the free parameter.',sources=('us',))
     S4=json.load(open('strata_4_4_1.json'))['realizable']
     items=[]
     for k,(l,P) in enumerate(B.fam44):
         if P is None: P=sorted(S4[k]['sample'].items())[0][1]
         items.append(item(P,l,'family',2))
-    cell(4,4,{2:E(7)},'exact',marks='*',note='Seven two-parameter families (one per realizable 4-colouring of K₄). All 7 colouring types with four colours are realizable and each has dimension exactly 2.')
+    cell(4,4,{2:E(7)},'exact',marks='‡',note='Seven two-parameter families (one per realizable 4-colouring of K₄). All 7 colouring types with four colours are realizable and each has dimension exactly 2 (certified by exact computation).')
     cat(4,4,items,True,'Seven two-parameter families',sources=('us',))
     S5=json.load(open('strata_4_5_1.json'))['realizable']
-    cell(4,5,{3:E(2)},'exact',marks='*',note='One coincidence among the six distances: the equal pair is adjacent or opposite.')
+    cell(4,5,{3:E(2)},'exact',marks='‡',note='One coincidence among the six distances: the equal pair is adjacent or opposite (certified by exact computation).')
     cat(4,5,[item(sorted(S5[k]['sample'].items())[0][1],l,'family',3) for k,(l,_) in enumerate(B.fam45)],True,'Two three-parameter families',sources=('us',))
-    cell(4,6,{4:E(1)},'exact',note='Generic quadruples.'); cat(4,6,[item(P,l,'family',4) for l,P in B.fam46],True,'Generic quadruples')
+    cell(4,6,{4:E(1)},'exact',marks='‡',note='Generic quadruples.'); cat(4,6,[item(P,l,'family',4) for l,P in B.fam46],True,'Generic quadruples')
     # ---------- n = 5 ----------
-    cell(5,2,{0:E(1)},'exact',note='The regular pentagon.'); cat(5,2,[item(poly(5,range(5)),'regular pentagon',Nhint=5)],True,'The regular pentagon',sources=('ES',))
+    cell(5,2,{0:E(1)},'exact',marks='†',note='The regular pentagon (Einhorn–Schoenberg 1966); re-verified by exact computation (17 colouring types, one rigid configuration).'); cat(5,2,[item(poly(5,range(5)),'regular pentagon',Nhint=5)],True,'The regular pentagon',sources=('ES',))
     FP=json.load(open('five_page.json')); FIVE=[x['pts'] for x in json.load(open('five_all.json'))]; SIX=json.load(open('six.json'))
     HEPT=poly(7,range(7)); HEXC=[(0,0)]+poly(6,range(6))
     def precise(pts,pool):
@@ -182,7 +182,7 @@ def main():
     for g in FP:
         if g['title'] in ('Six points','Seven points'): continue
         for it in g['items']: items.append(item(precise(it['pts'],FIVE),f"{g['title']}: {it['label']}",note=it['dist']))
-    cell(5,3,{0:E(34)},'exact',note='Finite: 34 rigid configurations (Shinohara 2004, Theorem 1), found here by two independent computations (extension of the four-point families, and exhaustive colouring enumeration). Each of our 34 sets was matched to one of Shinohara’s figures 501–534 by its pair of distance ratios (α, β); all 34 correspond (his table gives 2 sin 4π/9 for the β of fig. 524, where the construction in the text yields 2 sin 7π/18).')
+    cell(5,3,{0:E(34)},'exact',marks='†',note='Finite: 34 rigid configurations (Shinohara 2004, Theorem 1), re-verified by exact computation (124 colouring types of K₅ with three colours; 35 certified real roots, 34 configurations up to similarity) and by two numerical computations (extension of the four-point families, and exhaustive colouring enumeration). Each of our 34 sets was matched to one of Shinohara’s figures 501–534 by its pair of distance ratios (α, β); all 34 correspond (his table gives 2 sin 4π/9 for the β of fig. 524, where the construction in the text yields 2 sin 7π/18).')
     cat(5,3,items,True,'The 34 five-point three-distance sets','Grouped by the figure they come from.',sources=('Sh04','us'))
     def numeric_cell(d,N):
         R=list(N.values()); ncls=json.load(open(f'strata_5_{d}_1.json'))['classes']
@@ -262,7 +262,7 @@ def main():
         cat(5,d,items,True,f'Five points, {d} distances',listing_note(len(rig),sum(fams.values()),True)+' Types are described by the sizes of the distance classes.',sources=('cert',))
     # ---------- (6,3), (7,3) ----------
     six=[g for g in FP if g['title']=='Six points'][0]['items']; seven=[g for g in FP if g['title']=='Seven points'][0]['items']
-    cell(6,3,{0:E(9)},'exact',marks='†',note='Nine rigid configurations: Shinohara (2004, Theorem 2) lists the six maximal six-point sets (his figs. 601–606); the other three are the six-point subsets of the two seven-point sets (the regular hexagon, the heptagon minus a vertex, the hexagon-with-centre minus a vertex). Our enumeration by extension of the 34 five-point sets gives the same nine.')
+    cell(6,3,{0:E(9)},'exact',note='Nine rigid configurations: Shinohara (2004, Theorem 2) lists the six maximal six-point sets (his figs. 601–606); the other three are the six-point subsets of the two seven-point sets (the regular hexagon, the heptagon minus a vertex, the hexagon-with-centre minus a vertex). Our enumeration by extension of the 34 five-point sets gives the same nine.')
     cat(6,3,[item(precise(it['pts'],SIX),it['label'],note=it['dist']) for it in six],True,'The nine six-point three-distance sets',sources=('Sh04','us'))
     cell(7,3,{0:E(2)},'exact',note='The regular heptagon and the regular hexagon with its centre; g(3) = 7.')
     cat(7,3,[item(precise(it['pts'],[HEPT,HEXC]),it['label'],note=it['dist'],Nhint=7 if 'hept' in it['label'] else 6) for it in seven],True,'The two seven-point three-distance sets',sources=('EF','Sh04'))
@@ -295,7 +295,7 @@ def main():
             if len(dvals(Q))!=4 or any(same(Q,R) for R,_,_ in eight): continue
             eight.append((Q,f'{name} minus one point',9 if name.startswith('the regular') else None))
     assert len(eight)==15, len(eight)
-    cell(8,4,{0:E(15)},'exact',marks='†',note='Shinohara (2008, Theorem 1.2): every eight-point four-distance set is the regular octagon, the regular heptagon with its centre, the square with four outward equilateral apexes, or an eight-point subset of one of the four nine-point four-distance sets. Deleting one point from each nine-point set and keeping the subsets with exactly four distances gives twelve more up to congruence (one from the nonagon, eight from the two lattice pieces, three from the concentric triangles): 15 in all. Our earlier extension search had found 14 of them.',finite=True)
+    cell(8,4,{0:E(15)},'exact',note='Shinohara (2008, Theorem 1.2): every eight-point four-distance set is the regular octagon, the regular heptagon with its centre, the square with four outward equilateral apexes, or an eight-point subset of one of the four nine-point four-distance sets. Deleting one point from each nine-point set and keeping the subsets with exactly four distances gives twelve more up to congruence (one from the nonagon, eight from the two lattice pieces, three from the concentric triangles): 15 in all. Our earlier extension search had found 14 of them.',finite=True)
     cat(8,4,[item(P,lab,Nhint=N) if N else item(P,lab) for P,lab,N in eight],True,'The fifteen eight-point four-distance sets',sources=('Sh08','EF'))
     L125=uniq(json.load(open('lattice_12_5.json'))['tri'])
     cell(12,5,{0:E(1)},'exact',note='g(5) = 12; the unique maximum five-distance set is a piece of the triangular lattice (Shinohara 2008).',finite=True)
@@ -333,7 +333,7 @@ def main():
         it=item(P,lab,Nhint=N) if N else item(P,lab)
         if ex: it['exact']=ex
         items74.append(it)
-    cell(7,4,{0:E(42)},'exact',marks='†',note='Lan and Wei (2013, Theorem 8): exactly 42 seven-point four-distance sets, all drawn in their Fig. 4. The list here was reconstructed from their descriptions (four versions of the nonagon minus two vertices, the octagon minus a vertex, the heptagon-with-centre minus a vertex, nine subsets of the nine-point set of three concentric triangles, twenty pieces of the triangular lattice, two subsets of the square with four apexes, two subsets of the ten-point five-distance set, a square-lattice piece, and two sets given by their distance patterns), each verified to have exactly four distances; the count 42 is reproduced. Five are maximal (not contained in a larger four-distance set). Our earlier extension search had found 15 of them.',finite=True)
+    cell(7,4,{0:E(42)},'exact',note='Lan and Wei (2013, Theorem 8): exactly 42 seven-point four-distance sets, all drawn in their Fig. 4. The list here was reconstructed from their descriptions (four versions of the nonagon minus two vertices, the octagon minus a vertex, the heptagon-with-centre minus a vertex, nine subsets of the nine-point set of three concentric triangles, twenty pieces of the triangular lattice, two subsets of the square with four apexes, two subsets of the ten-point five-distance set, a square-lattice piece, and two sets given by their distance patterns), each verified to have exactly four distances; the count 42 is reproduced. Five are maximal (not contained in a larger four-distance set). Our earlier extension search had found 15 of them.',finite=True)
     cat(7,4,items74,True,'The 42 seven-point four-distance sets',sources=('LW13',))
     # (11,5): Wei 2011, Theorem 13
     L115=uniq(json.load(open('lattice_11_5.json')))
