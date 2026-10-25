@@ -257,7 +257,8 @@ const DATA = __DATA__;
     const marks=(c.marks||[]).map(m=>`<span class="mk">${m}</span>`).join('');
     if(c.status==='open') return `<div class="fd-line"><span class="k">0d:</span> <span class="v">0 – ?</span></div><div class="fd-sub">≤ 36 points</div>`;
     const ks=Object.keys(c.dims).map(Number).sort((a,b)=>a-b);
-    let h=ks.map((k,i)=>`<div class="fd-line"><span class="k">${k}d:</span> <span class="v">${boundText(c.dims[k])}</span>${i===0?marks:''}</div>`).join('');
+    let h=(c.extra_line?`<div class="fd-line"><span class="k">${c.extra_line.k}</span> <span class="v">${c.extra_line.v}</span><span class="mk">${c.extra_line.mark||''}</span></div>`:'')
+      +ks.map((k,i)=>`<div class="fd-line"><span class="k">${k}d:</span> <span class="v">${boundText(c.dims[k])}</span>${i===0?marks:''}</div>`).join('');
     if(c.finite&&c.status==='bounds') h+=`<div class="fd-sub">finite: no families</div>`;
     return h;
   }
@@ -283,7 +284,8 @@ const DATA = __DATA__;
       <span class="k"><span class="sw i"></span><span class="t">impossible</span></span>
       <span class="k"><span class="mk">*</span><span class="t">our computation; nothing published found</span></span>
       <span class="k"><span class="mk">†</span><span class="t">published classification; the count shown is ours</span></span>
-      <span class="k"><span class="mk">‡</span><span class="t">certified by exact computation (msolve / Singular), one polynomial system per colouring type</span></span></div>`;
+      <span class="k"><span class="mk">‡</span><span class="t">certified by exact computation (msolve / Singular), one polynomial system per colouring type</span></span>
+      <span class="k"><span class="mk">°</span><span class="t">absence of rigid configurations certified for 439 of the 443 colouring types; for four types it rests on numerics (see the cell’s note)</span></span></div>`;
     tableEl.innerHTML=h;
     tableEl.querySelectorAll('.is-cell').forEach(el=>{
       el.addEventListener('click',()=>open(el.dataset.key));

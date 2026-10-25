@@ -144,9 +144,10 @@ def item(P,label,kind='rigid',dim=0,**kw):
     return _item(P,label,kind,dim,**kw)
 def main():
     cells={}; cats={}
-    def cell(n,d,dims,status,marks=(),note='',finite=None):
+    def cell(n,d,dims,status,marks=(),note='',finite=None,extra_line=None):
         cells[f'{n},{d}']={'n':n,'d':d,'status':status,'dims':{str(k):v for k,v in sorted(dims.items())},'marks':list(marks),'note':note,'finite':finite,
                            'krull':(2*n-4-math.comb(n,2)+d) if isinstance(n,int) else None}
+        if extra_line: cells[f'{n},{d}']['extra_line']=extra_line
     def cat(n,d,items,complete,title,note='',sources=()):
         cats[f'{n},{d}']={'items':items,'complete':complete,'title':title,'note':note,'sources':[SRC[k] for k in sources]}
     X=lambda lo,hi=None: {'lo':lo,'hi':hi}
@@ -257,7 +258,7 @@ def main():
                 7:'A search for hidden rigid configurations (real-isolated points of a positive-dimensional type) found none: full Jacobian rank everywhere for 70 of the 76 types; for the other 6 every component is smooth at the real rank-deficient points or has a singular locus without real points.'}
         if d in hidden: note+=' '+hidden[d]
         if d==4: note+=' Rigid configurations are counted up to similarity: the real roots of each type were grouped into orbits of the colour-permuting automorphisms of the colouring (with rescaling) by interval arithmetic on the certified isolating boxes, and the real-root counts were confirmed by Sturm sequences on msolve’s rational parametrizations. (A first version of this cell reported 481: its dedup compared distances without rescaling and counted thirteen configurations twice.) The earlier random search had the right total but had misclassified two rigid types as families, and had called the equally spaced collinear quintuple rigid when it in fact lies on a one-parameter family (the lattice piece 0, −u, v, u+v, −u−v with the angle between u and v free).'
-        cell(5,d,dims,'exact',marks='‡',note=note)
+        cell(5,d,dims,'exact',marks='‡',note=note,**({'extra_line':{'k':'0d:','v':'0','mark':'°'}} if d==5 else {}))
         cat(5,d,items,True,f'Five points, {d} distances',listing_note(len(rig),sum(fams.values()),True)+' Types are described by the sizes of the distance classes.',sources=('cert',))
     # ---------- (6,3), (7,3) ----------
     six=[g for g in FP if g['title']=='Six points'][0]['items']; seven=[g for g in FP if g['title']=='Seven points'][0]['items']
