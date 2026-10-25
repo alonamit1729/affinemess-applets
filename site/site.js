@@ -46,6 +46,7 @@
         viewerPushed = true;
       }
       if (currentKey === key && !viewer.hidden) return;
+      if (viewer.hidden) savedY = window.pageYOffset;
       const name = tile.dataset.name || (tile.querySelector('.title') || tile).textContent.trim();
       currentKey = key;
       currentTab = tab;
@@ -62,11 +63,13 @@
       viewer.hidden = false;
       root.classList.add('am-viewing');
       if (overlayMQ.matches) document.documentElement.classList.add('am-lock');
+      else root.scrollIntoView({ block: 'start' });   // the list may have been scrolled far down; start at the top of the item
       document.title = name + ' · ' + siteTitle;
     }
 
     // UI-only teardown (no history changes)
-    function closeViewerUI() {
+    let savedY = null;          // page scroll position when the viewer opened (restored on Back)
+    function closeViewerUI(restore) {
       if (viewer.hidden && !currentKey) return;
       viewer.hidden = true;
       root.classList.remove('am-viewing');
@@ -77,6 +80,8 @@
       currentTab = null;
       viewerPushed = false;
       document.title = siteTitle;
+      if (restore && savedY !== null) { const y = savedY; requestAnimationFrame(() => window.scrollTo(0, y)); }
+      savedY = null;
     }
 
     // User-initiated close (Back button, Esc): unwind our history entry if we made one
@@ -86,7 +91,7 @@
         history.back();                      // popstate -> route() -> closeViewerUI()
       } else {
         history.replaceState(null, '', '#' + tab);
-        closeViewerUI();
+        closeViewerUI(true);
       }
       if (tile) setTimeout(() => tile.focus({ preventScroll: true }), 0);
     }
@@ -197,15 +202,41 @@
         qotd.querySelector('.desc').textContent = pick.dataset.excerpt || '';
         // click is handled by the shared viewer binding above (qotd carries data-slug)
       }
+      /* Full-text search: quora/search.json (every answer's text) loads the first time someone types. */
+      let S = null, SL = null, loading = false;
+      function loadText() {
+        if (S || loading) return;
+        loading = true;
+        fetch(panel.dataset.base + 'search.json').then(r => r.json()).then(j => {
+          S = j; SL = {};
+          Object.keys(j).forEach(k => { SL[k] = j[k].toLowerCase(); });
+          filter();
+        }).catch(() => { loading = false; });
+      }
+      rows.forEach(r => { const sub = r.querySelector('.sub'); r._sub = sub.textContent; });
+      function snippet(slug, w) {
+        const t = S[slug], i = SL[slug].indexOf(w);
+        if (i < 0) return null;
+        const a = Math.max(0, i - 60), b = Math.min(t.length, i + w.length + 110);
+        return (a ? '… ' : '') + t.slice(a, b).replace(/\s+/g, ' ') + (b < t.length ? ' …' : '');
+      }
       function filter() {
         const words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+        if (words.length) loadText();
         let n = 0;
         rows.forEach(r => {
-          const ok = words.every(w => r.dataset.find.indexOf(w) >= 0);
+          const slug = r.dataset.slug;
+          let ok = true, deep = null;
+          for (const w of words) {
+            if (r.dataset.find.indexOf(w) >= 0) continue;
+            if (SL && SL[slug].indexOf(w) >= 0) { deep = deep || w; continue; }
+            ok = false; break;
+          }
           r.hidden = !ok; if (ok) n++;
+          r.querySelector('.sub').textContent = (ok && deep) ? snippet(slug, deep) : r._sub;
         });
-        count.textContent = n + (n === 1 ? ' answer' : ' answers');
-        none.hidden = n > 0;
+        count.textContent = (words.length && !S) ? 'searching\u2026' : n + (n === 1 ? ' answer' : ' answers');
+        none.hidden = n > 0 || (words.length && !S);
       }
       input.addEventListener('input', filter);
       filter();
@@ -247,7 +278,7 @@
         else activate('applets', false);
         return;
       }
-      closeViewerUI();
+      closeViewerUI(true);
       if (!activate(h || 'applets', false)) activate('applets', false);
     }
     window.addEventListener('popstate', route);
