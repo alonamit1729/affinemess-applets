@@ -41,9 +41,18 @@ inside this folder after copying `data/*` here (or symlink).
 - `noreal.py d`, `noreal2.py d` — the 21 components on which random slices found no real point: 12 provably empty
   (a generator that is a positive-definite quadratic), 9 real (hyperplanes through a numerically found point, msolve);
   no family count changes (`data/noreal2_{d}.json`, folded into `data/cert5{d}.json`).
-- `hidden.py d` — no hidden rigid configurations for d ≥ 5: equations + all 10×10 Jacobian minors + inequation
-  solved with msolve for every type; real rank-deficient points, if any, tested for isolation by sphere tests
-  (`data/hidden_{d}.json`).
+- Hidden rigid configurations (real-isolated points of positive-dimensional types) for d ≥ 5:
+  `hidden.py d` — stage 1: equations + all 10×10 Jacobian minors + inequation, msolve; types with an empty
+  rank-deficient locus are done (`data/hidden_{d}.json`: 384/443, 216/249, 70/76).
+  `hidden_final.py d` — stage 2 for the rest: decompose; per real non-degenerate component eliminate the linearly
+  occurring variables (an isomorphism), minimal generating set (mstd), singular locus = component + codim-minors;
+  smooth → done; finite → real singular points sphere-tested; positive-dimensional → recurse
+  (`data/hidden_final_{d}.json`). `hidden_subsets.py` — smoothness via minors of random generator subsets (a
+  superset of the singular locus), used for the two components of d=6 type 242 where Singular crashes and for the
+  saturated ideals of the four stubborn d=5 types. Result: no isolated real point anywhere, except that for d=5
+  types 380, 381, 426, 427 (no decomposition) the 20 candidate points are non-isolated only numerically.
+  Superseded helpers kept for reference: `hidden2.py`, `hidden2b.py`, `hidden2c.py`, `hidden3.py`, `hidden_242.py`,
+  `hidden_stubborn.py`.
 
 **msolve input rule.** msolve accepts only expanded polynomials with integer (or standalone rational) coefficients. It
 does not report an error on input such as `(x-1/2)^2` or `3*y/7`: it silently returns "no solutions". Every polynomial
