@@ -143,6 +143,12 @@
     });
 
     /* ---------- tabs ---------- */
+    /* Law: every top-level navigation (tab, arrow keys, wordmark, #tab links) lands with the site's
+       top edge at the top of the window, never half out of view. (Phone overlay mode doesn't scroll.) */
+    function toTop() {
+      if (overlayMQ.matches) return;
+      requestAnimationFrame(() => root.scrollIntoView({ block: 'start' }));
+    }
     function activate(name, pushHash) {
       let found = false;
       tabs.forEach(btn => {
@@ -162,6 +168,7 @@
         e.preventDefault();
         closeViewerUI();                     // clicking a tab (even the current one) leaves the viewer
         activate(btn.dataset.tab, true);
+        toTop();
       });
     });
 
@@ -174,6 +181,7 @@
       const next = e.key === 'ArrowRight' ? (current + 1) % order.length : (current - 1 + order.length) % order.length;
       closeViewerUI();
       activate(order[next], true);
+      toTop();
       if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.tabs')) document.activeElement.blur();
     });
 
@@ -278,12 +286,24 @@
         else activate('applets', false);
         return;
       }
-      closeViewerUI(true);
+      const wasViewing = !!currentKey;
+      closeViewerUI(true);                   // Back from an item: restores the list's scroll position
       if (!activate(h || 'applets', false)) activate('applets', false);
+      if (booted && !wasViewing) toTop();
     }
+    let booted = false;
+    const wm = root.querySelector('.wordmark');
+    if (wm) wm.addEventListener('click', e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      closeViewerUI();
+      activate('applets', true);
+      toTop();
+    });
     window.addEventListener('popstate', route);
     window.addEventListener('hashchange', route);
     route();
+    booted = true;
 
     // Keep this LAST: proves the whole script arrived and ran.
     const ver = root.querySelector('.am-ver');
