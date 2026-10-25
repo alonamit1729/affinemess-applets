@@ -4,6 +4,8 @@ each minimal prime: dimension, degeneracy test (does an inequation polynomial va
 non-degenerate primes a real-point test by random hyperplane slices (dim hyperplanes -> zero-dim -> msolve
 real roots with the inequations). Zero-dimensional primes: real roots directly.  Usage: python3 certify5d.py d"""
 import itertools, subprocess, json, re, sys, math, time, random
+from os import getpid
+PID=str(getpid())
 from fractions import Fraction
 import sympy as sp
 MS='/usr/local/lib/python3.13/dist-packages/sage_wheels/bin/msolve'
@@ -41,9 +43,10 @@ ineq='t*'+'*'.join(facs)+'-1'
 def expand(expr): return str(sp.expand(sp.sympify(expr,locals=SYM))).replace('**','^').replace(' ','')
 def system(col): return [expand(f'{sq(i,j)}-({S[col[k]]})') for k,(i,j) in enumerate(E)]
 def run_msolve(eqs,vars_):
-    open('ms_in5.txt','w').write(','.join(vars_)+'\n0\n'+',\n'.join(eqs)+'\n')
-    subprocess.run([MS,'-f','ms_in5.txt','-o','ms_out5.txt','-p','200'],capture_output=True,text=True,timeout=900)
-    return open('ms_out5.txt').read()
+    fi,fo=f'tmp/ms_in_{PID}.txt',f'tmp/ms_out_{PID}.txt'
+    open(fi,'w').write(','.join(vars_)+'\n0\n'+',\n'.join(eqs)+'\n')
+    subprocess.run([MS,'-f',fi,'-o',fo,'-p','200'],capture_output=True,text=True,timeout=900)
+    return open(fo).read()
 def parse_real(out):
     s=out.replace('\n','').replace(' ','')
     if s.startswith('[-1]'): return 'empty',[]
@@ -68,9 +71,9 @@ def decompose(eqs):
     ring='ring r=0,('+','.join(V)+'),dp;'
     for algo,tmo in (('minAssGTZ',60),('minAssChar',120)):
         script=ring+'\nLIB "primdec.lib";\nideal i='+',\n'.join(eqs)+';\nlist L='+algo+'(i);\nint k; ideal G; int bad;\nfor(k=1;k<=size(L);k++){ G=std(L[k]); print("PRIME"); print(dim(G)); bad=0; '+' '.join(f'if(reduce({f},G)==0){{bad=1;}}' for f in facs)+' print(bad); print(L[k]); }\nquit;\n'
-        open('sg_in5.sing','w').write(script)
+        open(f'tmp/sg_in_{PID}.sing','w').write(script)
         try:
-            r=subprocess.run([SG,'-q','sg_in5.sing'],capture_output=True,text=True,timeout=tmo); break
+            r=subprocess.run([SG,'-q',f'tmp/sg_in_{PID}.sing'],capture_output=True,text=True,timeout=tmo); break
         except subprocess.TimeoutExpired:
             r=None; print('   decomposition timeout with',algo,tmo,flush=True)
     if r is None: return None
