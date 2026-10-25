@@ -49,8 +49,12 @@ inside this folder after copying `data/*` here (or symlink).
   smooth → done; finite → real singular points sphere-tested; positive-dimensional → recurse
   (`data/hidden_final_{d}.json`). `hidden_subsets.py` — smoothness via minors of random generator subsets (a
   superset of the singular locus), used for the two components of d=6 type 242 where Singular crashes and for the
-  saturated ideals of the four stubborn d=5 types. Result: no isolated real point anywhere, except that for d=5
-  types 380, 381, 426, 427 (no decomposition) the 20 candidate points are non-isolated only numerically.
+  saturated ideals of the four stubborn d=5 types. `nodetest.py idx` — for the four d=5 types without a decomposition (380, 381, 426, 427): certified local test at each
+  candidate point p (interval arithmetic, 300 bits, on msolve's isolating box): generators with provably independent
+  gradients cut out a smooth surface S ∋ p containing the curve C; for a further generator g, det of the intrinsic
+  Hessian of g|S at p is certified negative, so {g|S = 0} is a smooth arc or an ordinary node with two real branches
+  (Morse lemma), and C's purely one-dimensional germ at p lies on real branches. All 20 candidates pass.
+  Result: no isolated real point anywhere for d = 5, 6, 7.
   Superseded helpers kept for reference: `hidden2.py`, `hidden2b.py`, `hidden2c.py`, `hidden3.py`, `hidden_242.py`,
   `hidden_stubborn.py`.
 
