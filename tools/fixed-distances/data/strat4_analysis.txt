@@ -1,0 +1,8 @@
+types: 25  arcs by end kinds: {('degenerate', 'v'): 77, ('v', 'v'): 108, ('inf', 'v'): 12}
+vertices: 35  unidentified: 0
+vertices by cell: Counter({3: 34, 2: 1})
+valence histogram: [(4, 3), (6, 5), (7, 4), (8, 12), (9, 4), (10, 1), (12, 2), (14, 2), (19, 1), (22, 1)]
+(5,3) rigid sets not reached by any (5,4) family: 0 []
+graph with ends as leaves: nodes 124 edges 197 components 1 b1 = 74
+vertex subgraph (rigid sets only): nodes 35 edges 108 components 1 b1 = 74
+mult histogram of arcs: [(2, 16), (4, 128), (8, 44), (14, 3), (16, 4), (24, 2)]

@@ -142,6 +142,71 @@ def item(P,label,kind='rigid',dim=0,**kw):
         try: P=settle([tuple(map(float,p)) for p in P],dim)
         except Exception as e: print('settle failed',label[:40],e)
     return _item(P,label,kind,dim,**kw)
+# ---------------- stratification: incidence of the one-parameter families with the rigid sets ----------------
+def add_stratification(cells,cats):
+    import itertools as _it
+    E5=list(_it.combinations(range(5),2))
+    perms5=[[E5.index(tuple(sorted((p[a],p[b])))) for a,b in E5] for p in _it.permutations(range(5))]
+    def ccol(rgs):
+        best=None
+        for pe in perms5:
+            c=[rgs[pe[i]] for i in range(10)]; mp={}; out=[]
+            for x in c:
+                if x not in mp: mp[x]=len(mp)
+                out.append(mp[x])
+            t=tuple(out)
+            if best is None or t<best: best=t
+        return best
+    for d in (4,5):
+        fn=f'strat_graph_{d}.json'
+        if not os.path.exists(fn) or f'5,{d}' not in cats: continue
+        G=json.load(open(fn)); verts={v['id']:v for v in G['vertices']}
+        fam_items={}
+        for k,it in enumerate(cats[f'5,{d}']['items']):
+            if it['kind']=='family' and it['dim']==1: fam_items[ccol(it['cls'])]=it
+        tcol={int(t):ccol(c) for t,c in G['types'].items()}
+        per_type={}; per_vertex={}
+        for e in G['edges']:
+            per_type.setdefault(e['type'],[]).append(e)
+            for end in e['ends']:
+                if end[0]=='v': per_vertex.setdefault(end[1],[]).append(e)
+        nvv=sum(1 for e in G['edges'] if all(x[0]=='v' for x in e['ends'])); ninf=sum(1 for e in G['edges'] if any(x[1]=='inf' for x in e['ends']))
+        ndeg=sum(1 for e in G['edges'] if any(x[1]=='degenerate' for x in e['ends']))
+        def vname(i):
+            v=verts[i]; return (v['label'] or 'rigid set').split(';')[0] if v['cell']==d-1 else f"{v['label']} ({v['cell']} distances)"
+        matched=0
+        for t,edges in per_type.items():
+            it=fam_items.get(tcol[t])
+            if it is None: continue
+            matched+=1
+            parts=[]
+            for e in edges:
+                a,b=e['ends']
+                def nm(x): return vname(x[1]) if x[0]=='v' else ('two points merge' if x[1]=='degenerate' else 'one distance → 0 (infinity)')
+                parts.append(f'{nm(a)} ↔ {nm(b)}' if a[0]=='v' and b[0]=='v' else f'{nm(a) if a[0]=="v" else nm(b)} → {nm(b) if a[0]=="v" else nm(a)}')
+            it['strat']=f'{len(parts)} arc{"s" if len(parts)!=1 else ""} of this family:\n'+'\n'.join('• '+p for p in parts)
+        for i,edges in per_vertex.items():
+            v=verts[i]
+            if v['cell'] is None: continue
+            key=f"5,{v['cell']}"
+            if key in cats and v['item'] is not None and v['item']<len(cats[key]['items']):
+                it=cats[key]['items'][v['item']]
+                it['strat']=(it.get('strat','')+(' · ' if it.get('strat') else '')+f"endpoint of {len(edges)} arcs of {d}-distance families")
+        # connectivity and first Betti number of the graph (rigid sets + arcs between them)
+        par={i:i for i in verts}
+        def find(x):
+            while par[x]!=x: par[x]=par[par[x]]; x=par[x]
+            return x
+        for e in G['edges']:
+            a,b=e['ends']
+            if a[0]=='v' and b[0]=='v': par[find(a[1])]=find(b[1])
+        comps=len({find(i) for i in verts}); b1=nvv-len(verts)+comps
+        cells[f'5,{d}']['strat']={'arcs_vv':nvv,'arcs_degenerate':ndeg,'arcs_inf':ninf,'vertices':len(verts),'components':comps,'b1':b1}
+        nrig=sum(1 for it in cats[f'5,{d}']['items'] if it['kind']=='rigid')
+        lower='the 34 three-distance sets and the regular pentagon' if d==4 else f'rigid sets with fewer distances'
+        cells[f'5,{d}']['note']+=(f' Structure of the solution set: the one-parameter families are curves whose ends are rigid configurations with fewer distances (two distance values merge there), degenerate configurations (two points merge) or infinity (one distance becomes negligible). Together with their endpoints — {len(verts)} rigid sets, {lower} — they form a graph with {nvv} arcs between rigid sets ({"connected" if comps==1 else f"{comps} components"}, first Betti number {b1}), {ndeg} arcs ending in a degenerate configuration and {ninf} escaping to infinity; every rigid set with fewer distances is the limit of some family. The {nrig} rigid {d}-distance sets are isolated points of the solution set. Each card below lists the arcs through it.')
+        print(f'stratification (5,{d}): {matched} families annotated, arcs vv {nvv}, deg {ndeg}, inf {ninf}')
+
 def main():
     cells={}; cats={}
     def cell(n,d,dims,status,marks=(),note='',finite=None,extra_line=None):
@@ -393,6 +458,7 @@ def main():
         for it in c['items']: assert it['d']==dd,(key,it['label'],it['d'])
         c['items'].sort(key=lambda it: it['dim'])   # stable: rigid first, then 1d, 2d, ... ; original order within a dimension
     meta={'rows':[str(k) for k in range(3,17)],'cols':list(range(1,8))}
+    add_stratification(cells,cats)
     json.dump({'cells':cells,'cats':cats,'meta':meta},open('applet_data.json','w'))
     print('cells',len(cells),'items',sum(len(c['items']) for c in cats.values()))
     for k,c in cells.items(): print(k,c['status'],c['dims'],c['marks'])

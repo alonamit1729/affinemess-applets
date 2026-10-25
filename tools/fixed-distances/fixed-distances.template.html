@@ -156,6 +156,7 @@ input[type=range] { accent-color:var(--accent); }
 .fd-card .lab .num{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-right:5px; }
 .fd-card .rat{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); overflow-wrap:anywhere; }
 .fd-card .rat span{ font-weight:500; }
+.fd-card .strat{ font-size:11.5px; line-height:1.35; color:var(--ink-soft); white-space:pre-line; }
 .fd-card .fam{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-deep); }
 .fd-card .am-btn{ align-self:flex-start; padding:5px 8px; font-size:9.5px; }
 .fd-coords{ font-family:var(--mono); font-size:10.5px; line-height:1.45; color:var(--ink); background:var(--paper); border:1px solid var(--line-soft); border-radius:3px; padding:7px 8px; margin:0; white-space:pre; overflow-x:auto; cursor:copy; }
@@ -419,7 +420,7 @@ const DATA = __DATA__;
       cat.items.forEach((it,i)=>{
         const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
         const fx=it.kind==='family'&&it.dim>=1;
-        h+=`<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div><button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
+        h+=`<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
       });
       h+='</div>';
     }
