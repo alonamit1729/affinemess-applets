@@ -97,7 +97,7 @@ for r0 in roots:
         subst.append(f'{v}+(({str(num).replace("**","^")})/({str(den).replace("**","^")}))')
     gstr=[str(g).replace('**','^') for g in gens]
     script=('ring r=(0,a),('+','.join(free)+'),ds;\nminpoly='+str(mpa).replace('**','^')+';\nLIB "curvepar.lib";\n'
-            'ideal I='+',\n'.join(gstr)+';\nmap phi=r,'+','.join(subst)+';\nideal J=phi(I);\nJ=std(J); print("DIMJ"); print(dim(J)); print("ORD"); print(ord(J[1]));\n'
+            'ideal I='+',\n'.join(gstr)+';\nmap phi=r,'+','.join(subst)+';\nideal J=phi(I);\nJ=minbase(J); print("NGENLOC"); print(size(J)); J=std(J); print("DIMJ"); print(dim(J)); J=minbase(J); print("NGENSTD"); print(size(J));\n'
             'list L=CurveParam(J);\ndef R=L[1]; setring R;\nprint("NBRANCH"); print(size(Param));\nint k; for(k=1;k<=size(Param);k++){ print("BRANCH"); print(Param[k][2]); print(size(Param[k][1])); print(Param[k][1][1]); print(Param[k][1][2]); }\nquit;\n')
     try: out=sg(script,tmo=7200)
     except subprocess.TimeoutExpired: print('   CurveParam timeout',flush=True); results.append({'point':P,'status':'timeout'}); continue

@@ -300,6 +300,41 @@ def main():
     L125=uniq(json.load(open('lattice_12_5.json'))['tri'])
     cell(12,5,{0:E(1)},'exact',note='g(5) = 12; the unique maximum five-distance set is a piece of the triangular lattice (Shinohara 2008).',finite=True)
     cat(12,5,[item(P,'piece of the triangular lattice: rows of 3, 4, 3 and 2 points') for P in L125],True,'The unique twelve-point five-distance set',sources=('Sh08',))
+    # (7,4): Lan–Wei 2013, Theorem 8 — the 42 sets reconstructed from Fig. 4 and the proof (seven4.py)
+    S7=json.load(open('seven4.json')); assert len(S7)==42
+    def exact_sub(P_exact,P_num,Q):
+        keep=[min(range(len(P_num)),key=lambda i: math.dist(P_num[i],q)) for q in Q]
+        assert len(set(keep))==len(Q) and all(math.dist(P_num[i],q)<1e-9 for i,q in zip(keep,Q))
+        return [P_exact[i] for i in keep]
+    FOUR_EX=[['1','0'],['0','1'],['−1','0'],['0','−1'],['0','−√3'],['(√3−1)/2','−(√3−1)/2'],['−(√3−1)/2','−(√3−1)/2'],['(√3+1)/2','−(√3+1)/2'],['−(√3+1)/2','−(√3+1)/2']]
+    FIGE_EX=[['1/2','1/2'],['−1/2','1/2'],['−1/2','−1/2'],['1/2','−1/2'],['0','(1+√3)/2'],['0','−(1+√3)/2'],['(1+√3)/2','0'],['−(1+√3)/2','0']]
+    PHI2=(1+5**.5)**2/4
+    P10=poly(5,range(5))+[(math.cos(2*math.pi*k/5+math.pi/5)/PHI2,math.sin(2*math.pi*k/5+math.pi/5)/PHI2) for k in range(5)]
+    P10_EX=[[f'cos(2π·{k}/5)' if k else '1',f'sin(2π·{k}/5)' if k else '0'] for k in range(5)]+[[f'(3−√5)/2·cos({2*k+1}π/5)',f'(3−√5)/2·sin({2*k+1}π/5)'] for k in range(5)]
+    LW741_EX=[['0','0'],['1','0'],['1/2','−√3/2'],['−√3/2','1/2'],['1/2','1+√3/2'],['−(1+√3)/2','(1+√3)/2'],['−1−√3/2','1/2']]
+    LW742_EX=[['0','0'],['1','0'],['1/2','−√3/2'],['0','1'],['−√3/2','1/2'],['(1−√3)/2','−(1+√3)/2'],['−(1+√3)/2','(1−√3)/2']]
+    groups={'poly':'regular polygon: ','ef9':'','lat':'','sh8':'','dp10':'','sqlat':'','lw741':'','lw742':''}
+    counters={}
+    items74=[]
+    for s7 in S7:
+        P=[tuple(p) for p in s7['pts']]; src=s7['src']; lab=s7['label']; ex=None; N=None
+        if src=='poly':
+            N=9 if 'nonagon' in lab else (8 if 'octagon' in lab else 7)
+            if 'nonagon' in lab: lab='regular nonagon minus two vertices (Lan–Wei figs. 701–703, 708: four versions, by the gap between the missing vertices)'
+            elif 'octagon' in lab: lab='regular octagon minus a vertex (Lan–Wei fig. 707)'
+            else: lab='regular heptagon with its centre, minus a vertex (Lan–Wei fig. 704)'
+        elif src=='ef9': ex=exact_sub(FOUR_EX,FOUR,P); lab='seven points of the three concentric equilateral triangles (the nine-point four-distance set; Lan–Wei figs. 705, 709–716)'
+        elif src=='sh8': ex=exact_sub(FIGE_EX,FIGE,P); lab='seven points of the square with four outward equilateral apexes (Lan–Wei figs. 717, 718)'
+        elif src=='dp10': ex=exact_sub(P10_EX,P10,P); lab='seven points of a regular pentagon and the inner pentagon of its pentagram (the ten-point five-distance set; Lan–Wei figs. 719, 720; maximal)'
+        elif src=='lat': lab='piece of the triangular lattice (Lan–Wei figs. 706, 721–739)'
+        elif src=='sqlat': lab='piece of the square lattice: distances 1, √2, 2, √5 (Lan–Wei fig. 740; maximal)'
+        elif src=='lw741': ex=LW741_EX; lab='distances 1, √(2+√3), 1+√3, √(5+2√3) (Lan–Wei fig. 741; maximal)'
+        elif src=='lw742': ex=LW742_EX; lab='distances 1, √2, √(2+√3), √(4+√3) (Lan–Wei fig. 742; maximal)'
+        it=item(P,lab,Nhint=N) if N else item(P,lab)
+        if ex: it['exact']=ex
+        items74.append(it)
+    cell(7,4,{0:E(42)},'exact',marks='†',note='Lan and Wei (2013, Theorem 8): exactly 42 seven-point four-distance sets, all drawn in their Fig. 4. The list here was reconstructed from their descriptions (four versions of the nonagon minus two vertices, the octagon minus a vertex, the heptagon-with-centre minus a vertex, nine subsets of the nine-point set of three concentric triangles, twenty pieces of the triangular lattice, two subsets of the square with four apexes, two subsets of the ten-point five-distance set, a square-lattice piece, and two sets given by their distance patterns), each verified to have exactly four distances; the count 42 is reproduced. Five are maximal (not contained in a larger four-distance set). Our earlier extension search had found 15 of them.',finite=True)
+    cat(7,4,items74,True,'The 42 seven-point four-distance sets',sources=('LW13',))
     # (11,5): Wei 2011, Theorem 13
     L115=uniq(json.load(open('lattice_11_5.json')))
     assert len(L115)==3
@@ -321,8 +356,7 @@ def main():
     for fn in glob.glob('symfam_*.json'):
         for k,v in json.load(open(fn)).items(): SYM.setdefault(k,[]).extend(v)
     EXT=json.load(open('ext4.json')); EXT.update(json.load(open('ext5.json')))
-    finite_cells={(7,4):('Lan and Wei (2013) classify the seven-point four-distance sets: there are exactly 42. Only the ones we could reconstruct are shown.',('LW13',)),
-                  }
+    finite_cells={}
     for n in range(6,17):
         for d in range(1,8):
             key=f'{n},{d}'
@@ -343,7 +377,6 @@ def main():
             dims={k:X(v) for k,v in c.items()}
             if fin:
                 dims={0:X(c.get(0,0))}
-                if (n,d)==(7,4): dims={0:E(42)}
             e=2*n-4-math.comb(n,2)+d
             note,srcs=finite_cells.get((n,d),('',()))
             if (n,d)==(16,7): srcs=('EF',)
@@ -352,7 +385,7 @@ def main():
                 if e>=1: note+=f'Every component has dimension ≥ {e}, so there are no rigid configurations. '
                 else: note+='Finiteness is not known to us, so higher-dimensional families cannot be excluded. '
             items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]+[item(G,lab,'family',dim) for G,lab,src,h,dim in pool.fam]
-            cell(n,d,dims,'exact' if (n,d)==(7,4) else 'bounds',note=note,finite=True if fin else None)
+            cell(n,d,dims,'bounds',note=note,finite=True if fin else None)
             cat(n,d,items,False,f'{n} points, {d} distances: known configurations',listing_note(len(pool.rigid),len(pool.fam),False),sources=srcs)
     cells['17-36,7']={'n':'17–36','d':7,'status':'open','dims':{'0':{'lo':0,'hi':None}},'marks':[],'note':'Whether any 17-point seven-distance set exists is open (Erdős–Fishburn conjecture: g(7) = 16; Bao–Yu 2025 conjecture the same). The Bannai–Bannai–Stanton/Blokhuis bound gives at most C(9,2) = 36 points for seven distances. Budianto (2022) rules out 17-point sets in most cases of the diameter-graph analysis. Extending the known 16-point sets by one point gives nothing.','finite':None,'krull':None}
     cats['17-36,7']={'items':[],'complete':False,'title':'17 to 36 points, 7 distances: open','note':'No example is known and none is excluded; the count could be 0. Upper bound 36 points.','sources':[SRC['BBS'],SRC['Bud22'],SRC['BY25'],SRC['Bal']]}

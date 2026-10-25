@@ -33,9 +33,10 @@ What each paper establishes, and how the applet's cells use it. g(k) = largest p
 - g(6) = 13 with exactly the three conjectured sets. Szöllősi–Östergård classify planar 6-distance sets by computer (isomorph-free generation + Gröbner bases + cliquer).
 - Cell (13,6).
 
-## Lan–Wei 2013, *Classification of four-distance seven-point sets in the plane* (Math. Notes)
-- 42 seven-point four-distance sets. The applet shows only the ones it could reconstruct; the paper itself has not been checked (not yet in hand).
-- Cell (7,4).
+## Lan–Wei 2013, *Classification of seven-point four-distance sets in the plane* (Math. Notes 93, 510–522)
+- Theorem 8: exactly 42 seven-point four-distance sets, all drawn in Fig. 4 (701–742). Structure given in the proof: R₉−2 (four versions: 701–703, 708), R₈−1 (707), R₇⁺−1 (704), nine 7-subsets of the three-concentric-triangles 9-set (705, 709–716), twenty pieces of the triangular lattice (706, 721–739), two 7-subsets of the square-with-four-apexes 8-set (717, 718), two 7-subsets of the 10-point 5-distance set "R₅ doubled about its centre" (719, 720; it is a regular pentagon with the inner pentagon of its pentagram, ratio φ²), 740 (square-lattice piece, 1:√2:2:√5), 741 (1:√(2+√3):√(4+2√3):√(5+2√3)), 742 (1:√2:√(2+√3):√(4+√3)). Five maximal: 719, 720, 740, 741, 742.
+- Method: diameter graphs (Lemmas 6, 7 classify the convex hull cases) plus extension of the 34 five-point three-distance sets as in Shinohara 2008.
+- Applet: all 42 reconstructed from these descriptions (`seven4.py`), each verified to have exactly four distances, exact coordinates throughout; cell (7,4) complete (†).
 
 ## Bannai–Bannai–Stanton 1983 / Blokhuis 1984
 - g(k) ≤ C(k+2, 2): 36 points for k = 7. Row "17–36, 7".
@@ -44,5 +45,5 @@ What each paper establishes, and how the applet's cells use it. g(k) = largest p
 - Partial results toward g(7) = 16; lattice constructions for m ≤ 13 and beyond (16, 19, 21, 24, 27, 27, 31 points for m = 7..13).
 
 ## Still wanted
-- Lan–Wei 2013 (the 42 sets of (7,4)), Wei 2012 (figures), Fishburn 1995 and Erdős–Fishburn Geom. Dedicata 1996 (convex polygons), Budianto 2022.
+- Wei 2012 (figures), Fishburn 1995 and Erdős–Fishburn Geom. Dedicata 1996 (convex polygons), Budianto 2022.
 - Nothing published seems to count the configurations for the non-maximal cells with d ≥ 4 and 6 ≤ n ≤ 10 (other than (7,4), (8,4)); those cells stay as bounds.

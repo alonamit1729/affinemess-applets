@@ -106,7 +106,7 @@ SRC={
  'Sh08':'M. Shinohara, Uniqueness of maximum planar five-distance sets, Discrete Math. 308 (2008) 3048–3055',
  'Wei11':'X. Wei, Classification of eleven-point five-distance sets in the plane, Ars Combin. 102 (2011) 505–515',
  'Wei12':'X. Wei, A proof of Erdős–Fishburn’s conjecture for g(6) = 13, Electron. J. Combin. 19(4) (2012) P38',
- 'LW13':'W. Lan, X. Wei, Classification of four-distance seven-point sets in the plane, Math. Notes (2013)',
+ 'LW13':'W. Lan, X. Wei, Classification of seven-point four-distance sets in the plane, Math. Notes 93 (2013) 510–522',
  'SO20':'F. Szöllősi, P. R. J. Östergård, Constructions of maximum few-distance sets in Euclidean spaces, Electron. J. Combin. 27(1) (2020) P1.23',
  'BBS':'E. Bannai, E. Bannai, D. Stanton, An upper bound for the cardinality of an s-distance subset in real Euclidean space II, Combinatorica 3 (1983); A. Blokhuis, Few-distance sets (1984)',
  'BY25':'L.-R. Bao, W.-H. Yu, Constructions of large m-distance sets on the triangular lattice, arXiv:2509.00880 (2025)',
