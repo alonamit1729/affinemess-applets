@@ -39,10 +39,16 @@ What each paper establishes, and how the applet's cells use it. g(k) = largest p
 - Applet: all 42 reconstructed from these descriptions (`seven4.py`), each verified to have exactly four distances, exact coordinates throughout; cell (7,4) complete (†).
 
 ## Bannai–Bannai–Stanton 1983 / Blokhuis 1984
-- g(k) ≤ C(k+2, 2): 36 points for k = 7. Row "17–36, 7".
+- g(k) ≤ C(k+2, 2): 36 points for k = 7. (The former open row "17–36, 7" was removed once g(7) = 16 was settled.)
+
+## Amit–Astra 2026, *The maximum cardinality of a planar seven-distance set* (preprint, 24 Oct 2026; submitted to Hexagon)
+- Theorem 1: g(7) = 16. Computer-assisted. Structure: a 17-point set with ≤ 7 distances has a diameter graph on m vertices; unless it is C_m, an independent set of ≥ 17 − ⌊m/2⌋ points (Wei's lemmas) is an 11-point core with ≤ 6 distances when m ≤ 13; m ≥ 14 forces a convex regular 14/15-gon (Erdős–Fishburn's convex-polygon lemma), excluded by distance-sum identities (Lemma 2); the odd cycle C₁₃ is excluded by an exact interval certificate on closure polynomials (Section 6, Lemma 3). The 11-point cores are classified (Lemma 6) from Szöllősi–Östergård's Table 9 (62 candidate patterns at order 11): 52 lattice sets (one-point deletions of 10 of the 11 twelve-point lattice cores, Table 2) and 10 circular patterns (Table 3); Lemma 7 then bounds every 7-distance extension of a core by 16 points, with exact arithmetic.
+- Our review (session of 25 Oct 2026): Lemmas 2–4, 7 and the Section 9 case analysis checked by hand; the SÖ Table 9 interpretation confirmed (candidate counts 62/15/3 at n = 11/12/13 are patterns with ≤ 6 colours over all sets; the n = 4 entry 25 equals all K₄ patterns); Lemma 7's lattice part replicated independently with exact arithmetic (`g7/ext11.py`: 32 cores extend to 12 points, 17 to 16, the 3 five-distance cores to 16; maximum 16); the lattice classification replicated by an independent enumeration (`g7/latt11b.py`: all 11- and 12-point subsets of the triangular lattice with ≤ 6 distances, minimum squared distance ≤ 16 and diameter ≤ 5 × minimum distance — exactly the 11 twelve-point cores and the 52 eleven-point sets of Table 2, 3 of them five-distance; no 11-point subset of the square lattice with ≤ 6 distances); the circular-core histograms and the absence of interior zeros of the closure polynomials replicated numerically (min |P_b| = 2.96·10⁻⁴ on the open arc). The one computational input taken from the literature is the completeness of SÖ's order-11 candidate list.
+- The paper does not classify the 16-point sets; the two Erdős–Fishburn lattice pieces remain the only known ones.
+- Cell (16,7) (note; sources), About text.
 
 ## Budianto 2022; Bao–Yu 2025 (arXiv:2509.00880)
-- Partial results toward g(7) = 16; lattice constructions for m ≤ 13 and beyond (16, 19, 21, 24, 27, 27, 31 points for m = 7..13).
+- Partial results toward g(7) = 16 (now settled by Amit–Astra 2026); lattice constructions for m ≤ 13 and beyond (16, 19, 21, 24, 27, 27, 31 points for m = 7..13).
 
 ## Still wanted
 - Wei 2012 (figures), Fishburn 1995 and Erdős–Fishburn Geom. Dedicata 1996 (convex polygons), Budianto 2022.

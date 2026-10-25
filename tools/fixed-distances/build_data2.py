@@ -379,21 +379,20 @@ def main():
                 dims={0:X(c.get(0,0))}
             e=2*n-4-math.comb(n,2)+d
             note,srcs=finite_cells.get((n,d),('',()))
-            if (n,d)==(16,7): srcs=('EF',)
+            if (n,d)==(16,7): srcs=('EF','AA26','SO20')
             if not fin:
                 note='Exact counts unknown; the bounds come from the configurations shown (each verified numerically to have the stated local dimension). '
                 if e>=1: note+=f'Every component has dimension ≥ {e}, so there are no rigid configurations. '
                 else: note+='Finiteness is not known to us, so higher-dimensional families cannot be excluded. '
+                if (n,d)==(16,7): note+='Sixteen points is the maximum for seven distances: Amit and Astra (2026) prove g(7) = 16 by a computer-assisted diameter-graph argument whose one computational input taken from the literature is the Szöllősi–Östergård exhaustive candidate list of eleven-point patterns with at most six distances. The two Erdős–Fishburn lattice sets are the only known sixteen-point seven-distance sets; the extremal sets are not classified, so the count is a lower bound. '
             items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]+[item(G,lab,'family',dim) for G,lab,src,h,dim in pool.fam]
             cell(n,d,dims,'bounds',note=note,finite=True if fin else None)
             cat(n,d,items,False,f'{n} points, {d} distances: known configurations',listing_note(len(pool.rigid),len(pool.fam),False),sources=srcs)
-    cells['17-36,7']={'n':'17–36','d':7,'status':'open','dims':{'0':{'lo':0,'hi':None}},'marks':[],'note':'Whether any 17-point seven-distance set exists is open (Erdős–Fishburn conjecture: g(7) = 16; Bao–Yu 2025 conjecture the same). The Bannai–Bannai–Stanton/Blokhuis bound gives at most C(9,2) = 36 points for seven distances. Budianto (2022) rules out 17-point sets in most cases of the diameter-graph analysis. Extending the known 16-point sets by one point gives nothing.','finite':None,'krull':None}
-    cats['17-36,7']={'items':[],'complete':False,'title':'17 to 36 points, 7 distances: open','note':'No example is known and none is excluded; the count could be 0. Upper bound 36 points.','sources':[SRC['BBS'],SRC['Bud22'],SRC['BY25'],SRC['Bal']]}
     for key,c in cats.items():
         dd=cells[key]['d']
         for it in c['items']: assert it['d']==dd,(key,it['label'],it['d'])
         c['items'].sort(key=lambda it: it['dim'])   # stable: rigid first, then 1d, 2d, ... ; original order within a dimension
-    meta={'rows':[str(k) for k in range(3,17)]+['17–36'],'cols':list(range(1,8))}
+    meta={'rows':[str(k) for k in range(3,17)],'cols':list(range(1,8))}
     json.dump({'cells':cells,'cats':cats,'meta':meta},open('applet_data.json','w'))
     print('cells',len(cells),'items',sum(len(c['items']) for c in cats.values()))
     for k,c in cells.items(): print(k,c['status'],c['dims'],c['marks'])

@@ -68,3 +68,8 @@ type 28 at d = 5) and fixed.
 **Concurrency rule.** All msolve/Singular scratch files are now process-unique (`tmp/ms_in_<pid>.txt` etc., see
 `certify5d.py`). Earlier runs of the hygiene scripts shared `ms_in5.txt`/`ms_out5.txt`; results produced while two such
 jobs overlapped were discarded and recomputed by `hygiene_run.sh`, which runs everything strictly sequentially.
+
+## g(7) = 16 review (`g7/`)
+
+`g7/ext11.py` — exact replication of Lemma 7 of Amit–Astra 2026 for the lattice cores (`g7/cores.json` holds the eleven twelve-point lattice cores L0–L10 transcribed from the paper's appendix): every 11-point one-point deletion with ≤ 6 distances, extended by points whose squared distances to the non-extreme anchors lie in the palette plus at most one (two, for five-distance cores) new value; prints the maximum extension size per core (16).
+`g7/latt11b.py tri|sq MMAX RATIO2` — independent enumeration of all 11- and 12-point lattice subsets with ≤ 6 distances up to similarity (origin + a minimum-distance partner fixed, DFS with the six-norm constraint; scope: minimum norm ≤ MMAX, squared diameter ≤ RATIO2 × minimum norm), compared with the deletions of the cores. Logs: `g7/latt_tri.log` (11 and 52, matching the paper), `g7/latt_sq.log` (none).

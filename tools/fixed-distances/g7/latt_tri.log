@@ -1,0 +1,12 @@
+m=1: reps 1, cand 90, nodes 108561, 11-sets so far 52, 12-sets 11, 4s
+m=3: reps 1, cand 264, nodes 160044, 11-sets so far 52, 12-sets 11, 13s
+m=4: reps 1, cand 354, nodes 167171, 11-sets so far 52, 12-sets 11, 26s
+m=7: reps 1, cand 630, nodes 247571, 11-sets so far 52, 12-sets 11, 62s
+m=9: reps 1, cand 792, nodes 318415, 11-sets so far 52, 12-sets 11, 111s
+m=12: reps 1, cand 1038, nodes 463873, 11-sets so far 52, 12-sets 11, 254s
+m=13: reps 1, cand 1134, nodes 447398, 11-sets so far 52, 12-sets 11, 422s
+m=16: reps 1, cand 1388, nodes 640530, 11-sets so far 52, 12-sets 11, 681s
+paper: 12-point core classes 11  11-point deletion classes 52
+found 12-point classes 11  in paper: 11  paper in found: 11
+found 11-point classes 52  in paper: 52  paper in found: 52
+distance-count histogram of found 11-sets: {4: 0, 5: 3, 6: 49}

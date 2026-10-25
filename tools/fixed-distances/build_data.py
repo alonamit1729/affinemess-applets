@@ -108,6 +108,7 @@ SRC={
  'Wei12':'X. Wei, A proof of Erdős–Fishburn’s conjecture for g(6) = 13, Electron. J. Combin. 19(4) (2012) P38',
  'LW13':'W. Lan, X. Wei, Classification of seven-point four-distance sets in the plane, Math. Notes 93 (2013) 510–522',
  'SO20':'F. Szöllősi, P. R. J. Östergård, Constructions of maximum few-distance sets in Euclidean spaces, Electron. J. Combin. 27(1) (2020) P1.23',
+ 'AA26':'A. Amit, GPT-6 Astra, The maximum cardinality of a planar seven-distance set, preprint (24 October 2026), submitted to Hexagon',
  'BBS':'E. Bannai, E. Bannai, D. Stanton, An upper bound for the cardinality of an s-distance subset in real Euclidean space II, Combinatorica 3 (1983); A. Blokhuis, Few-distance sets (1984)',
  'BY25':'L.-R. Bao, W.-H. Yu, Constructions of large m-distance sets on the triangular lattice, arXiv:2509.00880 (2025)',
  'Bud22':'W. T. Budianto, An observation on 7-distance sets in the Euclidean plane, M.Sc. thesis, National Central University (2022)',

@@ -1,0 +1,9 @@
+m=1: reps 1, cand 80, nodes 8868, 11-sets so far 0, 12-sets 0, 0s
+m=2: reps 1, cand 156, nodes 17885, 11-sets so far 0, 12-sets 0, 1s
+m=4: reps 1, cand 308, nodes 42672, 11-sets so far 0, 12-sets 0, 5s
+m=5: reps 1, cand 388, nodes 46750, 11-sets so far 0, 12-sets 0, 10s
+m=8: reps 1, cand 612, nodes 106969, 11-sets so far 0, 12-sets 0, 29s
+m=9: reps 1, cand 684, nodes 113602, 11-sets so far 0, 12-sets 0, 51s
+m=10: reps 1, cand 764, nodes 143456, 11-sets so far 0, 12-sets 0, 81s
+m=13: reps 1, cand 996, nodes 223424, 11-sets so far 0, 12-sets 0, 142s
+m=16: reps 1, cand 1212, nodes 350847, 11-sets so far 0, 12-sets 0, 255s
