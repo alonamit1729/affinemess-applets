@@ -1,0 +1,20 @@
+name: site matches master
+
+# Fails (red X on the commit, and an email to the repo owner) when site/ was edited by hand
+# or when src/master.html was changed without rebuilding. Fix: edit src/master.html and run
+#   python3 src/build_site.py
+on:
+  push:
+    paths: ['site/**', 'src/**', 'quora/index.json', '.github/workflows/site-check.yml']
+  pull_request:
+    paths: ['site/**', 'src/**', 'quora/index.json', '.github/workflows/site-check.yml']
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 src/build_site.py --check
