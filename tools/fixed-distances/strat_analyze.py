@@ -3,8 +3,8 @@ Vertices: rigid (5,<d)-sets (identified in the applet's certified catalogs); edg
 families; half-open edges end at degenerate configurations (two points coincide) or at infinity."""
 import json, sys, math, itertools, collections
 import numpy as np, networkx as nx
-d=int(sys.argv[1]); n=5
-S=json.load(open(f'strat_{d}.json'))
+d=int(sys.argv[1]); n=int(sys.argv[2]) if len(sys.argv)>2 else 5
+S=json.load(open(f'strat_{n}_{d}.json' if n!=5 else f'strat_{d}.json'))
 def dmat(P): return np.array([[math.dist(a,b) for b in P] for a in P])
 PERMS=list(itertools.permutations(range(n)))
 def canon(P):
@@ -17,7 +17,7 @@ def close(c1,c2,tol=2e-5): return max(abs(a-b) for a,b in zip(c1,c2))<tol
 A=json.load(open('applet_data.json'))
 ref=[]
 for dd in range(2,d):
-    key=f'5,{dd}'
+    key=f'{n},{dd}'
     if key in A['cats']:
         for k,it in enumerate(A['cats'][key]['items']):
             if it.get('kind','rigid')=='rigid': ref.append((canon([[float(x) for x in c] for c in it['coords']]),(dd,k,it.get('label',''))))
@@ -26,16 +26,17 @@ def lookup(c):
         if close(rc,c): return lab
     return None
 V=[]   # list of (canon, label)
-def vid(c):
+def vid(c,tol=2e-5):
     for i,(k,_) in enumerate(V):
-        if close(k,c): return i
+        if close(k,c,tol): return i
     V.append((c,lookup(c))); return len(V)-1
 Edges=[]; stats=collections.Counter()
 for rec in S:
     for g in rec['arcs']:
         ends=[]
         for e in g['ends']:
-            if 'end' in e: ends.append(('end',e['end']))
+            if e.get('end')=='fold': ends.append(('v',vid(tuple(e['canon']),5e-3)))
+            elif 'end' in e: ends.append(('end',e['end']))
             else: ends.append(('v',vid(tuple(e['canon']))))
         Edges.append({'type':rec['type'],'ends':ends,'mult':g['mult'],'inv':(g['ratio_max'],g['ratio_min'])})
         kinds=tuple(sorted(e[0] if e[0]=='v' else e[1] for e in ends)); stats[kinds]+=1
@@ -49,7 +50,7 @@ if unid:
     def ccol(rgs):
         best=None
         for pe in perms:
-            c=[rgs[pe[i]] for i in range(10)]; mp={}; out=[]
+            c=[rgs[pe[i]] for i in range(len(E))]; mp={}; out=[]
             for x in c:
                 if x not in mp: mp[x]=len(mp)
                 out.append(mp[x])
@@ -65,22 +66,26 @@ if unid:
         return ccol(col),len(vals)
     famtypes={}
     for dd in range(2,d):
-        try: R=json.load(open(f'cert5{dd}.json'))
+        try: R=json.load(open(f'cert{n}{dd}.json'))
         except FileNotFoundError: continue
         for r in R:
             if any((q.get('real') or q.get('real_slices')) and q['dim']>0 for q in r['primes']) or r.get('unresolved'): famtypes[(dd,ccol(tuple(r['col'])))]=r['idx']
-    rootpts={}
+    rootpts={}; folds=set()
     for rec in S:
         for q in rec['roots']:
             if not q['coincident']: rootpts.setdefault(tuple(q['canon']),q['v'])
+        for g in rec['arcs']:
+            for e in g['ends']:
+                if e.get('end')=='fold': rootpts.setdefault(tuple(e['canon']),e['v']); folds.add(tuple(e['canon']))
     kinds=collections.Counter()
     for i in unid:
         c=V[i][0]; v=None
         for k,vv in rootpts.items():
             if close(k,c): v=vv; break
         if v is None: kinds['no point']+=1; continue
-        P=[(0,0),(v[0],0),(v[1],v[2]),(v[3],v[4]),(v[5],v[6])]
+        P=[(0,0),(v[0],0)]+[(v[2*k-3],v[2*k-2]) for k in range(2,n)]
         ct,nv=coltype(P); t=famtypes.get((nv,ct))
+        if any(close(k,c) for k in folds): V[i]=(c,(nv,None,f'fold point: a mirror-symmetric {nv}-distance configuration where the family meets its own reflection')); kinds['fold']+=1; continue
         if t is not None: V[i]=(c,(nv,None,f'interior point of a {nv}-distance family (type {t})')); kinds[f'on (5,{nv}) family']+=1
         else: kinds[f'unknown d={nv}']+=1
     print('unidentified vertices classified:',dict(kinds))
@@ -92,7 +97,7 @@ for e in Edges:
 print('valence histogram:',sorted(collections.Counter(val.values()).items()))
 reached={l[:2] for c,l in V if l}
 missing=[lab for c,lab in ref if lab[0]==d-1 and lab[:2] not in reached]
-print(f'(5,{d-1}) rigid sets not reached by any (5,{d}) family: {len(missing)}',[m[1] for m in missing][:50])
+print(f'({n},{d-1}) rigid sets not reached by any (5,{d}) family: {len(missing)}',[m[1] for m in missing][:50])
 G=nx.MultiGraph(); leaf=[0]
 for i in range(len(V)): G.add_node(('v',i))
 for e in Edges:
@@ -108,4 +113,4 @@ print('vertex subgraph (rigid sets only): nodes',H.number_of_nodes(),'edges',H.n
 print('mult histogram of arcs:',sorted(collections.Counter(e['mult'] for e in Edges).items()))
 json.dump({'vertices':[{'id':i,'canon':list(c),'cell':l[0] if l else None,'item':l[1] if l else None,'label':l[2] if l else None} for i,(c,l) in enumerate(V)],
            'edges':[{'type':e['type'],'ends':[list(x) for x in e['ends']],'mult':e['mult'],'inv':list(e['inv'])} for e in Edges],
-           'types':{str(rec['type']):rec['col'] for rec in S}},open(f'strat_graph_{d}.json','w'))
+           'types':{str(rec['type']):rec['col'] for rec in S}},open(f'strat_graph_{n}_{d}.json' if n!=5 else f'strat_graph_{d}.json','w'))

@@ -127,7 +127,7 @@ def trace(C,v0,dir0,roots,start=None,home=None,maxsteps=300000):
             if not ok: return v,path,('lost',)
         v=w; path.append(v.copy())
         sc=max(1.0,max(abs(x) for x in v))
-        if sc>300: return v,path,('inf',)
+        if max(abs(x) for x in v[:7])>300: return v,path,('inf',)
         dr=np.abs(RT-v).max(axis=1) if len(RT) else np.array([np.inf])
         if start is not None and not left_start:
             if dr[start]>3e-3*sc: left_start=True
@@ -166,7 +166,11 @@ def truncate_fp(fp):
         if len(bad)==0: return fp
     return fp[:bad[0]] if bad[0]>2 else fp
 def same_arc(fpA,fpB,tol=4e-3):
-    """every one of 40 samples of A lies on B and vice versa"""
+    """every one of 40 samples of A lies on B and vice versa, over the shape range both traversals reached
+    (a traversal may stop early when the configuration elongates and the system becomes ill-conditioned)"""
+    lo=max(fpA[:,0].min(),fpB[:,0].min())+2e-3
+    fpA=fpA[fpA[:,0]>=lo]; fpB=fpB[fpB[:,0]>=lo]
+    if len(fpA)<3 or len(fpB)<3: return False
     for X,Y in ((fpA,fpB),(fpB,fpA)):
         idx=np.linspace(0,len(X)-1,40).astype(int)
         for k in idx:
@@ -187,6 +191,8 @@ def process(idx,col,pi,gens):
             q=rec['roots'][i]
             return {'end':'degenerate','root':i,'canon':q['canon']} if q['coincident'] else {'root':i,'canon':q['canon']}
         def same_end(a,b):
+            # a collision seen as 'two points merge' and as 'escape to infinity' (the base pair merging after rescaling) is the same end
+            if a.get('end') in ('degenerate','inf') and b.get('end') in ('degenerate','inf'): return True
             if a.get('end')!=b.get('end'): return False
             if 'canon' not in a or 'canon' not in b: return True
             return max(abs(x-y) for x,y in zip(a['canon'],b['canon']))<2e-5
@@ -219,7 +225,7 @@ def process(idx,col,pi,gens):
                 e1=endrep(i)
                 if hit[0]=='root': e2=endrep(hit[1])
                 elif hit[0]=='inf': e2={'end':'inf'}
-                elif hit[0] in ('lost','singular','maxsteps') and max(abs(x) for x in vend)>100: e2={'end':'inf'}; hit=('inf',)
+                elif hit[0] in ('lost','singular','maxsteps') and (max(abs(x) for x in vend)>100 or fp_path([vend])[0,0]<0.1): e2={'end':'inf'}; hit=('inf',)
                 else: e2={'end':hit[0]}
                 add_arc(e1,e2,[v0]+path,hit)
         random.seed(idx*100+pi)

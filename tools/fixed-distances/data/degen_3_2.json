@@ -1,0 +1,1 @@
+[{"type": 0, "dim": 1, "eq": ["eq", 0, 1], "components": [{"dim": 0, "real": true, "sample": [[0.0, 0.0], [1.0, 0.0], [0.5, -0.8660254037844386]], "coincident": false, "col_type": [0, 0, 0], "d_new": 1}]}, {"type": 0, "dim": 1, "eq": ["zero", 1], "components": [{"dim": 0, "real": true, "sample": [[0.0, 0.0], [1.0, 0.0], [1.0, 0.0]], "coincident": true}]}]

@@ -1,0 +1,1 @@
+[{"idx": 0, "col": [0, 1, 2], "primes": [{"dim": 2, "degenerate": false, "real": true, "point": [[0.0, 0.0], [-1.0, 0.0], [2.727272727272727, 0.5454545454545454]], "slice_hits": 3}, {"dim": 2, "degenerate": false, "real": true, "point": [[0.0, 0.0], [1.0, 0.0], [0.6, 3.0]], "slice_hits": 4}], "rigid": []}]
