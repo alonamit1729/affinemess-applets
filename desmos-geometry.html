@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Desmos Geometry · affine·mess</title>
+<!--
+  Shows a saved Desmos Geometry construction without the editor, for the site's viewer
+  (Desmos Geometry has no ?embed link). Usage: desmos-geometry.html?id=<graph id>
+  The construction is loaded from desmos.com/geometry/<id> (or, if present,
+  desmos-geometry/<id>.json in this repo) and drawn with the Desmos API.
+  The API key below is Alon's Desmos key (created 2026-10-25 at desmos.com/my-api); API keys
+  are meant to be public in client-side code.
+-->
+<style>
+  html, body { margin:0; height:100%; background:#FBF6E8; }
+  #g { position:absolute; inset:0; }
+  #msg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+         padding:24px; text-align:center; font:17px/1.5 Georgia, serif; color:#5C5142; }
+  #msg a { color:#8A3F12; }
+  #msg[hidden] { display:none; }
+</style>
+<script src="https://www.desmos.com/api/v1.12/calculator.js?apiKey=1bd0a76fb8c342d095e7454ef5a1803c"></script>
+</head>
+<body>
+<div id="g"></div>
+<div id="msg">Loading&hellip;</div>
+<script>
+(function () {
+  var id = (new URLSearchParams(location.search).get('id') || '').replace(/[^a-z0-9]/gi, '');
+  var msg = document.getElementById('msg');
+  var link = 'https://www.desmos.com/geometry/' + id;
+  function fail() {
+    msg.hidden = false;
+    msg.innerHTML = 'This construction couldn’t be shown here. <a href="' + link + '" target="_blank" rel="noopener">Open it on Desmos ↗</a>';
+  }
+  if (!id || !window.Desmos || !Desmos.Geometry) { fail(); return; }
+
+  function getJSON(url, headers) {
+    return fetch(url, { headers: headers || {} }).then(function (r) {
+      if (!r.ok) throw new Error(url);
+      return r.json();
+    });
+  }
+  // a local copy (if one was saved in the repo) wins; otherwise ask Desmos for the saved graph
+  getJSON('desmos-geometry/' + id + '.json')
+    .catch(function () { return getJSON(link, { Accept: 'application/json' }); })
+    .then(function (j) {
+      var state = j && (j.state || j);
+      var g = Desmos.Geometry(document.getElementById('g'), {
+        expressions: false,      // no object list
+        settingsMenu: false,
+        keypad: false,
+        border: false
+      });
+      g.setState(state);
+      msg.hidden = true;
+    })
+    .catch(fail);
+})();
+</script>
+</body>
+</html>
