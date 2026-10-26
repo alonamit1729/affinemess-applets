@@ -1,0 +1,1620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>affine·mess</title>
+<meta name="description" content="Alon Amit's math arcade: interactive applets, Desmos sketches, talks, papers and Quora answers.">
+<link rel="canonical" href="https://affinemess.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://affinemess.com/">
+<meta property="og:title" content="affine·mess">
+<meta property="og:description" content="Alon Amit's math arcade: interactive applets, Desmos sketches, talks, papers and Quora answers.">
+<style>html,body{margin:0;background:#F2EBD9}</style>
+</head>
+<body>
+<!-- =========================================================
+  VERSION 2026-10-25b
+    b: the site is also built as a complete static index.html (relative links) for serving affinemess.com from GitHub Pages
+  PREVIOUS 2026-10-25a
+    a: Partial Sums of tan n card restored (dropped when v2026-10-24b was rebuilt from a master that lacked it)
+  PREVIOUS 2026-10-24b
+    b: top-level navigation lands at the top; Partial Sums of tan n card
+    a: applet links on apps.affinemess.com; Hexagon paper added; two placeholder YouTube tiles removed
+  PREVIOUS 2026-10-17e
+    e: nav: current tab bold + underlined (constant 2px), stray focus bars removed
+  PREVIOUS 2026-10-17d
+    d: PhD thesis row links to the thesis PDF (hosted in the repo under papers/)
+  PREVIOUS 2026-10-17c
+    c: Papers link to the papers themselves (DOI / publisher / author PDF); About: LinkedIn replaces GitHub
+  PREVIOUS 2026-10-17b
+    b: footer reads "built with claude" (first change published through GitHub only)
+  PREVIOUS 2026-10-17a
+    a: the site is served from GitHub Pages (apps.affinemess.com/site/); the Squarespace Code Block holds
+       only a small loader (loader.html). This file stays the readable master: build_site.py splits it
+       into site/site.html + site/site.js for the repo.
+  PREVIOUS 2026-10-15a
+    a: Desmos tab split into Demonstrations / Eye candy; Desmos graphs open in the viewer with an
+       instructions note above them (tile data-note); real Desmos tiles: Slope Field, Gradient Descent, Coin Rotation, Overlaid Harmonics, Ripples, Black Hole Sun
+  PREVIOUS 2026-10-13f
+    f: HCN, Fractional Parts and the new Lozenge Tilings applet open in place;
+       Lozenge Tilings replaces the placeholder tile
+    e: Red–Blue tile opens in place (#applets/red-blue-matching)
+    d: Squarespace silently truncated v-c (~47K chars; its Code Block caps out
+       just under that). From now on paste affinemess-squarespace.paste.html,
+       a minified build of this file (~35K). The footer version is now written
+       by the LAST line of the script, so a cut-off paste shows a warning there
+       instead of a version number.
+    c: one tile system (Applets / Desmos / YouTube), YouTube plays in the viewer,
+       thumbnail fix (hqdefault), Papers list framed like a card
+    b: nav order Applets · Papers · Desmos · YouTube · About; version stamp
+    a: applet viewer (in-place iframe, #applets/<slug> permalinks; Brudno trial)
+  How to tell what is live: footer shows "v<version>" only if the whole script ran; in dev tools,
+  document.querySelector('.am-root').dataset.version
+  (Squarespace may strip this comment on paste; the footer + data attribute survive.)
+  affinemess.com — Squarespace Code Block payload
+  DO NOT paste this file. Squarespace gets only the loader (loader.html); Claude publishes this master.
+  All CSS is scoped under .am-root so it won't fight Squarespace's own styles.
+  See the chat message for the step-by-step deployment guide.
+========================================================== -->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  
+  body { background-color: #F2EBD9 !important; }
+  .content-wrapper { padding-top: 0 !important; padding-bottom: 0 !important; }
+  .sqs-block-code, .sqs-block-content, .sqs-code-container, .fe-block {
+    padding: 0 !important; margin: 0 !important; max-width: none !important;
+  }
+  
+  .am-root {
+    --paper:        #F2EBD9;
+    --paper-card:   #FBF6E8;
+    --paper-hover:  #FFFAEC;
+    --ink:          #1E1810;
+    --ink-soft:     #5C5142;
+    --ink-faint:    #8A7D66;
+    --accent:       #B85820;
+    --accent-deep:  #8A3F12;
+    --grid:         #D8CCAE;
+    --line:         #B8AB8A;
+    --line-soft:    #D4C9AC;
+
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 14, "SOFT" 50;
+    font-weight: 380;
+    line-height: 1.55;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .am-root *,
+  .am-root *::before,
+  .am-root *::after { box-sizing: border-box; }
+
+  /* Sheared dot grid — stays with the container, not the whole page */
+  .am-root::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: -200px; right: -200px; bottom: -200px;
+    background-image: radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+    background-size: 32px 32px;
+    transform: skewX(-3deg);
+    z-index: 0;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .am-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 32px 40px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============== HEADER + NAV ============== */
+  .am-root .site-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .am-root .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    text-decoration: none;
+    color: var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .am-root .wordmark .affine { display: inline-block; }
+  .am-root .wordmark .sep {
+    display: inline-block;
+    margin: 0 0.14em;
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .am-root .wordmark .mess { display: inline-block; }
+  .am-root .wordmark .mess span {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .am-root .wordmark .mess span:nth-child(1) { transform: rotate(-3deg) translateY(-1px); }
+  .am-root .wordmark .mess span:nth-child(2) { transform: rotate(2deg)  translateY(0px); }
+  .am-root .wordmark .mess span:nth-child(3) { transform: rotate(-2deg) translateY(1px); }
+  .am-root .wordmark .mess span:nth-child(4) { transform: rotate(4deg)  translateY(-1px); }
+  .am-root .wordmark:hover .mess span:nth-child(1) { transform: rotate(-8deg) translateY(-2px); }
+  .am-root .wordmark:hover .mess span:nth-child(2) { transform: rotate(7deg)  translateY(2px); }
+  .am-root .wordmark:hover .mess span:nth-child(3) { transform: rotate(-5deg) translateY(2px); }
+  .am-root .wordmark:hover .mess span:nth-child(4) { transform: rotate(9deg)  translateY(-2px); }
+
+  .am-root .tabs {
+    display: flex;
+    gap: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .am-root .tabs::-webkit-scrollbar { display: none; }
+  .am-root .tabs button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    padding: 10px 14px;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s;
+    outline: none;                      /* the focus ring was clipped by the scroller: it showed as two stray vertical bars */
+    -webkit-tap-highlight-color: transparent;
+  }
+  .am-root .tabs button:hover { color: var(--accent); }
+  .am-root .tabs button[aria-selected="true"] {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 7px;
+  }
+  .am-root .tabs button[aria-selected="true"]:hover { color: var(--ink); }
+
+  /* ============== PANELS ============== */
+  .am-root main { flex-grow: 1; padding: 28px 0 20px; position: relative; }
+  .am-root .panel { display: none; animation: am-fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .am-root .panel.active { display: block; }
+  @keyframes am-fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .am-root .panel-head {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .am-root .panel-head .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .am-root .panel-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-variation-settings: "opsz" 144, "SOFT" 80;
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .am-root .panel-head .tagline {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+
+  /* ============== PAPERS ============== */
+  .am-root .papers-list {
+    display: flex; flex-direction: column;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 2px 18px;
+  }
+  .am-root .paper:last-child { border-bottom: 0; }
+  .am-root .paper {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--line-soft);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s, padding-left 0.2s;
+  }
+  .am-root .paper:hover { background: rgba(184, 88, 32, 0.05); padding-left: 12px; }
+  .am-root .paper .yr { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint); }
+  .am-root .paper .meta { display: flex; flex-direction: column; gap: 2px; }
+  .am-root .paper .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 420;
+    font-size: 16px;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .am-root .paper:hover .title { color: var(--accent-deep); }
+  .am-root .paper .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    line-height: 1.4;
+  }
+  .am-root .paper .venue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .am-root .papers-foot { margin-top: 18px; text-align: right; }
+  .am-root .papers-foot a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+  }
+
+  /* ============== TILES ==============
+     One tile for Applets, Desmos and YouTube:
+       <a class="tile" ...>
+         <div class="media">glyph svg | <img> | <video> | placeholder</div>
+         <div class="body"> .label  .title  .desc  .open </div>
+       </a>
+     Desktop 4 per row; phones get compact rows (picture on the left). */
+  .am-root .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .am-root .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 720px) { .am-root .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 460px) { .am-root .grid { grid-template-columns: 1fr; gap: 12px; } }
+
+  .am-root .tile {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .am-root .tile:hover {
+    transform: translateY(-3px);
+    background: var(--paper-hover);
+    border-color: var(--accent);
+    box-shadow: 0 10px 26px -10px rgba(30, 24, 16, 0.22);
+  }
+  .am-root .tile .media {
+    aspect-ratio: 9 / 4;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--line-soft);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+    background-size: 16px 16px;
+  }
+  .am-root .tile .media img,
+  .am-root .tile .media video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.5s, filter 0.3s;
+    filter: saturate(0.9) contrast(0.98);
+  }
+  .am-root .tile:hover .media img,
+  .am-root .tile:hover .media video { transform: scale(1.03); filter: none; }
+  .am-root .tile .glyph {
+    width: 58px; height: 58px;
+    color: var(--ink);
+    transition: color 0.3s, transform 0.5s;
+  }
+  .am-root .tile:hover .glyph { color: var(--accent); transform: rotate(8deg) scale(1.05); }
+  .am-root .tile .media .placeholder {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    text-align: center;
+  }
+  /* video thumbnails */
+  .am-root .tile .media.video { background: #2A2219; }
+  /* podcast thumbnails: show logo, dimmed, with the episode title layered on */
+  .am-root .tile .media.podcast { background: #1E1810; }
+  .am-root .tile .media.podcast img { inset: 0 auto auto -30%; width: 160%; height: auto; filter: brightness(0.5) saturate(0.9); }
+  .am-root .tile:hover .media.podcast img { filter: brightness(0.55); }
+  .am-root .tile .media .ptitle {
+    position: relative; z-index: 1; padding: 0 14px; text-align: center;
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: 21px; line-height: 1.15;
+    color: #FBF6E8; text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+    font-variation-settings: "opsz" 144, "SOFT" 80;
+  }
+  @media (max-width: 460px) {
+    .am-root .tile .media .ptitle { display: none; }
+    .am-root .tile .media.podcast img { inset: 0; width: 100%; height: 100%; filter: none; }
+  }
+  .am-root .tile .media .play {
+    position: absolute;
+    bottom: 10px; right: 10px;
+    width: 32px; height: 32px;
+    background: rgba(242, 235, 217, 0.95);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    transition: background 0.2s, color 0.2s, transform 0.3s;
+    z-index: 2;
+  }
+  .am-root .tile .media .play svg { width: 12px; height: 12px; margin-left: 2px; }
+  .am-root .tile:hover .media .play { background: var(--accent); color: var(--paper); transform: scale(1.1); }
+
+  .am-root .tile .body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .am-root .tile .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .am-root .tile .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+  .am-root .tile .desc {
+    font-family: 'Fraunces', serif;
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    flex-grow: 1;
+    min-height: 2.8em;            /* always two lines tall, so every tile is the same size */
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .am-root .tile .open {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s, gap 0.25s;
+  }
+  .am-root .tile:hover .open { color: var(--accent); gap: 10px; }
+  .am-root .tile.todo {
+    border-style: dashed;
+    border-color: var(--line-soft);
+    background: transparent;
+    opacity: 0.75;
+  }
+  .am-root .tile.todo .media { background-image: none; background-color: transparent; }
+  .am-root .tile.todo .glyph { opacity: 0.4; }
+
+  @media (max-width: 460px) {
+    .am-root .tile { flex-direction: row; }
+    .am-root .tile .media {
+      flex: 0 0 104px; width: 104px; min-height: 104px; aspect-ratio: auto;
+      border-bottom: 0; border-right: 1px solid var(--line-soft);
+    }
+    .am-root .tile .glyph { width: 44px; height: 44px; }
+    .am-root .tile .body { padding: 10px 12px; }
+    .am-root .tile .title { font-size: 16px; }
+    .am-root .tile .desc { font-size: 13px; margin-bottom: 6px; }
+    .am-root .tile .media .play { width: 26px; height: 26px; bottom: 6px; right: 6px; }
+  }
+
+  /* sub-sections inside a panel (Desmos: Demonstrations / Eye candy) */
+  .am-root .sub-head {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    margin: 30px 0 14px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .am-root .panel-head + .sub-head { margin-top: 4px; }
+  .am-root .sub-head h3 {
+    margin: 0;
+    font-family: 'Fraunces', serif; font-weight: 500; font-size: 19px; line-height: 1.2;
+    color: var(--ink);
+  }
+  .am-root .sub-head .sub-note {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint);
+  }
+
+  /* About */
+  .am-root .about {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    max-width: 900px;
+  }
+  @media (max-width: 720px) { .am-root .about { grid-template-columns: 1fr; gap: 28px; } }
+  .am-root .about p {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .am-root .about p a { color: var(--accent-deep); text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .am-root .about p a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+  .am-root .about p em { font-style: italic; color: var(--accent-deep); }
+  .am-root .about .sidecol h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .am-root .about .sidecol ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .am-root .about .sidecol a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--line);
+    padding-bottom: 1px;
+  }
+  .am-root .about .sidecol a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Footer */
+  .am-root .site-foot {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .am-root .am-ver-bad { color: var(--accent); }
+  .am-root .site-foot em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+
+  /* ============== QUORA ============== */
+  .am-root .qotd {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--paper-card); border: 1px solid var(--line); border-radius: 3px;
+    padding: 18px 22px 16px; margin-bottom: 22px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .am-root .qotd:hover { border-color: var(--accent); background: var(--paper-hover, #FFFAEC); }
+  .am-root .qotd .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .am-root .qotd .title {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: 24px;
+    line-height: 1.2; letter-spacing: -0.01em; margin: 8px 0 8px; color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 80;
+  }
+  .am-root .qotd:hover .title { color: var(--accent-deep); }
+  .am-root .qotd .desc { font-size: 15.5px; line-height: 1.55; color: var(--ink-soft); margin: 0 0 10px; }
+  .am-root .qotd .open {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+  .am-root .qtools { display: flex; gap: 10px; align-items: center; margin: 0 0 12px; flex-wrap: wrap; }
+  .am-root .qtools input[type=search] {
+    flex: 1 1 220px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink);
+    background: var(--paper-card); border: 1px solid var(--line); border-radius: 3px; padding: 8px 10px;
+  }
+  .am-root .qtools input[type=search]:focus { outline: none; border-color: var(--accent); }
+  .am-root .qtools button {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); background: transparent; border: 1px solid var(--line); border-radius: 3px;
+    padding: 9px 12px; cursor: pointer; white-space: nowrap;
+  }
+  .am-root .qtools button:hover { color: var(--accent); border-color: var(--accent); }
+  .am-root .qtools .qcount { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); }
+  .am-root .qlist { display: flex; flex-direction: column; background: var(--paper-card); border: 1px solid var(--line); border-radius: 3px; padding: 2px 18px; }
+  .am-root .qrow {
+    display: grid; grid-template-columns: 56px 1fr; gap: 20px; align-items: baseline;
+    padding: 10px 4px; border-bottom: 1px solid var(--line-soft); text-decoration: none; color: inherit;
+    transition: background 0.2s, padding-left 0.2s;
+  }
+  .am-root .qrow:last-child { border-bottom: 0; }
+  .am-root .qrow:hover { background: rgba(184, 88, 32, 0.05); padding-left: 12px; }
+  .am-root .qrow[hidden] { display: none; }
+  .am-root .qrow .yr { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint); }
+  .am-root .qrow .meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .am-root .qrow .title { font-weight: 420; font-size: 16px; line-height: 1.3; color: var(--ink); }
+  .am-root .qrow:hover .title { color: var(--accent-deep); }
+  .am-root .qrow .sub {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--ink-faint); line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .am-root .qnone { padding: 16px 4px; color: var(--ink-soft); font-style: italic; }
+  .am-root .tex .katex { font-size: 1em; }
+  @media (max-width: 600px) {
+    .am-root .qrow { grid-template-columns: 44px 1fr; gap: 12px; padding: 10px 2px; }
+    .am-root .qlist { padding: 2px 12px; }
+    .am-root .qotd { padding: 14px 16px; }
+    .am-root .qotd .title { font-size: 20px; }
+  }
+
+  /* ============== VIEWER ==============
+     Tiles with data-slug="<slug>" open in place at #<tab>/<slug>
+     (applets, YouTube videos, Desmos graphs).
+     Desktop: viewer replaces the grid, header + footer stay.
+     Phone / short window: viewer is a full-screen overlay with a slim bar. */
+  .am-root .viewer { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; padding: 18px 0 18px; }
+  .am-root .viewer[hidden] { display: none; }
+  .am-root .viewer-bar {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 12px; flex-shrink: 0;
+  }
+  .am-root .viewer-bar .vtitle {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80;
+    font-size: 22px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .am-root .viewer-bar .vactions { display: flex; gap: 6px; flex-shrink: 0; }
+  .am-root .vbtn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .am-root .vbtn:hover, .am-root .vbtn:focus-visible {
+    color: var(--accent); border-color: var(--accent); background: var(--paper-hover); outline: none;
+  }
+  /* instructions strip above the graph (tile's data-note) */
+  .am-root .viewer-note {
+    flex-shrink: 0; margin: 0 0 12px; padding: 10px 14px; cursor: default;
+    background: var(--paper-card);
+    border: 1px solid var(--line-soft); border-left: 3px solid var(--accent); border-radius: 3px;
+    font-family: 'Fraunces', serif; font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+    max-height: 30vh; overflow-y: auto;
+  }
+  .am-root .viewer-note[hidden] { display: none; }
+  .am-root .viewer-stage {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .am-root .viewer-stage .vloading {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .am-root .viewer-stage iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0;
+    background: var(--paper-card);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .am-root .viewer-stage iframe.loaded { opacity: 1; }
+  /* videos: 16:9 player, letterboxed on dark, as large as the stage allows */
+  .am-root .viewer.is-video .viewer-stage { background: #1E1810; border-color: #1E1810; container-type: size; }
+  .am-root .viewer.is-video .viewer-stage iframe {
+    margin: auto;
+    width:  min(100cqw, calc(100cqh * 16 / 9));
+    height: min(100cqh, calc(100cqw * 9 / 16));
+    background: #000;
+  }
+
+  /* Desktop: viewer takes over the panel area, page stays one screen tall */
+  @media (min-width: 701px) and (min-height: 521px) {
+    .am-root.am-viewing .am-container { height: 100vh; height: 100dvh; min-height: 560px; }
+    .am-root.am-viewing main { display: none; }
+  }
+  /* Phone (or very short window): full-screen overlay */
+  @media (max-width: 700px), (max-height: 520px) {
+    .am-root .viewer {
+      position: fixed; inset: 0; z-index: 99999;
+      padding: 0;
+      background: var(--paper);
+      overscroll-behavior: contain;
+    }
+    .am-root .viewer-bar {
+      padding: 8px 10px; gap: 8px;
+      background: var(--paper-card);
+      border-bottom: 1px solid var(--line);
+    }
+    .am-root .viewer-bar .vtitle { font-size: 17px; }
+    .am-root .vbtn { padding: 11px 12px; }   /* comfortable tap target */
+    .am-root .viewer-stage { border: 0; border-radius: 0; }
+    .am-root .viewer-note {
+      margin: 0; border-width: 0 0 1px; border-radius: 0; padding: 8px 12px; font-size: 13.5px; line-height: 1.4;
+      cursor: pointer; max-height: none; overflow: hidden;
+    }
+    .am-root .viewer-note > span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .am-root .viewer-note.open { max-height: 40vh; overflow-y: auto; }
+    .am-root .viewer-note.open > span { display: block; }
+    .am-root .vbtn.copy { display: none; }   /* back + new-tab only; copy is in the URL bar */
+  }
+  html.am-lock, html.am-lock body { overflow: hidden !important; }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .am-container { padding: 20px 20px 32px; }
+    .am-root .site-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .am-root .tabs {
+      flex-wrap: wrap;
+      overflow-x: visible;
+      gap: 0 2px;
+      row-gap: 2px;
+    }
+   .am-root .tabs button {
+      padding: 8px 10px;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+    }
+    .am-root .tabs { width: 100%; }
+    .am-root .panel-head h2 { font-size: 26px; }
+    .am-root .panel-head .tagline { display: none; }
+    .am-root .paper { grid-template-columns: 48px 1fr; padding: 10px 2px; }
+    .am-root .papers-list { padding: 2px 12px; }
+    .am-root .paper .venue { grid-column: 2; text-align: left; margin-top: 2px; }
+  }
+</style>
+
+<div class="am-root" data-version="2026-10-25b">
+  <div class="am-container">
+
+    <header class="site-head">
+      <a class="wordmark" href="#applets">
+        <span class="affine">affine</span><span class="sep">·</span><span class="mess"><span>m</span><span>e</span><span>s</span><span>s</span></span>
+      </a>
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="applets" aria-selected="true">Applets</button>
+        <button role="tab" data-tab="papers"  aria-selected="false">Papers</button>
+        <button role="tab" data-tab="desmos"  aria-selected="false">Desmos</button>
+        <button role="tab" data-tab="media"   aria-selected="false">Media</button>
+        <button role="tab" data-tab="quora"   aria-selected="false">Quora</button>
+        <button role="tab" data-tab="about"   aria-selected="false">About</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- PAPERS -->
+      <section class="panel" id="am-panel-papers">
+        <div class="panel-head">
+          <span class="num">02</span>
+          <h2>Papers</h2>
+          <span class="tagline">peer-reviewed, mostly</span>
+        </div>
+        <div class="papers-list">
+          <a class="paper" href="https://hexagonmath.org/2610.00191v1" target="_blank" rel="noopener">
+            <span class="yr">2026</span>
+            <span class="meta">
+              <span class="title">Brudno&rsquo;s Families of Equal Sums of Sixth Powers and Bremner&rsquo;s K3 Surface</span>
+              <span class="sub">with Claude Fable 5.1</span>
+            </span>
+            <span class="venue">Hexagon&nbsp;2610.00191</span>
+          </a>
+          <a class="paper" href="https://arxiv.org/abs/2502.09955" target="_blank" rel="noopener">
+            <span class="yr">2025</span>
+            <span class="meta">
+              <span class="title">Diverse Inference and Verification for Advanced Reasoning</span>
+              <span class="sub">with Drori, Longhitano, Mao, Hyun, Zhang, Park, Meeks, Verma, Shporer, Udell</span>
+            </span>
+            <span class="venue">arXiv&nbsp;2502.09955</span>
+          </a>
+          <a class="paper" href="https://u.math.biu.ac.il/~vishne/publications/S0219498811004690.pdf" target="_blank" rel="noopener">
+            <span class="yr">2012</span>
+            <span class="meta">
+              <span class="title">Characters and Solutions to Equations in Finite Groups</span>
+              <span class="sub">With Uzi Vishne</span>
+            </span>
+            <span class="venue">J. Algebra Appl.</span>
+          </a>
+          <a class="paper" href="https://doi.org/10.1017/S0963548305007273" target="_blank" rel="noopener">
+            <span class="yr">2006</span>
+            <span class="meta">
+              <span class="title">Random Lifts of Graphs: Edge Expansion</span>
+              <span class="sub">with Nathan Linial</span>
+            </span>
+            <span class="venue">Comb. Probab. Comput.</span>
+          </a>
+          <a class="paper" href="https://doi.org/10.1007/s004930200000" target="_blank" rel="noopener">
+            <span class="yr">2002</span>
+            <span class="meta">
+              <span class="title">Random Graph Coverings I: General Theory and Graph Connectivity</span>
+              <span class="sub">with Nathan Linial</span>
+            </span>
+            <span class="venue">Combinatorica</span>
+          </a>
+          <a class="paper" href="https://doi.org/10.1006/jctb.2001.2088" target="_blank" rel="noopener">
+            <span class="yr">2002</span>
+            <span class="meta">
+              <span class="title">A Continuous Analogue of the Girth Problem</span>
+              <span class="sub">with Shlomo Hoory, Nathan Linial</span>
+            </span>
+            <span class="venue">J. Combin. Theory B</span>
+          </a>
+          <a class="paper" href="https://doi.org/10.1002/rsa.10003" target="_blank" rel="noopener">
+            <span class="yr">2002</span>
+            <span class="meta">
+              <span class="title">Random Lifts of Graphs: Independence and Chromatic Number</span>
+              <span class="sub">with Nathan Linial, Jiří Matoušek</span>
+            </span>
+            <span class="venue">Random Struct. Algor.</span>
+          </a>
+          <a class="paper" href="https://cris.huji.ac.il/en/publications/random-lifts-of-graphs/" target="_blank" rel="noopener">
+            <span class="yr">2001</span>
+            <span class="meta">
+              <span class="title">Random Lifts of Graphs</span>
+              <span class="sub">with Nathan Linial, Jiří Matoušek, Eyal Rozenman</span>
+            </span>
+            <span class="venue">SODA</span>
+          </a>
+          <a class="paper" href="papers/amit-random-lifts-of-graphs-thesis.pdf" target="_blank" rel="noopener">
+            <span class="yr">2001</span>
+            <span class="meta">
+              <span class="title">Random Lifts of Graphs <span style="font-style:italic;color:var(--ink-faint);font-weight:380;">— PhD thesis</span></span>
+              <span class="sub">Hebrew University of Jerusalem · advisor: Nathan Linial</span>
+            </span>
+            <span class="venue">dissertation</span>
+          </a>
+        </div>
+        <div class="papers-foot">
+          <a href="https://www.semanticscholar.org/author/Alon-Amit/3075049" target="_blank" rel="noopener">Full profile on Semantic Scholar ↗</a>
+        </div>
+      </section>
+
+      <!-- APPLETS -->
+      <section class="panel active" id="am-panel-applets">
+        <div class="panel-head">
+          <span class="num">01</span>
+          <h2>Applets</h2>
+          <span class="tagline">click a card to open it</span>
+        </div>
+        <div class="grid">
+          <!-- data-slug="<slug>" = opens in the viewer at #<tab>/<slug>; omit it for a plain new-tab tile.
+               Optional data-src = what the viewer loads, if different from href (YouTube/Desmos embeds). -->
+          <a class="tile" data-slug="tangent-sums" href="tangent-sums.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 44 H60" stroke="#8A7D66" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <path d="M6 44 H13 V42.5 H19 V40.5 H25 V37.5 H30 V33 H34 V27 H37 V19 H39 V9" stroke="#1E1810" stroke-width="1.8"/>
+              <path d="M39 9 V56" stroke="#B85820" stroke-width="1.8"/>
+              <path d="M39 56 H42 V53 H45 V50.5 H49 V48.5 H54 V47 H59" stroke="#1E1810" stroke-width="1.8"/>
+            </svg></div>
+            <div class="body">
+            <div class="label">Number Theory</div>
+            <div class="title">Partial Sums of tan <em>n</em></div>
+            <div class="desc">The graph of tan 1 + tan 2 + &hellip; + tan <em>N</em>, zoomable from 1 to 10<sup style="font-size:0.6em;line-height:0;">9</sup>. Staircases, cliffs and self-similarity, all courtesy of the convergents of &pi;.</div>
+            <div class="open">open <span>&rarr;</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="orbit-census" href="orbit-census.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 56 L56 8" stroke="#8A7D66" stroke-width="1.4" stroke-dasharray="3 3"/>
+              <path d="M8 56 Q32 -36 56 56" stroke="#1E1810" stroke-width="1.8"/>
+              <path d="M15.5 48.5 V31.8 H32.2 V10 H54 V48.5 Z" stroke="#B85820" stroke-width="1.8"/>
+              <g fill="#1E1810"><circle cx="15.5" cy="48.5" r="2.2"/><circle cx="32.2" cy="31.8" r="2.2"/><circle cx="54" cy="10" r="2.2"/></g>
+            </svg></div>
+            <div class="body">
+            <div class="label">Dynamics</div>
+            <div class="title">Orbit Census</div>
+            <div class="desc">Type a map f on &#8477;, an interval, &#8484;, &#8484;/n, &#8474; or &#8450; and take a census of its cycles, with Sharkovsky&rsquo;s theorem predicting the periods you didn&rsquo;t search for.</div>
+            <div class="open">open <span>&rarr;</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="fixed-distances" href="fixed-distances.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M32 9 L46.1 52.4 L9.2 25.6 H54.8 L17.9 52.4 Z" stroke="#B85820" stroke-width="1.6"/>
+              <path d="M32 9 L54.8 25.6 L46.1 52.4 H17.9 L9.2 25.6 Z" stroke="#1E1810" stroke-width="1.8"/>
+              <g fill="#1E1810"><circle cx="32" cy="9" r="2.4"/><circle cx="54.8" cy="25.6" r="2.4"/><circle cx="46.1" cy="52.4" r="2.4"/><circle cx="17.9" cy="52.4" r="2.4"/><circle cx="9.2" cy="25.6" r="2.4"/></g>
+            </svg></div>
+            <div class="body">
+            <div class="label">Geometry</div>
+            <div class="title"><em>n</em> points with <em>d</em> distances</div>
+            <div class="desc">A catalog of point configurations in the plane with a given number of distinct distances.</div>
+            <div class="open">open <span>&rarr;</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="brudno-sextic-explorer" href="brudno-sextic-explorer.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M 10 50 Q 22 10 34 50 T 58 50 T 82 50 Q 92 74 94 60"/>
+              <line x1="6" y1="50" x2="96" y2="50" stroke-dasharray="2 4" opacity="0.4"/>
+              <circle cx="20" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+              <circle cx="34" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+              <circle cx="46" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+              <circle cx="58" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+              <circle cx="70" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+              <circle cx="82" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+            </svg></div>
+            <div class="body">
+            <div class="label">Algebraic Curves</div>
+            <div class="title">Brudno Sextic</div>
+            <div class="desc">Explore the Brudno sextic family — six roots, strange symmetries, and the way they move under deformation.</div>
+            <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+
+          <a class="tile" data-slug="hcn-explorer" href="hcn-explorer.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <line x1="10" y1="86" x2="96" y2="86"/>
+              <rect x="16" y="22" width="10" height="64" fill="currentColor" stroke="none"/>
+              <rect x="32" y="38" width="10" height="48" fill="currentColor" stroke="none"/>
+              <rect x="48" y="52" width="10" height="34" fill="currentColor" stroke="none"/>
+              <rect x="64" y="64" width="10" height="22" fill="currentColor" stroke="none"/>
+              <rect x="80" y="74" width="10" height="12" fill="currentColor" stroke="none"/>
+            </svg></div>
+            <div class="body">
+            <div class="label">Number Theory</div>
+            <div class="title">HCN Exponent Explorer</div>
+            <div class="desc">The prime-factorization exponents of highly composite numbers decrease. Watch the staircase evolve as n grows.</div>
+            <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+
+          <a class="tile" data-slug="red-blue-matching" href="red-blue-matching.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="20" y1="30" x2="78" y2="34"/>
+              <line x1="30" y1="68" x2="68" y2="72"/>
+              <line x1="56" y1="20" x2="40" y2="80"/>
+              <circle cx="20" cy="30" r="4" fill="#B85820" stroke="none"/>
+              <circle cx="30" cy="68" r="4" fill="#B85820" stroke="none"/>
+              <circle cx="56" cy="20" r="4" fill="#B85820" stroke="none"/>
+              <circle cx="78" cy="34" r="4" fill="#1E1810" stroke="none"/>
+              <circle cx="68" cy="72" r="4" fill="#1E1810" stroke="none"/>
+              <circle cx="40" cy="80" r="4" fill="#1E1810" stroke="none"/>
+            </svg></div>
+            <div class="body">
+            <div class="label">Discrete Geometry</div>
+            <div class="title">Red–Blue Matching</div>
+            <div class="desc">Minimum-weight perfect matching between red and blue points is always crossing-free. Try it; bitmask DP under the hood.</div>
+            <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+
+          <a class="tile" data-slug="fractional-powers" href="fractional-powers.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="10" y1="22" x2="90" y2="22" stroke-dasharray="2 4" opacity="0.4"/>
+              <line x1="10" y1="78" x2="90" y2="78" stroke-dasharray="2 4" opacity="0.4"/>
+              <circle cx="18" cy="40" r="2.8" fill="currentColor" stroke="none"/>
+              <circle cx="28" cy="66" r="2.8" fill="currentColor" stroke="none"/>
+              <circle cx="38" cy="34" r="2.8" fill="currentColor" stroke="none"/>
+              <circle cx="48" cy="58" r="2.8" fill="currentColor" stroke="none"/>
+              <circle cx="58" cy="28" r="2.8" fill="currentColor" stroke="none"/>
+              <circle cx="68" cy="72" r="2.8" fill="currentColor" stroke="none"/>
+              <circle cx="78" cy="46" r="2.8" fill="currentColor" stroke="none"/>
+            </svg></div>
+            <div class="body">
+            <div class="label">Number Theory</div>
+            <div class="title">Fractional Parts of x<sup style="font-size:0.6em;line-height:0;">n</sup></div>
+            <div class="desc">Plot the fractional parts of x<sup style="font-size:0.6em;line-height:0;">n</sup> as n grows. Equidistributed for most x; mysteriously clustered for Pisot numbers and the plastic ratio.</div>
+            <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+
+          <a class="tile" data-slug="lozenge-tilings" href="lozenge-tilings.html" target="_blank" rel="noopener">
+            <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+              <path d="M50 16 L80 33 L50 50 L20 33 Z" fill="#B85820" fill-opacity="0.85"/>
+              <path d="M20 33 L50 50 L50 84 L20 67 Z" fill="currentColor" fill-opacity="0.18"/>
+              <path d="M80 33 L80 67 L50 84 L50 50 Z"/>
+            </svg></div>
+            <div class="body">
+            <div class="label">Combinatorics</div>
+            <div class="title">Lozenge Tilings</div>
+            <div class="desc">Tile a hexagon with lozenges: each of the three colours always appears equally often. Change perspective to see why.</div>
+            <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- DESMOS -->
+      <section class="panel" id="am-panel-desmos">
+        <div class="panel-head">
+          <span class="num">03</span>
+          <h2>Desmos</h2>
+          <span class="tagline">graphs you can play with · click a card to open it</span>
+        </div>
+
+        <!-- Desmos tile (copy one, change the ID and the text). Opens in the viewer with the note above the graph.
+             <a class="tile" data-slug="gradient-descent"
+                data-note="Instructions shown above the graph. Plain text."
+                data-src="https://www.desmos.com/calculator/ID?embed"
+                href="https://www.desmos.com/calculator/ID" target="_blank" rel="noopener">
+               <div class="media"><img src="THUMBNAIL-URL" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+               <div class="body"> .label  .title  .desc  <div class="open">open <span>→</span></div> </div>
+             </a>
+             ID = the last part of the graph's URL (desmos.com/calculator/ID).
+             THUMBNAIL-URL = the og:image of the graph page (…/calc_thumbs/production/version/ID/<uuid>.png);
+             it can't be derived from the ID, so copy it from the page's <meta property="og:image">. -->
+
+        <div class="sub-head">
+          <h3>Demonstrations</h3>
+          <span class="sub-note">graphs that show some mathematics</span>
+        </div>
+        <div class="grid">
+          <a class="tile" data-slug="slope-field"
+             data-note="The function f defines a slope field on the region [−L, L] × [−L, L]. The variable N sets the resolution. Change f, animate the parameter c, and drag the black dot around to change the initial conditions."
+             data-src="https://www.desmos.com/calculator/tedwtnit9p?embed"
+             href="https://www.desmos.com/calculator/tedwtnit9p" target="_blank" rel="noopener">
+            <div class="media"><img src="https://www.desmos.com/calc_thumbs/production/version/tedwtnit9p/c82dc280-c91e-11f1-bd1c-33974970a921.png"
+                   alt="Slope field with solutions" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="body">
+              <div class="label">Differential Equations</div>
+              <div class="title">Slope Field</div>
+              <div class="desc">Visualize the solution of y′ = f(x, y) given a slope field f.</div>
+              <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="gradient-descent"
+             data-note="Drag the blue starting point around and watch the process converge to various local minima. The step size is u, and Steps is the number of steps. Feel free to change the function as well."
+             data-src="https://www.desmos.com/calculator/qvjtpwnheg?embed"
+             href="https://www.desmos.com/calculator/qvjtpwnheg" target="_blank" rel="noopener">
+            <div class="media"><img src="https://www.desmos.com/calc_thumbs/production/version/qvjtpwnheg/4a7ccef0-c9d0-11f1-bf53-3d7338658ddc.png"
+                   alt="Gradient Descent" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="body">
+              <div class="label">Optimization</div>
+              <div class="title">Gradient Descent</div>
+              <div class="desc">Visualize gradient descent.</div>
+              <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="coin-rotation"
+             data-note="Try to count the number of times the small coin rotates around itself. Follow 6 o’clock, for example."
+             data-src="https://www.desmos.com/calculator/yzel99hjp4?embed"
+             href="https://www.desmos.com/calculator/yzel99hjp4" target="_blank" rel="noopener">
+            <div class="media"><img src="https://www.desmos.com/calc_thumbs/production/version/yzel99hjp4/0fedb120-c9e7-11f1-99cb-d3454ddd818d.png"
+                   alt="Coin Rotation" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="body">
+              <div class="label">Geometry</div>
+              <div class="title">Coin Rotation</div>
+              <div class="desc">The famous confusing coin rotation count.</div>
+              <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+        </div>
+
+        <div class="sub-head">
+          <h3>Eye candy</h3>
+          <span class="sub-note">no theorem, just pretty</span>
+        </div>
+        <div class="grid">
+          <a class="tile" data-slug="overlaid-harmonics"
+             data-src="https://www.desmos.com/calculator/mxiiefybnx?embed"
+             href="https://www.desmos.com/calculator/mxiiefybnx" target="_blank" rel="noopener">
+            <div class="media"><img src="https://www.desmos.com/calc_thumbs/production/version/mxiiefybnx/1409eff0-c9c2-11f1-9bae-cf0fd04ffa9a.png"
+                   alt="Overlaid Harmonics" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="body">
+              <div class="label">Abstract Art</div>
+              <div class="title">Overlaid Harmonics</div>
+              <div class="desc"></div>
+              <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="ripples"
+             data-src="https://www.desmos.com/calculator/rrutesvnlx?embed"
+             href="https://www.desmos.com/calculator/rrutesvnlx" target="_blank" rel="noopener">
+            <div class="media"><img src="https://www.desmos.com/calc_thumbs/production/version/rrutesvnlx/44701520-c9d1-11f1-b426-73cf029ea996.png"
+                   alt="Ripples" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="body">
+              <div class="label">Abstract Art</div>
+              <div class="title">Ripples</div>
+              <div class="desc"></div>
+              <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+          <a class="tile" data-slug="black-hole-sun"
+             data-src="https://www.desmos.com/calculator/04djrv7qj5?embed"
+             href="https://www.desmos.com/calculator/04djrv7qj5" target="_blank" rel="noopener">
+            <div class="media"><img src="https://www.desmos.com/calc_thumbs/production/version/04djrv7qj5/82ea1c30-c9cf-11f1-b230-49168a4488a9.png"
+                   alt="Black Hole Sun" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="body">
+              <div class="label">Abstract Art</div>
+              <div class="title">Black Hole Sun</div>
+              <div class="desc"></div>
+              <div class="open">open <span>→</span></div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- YOUTUBE -->
+      <section class="panel" id="am-panel-media">
+        <div class="panel-head">
+          <span class="num">04</span>
+          <h2>Media</h2>
+          <span class="tagline">talks, videos and podcasts</span>
+        </div>
+        <div class="grid">
+          <a class="tile" data-slug="paradoxes-in-probability" data-src="https://www.youtube-nocookie.com/embed/W8T4bxZ9S_4?autoplay=1&amp;rel=0" href="https://www.youtube.com/watch?v=W8T4bxZ9S_4" target="_blank" rel="noopener">
+            <div class="media video"><img src="https://img.youtube.com/vi/W8T4bxZ9S_4/hqdefault.jpg"
+                   onerror="this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg,#1E1810,#5C5142)';"
+                   alt="Paradoxes in Probability talk">
+              <div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
+            <div class="body">
+            <div class="label">Math Encounters · MoMath</div>
+            <div class="title">Paradoxes in Probability</div>
+            <div class="desc">a talk at the National Museum of Mathematics, October 2019</div>
+              <div class="open">watch <span>→</span></div>
+            </div>
+          </a>
+          <a class="tile" href="https://creators.spotify.com/pod/profile/the-art-of-mathematics/episodes/Stop-Overselling-Mathematics-e2lv3rd/a-abe8no4" target="_blank" rel="noopener">
+            <div class="media podcast"><img src="site/aom-logo.jpg" alt="" loading="lazy">
+              <span class="ptitle">Stop Overselling Mathematics</span></div>
+            <div class="body">
+            <div class="label">The Art of Mathematics &middot; Podcast</div>
+            <div class="title">Stop Overselling Mathematics</div>
+            <div class="desc">a talk on Carol Jacoby&rsquo;s <em>The Art of Mathematics</em> podcast</div>
+              <div class="open">listen <span>&rarr;</span></div>
+            </div>
+          </a>
+          <a class="tile" href="https://creators.spotify.com/pod/profile/the-art-of-mathematics/episodes/The-Many-Facets-of-Math-e31ndoh/a-abt40up" target="_blank" rel="noopener">
+            <div class="media podcast"><img src="site/aom-logo.jpg" alt="" loading="lazy">
+              <span class="ptitle">The Many Facets of Math</span></div>
+            <div class="body">
+            <div class="label">The Art of Mathematics &middot; Podcast</div>
+            <div class="title">The Many Facets of Math</div>
+            <div class="desc">a talk on Carol Jacoby&rsquo;s <em>The Art of Mathematics</em> podcast</div>
+              <div class="open">listen <span>&rarr;</span></div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- QUORA (rows are generated from quora/index.json by build_site.py; do not edit between the markers) -->
+      <section class="panel" id="am-panel-quora" data-base="quora/">
+        <div class="panel-head">
+          <span class="num">05</span>
+          <h2>Quora</h2>
+          <span class="tagline">a few of my math answers on Quora</span>
+        </div>
+        <!--QUORA-ROWS BEGIN-->
+        <a class="qotd" href="#quora" data-slug="x"><div class="label">Answer of the day</div><div class="title"></div><div class="desc"></div><div class="open">read <span>→</span></div></a>
+        <div class="qtools"><input type="search" placeholder="Search the text of 84 answers…" aria-label="Search answers"><button type="button" data-q="random">Random</button><span class="qcount"></span></div>
+        <div class="qlist">
+          <a class="qrow" data-slug="can-a-quantum-computer-calculate-the-factorial-this-factoria" data-name="Can a quantum computer calculate the factorial? This factorial is (( (((3!)!)!)!)!)! ." data-excerpt="No. I would encourage you to ignore most of the nonsensical answers given here. First of all, by “calculating” you probably mean producing the sequence of decimal digits of the indicated number. For…" data-find="can a quantum computer calculate the factorial? this factorial is (( (((3!)!)!)!)!)! . no. i would encourage you to ignore most of the nonsensical answers given here. first of all, by “calculating” you probably mean producing the sequence of decimal digits of the indicated number. for…" href="quora/can-a-quantum-computer-calculate-the-factorial-this-factoria.html" target="_blank" rel="noopener"><span class="yr">2023</span><span class="meta"><span class="title">Can a quantum computer calculate the factorial? This factorial is (( (((3!)!)!)!)!)! .</span><span class="sub">No. I would encourage you to ignore most of the nonsensical answers given here. First of all, by “calculating” you probably mean producing the sequence of decimal digits of the indicated number. For…</span></span></a>
+          <a class="qrow" data-slug="what-is-the-largest-prime-number-printed-by-a-computer" data-name="What is the largest prime number printed by a computer?" data-excerpt="As of February 10, 2021, the largest known prime is … And here it is, printed in its full glory. Yes, right there. There, right above. Three lines ago. Yup, this is it. It’s printed. On your screen.…" data-find="what is the largest prime number printed by a computer? as of february 10, 2021, the largest known prime is … and here it is, printed in its full glory. yes, right there. there, right above. three lines ago. yup, this is it. it’s printed. on your screen.…" href="quora/what-is-the-largest-prime-number-printed-by-a-computer.html" target="_blank" rel="noopener"><span class="yr">2021</span><span class="meta"><span class="title">What is the largest prime number printed by a computer?</span><span class="sub">As of February 10, 2021, the largest known prime is … And here it is, printed in its full glory. Yes, right there. There, right above. Three lines ago. Yup, this is it. It’s printed. On your screen.…</span></span></a>
+          <a class="qrow" data-slug="in-mathematics-it-is-possible-to-calculate-problems-in-infin" data-name="In mathematics, it is possible to calculate problems in infinite dimensions. Is this just another failure of logic or might this be useful for anything other than giving students a headache?" data-excerpt="People sometimes react with disdain, fear, concern, disbelief or outright shock to the idea of infinite-dimensional spaces (or manifolds, or other entities), seeing as three dimensions were good…" data-find="in mathematics, it is possible to calculate problems in infinite dimensions. is this just another failure of logic or might this be useful for anything other than giving students a headache? people sometimes react with disdain, fear, concern, disbelief or outright shock to the idea of infinite-dimensional spaces (or manifolds, or other entities), seeing as three dimensions were good…" href="quora/in-mathematics-it-is-possible-to-calculate-problems-in-infin.html" target="_blank" rel="noopener"><span class="yr">2021</span><span class="meta"><span class="title">In mathematics, it is possible to calculate problems in infinite dimensions. Is this just another failure of logic or might this be useful for anything other than giving students a headache?</span><span class="sub">People sometimes react with disdain, fear, concern, disbelief or outright shock to the idea of infinite-dimensional spaces (or manifolds, or other entities), seeing as three dimensions were good…</span></span></a>
+          <a class="qrow" data-slug="how-many-prime-numbers-in-total-are-known-as-of-november-202" data-name="How many prime numbers in total are known as of November 2020?" data-excerpt="Let’s head over to Wolfram|Alpha together. Wolfram|Alpha Type in “Random 1000 digit prime”. Wait a few seconds. You should see something like this: You can tap “More digits” to see more digits.…" data-find="how many prime numbers in total are known as of november 2020? let’s head over to wolfram|alpha together. wolfram|alpha type in “random 1000 digit prime”. wait a few seconds. you should see something like this: you can tap “more digits” to see more digits.…" href="quora/how-many-prime-numbers-in-total-are-known-as-of-november-202.html" target="_blank" rel="noopener"><span class="yr">2020</span><span class="meta"><span class="title">How many prime numbers in total are known as of November 2020?</span><span class="sub">Let’s head over to Wolfram|Alpha together. Wolfram|Alpha Type in “Random 1000 digit prime”. Wait a few seconds. You should see something like this: You can tap “More digits” to see more digits.…</span></span></a>
+          <a class="qrow" data-slug="what-are-some-programming-problems-that-look-hard-at-a-first" data-name="What are some programming problems that look hard at a first glance but are actually easy?" data-excerpt="Here’s a black and white image. It is represented, as you’d expect, as an array of bits: 0 is white, 1 is black. Your programming challenge is to determine the number of connected components in such…" data-find="what are some programming problems that look hard at a first glance but are actually easy? here’s a black and white image. it is represented, as you’d expect, as an array of bits: 0 is white, 1 is black. your programming challenge is to determine the number of connected components in such…" href="quora/what-are-some-programming-problems-that-look-hard-at-a-first.html" target="_blank" rel="noopener"><span class="yr">2020</span><span class="meta"><span class="title">What are some programming problems that look hard at a first glance but are actually easy?</span><span class="sub">Here’s a black and white image. It is represented, as you’d expect, as an array of bits: 0 is white, 1 is black. Your programming challenge is to determine the number of connected components in such…</span></span></a>
+          <a class="qrow" data-slug="why-do-they-teach-integration-and-derivatives-in-high-school" data-name="Why do they teach integration and derivatives in high school? What is its use in day-to-day life?" data-excerpt="This question, and a million others like it, should win some sort of award for the most perennial, persistent, insistent, consistent, constant conundrum among Quora queries. I find that sad. Question…" data-find="why do they teach integration and derivatives in high school? what is its use in day-to-day life? this question, and a million others like it, should win some sort of award for the most perennial, persistent, insistent, consistent, constant conundrum among quora queries. i find that sad. question…" href="quora/why-do-they-teach-integration-and-derivatives-in-high-school.html" target="_blank" rel="noopener"><span class="yr">2020</span><span class="meta"><span class="title">Why do they teach integration and derivatives in high school? What is its use in day-to-day life?</span><span class="sub">This question, and a million others like it, should win some sort of award for the most perennial, persistent, insistent, consistent, constant conundrum among Quora queries. I find that sad. Question…</span></span></a>
+          <a class="qrow" data-slug="what-real-numbers-will-we-never-know-even-the-approximate-va" data-name="What real numbers will we never know (even the approximate) value of?" data-excerpt="…. I contend that we won’t ever know whether this number is positive or negative, whether it is more than a billion or less than a billionth, whether its integer value is odd or even, anything of the…" data-find="what real numbers will we never know (even the approximate) value of? …. i contend that we won’t ever know whether this number is positive or negative, whether it is more than a billion or less than a billionth, whether its integer value is odd or even, anything of the…" href="quora/what-real-numbers-will-we-never-know-even-the-approximate-va.html" target="_blank" rel="noopener"><span class="yr">2020</span><span class="meta"><span class="title">What real numbers will we never know (even the approximate) value of?</span><span class="sub">…. I contend that we won’t ever know whether this number is positive or negative, whether it is more than a billion or less than a billionth, whether its integer value is odd or even, anything of the…</span></span></a>
+          <a class="qrow" data-slug="is-64-the-first-perfect-square-and-a-perfect-cube-is-it-the" data-name="Is 64 the first perfect square and a perfect cube? Is it the only one?" data-excerpt="Come, I want to show you something. If x is any integer, then x^3 is what you’d call a perfect cube. And if y is any integer, then y^2 is what you’d call a perfect square. If a number is both a…" data-find="is 64 the first perfect square and a perfect cube? is it the only one? come, i want to show you something. if x is any integer, then x^3 is what you’d call a perfect cube. and if y is any integer, then y^2 is what you’d call a perfect square. if a number is both a…" href="quora/is-64-the-first-perfect-square-and-a-perfect-cube-is-it-the.html" target="_blank" rel="noopener"><span class="yr">2020</span><span class="meta"><span class="title">Is 64 the first perfect square and a perfect cube? Is it the only one?</span><span class="sub">Come, I want to show you something. If x is any integer, then x^3 is what you’d call a perfect cube. And if y is any integer, then y^2 is what you’d call a perfect square. If a number is both a…</span></span></a>
+          <a class="qrow" data-slug="which-is-the-larger-number-one-googolplex-or-graham-s-number" data-name="Which is the larger number: one googolplex or Graham&#x27;s number?" data-excerpt="HAHAHAHAHAHAHAHA!!! Not even close. Not even remotely close. Not even funny, how not even close these two numbers are. They aren’t in the same ballpark, the same world, the same universe, the same…" data-find="which is the larger number: one googolplex or graham&#x27;s number? hahahahahahahaha!!! not even close. not even remotely close. not even funny, how not even close these two numbers are. they aren’t in the same ballpark, the same world, the same universe, the same…" href="quora/which-is-the-larger-number-one-googolplex-or-graham-s-number.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Which is the larger number: one googolplex or Graham's number?</span><span class="sub">HAHAHAHAHAHAHAHA!!! Not even close. Not even remotely close. Not even funny, how not even close these two numbers are. They aren’t in the same ballpark, the same world, the same universe, the same…</span></span></a>
+          <a class="qrow" data-slug="what-would-happen-if-a-supercomputer-calculated-pi-out-and-d" data-name="What would happen if a supercomputer calculated pi out and discovered that it does end finitely?" data-excerpt="To make things clearer, let’s remove the marketing hype and the bits which may be unclear. Here’s an alternative question: What would happen if my iPhone calculator calculated 6 and discovered that…" data-find="what would happen if a supercomputer calculated pi out and discovered that it does end finitely? to make things clearer, let’s remove the marketing hype and the bits which may be unclear. here’s an alternative question: what would happen if my iphone calculator calculated 6 and discovered that…" href="quora/what-would-happen-if-a-supercomputer-calculated-pi-out-and-d.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">What would happen if a supercomputer calculated pi out and discovered that it does end finitely?</span><span class="sub">To make things clearer, let’s remove the marketing hype and the bits which may be unclear. Here’s an alternative question: What would happen if my iPhone calculator calculated 6 and discovered that…</span></span></a>
+          <a class="qrow" data-slug="what-do-complex-numbers-mean-physically" data-name="What do complex numbers mean physically?" data-excerpt="Doesn’t work like that. Let’s start with real numbers. What do they mean physically? Well, everything and nothing. Everything, because we use real numbers as models for position, distance, time,…" data-find="what do complex numbers mean physically? doesn’t work like that. let’s start with real numbers. what do they mean physically? well, everything and nothing. everything, because we use real numbers as models for position, distance, time,…" href="quora/what-do-complex-numbers-mean-physically.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">What do complex numbers mean physically?</span><span class="sub">Doesn’t work like that. Let’s start with real numbers. What do they mean physically? Well, everything and nothing. Everything, because we use real numbers as models for position, distance, time,…</span></span></a>
+          <a class="qrow" data-slug="why-are-there-so-many-intellectuals-e-g-those-in-certain-bra" data-name="Why are there so many intellectuals (e.g. those in certain branches of mathematics and philosophy) thinking so hard about problems whose solutions have little to no real-world significance? Are all truths actually profound and important to arrive at?" data-excerpt="The reason people think hard about problems that interest them is because the problems interest them. They don’t know if the solutions have “little to no real-world significance” (and neither do…" data-find="why are there so many intellectuals (e.g. those in certain branches of mathematics and philosophy) thinking so hard about problems whose solutions have little to no real-world significance? are all truths actually profound and important to arrive at? the reason people think hard about problems that interest them is because the problems interest them. they don’t know if the solutions have “little to no real-world significance” (and neither do…" href="quora/why-are-there-so-many-intellectuals-e-g-those-in-certain-bra.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Why are there so many intellectuals (e.g. those in certain branches of mathematics and philosophy) thinking so hard about problems whose solutions have little to no real-world significance? Are all truths actually profound and important to arrive at?</span><span class="sub">The reason people think hard about problems that interest them is because the problems interest them. They don’t know if the solutions have “little to no real-world significance” (and neither do…</span></span></a>
+          <a class="qrow" data-slug="which-is-larger-2-100-or-2-100" data-name="Which is larger?  2^{100!} or 2^{100}! " data-excerpt="I often suggest this as a problem to be solved by completely elementary means: no Stirling, no logs, no nothing. The key observation is that n! &lt; n^n. This should be obvious: n! is the product of n…" data-find="which is larger?  2^{100!} or 2^{100}!  i often suggest this as a problem to be solved by completely elementary means: no stirling, no logs, no nothing. the key observation is that n! &lt; n^n. this should be obvious: n! is the product of n…" href="quora/which-is-larger-2-100-or-2-100.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Which is larger? <span class="tex" data-tex=" 2^{100!}"></span> or <span class="tex" data-tex="2^{100}! "></span></span><span class="sub">I often suggest this as a problem to be solved by completely elementary means: no Stirling, no logs, no nothing. The key observation is that n! &lt; n^n. This should be obvious: n! is the product of n…</span></span></a>
+          <a class="qrow" data-slug="why-don-t-we-just-invent-math-that-will-allow-us-to-solve-pr" data-name="Why don&#x27;t we just invent math that will allow us to solve problems like x^x = 2 so we don&#x27;t have to use numerical methods?" data-excerpt="We did. But there’s plenty of confusion around what it means to “solve” equations. Take x^3=2. Can you solve it? Sure: …. So we have the “math” to solve this equation without resorting to numerical…" data-find="why don&#x27;t we just invent math that will allow us to solve problems like x^x = 2 so we don&#x27;t have to use numerical methods? we did. but there’s plenty of confusion around what it means to “solve” equations. take x^3=2. can you solve it? sure: …. so we have the “math” to solve this equation without resorting to numerical…" href="quora/why-don-t-we-just-invent-math-that-will-allow-us-to-solve-pr.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Why don't we just invent math that will allow us to solve problems like x^x = 2 so we don't have to use numerical methods?</span><span class="sub">We did. But there’s plenty of confusion around what it means to “solve” equations. Take x^3=2. Can you solve it? Sure: …. So we have the “math” to solve this equation without resorting to numerical…</span></span></a>
+          <a class="qrow" data-slug="why-do-computers-take-more-time-in-prime-factorization-than" data-name="Why do computers take more time in prime factorization than in multiplication? The time difference is too much." data-excerpt="How long would it take you to mix a cup of sugar and a cup of salt? How long would it take you to separate them back? Many actions, even reversible ones, require very different resources to do and to…" data-find="why do computers take more time in prime factorization than in multiplication? the time difference is too much. how long would it take you to mix a cup of sugar and a cup of salt? how long would it take you to separate them back? many actions, even reversible ones, require very different resources to do and to…" href="quora/why-do-computers-take-more-time-in-prime-factorization-than.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Why do computers take more time in prime factorization than in multiplication? The time difference is too much.</span><span class="sub">How long would it take you to mix a cup of sugar and a cup of salt? How long would it take you to separate them back? Many actions, even reversible ones, require very different resources to do and to…</span></span></a>
+          <a class="qrow" data-slug="math-question-you-are-allowed-to-take-as-many-positive-whole" data-name="Math question: You are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. What is the biggest possible result you can get?" data-excerpt="20? Why 20? That’s a number both boring and small. Imagine that we are allowed to take as many whole numbers as we want that add up to a trillion, and then multiply them together. What is the biggest…" data-find="math question: you are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. what is the biggest possible result you can get? 20? why 20? that’s a number both boring and small. imagine that we are allowed to take as many whole numbers as we want that add up to a trillion, and then multiply them together. what is the biggest…" href="quora/math-question-you-are-allowed-to-take-as-many-positive-whole.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Math question: You are allowed to take as many (positive) whole numbers as you want that add up to 20, and then multiply them together. What is the biggest possible result you can get?</span><span class="sub">20? Why 20? That’s a number both boring and small. Imagine that we are allowed to take as many whole numbers as we want that add up to a trillion, and then multiply them together. What is the biggest…</span></span></a>
+          <a class="qrow" data-slug="can-there-exist-100-lines-in-the-plane-no-three-concurrent-s" data-name="Can there exist 100 lines in the plane, no three concurrent, such that they intersect in exactly 2002 points?" data-excerpt="Yup. This looks like a geometry problem, right? It’s not. It’s a problem in number theory. The geometry part is almost entirely a red herring. You see, when you have lines in the plane, any two lines…" data-find="can there exist 100 lines in the plane, no three concurrent, such that they intersect in exactly 2002 points? yup. this looks like a geometry problem, right? it’s not. it’s a problem in number theory. the geometry part is almost entirely a red herring. you see, when you have lines in the plane, any two lines…" href="quora/can-there-exist-100-lines-in-the-plane-no-three-concurrent-s.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">Can there exist 100 lines in the plane, no three concurrent, such that they intersect in exactly 2002 points?</span><span class="sub">Yup. This looks like a geometry problem, right? It’s not. It’s a problem in number theory. The geometry part is almost entirely a red herring. You see, when you have lines in the plane, any two lines…</span></span></a>
+          <a class="qrow" data-slug="what-makes-statistics-probability-easier-than-other-subjects" data-name="What makes statistics/probability easier than other subjects?" data-excerpt="Easier? Probability and statistics are the most devilish, treacherous, subtle, confounding subjects out there, by a wide margin. They seem easy. To laypersons, to students, to professional…" data-find="what makes statistics/probability easier than other subjects? easier? probability and statistics are the most devilish, treacherous, subtle, confounding subjects out there, by a wide margin. they seem easy. to laypersons, to students, to professional…" href="quora/what-makes-statistics-probability-easier-than-other-subjects.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">What makes statistics/probability easier than other subjects?</span><span class="sub">Easier? Probability and statistics are the most devilish, treacherous, subtle, confounding subjects out there, by a wide margin. They seem easy. To laypersons, to students, to professional…</span></span></a>
+          <a class="qrow" data-slug="what-are-some-mathematical-proofs-which-appear-to-be-correct" data-name="What are some mathematical proofs which appear to be correct, but are actually incorrect?" data-excerpt="The most fiendish false proofs are not proofs of incorrect assertions. They are faulty proofs of correct assertions. When someone offers a proof of an incorrect assertion, you know that at some point…" data-find="what are some mathematical proofs which appear to be correct, but are actually incorrect? the most fiendish false proofs are not proofs of incorrect assertions. they are faulty proofs of correct assertions. when someone offers a proof of an incorrect assertion, you know that at some point…" href="quora/what-are-some-mathematical-proofs-which-appear-to-be-correct.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">What are some mathematical proofs which appear to be correct, but are actually incorrect?</span><span class="sub">The most fiendish false proofs are not proofs of incorrect assertions. They are faulty proofs of correct assertions. When someone offers a proof of an incorrect assertion, you know that at some point…</span></span></a>
+          <a class="qrow" data-slug="for-any-given-prime-number-can-you-estimate-what-the-next-pr" data-name="For any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes?" data-excerpt="‘Hey, Salviati, can you estimate the next prime after 100003?’ ‘Sure. It’s 100019.’ ‘Wait, what? How did you know?’ ‘Oh, easy. …, so 99910 is divisible by both 97 and 103, so neither 99910+97 nor…" data-find="for any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes? ‘hey, salviati, can you estimate the next prime after 100003?’ ‘sure. it’s 100019.’ ‘wait, what? how did you know?’ ‘oh, easy. …, so 99910 is divisible by both 97 and 103, so neither 99910+97 nor…" href="quora/for-any-given-prime-number-can-you-estimate-what-the-next-pr.html" target="_blank" rel="noopener"><span class="yr">2019</span><span class="meta"><span class="title">For any given prime number, can you estimate what the next prime will be based on any pattern apparent in the sequence of the previous primes?</span><span class="sub">‘Hey, Salviati, can you estimate the next prime after 100003?’ ‘Sure. It’s 100019.’ ‘Wait, what? How did you know?’ ‘Oh, easy. …, so 99910 is divisible by both 97 and 103, so neither 99910+97 nor…</span></span></a>
+          <a class="qrow" data-slug="is-the-sequence-x-n-sum-k-1-n-tan-k-bounded" data-name="Is the sequence x_n = \sum_{k=1} ^n \tan(k) bounded?" data-excerpt="Oh. My. Gauss. What a punch drunk lovely squiggly wiggly sequence that is. First, let me answer the question, so you don’t have to suffer through the rest of my musings: no, the sequence isn’t…" data-find="is the sequence x_n = \sum_{k=1} ^n \tan(k) bounded? oh. my. gauss. what a punch drunk lovely squiggly wiggly sequence that is. first, let me answer the question, so you don’t have to suffer through the rest of my musings: no, the sequence isn’t…" href="quora/is-the-sequence-x-n-sum-k-1-n-tan-k-bounded.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">Is the sequence <span class="tex" data-tex="x_n = \sum_{k=1} ^n \tan(k)"></span> bounded?</span><span class="sub">Oh. My. Gauss. What a punch drunk lovely squiggly wiggly sequence that is. First, let me answer the question, so you don’t have to suffer through the rest of my musings: no, the sequence isn’t…</span></span></a>
+          <a class="qrow" data-slug="in-simple-terms-what-is-an-isomorphism-in-mathematics-for-ex" data-name="In simple terms, what is an isomorphism in mathematics? For example, what does it mean that there is an isomorphism between the real and complex numbers?" data-excerpt="Here’s a chess set [1]. Here’s another chess set [2]. They look rather different, but they are both chess sets. When people play chess with these sets, or any other, they are playing the same game.…" data-find="in simple terms, what is an isomorphism in mathematics? for example, what does it mean that there is an isomorphism between the real and complex numbers? here’s a chess set [1]. here’s another chess set [2]. they look rather different, but they are both chess sets. when people play chess with these sets, or any other, they are playing the same game.…" href="quora/in-simple-terms-what-is-an-isomorphism-in-mathematics-for-ex.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">In simple terms, what is an isomorphism in mathematics? For example, what does it mean that there is an isomorphism between the real and complex numbers?</span><span class="sub">Here’s a chess set [1]. Here’s another chess set [2]. They look rather different, but they are both chess sets. When people play chess with these sets, or any other, they are playing the same game.…</span></span></a>
+          <a class="qrow" data-slug="when-has-an-unsolved-conjecture-been-disproved-by-counter-ex" data-name="When has an unsolved conjecture been disproved by counter-example?" data-excerpt="In 1856, Moritz Abraham Stern found a counterexample to a 100-year-old conjecture of Goldbach, which stated that every positive odd integer is either prime or the sum of a prime and twice a square.…" data-find="when has an unsolved conjecture been disproved by counter-example? in 1856, moritz abraham stern found a counterexample to a 100-year-old conjecture of goldbach, which stated that every positive odd integer is either prime or the sum of a prime and twice a square.…" href="quora/when-has-an-unsolved-conjecture-been-disproved-by-counter-ex.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">When has an unsolved conjecture been disproved by counter-example?</span><span class="sub">In 1856, Moritz Abraham Stern found a counterexample to a 100-year-old conjecture of Goldbach, which stated that every positive odd integer is either prime or the sum of a prime and twice a square.…</span></span></a>
+          <a class="qrow" data-slug="can-you-show-me-how-to-integrate-by-using-partial-fractions" data-name="Can you show me how to integrate by using partial fractions?" data-excerpt="Oh, I’d be happy to. Integration by partial fractions has a peculiar pedagogical pedigree. It is often presented in calculus courses as a way of integrating rational functions, but it is rarely…" data-find="can you show me how to integrate by using partial fractions? oh, i’d be happy to. integration by partial fractions has a peculiar pedagogical pedigree. it is often presented in calculus courses as a way of integrating rational functions, but it is rarely…" href="quora/can-you-show-me-how-to-integrate-by-using-partial-fractions.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">Can you show me how to integrate by using partial fractions?</span><span class="sub">Oh, I’d be happy to. Integration by partial fractions has a peculiar pedagogical pedigree. It is often presented in calculus courses as a way of integrating rational functions, but it is rarely…</span></span></a>
+          <a class="qrow" data-slug="can-anyone-explain-in-layman-s-terms-where-the-taylor-series" data-name="Can anyone explain in layman&#x27;s terms where the Taylor series comes from? Why and how does it work so well?" data-excerpt="= I’m sitting in my car. = Good for you. = Can you tell me where I’m going to be 5 seconds from now? = Um, no. How could I? = You can ask me questions. = Fine. Where will you be 5 seconds from now? =…" data-find="can anyone explain in layman&#x27;s terms where the taylor series comes from? why and how does it work so well? = i’m sitting in my car. = good for you. = can you tell me where i’m going to be 5 seconds from now? = um, no. how could i? = you can ask me questions. = fine. where will you be 5 seconds from now? =…" href="quora/can-anyone-explain-in-layman-s-terms-where-the-taylor-series.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">Can anyone explain in layman's terms where the Taylor series comes from? Why and how does it work so well?</span><span class="sub">= I’m sitting in my car. = Good for you. = Can you tell me where I’m going to be 5 seconds from now? = Um, no. How could I? = You can ask me questions. = Fine. Where will you be 5 seconds from now? =…</span></span></a>
+          <a class="qrow" data-slug="for-mathematicians-what-would-be-the-most-surprising-new-fin" data-name="For mathematicians: What would be the most surprising new finding?" data-excerpt="(EDIT: A lot of people are expressing shock in the comments regarding the statements in the list below. To be clear, once again, none of these things is known to be true, and in fact they are widely…" data-find="for mathematicians: what would be the most surprising new finding? (edit: a lot of people are expressing shock in the comments regarding the statements in the list below. to be clear, once again, none of these things is known to be true, and in fact they are widely…" href="quora/for-mathematicians-what-would-be-the-most-surprising-new-fin.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">For mathematicians: What would be the most surprising new finding?</span><span class="sub">(EDIT: A lot of people are expressing shock in the comments regarding the statements in the list below. To be clear, once again, none of these things is known to be true, and in fact they are widely…</span></span></a>
+          <a class="qrow" data-slug="what-is-the-math-formula-for-a-b-5" data-name="What is the math formula for (a+b)^5?" data-excerpt="Here are two numbers: a = 37 b = 63 Someone’s asking you for (a+b)^5. What do you do? Lots of people have suggested the binomial formula as an answer to this question. This means … which may just be…" data-find="what is the math formula for (a+b)^5? here are two numbers: a = 37 b = 63 someone’s asking you for (a+b)^5. what do you do? lots of people have suggested the binomial formula as an answer to this question. this means … which may just be…" href="quora/what-is-the-math-formula-for-a-b-5.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">What is the math formula for <span class="tex" data-tex="(a+b)^5"></span>?</span><span class="sub">Here are two numbers: a = 37 b = 63 Someone’s asking you for (a+b)^5. What do you do? Lots of people have suggested the binomial formula as an answer to this question. This means … which may just be…</span></span></a>
+          <a class="qrow" data-slug="how-do-i-solve-the-polynomial-x-5-x-4-16x-3-5x-2-21x-9-0-wit" data-name="How do I solve the polynomial x^5+x^4-16x^3+5x^2+21x-9=0 , with no approximation?" data-excerpt="Oh man, someone hand-crafted this polynomial VERY carefully! Where did you come across this question? This seems suitable for a course in computational Galois theory… The roots of this polynomial,…" data-find="how do i solve the polynomial x^5+x^4-16x^3+5x^2+21x-9=0 , with no approximation? oh man, someone hand-crafted this polynomial very carefully! where did you come across this question? this seems suitable for a course in computational galois theory… the roots of this polynomial,…" href="quora/how-do-i-solve-the-polynomial-x-5-x-4-16x-3-5x-2-21x-9-0-wit.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">How do I solve the polynomial <span class="tex" data-tex="x^5+x^4-16x^3+5x^2+21x-9=0 "></span>, with no approximation?</span><span class="sub">Oh man, someone hand-crafted this polynomial VERY carefully! Where did you come across this question? This seems suitable for a course in computational Galois theory… The roots of this polynomial,…</span></span></a>
+          <a class="qrow" data-slug="what-are-coffin-problems-in-mathematics" data-name="What are coffin problems in mathematics?" data-excerpt="“Coffin problems” are extremely difficult math problems which, nevertheless, have elementary solutions. They were devised for and used by admission committees at Soviet universities in the 70’s and…" data-find="what are coffin problems in mathematics? “coffin problems” are extremely difficult math problems which, nevertheless, have elementary solutions. they were devised for and used by admission committees at soviet universities in the 70’s and…" href="quora/what-are-coffin-problems-in-mathematics.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">What are coffin problems in mathematics?</span><span class="sub">“Coffin problems” are extremely difficult math problems which, nevertheless, have elementary solutions. They were devised for and used by admission committees at Soviet universities in the 70’s and…</span></span></a>
+          <a class="qrow" data-slug="what-is-the-explanation-of-the-solution-of-problem-3-from-im" data-name="What is the explanation of the solution of problem 3 from IMO 1988?" data-excerpt="Oh, that’s a fun one. I believe this problem can be solved quite easily given enough time (not all IMO problems can.) It’s much harder to do under time pressure, which is why it’s a P3; you’d need…" data-find="what is the explanation of the solution of problem 3 from imo 1988? oh, that’s a fun one. i believe this problem can be solved quite easily given enough time (not all imo problems can.) it’s much harder to do under time pressure, which is why it’s a p3; you’d need…" href="quora/what-is-the-explanation-of-the-solution-of-problem-3-from-im.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">What is the explanation of the solution of problem 3 from IMO 1988?</span><span class="sub">Oh, that’s a fun one. I believe this problem can be solved quite easily given enough time (not all IMO problems can.) It’s much harder to do under time pressure, which is why it’s a P3; you’d need…</span></span></a>
+          <a class="qrow" data-slug="given-dfrac-1-a-dfrac-1-b-dfrac-1-c-1-what-are-the-values-of" data-name="Given \dfrac{1}{a}+\dfrac{1}{b}+\dfrac{1}{c}=1, what are the values of a,b, and c if they are integers?" data-excerpt="This is a surprisingly useful little question. In geometry and group theory ( triangle groups), there is interest in classifying triplets of numbers a,b,c by comparing … with 1. A triangle with…" data-find="given \dfrac{1}{a}+\dfrac{1}{b}+\dfrac{1}{c}=1, what are the values of a,b, and c if they are integers? this is a surprisingly useful little question. in geometry and group theory ( triangle groups), there is interest in classifying triplets of numbers a,b,c by comparing … with 1. a triangle with…" href="quora/given-dfrac-1-a-dfrac-1-b-dfrac-1-c-1-what-are-the-values-of.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">Given <span class="tex" data-tex="\dfrac{1}{a}+\dfrac{1}{b}+\dfrac{1}{c}=1"></span>, what are the values of <span class="tex" data-tex="a"></span>,<span class="tex" data-tex="b"></span>, and <span class="tex" data-tex="c"></span> if they are integers?</span><span class="sub">This is a surprisingly useful little question. In geometry and group theory ( triangle groups), there is interest in classifying triplets of numbers a,b,c by comparing … with 1. A triangle with…</span></span></a>
+          <a class="qrow" data-slug="how-do-i-solve-this-int-0-1-sqrt-x-sqrt-x-sqrt-x-dx" data-name="How do I solve this  \int_{0}^{1} \sqrt{x+\sqrt{x+\sqrt{x+....}}} dx ? " data-excerpt="Whatever function f(x) is represented by the infinite nested radical … we can reasonably expect it to satisfy … This is because what follows the first “ x+ ” in the nested radical is precisely the…" data-find="how do i solve this  \int_{0}^{1} \sqrt{x+\sqrt{x+\sqrt{x+....}}} dx ?  whatever function f(x) is represented by the infinite nested radical … we can reasonably expect it to satisfy … this is because what follows the first “ x+ ” in the nested radical is precisely the…" href="quora/how-do-i-solve-this-int-0-1-sqrt-x-sqrt-x-sqrt-x-dx.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">How do I solve this <span class="tex" data-tex=" \int_{0}^{1} \sqrt{x+\sqrt{x+\sqrt{x+....}}} dx ? "></span></span><span class="sub">Whatever function f(x) is represented by the infinite nested radical … we can reasonably expect it to satisfy … This is because what follows the first “ x+ ” in the nested radical is precisely the…</span></span></a>
+          <a class="qrow" data-slug="is-it-possible-that-pi-is-finite-but-we-haven-t-calculated-i" data-name="Is it possible that pi is finite, but we haven&#x27;t calculated it in full?" data-excerpt="My first reaction to this question, and many others like it, is exasperation. Really? Again? But let me start with a few straight up answers, before I indulge in some measured ranting. It’s not…" data-find="is it possible that pi is finite, but we haven&#x27;t calculated it in full? my first reaction to this question, and many others like it, is exasperation. really? again? but let me start with a few straight up answers, before i indulge in some measured ranting. it’s not…" href="quora/is-it-possible-that-pi-is-finite-but-we-haven-t-calculated-i.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">Is it possible that pi is finite, but we haven't calculated it in full?</span><span class="sub">My first reaction to this question, and many others like it, is exasperation. Really? Again? But let me start with a few straight up answers, before I indulge in some measured ranting. It’s not…</span></span></a>
+          <a class="qrow" data-slug="how-do-i-convince-my-son-not-to-major-in-math" data-name="How do I convince my son not to major in math?" data-excerpt="The question’s details: “My son is a high school senior who plans to major in math. I would be fine with that, but he&#x27;s just not that good at math. In all 4 years of his high school career, he had to…" data-find="how do i convince my son not to major in math? the question’s details: “my son is a high school senior who plans to major in math. i would be fine with that, but he&#x27;s just not that good at math. in all 4 years of his high school career, he had to…" href="quora/how-do-i-convince-my-son-not-to-major-in-math.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">How do I convince my son not to major in math?</span><span class="sub">The question’s details: “My son is a high school senior who plans to major in math. I would be fine with that, but he&#x27;s just not that good at math. In all 4 years of his high school career, he had to…</span></span></a>
+          <a class="qrow" data-slug="what-is-the-value-of-sum-n-0-infty-binom-34-4n" data-name="What is the value of \sum_{n=0}^\infty \binom{34}{4n}?" data-excerpt="Oh my, what a fun question! Seriously, I have a whole new math circle plan just as a result of solving this gem. Very nice. Despite appearances, this isn’t actually a rote calculation problem. It is…" data-find="what is the value of \sum_{n=0}^\infty \binom{34}{4n}? oh my, what a fun question! seriously, i have a whole new math circle plan just as a result of solving this gem. very nice. despite appearances, this isn’t actually a rote calculation problem. it is…" href="quora/what-is-the-value-of-sum-n-0-infty-binom-34-4n.html" target="_blank" rel="noopener"><span class="yr">2018</span><span class="meta"><span class="title">What is the value of <span class="tex" data-tex="\sum_{n=0}^\infty \binom{34}{4n}"></span>?</span><span class="sub">Oh my, what a fun question! Seriously, I have a whole new math circle plan just as a result of solving this gem. Very nice. Despite appearances, this isn’t actually a rote calculation problem. It is…</span></span></a>
+          <a class="qrow" data-slug="how-do-you-prove-that-lim-limits-n-to-infty-e-n-sum-k-0-n-fr" data-name="How do you prove that \lim_\limits{n\to\infty}e^{-n}\sum_{k=0}^{n}\frac{n^k}{k!}=\frac{1}{2}?" data-excerpt="Oh man, you totally spoiled it! This isn’t how you ask the question, come on! You ask it like this: What is … And then you sit back and enjoy the spectacle of everyone saying that it’s obviously 1,…" data-find="how do you prove that \lim_\limits{n\to\infty}e^{-n}\sum_{k=0}^{n}\frac{n^k}{k!}=\frac{1}{2}? oh man, you totally spoiled it! this isn’t how you ask the question, come on! you ask it like this: what is … and then you sit back and enjoy the spectacle of everyone saying that it’s obviously 1,…" href="quora/how-do-you-prove-that-lim-limits-n-to-infty-e-n-sum-k-0-n-fr.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How do you prove that <span class="tex" data-tex="\lim\limits_{n\to\infty}e^{-n}\sum_{k=0}^{n}\frac{n^k}{k!}=\frac{1}{2}"></span>?</span><span class="sub">Oh man, you totally spoiled it! This isn’t how you ask the question, come on! You ask it like this: What is … And then you sit back and enjoy the spectacle of everyone saying that it’s obviously 1,…</span></span></a>
+          <a class="qrow" data-slug="how-do-i-prove-that-sqrt-n-sqrt-n-is-irrational" data-name="How do I prove that \sqrt{n+\sqrt{n}} is irrational?" data-excerpt="We are assuming, of course, that n is a positive integer. If … then … … … … This is a monic polynomial (leading coefficient 1) with integer coefficients. Rational roots of such polynomials must…" data-find="how do i prove that \sqrt{n+\sqrt{n}} is irrational? we are assuming, of course, that n is a positive integer. if … then … … … … this is a monic polynomial (leading coefficient 1) with integer coefficients. rational roots of such polynomials must…" href="quora/how-do-i-prove-that-sqrt-n-sqrt-n-is-irrational.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How do I prove that <span class="tex" data-tex="\sqrt{n+\sqrt{n}}"></span> is irrational?</span><span class="sub">We are assuming, of course, that n is a positive integer. If … then … … … … This is a monic polynomial (leading coefficient 1) with integer coefficients. Rational roots of such polynomials must…</span></span></a>
+          <a class="qrow" data-slug="can-quaternions-be-explained-to-a-nonmathematician" data-name="Can quaternions be explained to a nonmathematician?" data-excerpt="Sure. Dimension 1: The Real Numbers We all (presumably) know that numbers can be added and multiplied. “Numbers” here usually means real numbers, which you may be familiar with from school. They are…" data-find="can quaternions be explained to a nonmathematician? sure. dimension 1: the real numbers we all (presumably) know that numbers can be added and multiplied. “numbers” here usually means real numbers, which you may be familiar with from school. they are…" href="quora/can-quaternions-be-explained-to-a-nonmathematician.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">Can quaternions be explained to a nonmathematician?</span><span class="sub">Sure. Dimension 1: The Real Numbers We all (presumably) know that numbers can be added and multiplied. “Numbers” here usually means real numbers, which you may be familiar with from school. They are…</span></span></a>
+          <a class="qrow" data-slug="introductory-courses-in-linear-algebra-tend-to-start-with-ei" data-name="Introductory courses in linear algebra tend to start with either vectors or systems of equations. Which do you prefer to start your course with and why?" data-excerpt="“Hello everyone! This is an introductory course in Linear Algebra. Linear Algebra is absolutely fundamental for both the theory and application of mathematics, and it provides an excellent…" data-find="introductory courses in linear algebra tend to start with either vectors or systems of equations. which do you prefer to start your course with and why? “hello everyone! this is an introductory course in linear algebra. linear algebra is absolutely fundamental for both the theory and application of mathematics, and it provides an excellent…" href="quora/introductory-courses-in-linear-algebra-tend-to-start-with-ei.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">Introductory courses in linear algebra tend to start with either vectors or systems of equations. Which do you prefer to start your course with and why?</span><span class="sub">“Hello everyone! This is an introductory course in Linear Algebra. Linear Algebra is absolutely fundamental for both the theory and application of mathematics, and it provides an excellent…</span></span></a>
+          <a class="qrow" data-slug="what-is-it-like-to-be-a-blind-mathematician" data-name="What is it like to be a blind mathematician?" data-excerpt="My father had been blind most of his adult life. He was also a mathematician, of sorts: he held a Ph.D. in mathematics and though he wasn’t in academia, he spent much of his professional life around…" data-find="what is it like to be a blind mathematician? my father had been blind most of his adult life. he was also a mathematician, of sorts: he held a ph.d. in mathematics and though he wasn’t in academia, he spent much of his professional life around…" href="quora/what-is-it-like-to-be-a-blind-mathematician.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">What is it like to be a blind mathematician?</span><span class="sub">My father had been blind most of his adult life. He was also a mathematician, of sorts: he held a Ph.D. in mathematics and though he wasn’t in academia, he spent much of his professional life around…</span></span></a>
+          <a class="qrow" data-slug="if-a-math-curriculum-were-designed-solely-around-math-that-t" data-name="If a math curriculum were designed solely around math that the average person were likely to encounter in their life, what would be included?" data-excerpt="A few comments first, if I may? The History curriculum is not designed solely around history that the average person is likely to encounter in their life. The Physical Education curriculum is not…" data-find="if a math curriculum were designed solely around math that the average person were likely to encounter in their life, what would be included? a few comments first, if i may? the history curriculum is not designed solely around history that the average person is likely to encounter in their life. the physical education curriculum is not…" href="quora/if-a-math-curriculum-were-designed-solely-around-math-that-t.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">If a math curriculum were designed solely around math that the average person were likely to encounter in their life, what would be included?</span><span class="sub">A few comments first, if I may? The History curriculum is not designed solely around history that the average person is likely to encounter in their life. The Physical Education curriculum is not…</span></span></a>
+          <a class="qrow" data-slug="if-x-1-x-then-what-is-the-value-of-x" data-name="If X+1=X , then what is the value of X?" data-excerpt="Wait. Let&#x27;s start with something easier, ok? If x^4=16, what is x? In some contexts, the answer is clear: x=2. In other contexts, the answer is just as clear: x=2 or x=-2. And in another context the…" data-find="if x+1=x , then what is the value of x? wait. let&#x27;s start with something easier, ok? if x^4=16, what is x? in some contexts, the answer is clear: x=2. in other contexts, the answer is just as clear: x=2 or x=-2. and in another context the…" href="quora/if-x-1-x-then-what-is-the-value-of-x.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">If X+1=X , then what is the value of X?</span><span class="sub">Wait. Let&#x27;s start with something easier, ok? If x^4=16, what is x? In some contexts, the answer is clear: x=2. In other contexts, the answer is just as clear: x=2 or x=-2. And in another context the…</span></span></a>
+          <a class="qrow" data-slug="how-do-you-solve-the-functional-equation-f-f-x-f-y-f-x-y-f-x" data-name="How do you solve the functional equation f(f(x)f(y))+f(x+y)=f(xy)? (P2 from 2017 International Math Olympiad)" data-excerpt="Let me take this opportunity to solve another math problem terribly. Problem 2 in the 2017 IMO was this functional equation: Problem 2. Let … be the set of real numbers. Determine all functions ……" data-find="how do you solve the functional equation f(f(x)f(y))+f(x+y)=f(xy)? (p2 from 2017 international math olympiad) let me take this opportunity to solve another math problem terribly. problem 2 in the 2017 imo was this functional equation: problem 2. let … be the set of real numbers. determine all functions ……" href="quora/how-do-you-solve-the-functional-equation-f-f-x-f-y-f-x-y-f-x.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How do you solve the functional equation <span class="tex" data-tex="f(f(x)f(y))+f(x+y)=f(xy)"></span>? (P2 from 2017 International Math Olympiad)</span><span class="sub">Let me take this opportunity to solve another math problem terribly. Problem 2 in the 2017 IMO was this functional equation: Problem 2. Let … be the set of real numbers. Determine all functions ……</span></span></a>
+          <a class="qrow" data-slug="what-are-some-fast-algorithms-for-computing-the-nth-power-of" data-name="What are some fast algorithms for computing the nth power of a number?" data-excerpt="This question leads to an absolutely delightful little theory which everyone should know about (and everyone would know about if everyone read Knuth’s TAOCP cover to cover, as everyone should). So…" data-find="what are some fast algorithms for computing the nth power of a number? this question leads to an absolutely delightful little theory which everyone should know about (and everyone would know about if everyone read knuth’s taocp cover to cover, as everyone should). so…" href="quora/what-are-some-fast-algorithms-for-computing-the-nth-power-of.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">What are some fast algorithms for computing the nth power of a number?</span><span class="sub">This question leads to an absolutely delightful little theory which everyone should know about (and everyone would know about if everyone read Knuth’s TAOCP cover to cover, as everyone should). So…</span></span></a>
+          <a class="qrow" data-slug="what-are-x-y-and-z-in-x-3-y-3-z-3-33" data-name="What are x, y, and z in x^3+y^3+z^3=33?" data-excerpt="It depends. If you want three real numbers x,y,z satisfying x^3+y^3+z^3=33 then there are infinitely many, and they are very easy to find. If you want three rational numbers x,y,z satisfying…" data-find="what are x, y, and z in x^3+y^3+z^3=33? it depends. if you want three real numbers x,y,z satisfying x^3+y^3+z^3=33 then there are infinitely many, and they are very easy to find. if you want three rational numbers x,y,z satisfying…" href="quora/what-are-x-y-and-z-in-x-3-y-3-z-3-33.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">What are <span class="tex" data-tex="x"></span>, <span class="tex" data-tex="y"></span>, and <span class="tex" data-tex="z"></span> in <span class="tex" data-tex="x^3+y^3+z^3=33"></span>?</span><span class="sub">It depends. If you want three real numbers x,y,z satisfying x^3+y^3+z^3=33 then there are infinitely many, and they are very easy to find. If you want three rational numbers x,y,z satisfying…</span></span></a>
+          <a class="qrow" data-slug="is-it-difficult-to-prove-fermat-s-last-theorem-for-case-n-3" data-name="Is it difficult to prove Fermat&#x27;s Last Theorem for case n=3?" data-excerpt="“Difficult” is in the eye of the besolver. “Fermat’s Last Theorem” (FLT) for exponent 3 is the statement that a^3+b^3=c^3 has no solutions in nonzero integers. It would make a very difficult puzzle…" data-find="is it difficult to prove fermat&#x27;s last theorem for case n=3? “difficult” is in the eye of the besolver. “fermat’s last theorem” (flt) for exponent 3 is the statement that a^3+b^3=c^3 has no solutions in nonzero integers. it would make a very difficult puzzle…" href="quora/is-it-difficult-to-prove-fermat-s-last-theorem-for-case-n-3.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">Is it difficult to prove Fermat's Last Theorem for case <span class="tex" data-tex="n=3"></span>?</span><span class="sub">“Difficult” is in the eye of the besolver. “Fermat’s Last Theorem” (FLT) for exponent 3 is the statement that a^3+b^3=c^3 has no solutions in nonzero integers. It would make a very difficult puzzle…</span></span></a>
+          <a class="qrow" data-slug="a-machine-outputs-random-real-numbers-between-0-and-1-until" data-name="A machine outputs random real numbers between 0 and 1, until their sum exceeds 1. How many numbers will it need to generate, on average?" data-excerpt="Here&#x27;s a little trick that&#x27;s often useful: when a random variable takes on positive integer values, its expectation is The probability that it is at least 1, plus The probability that it is at least…" data-find="a machine outputs random real numbers between 0 and 1, until their sum exceeds 1. how many numbers will it need to generate, on average? here&#x27;s a little trick that&#x27;s often useful: when a random variable takes on positive integer values, its expectation is the probability that it is at least 1, plus the probability that it is at least…" href="quora/a-machine-outputs-random-real-numbers-between-0-and-1-until.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">A machine outputs random real numbers between <span class="tex" data-tex="0"></span> and <span class="tex" data-tex="1"></span>, until their sum exceeds <span class="tex" data-tex="1"></span>. How many numbers will it need to generate, on average?</span><span class="sub">Here&#x27;s a little trick that&#x27;s often useful: when a random variable takes on positive integer values, its expectation is The probability that it is at least 1, plus The probability that it is at least…</span></span></a>
+          <a class="qrow" data-slug="how-would-i-find-sqrt-i" data-name="How would I find \sqrt{i}?" data-excerpt="What is the square root of 9? Well, it&#x27;s 3 of course. Remember when you learned that? Perhaps you discovered it yourself? If you did, it wasn&#x27;t because you followed some magical recipe for finding…" data-find="how would i find \sqrt{i}? what is the square root of 9? well, it&#x27;s 3 of course. remember when you learned that? perhaps you discovered it yourself? if you did, it wasn&#x27;t because you followed some magical recipe for finding…" href="quora/how-would-i-find-sqrt-i.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How would I find <span class="tex" data-tex="\sqrt{i}"></span>?</span><span class="sub">What is the square root of 9? Well, it&#x27;s 3 of course. Remember when you learned that? Perhaps you discovered it yourself? If you did, it wasn&#x27;t because you followed some magical recipe for finding…</span></span></a>
+          <a class="qrow" data-slug="what-is-an-example-of-a-conjecture-that-was-proven-wrong-for" data-name="What is an example of a conjecture that was proven wrong for &quot;very large&quot; numbers?" data-excerpt="12 isn&#x27;t prime: it&#x27;s composite. So is 121. So is 1211. So is 12111. So is 121111. So is 1211111. So is 12111111. This seems to be a persistent pattern. Let&#x27;s keep going. Seven 1’s, composite. Eight,…" data-find="what is an example of a conjecture that was proven wrong for &quot;very large&quot; numbers? 12 isn&#x27;t prime: it&#x27;s composite. so is 121. so is 1211. so is 12111. so is 121111. so is 1211111. so is 12111111. this seems to be a persistent pattern. let&#x27;s keep going. seven 1’s, composite. eight,…" href="quora/what-is-an-example-of-a-conjecture-that-was-proven-wrong-for.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">What is an example of a conjecture that was proven wrong for "very large" numbers?</span><span class="sub">12 isn&#x27;t prime: it&#x27;s composite. So is 121. So is 1211. So is 12111. So is 121111. So is 1211111. So is 12111111. This seems to be a persistent pattern. Let&#x27;s keep going. Seven 1’s, composite. Eight,…</span></span></a>
+          <a class="qrow" data-slug="what-is-it-like-to-prove-a-theorem-no-one-has-ever-proven-be" data-name="What is it like to prove a theorem no one has ever proven before?" data-excerpt="It’s a special, peculiar, lovely, lonely thrill. How big of a thrill depends on the circumstances. The theorem could be tiny or huge, famous or unknown, profound or superficial, nifty or stunning, a…" data-find="what is it like to prove a theorem no one has ever proven before? it’s a special, peculiar, lovely, lonely thrill. how big of a thrill depends on the circumstances. the theorem could be tiny or huge, famous or unknown, profound or superficial, nifty or stunning, a…" href="quora/what-is-it-like-to-prove-a-theorem-no-one-has-ever-proven-be.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">What is it like to prove a theorem no one has ever proven before?</span><span class="sub">It’s a special, peculiar, lovely, lonely thrill. How big of a thrill depends on the circumstances. The theorem could be tiny or huge, famous or unknown, profound or superficial, nifty or stunning, a…</span></span></a>
+          <a class="qrow" data-slug="how-do-you-find-the-positive-integer-solutions-to-frac-x-y-z" data-name="How do you find the positive integer solutions to \frac{x}{y+z}+ \frac{y}{z+x}+\frac{z}{x+y} = 4?" data-excerpt="I was playing around with several cubic representation problems in the style of previous work by Andrew and Richard Guy. The numerical results were fascinating…” ( comment on MathOverflow) This is…" data-find="how do you find the positive integer solutions to \frac{x}{y+z}+ \frac{y}{z+x}+\frac{z}{x+y} = 4? i was playing around with several cubic representation problems in the style of previous work by andrew and richard guy. the numerical results were fascinating…” ( comment on mathoverflow) this is…" href="quora/how-do-you-find-the-positive-integer-solutions-to-frac-x-y-z.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How do you find the positive integer solutions to <span class="tex" data-tex="\frac{x}{y+z}+ \frac{y}{z+x}+\frac{z}{x+y} = 4?"></span></span><span class="sub">I was playing around with several cubic representation problems in the style of previous work by Andrew and Richard Guy. The numerical results were fascinating…” ( comment on MathOverflow) This is…</span></span></a>
+          <a class="qrow" data-slug="is-it-just-a-coincidence-that-the-derivative-of-e-x-is-also" data-name="Is it just a coincidence that the derivative of e^x is also e^x or is there some feature in the function due to which this happens?" data-excerpt="Oh goodness no, of course it’s not a coincidence. The function which is its own derivative is the fundamental idea here, and the logical starting point. This function is the exponential function ……" data-find="is it just a coincidence that the derivative of e^x is also e^x or is there some feature in the function due to which this happens? oh goodness no, of course it’s not a coincidence. the function which is its own derivative is the fundamental idea here, and the logical starting point. this function is the exponential function ……" href="quora/is-it-just-a-coincidence-that-the-derivative-of-e-x-is-also.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">Is it just a coincidence that the derivative of <span class="tex" data-tex="e^x"></span> is also <span class="tex" data-tex="e^x"></span> or is there some feature in the function due to which this happens?</span><span class="sub">Oh goodness no, of course it’s not a coincidence. The function which is its own derivative is the fundamental idea here, and the logical starting point. This function is the exponential function ……</span></span></a>
+          <a class="qrow" data-slug="how-would-i-go-about-getting-a-math-phd-by-the-age-of-25" data-name="How would I go about getting a math PhD by the age of 25?" data-excerpt="I have the will and the passion to want to get such a thing. I love math beyond all things. Being only 14, I (surprisingly) have found my passion and I know that a math PhD is my goal. I’ve begun…" data-find="how would i go about getting a math phd by the age of 25? i have the will and the passion to want to get such a thing. i love math beyond all things. being only 14, i (surprisingly) have found my passion and i know that a math phd is my goal. i’ve begun…" href="quora/how-would-i-go-about-getting-a-math-phd-by-the-age-of-25.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How would I go about getting a math PhD by the age of 25?</span><span class="sub">I have the will and the passion to want to get such a thing. I love math beyond all things. Being only 14, I (surprisingly) have found my passion and I know that a math PhD is my goal. I’ve begun…</span></span></a>
+          <a class="qrow" data-slug="how-did-germany-lose-its-edge-in-mathematics" data-name="How did Germany lose its edge in mathematics?" data-excerpt="Judging a country’s level of excellence in mathematics by the number of Fields medal recipients is dubious (and I’ll be shocked if Germany doesn’t land another Fields at the next ICM*), but it cannot…" data-find="how did germany lose its edge in mathematics? judging a country’s level of excellence in mathematics by the number of fields medal recipients is dubious (and i’ll be shocked if germany doesn’t land another fields at the next icm*), but it cannot…" href="quora/how-did-germany-lose-its-edge-in-mathematics.html" target="_blank" rel="noopener"><span class="yr">2017</span><span class="meta"><span class="title">How did Germany lose its edge in mathematics?</span><span class="sub">Judging a country’s level of excellence in mathematics by the number of Fields medal recipients is dubious (and I’ll be shocked if Germany doesn’t land another Fields at the next ICM*), but it cannot…</span></span></a>
+          <a class="qrow" data-slug="what-if-i-requested-the-last-room-at-the-hilbert-s-hotel" data-name="What if I requested the last room at the Hilbert&#x27;s Hotel?" data-excerpt="“Welcome to Hilbert’s Hotel, transfinitely serving your needs since 1883! How may we be of service?” “Yes, I’d like to have a room, please.” “Very good, sir. Which room would you prefer? Our rooms…" data-find="what if i requested the last room at the hilbert&#x27;s hotel? “welcome to hilbert’s hotel, transfinitely serving your needs since 1883! how may we be of service?” “yes, i’d like to have a room, please.” “very good, sir. which room would you prefer? our rooms…" href="quora/what-if-i-requested-the-last-room-at-the-hilbert-s-hotel.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">What if I requested the last room at the Hilbert's Hotel?</span><span class="sub">“Welcome to Hilbert’s Hotel, transfinitely serving your needs since 1883! How may we be of service?” “Yes, I’d like to have a room, please.” “Very good, sir. Which room would you prefer? Our rooms…</span></span></a>
+          <a class="qrow" data-slug="i-am-not-amazingly-good-at-maths-so-it-is-obvious-to-me-whet" data-name="I am not amazingly good at maths, so it is obvious to me whether I can solve a problem or not after 5 minutes. How do people spend hours on problems?" data-excerpt="How do people spend hours on problems? Excellent, excellent question. One of the bad misconceptions people have about math problem solving is that it’s a mechanical process: either you know which…" data-find="i am not amazingly good at maths, so it is obvious to me whether i can solve a problem or not after 5 minutes. how do people spend hours on problems? how do people spend hours on problems? excellent, excellent question. one of the bad misconceptions people have about math problem solving is that it’s a mechanical process: either you know which…" href="quora/i-am-not-amazingly-good-at-maths-so-it-is-obvious-to-me-whet.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">I am not amazingly good at maths, so it is obvious to me whether I can solve a problem or not after 5 minutes. How do people spend hours on problems?</span><span class="sub">How do people spend hours on problems? Excellent, excellent question. One of the bad misconceptions people have about math problem solving is that it’s a mechanical process: either you know which…</span></span></a>
+          <a class="qrow" data-slug="was-what-the-mathematician-ed-witten-did-to-receive-the-fiel" data-name="Was what the mathematician Ed Witten did to receive the Fields medal legitimate mathematics, or not?" data-excerpt="“Physicists on Quora and in the physics community claim that Witten does not follow mathematical rules in his creation of string theory. So was his mathematics for the fields medal legitimate or is…" data-find="was what the mathematician ed witten did to receive the fields medal legitimate mathematics, or not? “physicists on quora and in the physics community claim that witten does not follow mathematical rules in his creation of string theory. so was his mathematics for the fields medal legitimate or is…" href="quora/was-what-the-mathematician-ed-witten-did-to-receive-the-fiel.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">Was what the mathematician Ed Witten did to receive the Fields medal legitimate mathematics, or not?</span><span class="sub">“Physicists on Quora and in the physics community claim that Witten does not follow mathematical rules in his creation of string theory. So was his mathematics for the fields medal legitimate or is…</span></span></a>
+          <a class="qrow" data-slug="in-mathematics-how-do-you-know-when-you-have-proven-a-theore" data-name="In mathematics, how do you know when you have proven a theorem?" data-excerpt="Oh, fantastic question, and one which I’m well positioned to answer. Why? Because many times I thought I proved things when I actually hadn’t. And I thought I failed to prove things when I actually…" data-find="in mathematics, how do you know when you have proven a theorem? oh, fantastic question, and one which i’m well positioned to answer. why? because many times i thought i proved things when i actually hadn’t. and i thought i failed to prove things when i actually…" href="quora/in-mathematics-how-do-you-know-when-you-have-proven-a-theore.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">In mathematics, how do you know when you have proven a theorem?</span><span class="sub">Oh, fantastic question, and one which I’m well positioned to answer. Why? Because many times I thought I proved things when I actually hadn’t. And I thought I failed to prove things when I actually…</span></span></a>
+          <a class="qrow" data-slug="how-do-you-prove-that-a-number-is-even" data-name="How do you prove that a number is even?" data-excerpt="Proving that a number is even can be easy for a 4th grader, hard for a smart high-schooler, worthy of a math Ph.D. at Harvard, or beyond the current abilities of all the world’s mathematicians put…" data-find="how do you prove that a number is even? proving that a number is even can be easy for a 4th grader, hard for a smart high-schooler, worthy of a math ph.d. at harvard, or beyond the current abilities of all the world’s mathematicians put…" href="quora/how-do-you-prove-that-a-number-is-even.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">How do you prove that a number is even?</span><span class="sub">Proving that a number is even can be easy for a 4th grader, hard for a smart high-schooler, worthy of a math Ph.D. at Harvard, or beyond the current abilities of all the world’s mathematicians put…</span></span></a>
+          <a class="qrow" data-slug="if-3-is-3-times-2-times-1-then-what-is-1-5" data-name="If 3! is 3 \times 2 \times 1 then what is 1.5!?" data-excerpt="The first known attempt at answering this question is in a letter written by Daniel Bernoulli on October 26, 1729. That’s 287 years ago. (See “Why is the Gamma function so [ sic ] as it is?” By…" data-find="if 3! is 3 \times 2 \times 1 then what is 1.5!? the first known attempt at answering this question is in a letter written by daniel bernoulli on october 26, 1729. that’s 287 years ago. (see “why is the gamma function so [ sic ] as it is?” by…" href="quora/if-3-is-3-times-2-times-1-then-what-is-1-5.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">If <span class="tex" data-tex="3!"></span> is <span class="tex" data-tex="3 \times 2 \times 1"></span> then what is <span class="tex" data-tex="1.5!"></span>?</span><span class="sub">The first known attempt at answering this question is in a letter written by Daniel Bernoulli on October 26, 1729. That’s 287 years ago. (See “Why is the Gamma function so [ sic ] as it is?” By…</span></span></a>
+          <a class="qrow" data-slug="what-are-some-examples-of-non-trivial-or-difficult-counterex" data-name="What are some examples of non-trivial or difficult counterexamples to mathematical conjectures?" data-excerpt="Oh, this is going to be fun. First, a point of terminology: there are no “counterexamples to mathematical theories ”, because a theory isn’t a single statement that can be refuted with a…" data-find="what are some examples of non-trivial or difficult counterexamples to mathematical conjectures? oh, this is going to be fun. first, a point of terminology: there are no “counterexamples to mathematical theories ”, because a theory isn’t a single statement that can be refuted with a…" href="quora/what-are-some-examples-of-non-trivial-or-difficult-counterex.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">What are some examples of non-trivial or difficult counterexamples to mathematical conjectures?</span><span class="sub">Oh, this is going to be fun. First, a point of terminology: there are no “counterexamples to mathematical theories ”, because a theory isn’t a single statement that can be refuted with a…</span></span></a>
+          <a class="qrow" data-slug="could-we-invent-a-number-h-such-that-h-1-over-0-similarly-to" data-name="Could we &quot;invent&quot; a number h such that h={{1}\over{0}}, similarly to the way we &quot;invented&quot; i=\sqrt{-1}? What would be the effect on modern math if we did so?" data-excerpt="You may not be aware of this, but mathematicians are very imaginative and creative people. They love defining new things, they love analogies, they love challenging accepted assumptions and they love…" data-find="could we &quot;invent&quot; a number h such that h={{1}\over{0}}, similarly to the way we &quot;invented&quot; i=\sqrt{-1}? what would be the effect on modern math if we did so? you may not be aware of this, but mathematicians are very imaginative and creative people. they love defining new things, they love analogies, they love challenging accepted assumptions and they love…" href="quora/could-we-invent-a-number-h-such-that-h-1-over-0-similarly-to.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">Could we "invent" a number <span class="tex" data-tex="h"></span> such that <span class="tex" data-tex="h"></span><span class="tex" data-tex="={{1}\over{0}}"></span>, similarly to the way we "invented" <span class="tex" data-tex="i=\sqrt{-1}"></span>? What would be the effect on modern math if we did so?</span><span class="sub">You may not be aware of this, but mathematicians are very imaginative and creative people. They love defining new things, they love analogies, they love challenging accepted assumptions and they love…</span></span></a>
+          <a class="qrow" data-slug="what-math-problem-with-an-elementary-solution-was-unsolved-f" data-name="What math problem with an elementary solution was unsolved for the longest period?" data-excerpt="Being a competitive guy, I&#x27;ll offer a problem that I think stood the longest. Naturally, I&#x27;m going to stretch the meaning of &quot;elementary solution&quot; so much that it writhes in agony, but this is…" data-find="what math problem with an elementary solution was unsolved for the longest period? being a competitive guy, i&#x27;ll offer a problem that i think stood the longest. naturally, i&#x27;m going to stretch the meaning of &quot;elementary solution&quot; so much that it writhes in agony, but this is…" href="quora/what-math-problem-with-an-elementary-solution-was-unsolved-f.html" target="_blank" rel="noopener"><span class="yr">2016</span><span class="meta"><span class="title">What math problem with an elementary solution was unsolved for the longest period?</span><span class="sub">Being a competitive guy, I&#x27;ll offer a problem that I think stood the longest. Naturally, I&#x27;m going to stretch the meaning of &quot;elementary solution&quot; so much that it writhes in agony, but this is…</span></span></a>
+          <a class="qrow" data-slug="are-there-any-numbers-which-don-t-fall-into-at-least-one-of" data-name="Are there any numbers which don&#x27;t fall into at least one of the categories of real numbers, imaginary numbers, or complex numbers?" data-excerpt="Yes, here&#x27;s one: …. &quot;Wait!&quot;, I hear you cry. &quot;That&#x27;s not a number, It&#x27;s a function!&quot; OK, let&#x27;s think about that for a second. Many years ago, when the human race was younger, the only &quot;numbers&quot; were…" data-find="are there any numbers which don&#x27;t fall into at least one of the categories of real numbers, imaginary numbers, or complex numbers? yes, here&#x27;s one: …. &quot;wait!&quot;, i hear you cry. &quot;that&#x27;s not a number, it&#x27;s a function!&quot; ok, let&#x27;s think about that for a second. many years ago, when the human race was younger, the only &quot;numbers&quot; were…" href="quora/are-there-any-numbers-which-don-t-fall-into-at-least-one-of.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Are there any numbers which don't fall into at least one of the categories of real numbers, imaginary numbers, or complex numbers?</span><span class="sub">Yes, here&#x27;s one: …. &quot;Wait!&quot;, I hear you cry. &quot;That&#x27;s not a number, It&#x27;s a function!&quot; OK, let&#x27;s think about that for a second. Many years ago, when the human race was younger, the only &quot;numbers&quot; were…</span></span></a>
+          <a class="qrow" data-slug="is-it-still-possible-for-a-mathematician-to-be-competent-in" data-name="Is it still possible for a mathematician to be competent in most of the areas or fields of mathematics?" data-excerpt="No, it is no longer possible, and has been impossible for about 100 years. Hilbert and Poincaré are considered to be the last mathematicians to have mastered so much of the mathematics of their day…" data-find="is it still possible for a mathematician to be competent in most of the areas or fields of mathematics? no, it is no longer possible, and has been impossible for about 100 years. hilbert and poincaré are considered to be the last mathematicians to have mastered so much of the mathematics of their day…" href="quora/is-it-still-possible-for-a-mathematician-to-be-competent-in.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Is it still possible for a mathematician to be competent in most of the areas or fields of mathematics?</span><span class="sub">No, it is no longer possible, and has been impossible for about 100 years. Hilbert and Poincaré are considered to be the last mathematicians to have mastered so much of the mathematics of their day…</span></span></a>
+          <a class="qrow" data-slug="what-is-a-great-riddle-that-has-no-right-answer" data-name="What is a great riddle that has no right answer?" data-excerpt="A group of people are standing around in a circle. Every ten seconds, every person simultaneously shoots a random other person (with a laser tag system, of course. Nobody is actually hurt). If you&#x27;re…" data-find="what is a great riddle that has no right answer? a group of people are standing around in a circle. every ten seconds, every person simultaneously shoots a random other person (with a laser tag system, of course. nobody is actually hurt). if you&#x27;re…" href="quora/what-is-a-great-riddle-that-has-no-right-answer.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">What is a great riddle that has no right answer?</span><span class="sub">A group of people are standing around in a circle. Every ten seconds, every person simultaneously shoots a random other person (with a laser tag system, of course. Nobody is actually hurt). If you&#x27;re…</span></span></a>
+          <a class="qrow" data-slug="why-is-the-obvious-proof-of-the-four-colour-map-theorem-whic" data-name="Why is the obvious proof of the four colour map theorem, which says that any planar map can be coloured using only 4 colours, seemingly wrong? If 3 colours are all touching each other, then the 4th colour that touches all 3 must encircle one of them." data-excerpt="I&#x27;d like to offer a perspective that may help readers understand more clearly not only why this proof doesn&#x27;t work, but what is it about this kind of approach that makes it unlikely to succeed. At a…" data-find="why is the obvious proof of the four colour map theorem, which says that any planar map can be coloured using only 4 colours, seemingly wrong? if 3 colours are all touching each other, then the 4th colour that touches all 3 must encircle one of them. i&#x27;d like to offer a perspective that may help readers understand more clearly not only why this proof doesn&#x27;t work, but what is it about this kind of approach that makes it unlikely to succeed. at a…" href="quora/why-is-the-obvious-proof-of-the-four-colour-map-theorem-whic.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Why is the obvious proof of the four colour map theorem, which says that any planar map can be coloured using only 4 colours, seemingly wrong? If 3 colours are all touching each other, then the 4th colour that touches all 3 must encircle one of them.</span><span class="sub">I&#x27;d like to offer a perspective that may help readers understand more clearly not only why this proof doesn&#x27;t work, but what is it about this kind of approach that makes it unlikely to succeed. At a…</span></span></a>
+          <a class="qrow" data-slug="why-did-riemann-propose-the-riemann-zeta-function" data-name="Why did Riemann propose the Riemann zeta function?" data-excerpt="Riemann was, first and foremost, a geometer. His deep research into the structure and geometry of manifolds set the stage for the field known today as Riemannian Geometry, which is fundamental for…" data-find="why did riemann propose the riemann zeta function? riemann was, first and foremost, a geometer. his deep research into the structure and geometry of manifolds set the stage for the field known today as riemannian geometry, which is fundamental for…" href="quora/why-did-riemann-propose-the-riemann-zeta-function.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Why did Riemann propose the Riemann zeta function?</span><span class="sub">Riemann was, first and foremost, a geometer. His deep research into the structure and geometry of manifolds set the stage for the field known today as Riemannian Geometry, which is fundamental for…</span></span></a>
+          <a class="qrow" data-slug="is-a-b-1-1-the-only-solution-of-the-equation-3-a-b-2-2-where" data-name="Is (a,b)=(1,1) the only solution of the equation 3^a = b^2+2  where a,b are integers?" data-excerpt="Alright, buckle up. I&#x27;m going use this little problem as an excuse to introduce the wonders of Algebraic Number Theory, at least a small portion of it. Ready? Ok. We&#x27;re trying to solve 3^n = m^2+2…" data-find="is (a,b)=(1,1) the only solution of the equation 3^a = b^2+2  where a,b are integers? alright, buckle up. i&#x27;m going use this little problem as an excuse to introduce the wonders of algebraic number theory, at least a small portion of it. ready? ok. we&#x27;re trying to solve 3^n = m^2+2…" href="quora/is-a-b-1-1-the-only-solution-of-the-equation-3-a-b-2-2-where.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Is <span class="tex" data-tex="(a,b)=(1,1)"></span> the only solution of the equation <span class="tex" data-tex="3^a = b^2+2 "></span> where <span class="tex" data-tex="a,b"></span> are integers?</span><span class="sub">Alright, buckle up. I&#x27;m going use this little problem as an excuse to introduce the wonders of Algebraic Number Theory, at least a small portion of it. Ready? Ok. We&#x27;re trying to solve 3^n = m^2+2…</span></span></a>
+          <a class="qrow" data-slug="how-did-andrew-wiles-succeed-in-proving-fermat-s-last-theore" data-name="How did Andrew Wiles succeed in proving Fermat&#x27;s last theorem when others had failed?" data-excerpt="A facetious, provocative answer with a shred of truth: he did not. Andrew Wiles didn&#x27;t actually prove Fermat&#x27;s Last Theorem. Not directly. He proved a much deeper and more important result, the…" data-find="how did andrew wiles succeed in proving fermat&#x27;s last theorem when others had failed? a facetious, provocative answer with a shred of truth: he did not. andrew wiles didn&#x27;t actually prove fermat&#x27;s last theorem. not directly. he proved a much deeper and more important result, the…" href="quora/how-did-andrew-wiles-succeed-in-proving-fermat-s-last-theore.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">How did Andrew Wiles succeed in proving Fermat's last theorem when others had failed?</span><span class="sub">A facetious, provocative answer with a shred of truth: he did not. Andrew Wiles didn&#x27;t actually prove Fermat&#x27;s Last Theorem. Not directly. He proved a much deeper and more important result, the…</span></span></a>
+          <a class="qrow" data-slug="is-10-100-1-a-googol-plus-1-prime" data-name="Is 10^{100}+1 (a googol plus 1) prime?" data-excerpt="No, googol+1 isn&#x27;t prime and you don&#x27;t need a computer to see that. If m is odd, then (-1)^m=-1 so (-1)^m+1=0 or put differently, -1 is a root of the polynomial X^m+1, which is the same as saying…" data-find="is 10^{100}+1 (a googol plus 1) prime? no, googol+1 isn&#x27;t prime and you don&#x27;t need a computer to see that. if m is odd, then (-1)^m=-1 so (-1)^m+1=0 or put differently, -1 is a root of the polynomial x^m+1, which is the same as saying…" href="quora/is-10-100-1-a-googol-plus-1-prime.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Is <span class="tex" data-tex="10^{100}+1"></span> (a googol plus 1) prime?</span><span class="sub">No, googol+1 isn&#x27;t prime and you don&#x27;t need a computer to see that. If m is odd, then (-1)^m=-1 so (-1)^m+1=0 or put differently, -1 is a root of the polynomial X^m+1, which is the same as saying…</span></span></a>
+          <a class="qrow" data-slug="let-a-and-b-be-positive-integers-such-that-ab-1-divides-a-2" data-name="Let a and b be positive integers such that ab+1 divides a^2+b^2. Why must \frac{a^2+b^2}{ab+1} be a perfect square?" data-excerpt="This may be the single most famous elementary number theory problem of recent years, discussed many times on forums such as artofproblemsolving, math.stackexchange and elsewhere. It was also problem…" data-find="let a and b be positive integers such that ab+1 divides a^2+b^2. why must \frac{a^2+b^2}{ab+1} be a perfect square? this may be the single most famous elementary number theory problem of recent years, discussed many times on forums such as artofproblemsolving, math.stackexchange and elsewhere. it was also problem…" href="quora/let-a-and-b-be-positive-integers-such-that-ab-1-divides-a-2.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">Let <span class="tex" data-tex="a"></span> and <span class="tex" data-tex="b"></span> be positive integers such that <span class="tex" data-tex="ab+1"></span> divides <span class="tex" data-tex="a^2+b^2"></span>. Why must <span class="tex" data-tex="\frac{a^2+b^2}{ab+1}"></span> be a perfect square?</span><span class="sub">This may be the single most famous elementary number theory problem of recent years, discussed many times on forums such as artofproblemsolving, math.stackexchange and elsewhere. It was also problem…</span></span></a>
+          <a class="qrow" data-slug="what-is-2-raised-to-the-power-of-50-000" data-name="What is 2 raised to the power of 50,000?" data-excerpt="Most answers given are somewhat baffling to me. We are considering a number: two to the power fifty thousand. That&#x27;s two times two times two times... Lots of times. Big number for sure, relative to…" data-find="what is 2 raised to the power of 50,000? most answers given are somewhat baffling to me. we are considering a number: two to the power fifty thousand. that&#x27;s two times two times two times... lots of times. big number for sure, relative to…" href="quora/what-is-2-raised-to-the-power-of-50-000.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">What is 2 raised to the power of 50,000?</span><span class="sub">Most answers given are somewhat baffling to me. We are considering a number: two to the power fifty thousand. That&#x27;s two times two times two times... Lots of times. Big number for sure, relative to…</span></span></a>
+          <a class="qrow" data-slug="on-average-can-a-person-with-a-phd-in-mathematics-answer-mos" data-name="On average, can a person with a PhD in mathematics answer most of the questions on math.stackexchange?" data-excerpt="My intuition said &quot;likely not&quot;, but I decided to check. I looked at the list of top questions as of right now, 1/1/2015, 9:52am PST. I marked &quot;No&quot; questions that don&#x27;t seem to me to be necessarily…" data-find="on average, can a person with a phd in mathematics answer most of the questions on math.stackexchange? my intuition said &quot;likely not&quot;, but i decided to check. i looked at the list of top questions as of right now, 1/1/2015, 9:52am pst. i marked &quot;no&quot; questions that don&#x27;t seem to me to be necessarily…" href="quora/on-average-can-a-person-with-a-phd-in-mathematics-answer-mos.html" target="_blank" rel="noopener"><span class="yr">2015</span><span class="meta"><span class="title">On average, can a person with a PhD in mathematics answer most of the questions on math.stackexchange?</span><span class="sub">My intuition said &quot;likely not&quot;, but I decided to check. I looked at the list of top questions as of right now, 1/1/2015, 9:52am PST. I marked &quot;No&quot; questions that don&#x27;t seem to me to be necessarily…</span></span></a>
+          <a class="qrow" data-slug="what-do-mathematicians-say-about-this-picture-shared-on-9gag" data-name="What do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π?" data-excerpt="AAARGH!!! When will this nonsense go away?! Never. It will never go away, I&#x27;m desperately certain. A hundred years from now people will still be sharing this hackneyed hokum. A thousand years in the…" data-find="what do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π? aaargh!!! when will this nonsense go away?! never. it will never go away, i&#x27;m desperately certain. a hundred years from now people will still be sharing this hackneyed hokum. a thousand years in the…" href="quora/what-do-mathematicians-say-about-this-picture-shared-on-9gag.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">What do mathematicians say about this picture shared on 9gag, claiming that all information is found in the digits of π?</span><span class="sub">AAARGH!!! When will this nonsense go away?! Never. It will never go away, I&#x27;m desperately certain. A hundred years from now people will still be sharing this hackneyed hokum. A thousand years in the…</span></span></a>
+          <a class="qrow" data-slug="in-an-online-lecture-a-professor-mentioned-that-einstein-cou" data-name="In an online lecture, a professor mentioned that Einstein could draw or imagine a 4-dimensional figure. How can one possibly do that?" data-excerpt="Here&#x27;s a 3-dimensional figure. ​ Right? Wrong. The knot is drawn on a flat screen, that of your phone or computer, so the image is decidedly 2-dimensional. However, it provides visual cues that help…" data-find="in an online lecture, a professor mentioned that einstein could draw or imagine a 4-dimensional figure. how can one possibly do that? here&#x27;s a 3-dimensional figure. ​ right? wrong. the knot is drawn on a flat screen, that of your phone or computer, so the image is decidedly 2-dimensional. however, it provides visual cues that help…" href="quora/in-an-online-lecture-a-professor-mentioned-that-einstein-cou.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">In an online lecture, a professor mentioned that Einstein could draw or imagine a 4-dimensional figure. How can one possibly do that?</span><span class="sub">Here&#x27;s a 3-dimensional figure. ​ Right? Wrong. The knot is drawn on a flat screen, that of your phone or computer, so the image is decidedly 2-dimensional. However, it provides visual cues that help…</span></span></a>
+          <a class="qrow" data-slug="what-is-the-practical-usefulness-of-learning-the-nth-root-of" data-name="What is the practical usefulness of learning the Nth root of a number?" data-excerpt="My soon to be 7th grade son asked me. I/we could think of good reasons for finding 2nd and 3rd root, but not Nth. Any good explanations? Does he play the piano, by any chance? You may teach him that…" data-find="what is the practical usefulness of learning the nth root of a number? my soon to be 7th grade son asked me. i/we could think of good reasons for finding 2nd and 3rd root, but not nth. any good explanations? does he play the piano, by any chance? you may teach him that…" href="quora/what-is-the-practical-usefulness-of-learning-the-nth-root-of.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">What is the practical usefulness of learning the Nth root of a number?</span><span class="sub">My soon to be 7th grade son asked me. I/we could think of good reasons for finding 2nd and 3rd root, but not Nth. Any good explanations? Does he play the piano, by any chance? You may teach him that…</span></span></a>
+          <a class="qrow" data-slug="what-makes-mathematics-beautiful" data-name="What makes mathematics beautiful?" data-excerpt="What makes anything beautiful? We don&#x27;t know exactly, of course, and there&#x27;s no single answer. But some themes come to mind. A subtle blend of the familiar, the reassuring, with the surprising, the…" data-find="what makes mathematics beautiful? what makes anything beautiful? we don&#x27;t know exactly, of course, and there&#x27;s no single answer. but some themes come to mind. a subtle blend of the familiar, the reassuring, with the surprising, the…" href="quora/what-makes-mathematics-beautiful.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">What makes mathematics beautiful?</span><span class="sub">What makes anything beautiful? We don&#x27;t know exactly, of course, and there&#x27;s no single answer. But some themes come to mind. A subtle blend of the familiar, the reassuring, with the surprising, the…</span></span></a>
+          <a class="qrow" data-slug="what-are-the-most-interesting-or-popular-probability-puzzles" data-name="What are the most interesting or popular probability puzzles in which the intuition is contrary to the solution?" data-excerpt="How to Confuse Curious Minds My Pattern is Better than Yours 1. Flip a fair coin twice. What is the probability that you get two heads (HH)? What is the probability that you get heads followed by…" data-find="what are the most interesting or popular probability puzzles in which the intuition is contrary to the solution? how to confuse curious minds my pattern is better than yours 1. flip a fair coin twice. what is the probability that you get two heads (hh)? what is the probability that you get heads followed by…" href="quora/what-are-the-most-interesting-or-popular-probability-puzzles.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">What are the most interesting or popular probability puzzles in which the intuition is contrary to the solution?</span><span class="sub">How to Confuse Curious Minds My Pattern is Better than Yours 1. Flip a fair coin twice. What is the probability that you get two heads (HH)? What is the probability that you get heads followed by…</span></span></a>
+          <a class="qrow" data-slug="what-is-a-simple-explanation-for-the-general-equation-of-the" data-name="What is a simple explanation for the general equation of the second degree?" data-excerpt="- Can you solve x^2=9? - Yes: x=3. - There&#x27;s another solution. - Oh yeah, x=-3 works as well. - Good. How about (x+1)^2=9? - Well, I know that …... - Stop! Resist the reflex to expand this. It&#x27;s…" data-find="what is a simple explanation for the general equation of the second degree? - can you solve x^2=9? - yes: x=3. - there&#x27;s another solution. - oh yeah, x=-3 works as well. - good. how about (x+1)^2=9? - well, i know that …... - stop! resist the reflex to expand this. it&#x27;s…" href="quora/what-is-a-simple-explanation-for-the-general-equation-of-the.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">What is a simple explanation for the general equation of the second degree?</span><span class="sub">- Can you solve x^2=9? - Yes: x=3. - There&#x27;s another solution. - Oh yeah, x=-3 works as well. - Good. How about (x+1)^2=9? - Well, I know that …... - Stop! Resist the reflex to expand this. It&#x27;s…</span></span></a>
+          <a class="qrow" data-slug="how-does-a-computer-program-convert-different-types-of-data" data-name="How does a computer program convert different types of data like images or text files into binary data?" data-excerpt="Whatever thing you wish to represent in a computer, you need to find a way of converting it into numbers. This conversion process is sometimes completely faithful, meaning you can recover the…" data-find="how does a computer program convert different types of data like images or text files into binary data? whatever thing you wish to represent in a computer, you need to find a way of converting it into numbers. this conversion process is sometimes completely faithful, meaning you can recover the…" href="quora/how-does-a-computer-program-convert-different-types-of-data.html" target="_blank" rel="noopener"><span class="yr">2014</span><span class="meta"><span class="title">How does a computer program convert different types of data like images or text files into binary data?</span><span class="sub">Whatever thing you wish to represent in a computer, you need to find a way of converting it into numbers. This conversion process is sometimes completely faithful, meaning you can recover the…</span></span></a>
+          <a class="qrow" data-slug="how-can-i-solve-an-equation-of-the-third-degree" data-name="How can I solve an equation of the third degree?" data-excerpt="There is more than one way to interpret &quot;solve&quot; in the context of equations in general, and polynomial equations in particular. In practice, most often you would solve a cubic equation (3rd degree)…" data-find="how can i solve an equation of the third degree? there is more than one way to interpret &quot;solve&quot; in the context of equations in general, and polynomial equations in particular. in practice, most often you would solve a cubic equation (3rd degree)…" href="quora/how-can-i-solve-an-equation-of-the-third-degree.html" target="_blank" rel="noopener"><span class="yr">2013</span><span class="meta"><span class="title">How can I solve an equation of the third degree?</span><span class="sub">There is more than one way to interpret &quot;solve&quot; in the context of equations in general, and polynomial equations in particular. In practice, most often you would solve a cubic equation (3rd degree)…</span></span></a>
+          <a class="qrow" data-slug="have-you-created-a-problem-that-you-couldn-t-solve-in-math-o" data-name="Have you created a problem that you couldn&#x27;t solve in math or logic but that someone else could?" data-excerpt="That&#x27;s actually one of my happiest achievements in mathematics. Some years ago I came up with a conjecture based on a combination of wishful thinking, minuscule amounts of data and extremely vague…" data-find="have you created a problem that you couldn&#x27;t solve in math or logic but that someone else could? that&#x27;s actually one of my happiest achievements in mathematics. some years ago i came up with a conjecture based on a combination of wishful thinking, minuscule amounts of data and extremely vague…" href="quora/have-you-created-a-problem-that-you-couldn-t-solve-in-math-o.html" target="_blank" rel="noopener"><span class="yr">2013</span><span class="meta"><span class="title">Have you created a problem that you couldn't solve in math or logic but that someone else could?</span><span class="sub">That&#x27;s actually one of my happiest achievements in mathematics. Some years ago I came up with a conjecture based on a combination of wishful thinking, minuscule amounts of data and extremely vague…</span></span></a>
+          <a class="qrow" data-slug="what-is-the-point-of-pure-mathematics" data-name="What is the point of pure mathematics?" data-excerpt="…are there any realistic benefits that actually help the world run? (Original question details) How is &quot;actually helping the world run&quot; synonymous with &quot;having a point&quot;? Does music help the world…" data-find="what is the point of pure mathematics? …are there any realistic benefits that actually help the world run? (original question details) how is &quot;actually helping the world run&quot; synonymous with &quot;having a point&quot;? does music help the world…" href="quora/what-is-the-point-of-pure-mathematics.html" target="_blank" rel="noopener"><span class="yr">2013</span><span class="meta"><span class="title">What is the point of pure mathematics?</span><span class="sub">…are there any realistic benefits that actually help the world run? (Original question details) How is &quot;actually helping the world run&quot; synonymous with &quot;having a point&quot;? Does music help the world…</span></span></a>
+          <div class="qnone" hidden>No answers match.</div>
+        </div>
+        <!--QUORA-ROWS END-->
+      </section>
+
+      <!-- ABOUT -->
+      <section class="panel" id="am-panel-about">
+        <div class="panel-head">
+          <span class="num">06</span>
+          <h2>About</h2>
+        </div>
+        <div class="about">
+          <div>
+            <p>This is a growing collection of mathematical musings, doodles, writings and talks.</p>
+            <p>My math bio includes being a board member of <a href="https://www.proofschool.org" target="_blank" rel="noopener">Proof School</a> since its inception, a frequent writer of mathematical answers on <a href="https://www.quora.com/profile/Alon-Amit/answers" target="_blank" rel="noopener">Quora</a>, a regular leader of <a href="https://mathcircle.spcs.stanford.edu/" target="_blank" rel="noopener">Math Circles</a> in the Bay Area, and various appearances and talks. I have a Ph.D. in math from the Hebrew University, Jerusalem, and my Erd&odblac;s number is 2.</p>
+            <p>Outside of math I work in tech and finance, jog, bike, play the piano and drink too much coconut juice.</p>
+            <p><em>Alon</em></p>
+          </div>
+          <aside class="sidecol">
+            <h3>Find me elsewhere</h3>
+            <ul>
+              <li><a href="https://www.quora.com/profile/Alon-Amit" target="_blank" rel="noopener">Quora →</a></li>
+              <li><a href="https://www.semanticscholar.org/author/Alon-Amit/3075049" target="_blank" rel="noopener">Semantic Scholar →</a></li>
+              <li><a href="https://www.linkedin.com/in/alonamit" target="_blank" rel="noopener">LinkedIn →</a></li>
+              <li><a href="mailto:alon.amit@gmail.com">Email →</a></li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <!-- VIEWER (filled by the script; a fresh iframe per open) -->
+    <div class="viewer" id="am-viewer" hidden>
+      <div class="viewer-bar">
+        <button type="button" class="vbtn back" data-viewer="back">← Applets</button>
+        <span class="vtitle" id="am-viewer-title"></span>
+        <span class="vactions">
+          <button type="button" class="vbtn copy" data-viewer="copy">Copy link</button>
+          <a class="vbtn" id="am-viewer-open" href="#" target="_blank" rel="noopener">New tab ↗</a>
+        </span>
+      </div>
+      <p class="viewer-note" id="am-viewer-note" hidden></p>
+      <div class="viewer-stage" id="am-viewer-stage">
+        <div class="vloading">loading…</div>
+      </div>
+    </div>
+
+    <footer class="site-foot">
+      <div>an <em>affine mess</em> · built with claude · 2026</div>
+      <div>press ← / → to flip tabs · <span class="am-ver am-ver-bad">script did not load</span></div>
+    </footer>
+  </div>
+</div>
+<script>
+  (function() {
+    const root = document.querySelector('.am-root');
+    if (!root) return;
+    try { console.info('affinemess.com site version ' + root.dataset.version); } catch (_) {}
+    const tabs   = root.querySelectorAll('.tabs button[data-tab]');
+    const panels = root.querySelectorAll('.panel');
+
+    /* ---------- viewer ----------
+       Any .tile/.qrow/.qotd with data-slug opens in place at #<tab>/<slug>, where <tab> is the panel it sits in.
+       The iframe loads data-src if present (YouTube/Desmos embed URLs), otherwise the tile's href.
+       "New tab" always uses href, so changing a tile's URL needs no script edit. */
+    const viewer   = document.getElementById('am-viewer');
+    const stage    = document.getElementById('am-viewer-stage');
+    let   frame    = null;      // created fresh on every open, removed on close (see mountFrame)
+    const vTitle   = document.getElementById('am-viewer-title');
+    const vNote    = document.getElementById('am-viewer-note');
+    const vOpen    = document.getElementById('am-viewer-open');
+    const vBack    = viewer.querySelector('[data-viewer="back"]');
+    const vCopy    = viewer.querySelector('[data-viewer="copy"]');
+    const overlayMQ = window.matchMedia('(max-width: 700px), (max-height: 520px)');
+    const siteTitle = document.title;
+    let currentKey = null;      // "<tab>/<slug>" of the open item
+    let currentTab = null;
+    let viewerPushed = false;   // true if WE pushed a history entry for the open viewer
+    let lastTile = null;
+
+    function tabOf(tile) {
+      const p = tile.closest('.panel');
+      return p ? p.id.replace('am-panel-', '') : null;
+    }
+    function tabLabel(tab) {
+      const b = Array.from(tabs).find(x => x.dataset.tab === tab);
+      return b ? b.textContent.trim() : tab;
+    }
+    function tileFor(tab, slug) {
+      const panel = document.getElementById('am-panel-' + tab);
+      if (!panel) return null;
+      return Array.from(panel.querySelectorAll('[data-slug]'))
+                  .find(t => t.dataset.slug === slug) || null;
+    }
+
+    function openViewer(tile, push) {
+      const tab = tabOf(tile), key = tab + '/' + tile.dataset.slug;
+      if (push) {
+        history.pushState({ amViewer: 1 }, '', '#' + key);
+        viewerPushed = true;
+      }
+      if (currentKey === key && !viewer.hidden) return;
+      if (viewer.hidden) savedY = window.pageYOffset;
+      const name = tile.dataset.name || (tile.querySelector('.title') || tile).textContent.trim();
+      currentKey = key;
+      currentTab = tab;
+      lastTile = tile;
+      vTitle.textContent = name;
+      vBack.textContent = '← ' + tabLabel(tab);
+      vOpen.href = tile.getAttribute('href');
+      vNote.textContent = '';
+      if (tile.dataset.note) vNote.appendChild(document.createElement('span')).textContent = tile.dataset.note;
+      vNote.hidden = !tile.dataset.note;
+      vNote.classList.remove('open');
+      viewer.classList.toggle('is-video', !!tile.querySelector('.media.video'));
+      mountFrame(tile.dataset.src || tile.getAttribute('href'), name);
+      viewer.hidden = false;
+      root.classList.add('am-viewing');
+      if (overlayMQ.matches) document.documentElement.classList.add('am-lock');
+      else root.scrollIntoView({ block: 'start' });   // the list may have been scrolled far down; start at the top of the item
+      document.title = name + ' · ' + siteTitle;
+    }
+
+    // UI-only teardown (no history changes)
+    let savedY = null;          // page scroll position when the viewer opened (restored on Back)
+    function closeViewerUI(restore) {
+      if (viewer.hidden && !currentKey) return;
+      viewer.hidden = true;
+      root.classList.remove('am-viewing');
+      document.documentElement.classList.remove('am-lock');
+      unmountFrame();                        // destroys the applet / stops the video
+      vNote.hidden = true;
+      currentKey = null;
+      currentTab = null;
+      viewerPushed = false;
+      document.title = siteTitle;
+      if (restore && savedY !== null) { const y = savedY; requestAnimationFrame(() => window.scrollTo(0, y)); }
+      savedY = null;
+    }
+
+    // User-initiated close (Back button, Esc): unwind our history entry if we made one
+    function closeViewer() {
+      const tile = lastTile, tab = currentTab || 'applets';
+      if (viewerPushed) {
+        history.back();                      // popstate -> route() -> closeViewerUI()
+      } else {
+        history.replaceState(null, '', '#' + tab);
+        closeViewerUI(true);
+      }
+      if (tile) setTimeout(() => tile.focus({ preventScroll: true }), 0);
+    }
+
+    /* A brand-new iframe per open: re-pointing an existing iframe adds its own session-history
+       entries, which would make the browser's Back button navigate *inside* the frame. */
+    function mountFrame(url, name) {
+      unmountFrame();
+      const f = document.createElement('iframe');
+      f.title = name;
+      f.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
+      f.setAttribute('allowfullscreen', '');
+      f.addEventListener('load', () => f.classList.add('loaded'));
+      f.src = url;
+      stage.appendChild(f);
+      frame = f;
+    }
+    function unmountFrame() {
+      if (frame) { frame.remove(); frame = null; }
+    }
+
+    root.querySelectorAll('.tile[data-slug], .qrow[data-slug], .qotd[data-slug]').forEach(tile => {
+      tile.addEventListener('click', e => {
+        // let ctrl/cmd/shift/middle-click do their normal new-tab thing
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        openViewer(tile, true);
+      });
+    });
+
+    vNote.addEventListener('click', () => vNote.classList.toggle('open'));   // phone: tap to expand
+
+    viewer.addEventListener('click', e => {
+      const b = e.target.closest('[data-viewer]');
+      if (!b) return;
+      if (b.dataset.viewer === 'back') closeViewer();
+      if (b.dataset.viewer === 'copy') {
+        const url = location.origin + location.pathname + '#' + currentKey;
+        const done = () => {
+          vCopy.textContent = 'Copied ✓';
+          setTimeout(() => { vCopy.textContent = 'Copy link'; }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done, () => window.prompt('Copy this link:', url));
+        } else {
+          window.prompt('Copy this link:', url);
+        }
+      }
+    });
+
+    /* ---------- tabs ---------- */
+    /* Law: every top-level navigation (tab, arrow keys, wordmark, #tab links) lands with the site's
+       top edge at the top of the window, never half out of view. (Phone overlay mode doesn't scroll.) */
+    function toTop() {
+      if (overlayMQ.matches) return;
+      requestAnimationFrame(() => root.scrollIntoView({ block: 'start' }));
+    }
+    function activate(name, pushHash) {
+      let found = false;
+      tabs.forEach(btn => {
+        const isMatch = btn.dataset.tab === name;
+        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+        if (isMatch) found = true;
+      });
+      if (!found) return false;
+      if (currentTab && name !== currentTab) closeViewerUI();
+      panels.forEach(p => p.classList.toggle('active', p.id === 'am-panel-' + name));
+      if (pushHash) history.replaceState(null, '', '#' + name);
+      return true;
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        closeViewerUI();                     // clicking a tab (even the current one) leaves the viewer
+        activate(btn.dataset.tab, true);
+        toTop();
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.target.matches('input, textarea')) return;
+      if (e.key === 'Escape' && !viewer.hidden) { closeViewer(); return; }
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const order = Array.from(tabs).map(b => b.dataset.tab);
+      const current = Array.from(tabs).findIndex(b => b.getAttribute('aria-selected') === 'true');
+      const next = e.key === 'ArrowRight' ? (current + 1) % order.length : (current - 1 + order.length) % order.length;
+      closeViewerUI();
+      activate(order[next], true);
+      toTop();
+      if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.tabs')) document.activeElement.blur();
+    });
+
+
+    /* ---------- Quora: answer of the day, search, random ---------- */
+    (function () {
+      const panel = document.getElementById('am-panel-quora');
+      if (!panel) return;
+      const rows = Array.from(panel.querySelectorAll('.qrow'));
+      const qotd = panel.querySelector('.qotd');
+      const input = panel.querySelector('.qtools input');
+      const count = panel.querySelector('.qcount');
+      const none  = panel.querySelector('.qnone');
+      const rnd   = panel.querySelector('[data-q="random"]');
+      if (!rows.length) return;
+      // Same answer all day (local date), and the walk visits every answer before repeating.
+      const gcd = (a, b) => b ? gcd(b, a % b) : a;
+      const day = Math.floor((new Date().getTime() - new Date().getTimezoneOffset() * 60000) / 86400000);
+      let step = 29; while (gcd(step, rows.length) !== 1) step++;
+      const pick = rows[(day * step + 11) % rows.length];
+      if (qotd) {
+        qotd.dataset.slug = pick.dataset.slug;
+        qotd.dataset.name = pick.dataset.name;
+        qotd.href = pick.getAttribute('href');
+        qotd.querySelector('.title').innerHTML = pick.querySelector('.title').innerHTML;
+        qotd.querySelector('.desc').textContent = pick.dataset.excerpt || '';
+        // click is handled by the shared viewer binding above (qotd carries data-slug)
+      }
+      /* Full-text search: quora/search.json (every answer's text) loads the first time someone types. */
+      let S = null, SL = null, loading = false;
+      function loadText() {
+        if (S || loading) return;
+        loading = true;
+        fetch(panel.dataset.base + 'search.json').then(r => r.json()).then(j => {
+          S = j; SL = {};
+          Object.keys(j).forEach(k => { SL[k] = j[k].toLowerCase(); });
+          filter();
+        }).catch(() => { loading = false; });
+      }
+      rows.forEach(r => { const sub = r.querySelector('.sub'); r._sub = sub.textContent; });
+      function snippet(slug, w) {
+        const t = S[slug], i = SL[slug].indexOf(w);
+        if (i < 0) return null;
+        const a = Math.max(0, i - 60), b = Math.min(t.length, i + w.length + 110);
+        return (a ? '… ' : '') + t.slice(a, b).replace(/\s+/g, ' ') + (b < t.length ? ' …' : '');
+      }
+      function filter() {
+        const words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+        if (words.length) loadText();
+        let n = 0;
+        rows.forEach(r => {
+          const slug = r.dataset.slug;
+          let ok = true, deep = null;
+          for (const w of words) {
+            if (r.dataset.find.indexOf(w) >= 0) continue;
+            if (SL && SL[slug].indexOf(w) >= 0) { deep = deep || w; continue; }
+            ok = false; break;
+          }
+          r.hidden = !ok; if (ok) n++;
+          r.querySelector('.sub').textContent = (ok && deep) ? snippet(slug, deep) : r._sub;
+        });
+        count.textContent = (words.length && !S) ? 'searching\u2026' : n + (n === 1 ? ' answer' : ' answers');
+        none.hidden = n > 0 || (words.length && !S);
+      }
+      input.addEventListener('input', filter);
+      filter();
+      rnd.addEventListener('click', () => openViewer(rows[Math.floor(Math.random() * rows.length)], true));
+      // Math in titles: load KaTeX (self-hosted next to the answers) the first time it's needed
+      const base = panel.dataset.base;
+      let kx = null;
+      function renderMath() {
+        panel.querySelectorAll('.tex:not([data-done])').forEach(el => {
+          try { window.katex.render(el.getAttribute('data-tex'), el, { throwOnError: false }); el.setAttribute('data-done', '1'); } catch (_) {}
+        });
+      }
+      function loadMath() {
+        if (kx) return kx;
+        kx = new Promise(res => {
+          if (window.katex) return res();
+          const c = document.createElement('link'); c.rel = 'stylesheet'; c.href = base + 'katex/katex.min.css'; document.head.appendChild(c);
+          const j = document.createElement('script'); j.src = base + 'katex/katex.min.js'; j.onload = res; j.onerror = res;
+          document.head.appendChild(j);
+        }).then(() => { if (window.katex) renderMath(); });
+        return kx;
+      }
+      new MutationObserver(() => { if (panel.classList.contains('active')) loadMath(); }).observe(panel, { attributes: true, attributeFilter: ['class'] });
+      if (panel.classList.contains('active')) loadMath();
+    })();
+
+    /* ---------- routing: #applets, #applets/<slug>, #media/<slug>, ... ---------- */
+    function route() {
+      let h = (location.hash || '').replace(/^#\/?/, '');
+      h = h.replace(/^youtube(?=\/|$)/, 'media');   // old links from when the tab was called YouTube
+      const m = h.match(/^([a-z]+)\/(.+?)\/*$/);
+      if (m) {
+        let slug = m[2];
+        try { slug = decodeURIComponent(slug); } catch (_) {}
+        const tile = tileFor(m[1], slug);
+        if (tile) { activate(m[1], false); openViewer(tile, false); return; }
+        closeViewerUI();                     // unknown item: just show its tab
+        if (activate(m[1], false)) history.replaceState(null, '', '#' + m[1]);
+        else activate('applets', false);
+        return;
+      }
+      const wasViewing = !!currentKey;
+      closeViewerUI(true);                   // Back from an item: restores the list's scroll position
+      if (!activate(h || 'applets', false)) activate('applets', false);
+      if (booted && !wasViewing) toTop();
+    }
+    let booted = false;
+    const wm = root.querySelector('.wordmark');
+    if (wm) wm.addEventListener('click', e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      closeViewerUI();
+      activate('applets', true);
+      toTop();
+    });
+    window.addEventListener('popstate', route);
+    window.addEventListener('hashchange', route);
+    route();
+    booted = true;
+
+    // Keep this LAST: proves the whole script arrived and ran.
+    const ver = root.querySelector('.am-ver');
+    if (ver) { ver.textContent = 'v' + root.dataset.version; ver.classList.remove('am-ver-bad'); }
+  })();
+</script>
+</body>
+</html>

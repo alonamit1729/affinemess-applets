@@ -5,9 +5,9 @@ name: site matches master
 #   python3 src/build_site.py
 on:
   push:
-    paths: ['site/**', 'src/**', 'quora/index.json', '.github/workflows/site-check.yml']
+    paths: ['index.html', 'site/**', 'src/**', 'quora/index.json', '.github/workflows/site-check.yml']
   pull_request:
-    paths: ['site/**', 'src/**', 'quora/index.json', '.github/workflows/site-check.yml']
+    paths: ['index.html', 'site/**', 'src/**', 'quora/index.json', '.github/workflows/site-check.yml']
 
 jobs:
   check:

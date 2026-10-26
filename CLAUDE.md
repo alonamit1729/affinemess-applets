@@ -11,9 +11,11 @@ rules keep them from overwriting each other.
 ## The website: edit `src/`, never `site/`
 
 - `src/master.html` is the readable source of the whole site (style, markup,
-  script). `python3 src/build_site.py` regenerates `site/site.html`,
-  `site/site.js` and `site/preview.html` from it. A hand edit to `site/` is
-  lost at the next build, and the GitHub check (`site matches master`) fails.
+  script). `python3 src/build_site.py` regenerates `index.html` (the site
+  itself, a complete static page with relative links) and the legacy
+  Squarespace-loader files `site/site.html`, `site/site.js`,
+  `site/preview.html`. A hand edit to any of them is lost at the next build,
+  and the GitHub check (`site matches master`) fails.
 - `python3 src/build_site.py --check` tells you whether `site/` is in sync.
 - `python3 src/test_site.py` smoke-tests the built site in headless Chromium.
 - Quora rows in the site are generated from `quora/index.json`; never
@@ -34,12 +36,12 @@ rules keep them from overwriting each other.
 
 1. `git fetch origin main` and rebase onto it; never force-push.
 2. `git diff --stat origin/main` must list only your own paths. If it shows
-   `site/`, `src/` or another applet and you are not the Website Project, stop.
+   `index.html`, `site/`, `src/` or another applet and you are not the Website Project, stop.
 3. Website changes: edit `src/master.html`, bump the version in both places
    (the `VERSION` header comment and `data-version` on `.am-root`; the footer
    shows it), run `build_site.py`, run `test_site.py`, then read every removed
    line in `git diff origin/main -- site/ src/` and make sure each removal is
-   intended. Commit `src/` and `site/` together.
+   intended. Commit `src/`, `index.html` and `site/` together.
 4. Site versions (`v2026-MM-DDx` in the footer) are assigned only by the
    Website Project: take the latest version on `origin/main` and bump the
    letter, so no two deploys share a number.
