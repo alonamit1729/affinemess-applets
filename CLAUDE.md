@@ -1,22 +1,27 @@
 # affinemess-applets: rules for every Claude session
 
-This repo is the **master copy of everything on affinemess.com**. GitHub Pages
-serves it at apps.affinemess.com: the applets (`<slug>.html` in the root, plus
-each applet's own tools folder), the website (`site/`, generated from `src/`),
-Quora answers (`quora/`) and papers (`papers/`). Squarespace only holds a tiny
-loader that fetches `site/`. There is no separate master on iCloud any more
-(retired 2026-10-25); several chats and Claude Projects push here, and these
-rules keep them from overwriting each other.
+This repo is the **master copy of everything on affinemess.com**, and GitHub
+Pages serves it directly at **https://affinemess.com** (since 2026-10-25; the
+domain is in `CNAME`, DNS at Squarespace Domains): the site itself
+(`index.html`, generated from `src/`), the applets (`<slug>.html` in the root,
+plus each applet's own tools folder), Quora answers (`quora/`) and papers
+(`papers/`). The old address apps.affinemess.com is served by the separate
+repo `alonamit1729/apps-redirect`, which forwards every path to the same path
+on affinemess.com. Squarespace no longer hosts anything. Several chats and
+Claude Projects push here; these rules keep them from overwriting each other.
 
-## The website: edit `src/`, never `site/`
+## The website: edit `src/`, never `index.html` or `site/`
 
 - `src/master.html` is the readable source of the whole site (style, markup,
   script). `python3 src/build_site.py` regenerates `index.html` (the site
   itself, a complete static page with relative links) and the legacy
   Squarespace-loader files `site/site.html`, `site/site.js`,
-  `site/preview.html`. A hand edit to any of them is lost at the next build,
+  `site/preview.html` (to be retired once Squarespace is cancelled;
+  `site/aom-logo.jpg` is a real asset and stays). A hand edit to any of them is lost at the next build,
   and the GitHub check (`site matches master`) fails.
-- `python3 src/build_site.py --check` tells you whether `site/` is in sync.
+- `python3 src/build_site.py --check` tells you whether the generated files are in sync.
+- Links inside the site are relative; applets link home to
+  `https://affinemess.com/#applets/<slug>`.
 - `python3 src/test_site.py` smoke-tests the built site in headless Chromium.
 - Quora rows in the site are generated from `quora/index.json`; never
   hand-edit between `<!--QUORA-ROWS BEGIN/END-->`. `src/build_quora.py`
