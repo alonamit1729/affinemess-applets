@@ -23,7 +23,7 @@ def coltype(P,tol=1e-6):
             if abs(x-v)<tol*m: col.append(k); break
         else: vals.append(x); col.append(len(vals)-1)
     return canon(col), len(vals)
-def decompose_sat(eqs,tmo=300):
+def decompose_sat(eqs,tmo=150):
     ring='ring r=0,('+','.join(V)+'),dp;'
     script=ring+'\nLIB "primdec.lib";\nideal i='+',\n'.join(eqs)+';\nlist L=minAssGTZ(i);\nint k; ideal G;\nfor(k=1;k<=size(L);k++){ G=std(L[k]); print("PRIME"); print(dim(G)); print(L[k]); }\nquit;\n'
     open(f'tmp/sg_in_{PID}.sing','w').write(script)

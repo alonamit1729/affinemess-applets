@@ -42,6 +42,48 @@ for rec in S:
 print('types:',len(S),' arcs by end kinds:',dict(stats))
 unid=[i for i,(c,l) in enumerate(V) if l is None]
 print('vertices:',len(V),' unidentified:',len(unid))
+# classify unidentified vertices (points on lower-dimensional families, not rigid sets) by colouring type
+if unid:
+    E=list(itertools.combinations(range(n),2))
+    perms=[[E.index(tuple(sorted((p[a],p[b])))) for a,b in E] for p in itertools.permutations(range(n))]
+    def ccol(rgs):
+        best=None
+        for pe in perms:
+            c=[rgs[pe[i]] for i in range(10)]; mp={}; out=[]
+            for x in c:
+                if x not in mp: mp[x]=len(mp)
+                out.append(mp[x])
+            t=tuple(out)
+            if best is None or t<best: best=t
+        return best
+    def coltype(P,tol=1e-6):
+        ds=[math.dist(P[i],P[j]) for i,j in E]; mx=max(ds); vals=[]; col=[]
+        for x in ds:
+            for k,v in enumerate(vals):
+                if abs(x-v)<tol*mx: col.append(k); break
+            else: vals.append(x); col.append(len(vals)-1)
+        return ccol(col),len(vals)
+    famtypes={}
+    for dd in range(2,d):
+        try: R=json.load(open(f'cert5{dd}.json'))
+        except FileNotFoundError: continue
+        for r in R:
+            if any((q.get('real') or q.get('real_slices')) and q['dim']>0 for q in r['primes']) or r.get('unresolved'): famtypes[(dd,ccol(tuple(r['col'])))]=r['idx']
+    rootpts={}
+    for rec in S:
+        for q in rec['roots']:
+            if not q['coincident']: rootpts.setdefault(tuple(q['canon']),q['v'])
+    kinds=collections.Counter()
+    for i in unid:
+        c=V[i][0]; v=None
+        for k,vv in rootpts.items():
+            if close(k,c): v=vv; break
+        if v is None: kinds['no point']+=1; continue
+        P=[(0,0),(v[0],0),(v[1],v[2]),(v[3],v[4]),(v[5],v[6])]
+        ct,nv=coltype(P); t=famtypes.get((nv,ct))
+        if t is not None: V[i]=(c,(nv,None,f'interior point of a {nv}-distance family (type {t})')); kinds[f'on (5,{nv}) family']+=1
+        else: kinds[f'unknown d={nv}']+=1
+    print('unidentified vertices classified:',dict(kinds))
 print('vertices by cell:',collections.Counter(l[0] for c,l in V if l))
 val=collections.Counter()
 for e in Edges:

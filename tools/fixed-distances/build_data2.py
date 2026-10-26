@@ -1,5 +1,5 @@
 """Assemble applet_data.json with per-dimension counts/bounds."""
-import json, math, itertools, os, glob
+import collections, json, math, itertools, os, glob
 from collections import Counter
 import build_data as B
 from build_data import item, poly, SRC, same, dvals, pd
@@ -172,8 +172,25 @@ def add_stratification(cells,cats):
                 if end[0]=='v': per_vertex.setdefault(end[1],[]).append(e)
         nvv=sum(1 for e in G['edges'] if all(x[0]=='v' for x in e['ends'])); ninf=sum(1 for e in G['edges'] if any(x[1]=='inf' for x in e['ends']))
         ndeg=sum(1 for e in G['edges'] if any(x[1]=='degenerate' for x in e['ends']))
+        # catalog numbers of the (5,d-1) families, for junction points
+        lowfam={}
+        if f'5,{d-1}' in cats:
+            lowcols={r['idx']:tuple(r['col']) for r in json.load(open(f'cert5{d-1}.json'))} if os.path.exists(f'cert5{d-1}.json') else {}
+            lowbycol={ccol(c):t for t,c in lowcols.items()}
+            for k,it in enumerate(cats[f'5,{d-1}']['items']):
+                if it['kind']=='family': 
+                    t=lowbycol.get(ccol(it['cls']))
+                    if t is not None: lowfam[t]=k+1
         def vname(i):
-            v=verts[i]; return (v['label'] or 'rigid set').split(';')[0] if v['cell']==d-1 else f"{v['label']} ({v['cell']} distances)"
+            v=verts[i]
+            if v['item'] is None:
+                import re as _re
+                m=_re.search(r'type (\d+)',v['label'] or '')
+                t=int(m.group(1)) if m else None
+                return f"interior point of {d-1}-distance family #{lowfam[t]}" if t in lowfam else f"interior point of a {d-1}-distance family"
+            if v['cell']==d-1 and (v['label'] or '').startswith('rigid'): return f"{d-1}-distance set #{v['item']+1}"
+            if v['cell']==d-1: return (v['label'] or 'rigid set').split(';')[0]
+            return f"{v['label']} ({v['cell']} distances)"
         matched=0
         for t,edges in per_type.items():
             it=fam_items.get(tcol[t])
@@ -203,9 +220,39 @@ def add_stratification(cells,cats):
         comps=len({find(i) for i in verts}); b1=nvv-len(verts)+comps
         cells[f'5,{d}']['strat']={'arcs_vv':nvv,'arcs_degenerate':ndeg,'arcs_inf':ninf,'vertices':len(verts),'components':comps,'b1':b1}
         nrig=sum(1 for it in cats[f'5,{d}']['items'] if it['kind']=='rigid')
-        lower='the 34 three-distance sets and the regular pentagon' if d==4 else f'rigid sets with fewer distances'
-        cells[f'5,{d}']['note']+=(f' Structure of the solution set: the one-parameter families are curves whose ends are rigid configurations with fewer distances (two distance values merge there), degenerate configurations (two points merge) or infinity (one distance becomes negligible). Together with their endpoints — {len(verts)} rigid sets, {lower} — they form a graph with {nvv} arcs between rigid sets ({"connected" if comps==1 else f"{comps} components"}, first Betti number {b1}), {ndeg} arcs ending in a degenerate configuration and {ninf} escaping to infinity; every rigid set with fewer distances is the limit of some family. The {nrig} rigid {d}-distance sets are isolated points of the solution set. Each card below lists the arcs through it.')
+        junc=sum(1 for v in verts.values() if v['cell']==d-1 and v['item'] is None); nrv=len(verts)-junc
+        byc=collections.Counter(v['cell'] for v in verts.values() if v['item'] is not None)
+        lower=('the 34 three-distance sets and the regular pentagon' if d==4 else
+               ', '.join(f"{byc[c]} with {c} distances" for c in sorted(byc,reverse=True)) + (f'; a further {junc} endpoints are interior points of one-parameter families of {d-1} distances (the curve meets the family there, not at a rigid set)' if junc else ''))
+        cells[f'5,{d}']['note']+=(f' Structure of the solution set: the one-parameter families are curves whose ends are rigid configurations with fewer distances (two distance values merge there), degenerate configurations (two points merge) or infinity (one distance becomes negligible). Together with their endpoints — {nrv} rigid sets: {lower} — they form a graph with {nvv} arcs between rigid sets ({"connected" if comps==1 else f"{comps} components"}, first Betti number {b1}), {ndeg} arcs ending in a degenerate configuration and {ninf} escaping to infinity; every rigid set with fewer distances is the limit of some family.'+(f' The {nrig} rigid {d}-distance sets are isolated points of the solution set.' if nrig else '')+' Each card below lists the arcs through it.')
         print(f'stratification (5,{d}): {matched} families annotated, arcs vv {nvv}, deg {ndeg}, inf {ninf}')
+    # degeneration posets: boundary strata of the higher-dimensional families (exact for d = 5; sampled for d = 6, 7)
+    for d in (5,6,7):
+        fn=f'degen_poset_{d}.json'
+        if not os.path.exists(fn) or f'5,{d}' not in cats: continue
+        PO=json.load(open(fn)); cols={r['idx']:tuple(r['col']) for r in json.load(open(f'cert5{d}.json'))}
+        bycol={ccol(c):int(t) for t,c in cols.items() if t in {int(k) for k in PO}}
+        ann=0; srcs=set()
+        for it in cats[f'5,{d}']['items']:
+            if it['kind']!='family' or (d==5 and it['dim']<2): continue
+            t=bycol.get(ccol(it['cls']))
+            if t is None: continue
+            v=PO[str(t)]; srcs.add(v['src'])
+            cnt={}
+            for x in v['to']:
+                if x=='degenerate': key='degenerate configurations (two points merge)'
+                else:
+                    dn,idx,st=x; key=f'{"rigid " if st=="rigid" else ""}{dn}-distance {"sets" if st=="rigid" else "families"}'
+                cnt[key]=cnt.get(key,0)+1
+            parts=[f'{n} {k}' if not k.startswith('degenerate') else k for k,n in sorted(cnt.items(),key=lambda kv:(-len(kv[0]),kv[0]))]
+            it['strat']=('boundary strata' + (' (sampled)' if v['src']=='sampled' else ' (exact)') + ': ' + '; '.join(parts)) if parts else ''
+            ann+=1
+        if d>=6 or any(it.get('strat','').startswith('boundary') for it in cats[f'5,{d}']['items']):
+            cells[f'5,{d}']['note']+=(' Boundary structure: for each family the strata of fewer distances in its closure were determined from the saturated ideal with one coincidence equation added — '
+                +('by exact decomposition into irreducible components (Singular), with the type of each component read off a certified real point' if srcs=={'exact'} else
+                  'exactly for some families and, where the decomposition did not finish, by random slices through the boundary (certified real points, so every listed stratum is genuinely in the closure, but a stratum can be missed)')
+                +'; the cards list them.')
+        print(f'degeneration poset (5,{d}): {ann} families annotated ({",".join(sorted(srcs))})')
 
 def main():
     cells={}; cats={}

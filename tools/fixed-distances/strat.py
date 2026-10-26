@@ -235,8 +235,8 @@ def process(idx,col,pi,gens):
                 if hit[0]=='loop': add_arc({'end':'loop'},{'end':'loop'},path,hit); rec['loops']+=1
                 elif hit[0]=='root': pass
                 else: rec.setdefault('slice_odd',[]).append(list(hit))
-        rec['arcs']=[{k:v for k,v in g.items() if k!='fpd'} for g in geo]
-        out.append(rec); json.dump(out,open(outfn,'w'))
+        rec['arcs']=[{k:v for k,v in g.items() if k not in ('fpd','fp')} for g in geo]
+        out.append(rec); json.dump(out,open(outfn+'.tmp','w')); os.replace(outfn+'.tmp',outfn)
         kinds=collections.Counter(tuple(sorted(e.get('end','vertex') for e in g['ends'])) for g in geo)
         print(f"type {idx}: roots {len(rec['roots'])} geometric arcs {len(geo)} {dict(kinds)} mults {collections.Counter(g['mult'] for g in geo)} {time.time()-t0:.0f}s",flush=True)
 if os.path.exists(f'sat5{d}.json'):
