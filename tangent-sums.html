@@ -103,6 +103,7 @@ input[type=range] { accent-color:var(--accent); }
 
 .formula { font-size:15px; color:var(--ink); white-space:nowrap; }
 .formula .katex { font-size:1.12em; }
+#ext sup { font-size:.72em; line-height:0; vertical-align:.5em; letter-spacing:.02em; margin-left:.08em; }
 #readout { font-family:var(--serif); font-size:14.5px; color:var(--ink); padding:3px 9px; }
 #readout .item { display:inline-block; white-space:nowrap; margin-right:16px; }
 #readout .item:last-child { margin-right:0; }
@@ -157,7 +158,7 @@ select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:point
       <button class="am-btn" id="zout" title="Zoom out (−)">Out</button>
       <button class="am-btn" id="full" title="Show 1 to 10^8">All</button>
     </span>
-    <button class="am-btn" id="ext" title="Compute f up to 10^10 (about 45 MB of memory; a few minutes on a laptop)">Extend to 10¹⁰</button>
+    <button class="am-btn" id="ext" title="Compute f up to 10^10 (about 45 MB of memory; a few minutes on a laptop)">Extend to 10<sup>10</sup></button>
     <select class="am-input" id="jump" aria-label="Jump to a landmark">
       <option value="">Jump to…</option>
     </select>
@@ -920,7 +921,7 @@ LANDMARKS.forEach(function (L, i) { var o = document.createElement('option'); o.
 function refreshJump() {
   Array.prototype.forEach.call(jumpSel.options, function (o) {
     var L = LANDMARKS[+o.value]; if (o.value === '' || !L) return;
-    o.textContent = L[0] + (L[2] > NMAX ? '  (extends to 10¹⁰)' : '');
+    o.textContent = L[0] + (L[2] > NMAX ? '  (extends to 10^10)' : '');
   });
 }
 refreshJump();
