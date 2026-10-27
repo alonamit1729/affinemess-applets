@@ -117,11 +117,29 @@ SRC={
  'us':'computation for this applet (Oct 2026): exhaustive enumeration of edge-colouring types with numerical realization, cross-checked by two independent methods',
 }
 def same(P,Q,tol=1e-6):
+    """similarity test: equal sorted distance multisets (quick filter) AND a vertex bijection matching every pairwise
+    distance (backtracking) — the multiset alone merges homometric, non-congruent sets (found in the R12+R12 sweep)"""
     n=len(P)
     if len(Q)!=n: return False
     D1=[[math.dist(P[i],P[j]) for j in range(n)] for i in range(n)]; D2=[[math.dist(Q[i],Q[j]) for j in range(n)] for i in range(n)]
     s1=sorted(D1[i][j] for i in range(n) for j in range(i+1,n)); s2=sorted(D2[i][j] for i in range(n) for j in range(i+1,n)); s=s2[0]/s1[0]
-    return all(abs(a*s-b)<tol*s2[-1] for a,b in zip(s1,s2))
+    T=tol*s2[-1]
+    if not all(abs(a*s-b)<T for a,b in zip(s1,s2)): return False
+    D1=[[x*s for x in r] for r in D1]
+    r1=[sorted(r) for r in D1]; r2=[sorted(r) for r in D2]
+    cand=[[j for j in range(n) if all(abs(a-b)<T for a,b in zip(r1[i],r2[j]))] for i in range(n)]
+    order=sorted(range(n),key=lambda i: len(cand[i])); perm=[-1]*n; used=[False]*n
+    def bt(k):
+        if k==n: return True
+        i=order[k]
+        for j in cand[i]:
+            if used[j]: continue
+            if all(abs(D1[i][order[t]]-D2[j][perm[order[t]]])<T for t in range(k)):
+                perm[i]=j; used[j]=True
+                if bt(k+1): return True
+                used[j]=False; perm[i]=-1
+        return False
+    return bt(0)
 def main():
     cells={}; cats={}
     def cell(n,d,**kw):

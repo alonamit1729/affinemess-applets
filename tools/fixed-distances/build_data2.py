@@ -119,13 +119,14 @@ def listing_note(nrigid,nfam,complete):
     return t
 class Pool:
     """examples for one cell, deduped: rigid by similarity, families by type"""
-    def __init__(s): s.rigid=[]; s.fam=[]
-    def add(s,P,label,src):
+    def __init__(s): s.rigid=[]; s.fam=[]; s.exact={}
+    def add(s,P,label,src,exact=None):
         ds=pd(P)
         if min(ds)<1e-3*max(ds): return   # near-degenerate escape of a numerical solver
         dim,G,h=local_dim(P)
         if dim==0:
             if any(same(P,Q) for Q,_,_ in s.rigid): return
+            if exact: s.exact[len(s.rigid)]=exact
             s.rigid.append((P,label,src))
         else:
             if any(hh==h and dd==dim for _,_,_,hh,dd in s.fam): return
@@ -468,6 +469,14 @@ def main():
     for fn in glob.glob('symfam_*.json'):
         for k,v in json.load(open(fn)).items(): SYM.setdefault(k,[]).extend(v)
     EXT=json.load(open('ext4.json')); EXT.update(json.load(open('ext5.json')))
+    R12=json.load(open('r12sum.json')) if os.path.exists('r12sum.json') else {}
+    R12_RAD={0:'2',1:'2cos 15°',2:'√3',3:'√2',4:'1',5:'2sin 15°'}
+    def r12_label(shells):
+        parts=[]
+        for k,c in shells:
+            if k==6: parts.append('the centre')
+            else: parts.append('%d at radius %s'%(c,R12_RAD[k]))
+        return 'piece of the twelvefold set R₁₂ + R₁₂: '+', '.join(parts)
     finite_cells={}
     for n in range(6,17):
         for d in range(1,8):
@@ -484,6 +493,21 @@ def main():
             for lab,P,S in EX.lattice_examples(n,d): pool.add(P,lab,'lat')
             if (n,d)==(16,7): P,_=EX.ef16(); pool.add(P,'hexagon of side 2 in the triangular lattice minus one end of each long diameter (Erdős–Fishburn)','ef')
             for e in SYM.get(key,[]): pool.add(e['pts'],struct_label(e['struct']),'sym')
+            if (n,d) in ((9,5),(8,5)):
+                # the one flexible 9-point <=5-distance pattern (g7fin/F56.md): T + h·R90(T), an equilateral triangle plus a perpendicular copy scaled by h
+                def X3(h):
+                    T=[(math.cos(2*math.pi*k/3),math.sin(2*math.pi*k/3)) for k in range(3)]; Rr=[(-y*h,x*h) for x,y in T]
+                    return [(t[0]+r[0],t[1]+r[1]) for t in T for r in Rr]
+                X9=X3(1.7)
+                lab9='three concentric equilateral triangles with parallel sides, T + h·R₉₀(T) (Minkowski sum of an equilateral triangle with a perpendicular copy scaled by h; squared sides 1 + h² ± √3h and 1 + h², cross distances 1 and h): the only flexible nine-point pattern with at most five distances; h = 1 is Erdős–Fishburn’s nine-point four-distance set, h = √3 the lattice piece with rows 1, 3, 3, 2'
+                if n==9: pool.add(X9,lab9,'tri3')
+                else:
+                    pool.add(X9[:4]+X9[5:],'T + h·R₉₀(T) (the flexible nine-point five-distance family) minus a vertex of the middle triangle','tri3')
+                    pool.add(X9[:2]+X9[3:],'T + h·R₉₀(T) (the flexible nine-point five-distance family) minus a vertex of the outer (equivalently inner) triangle','tri3')
+            n_r12=0
+            for e in R12.get(key,[]):
+                before=len(pool.rigid)+len(pool.fam)
+                pool.add(e['pts'],r12_label(e['shells']),'r12',exact=e['exact']); n_r12+=len(pool.rigid)+len(pool.fam)-before
             c=pool.counts()
             fin=(n,d) in finite_cells
             dims={k:X(v) for k,v in c.items()}
@@ -496,8 +520,15 @@ def main():
                 note='Exact counts unknown; the bounds come from the configurations shown (each verified numerically to have the stated local dimension). '
                 if e>=1: note+=f'Every component has dimension ≥ {e}, so there are no rigid configurations. '
                 else: note+='Finiteness is not known to us, so higher-dimensional families cannot be excluded. '
+                if key in R12: note+=f'All {len(R12[key])} subsets with these parameters of the twelvefold set R₁₂ + R₁₂ — the 73 sums of two twelfth roots of unity: the centre and points at angles that are multiples of 15° on circles of radii 2, 2cos 15°, √3, √2, 1 and 2sin 15° (circumradius 1 for the 12-gon) — are included, from an exhaustive sweep up to similarity; {n_r12} of them were not previously in the list. '
                 if (n,d)==(16,7): note+='Sixteen points is the maximum for seven distances: Amit and Astra (2026) prove g(7) = 16 by a computer-assisted diameter-graph argument whose one computational input taken from the literature is the Szöllősi–Östergård exhaustive candidate list of eleven-point patterns with at most six distances. The two Erdős–Fishburn lattice sets are the only known sixteen-point seven-distance sets; the extremal sets are not classified, so the count is a lower bound. '
             items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]+[item(G,lab,'family',dim) for G,lab,src,h,dim in pool.fam]
+            for idx,ex in pool.exact.items():
+                it=items[idx]
+                if it['exact'] is None or any(x is None for x in it['exact']):
+                    P=pool.rigid[idx][0]
+                    it['exact']=ex; it['frame']='twelvefold frame: the sum set R₁₂ + R₁₂ of the regular 12-gon of circumradius 1, centre at the origin, a vertex of the 12-gon at angle 0'
+                    it['coords']=[[('%.10g'%x) if abs(x)>5e-11 else '0',('%.10g'%y) if abs(y)>5e-11 else '0'] for x,y in P]
             cell(n,d,dims,'bounds',note=note,finite=True if fin else None)
             cat(n,d,items,False,f'{n} points, {d} distances: known configurations',listing_note(len(pool.rigid),len(pool.fam),False),sources=srcs)
     for key,c in cats.items():

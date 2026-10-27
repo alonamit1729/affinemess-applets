@@ -22,9 +22,11 @@ scale) and *free* otherwise. A point x ∈ X \ A is determined up to finitely ma
 its distances to A lie in free classes, each of which contains at most two points of A, all pairs sharing one
 perpendicular bisector. (Two fixed-class distances: two circles. One fixed class plus a free pair: circle and
 line. A free class on three non-collinear points: x is their circumcentre. Two free pairs with different
-bisectors: a point.) Hence x is pinned whenever |A| > 2·(number of free classes). With d = 7 classes and |A| ≥ 6
-(so A has k ≥ 3 classes, free ≤ 4) every point outside A is pinned, and the whole of X(t) is constant: **a
-family of d-distance sets cannot contain a rigid subset of ≥ 6 points when d ≤ 7.**
+bisectors: a point.) Hence x is pinned whenever |A| > 2·(number of free classes) = 2(d − k), k the number of classes inside A.
+Since k ≥ 3 for |A| ≥ 6 and k ≥ 4 for |A| ≥ 8 (g(2) = 5, g(3) = 7), every point outside A is pinned, and the whole
+of X(t) is constant, as soon as |A| ≥ 6 (d = 5), |A| ≥ 7 (d = 6), |A| ≥ 8 (d = 7): **a family of 7-distance sets
+cannot contain a rigid subset of ≥ 8 points** (an earlier version of this note said ≥ 6, which is wrong for a
+7-point rigid subset with only three classes; all cores used below have ≥ 10 points).
 
 **Core lemma (Wei).** Let m = |X_D| be the number of diameter endpoints. G_D has no even cycle and at most one
 cycle; if G_D ≠ C_m its independence number is ≥ ⌈m/2⌉, and for C_m (m odd) it is (m−1)/2. An independent set
@@ -157,6 +159,18 @@ with e ≤ 0 (six in (5,4), and one for every n ≥ 6 by "circular equiangular c
 every one of the 15 is a point-deletion restriction of a family with a constant nontrivial symmetry group and
 smaller e. Replacement conjecture: minimal e ≤ 0 families are symmetric. Side finding: (6,7) #4–#7 are
 2-dimensional and #8 1-dimensional (catalog dims wrong); five symmetric families missing from the catalog.
+
+## 3c. F(6) and F(5) by the same method (`F56.md`)
+
+With the complete order-10 list in hand the lower columns follow at once: any 10-point subset of a 13-point
+6-distance set (or of a 12-point 5-distance set) has ≤ 6 (≤ 5) distances, so its pattern is in L10 and it is rigid
+and pins. So **F(6) and F(5) hold**, without any diameter-graph analysis. The certification also classifies the
+patterns of the smaller sets: all 36 seven-point ≤4-distance, 14 eight-point ≤4-distance, 4 nine-point 4-distance
+and 19 ten-point 5-distance patterns are rigid; among the 157 eight-point and 57 nine-point ≤5-distance patterns
+exactly 2 + 1 are positive-dimensional, and they are one family: X_h = T + h·R₉₀(T), an equilateral triangle plus a
+perpendicular copy scaled by h (three concentric triangles; h = 1 is Erdős–Fishburn's nine-point four-distance
+set, h = √3 the lattice piece with rows 1, 3, 3, 2) and its two one-vertex deletions. Two eight-point candidates
+(L8 #944, #988) are complex-only.
 
 ## 4. Strategy B is dead in its naive form
 
