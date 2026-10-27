@@ -91,6 +91,40 @@ missing one of the seven colour classes is a ≤6-distance set, hence rigid, hen
 every colour class must meet every 11-subset: every class graph has vertex-cover number ≥ 6 (matching number ≥ 3).
 Likewise, once the 10-point classification is complete, every class pair must meet every 10-subset.
 
+## 3b. The ten-point input, closed (`gen/`)
+
+The orderly generation was re-implemented (`gen/gen.py`: hereditary extension by one vertex, nauty canonical forms,
+Gröbner-basis test of complex realizability with distinct nonzero values modulo a 30-bit prime) and run from K₄ to
+order 10. Every count agrees with Szöllősi–Östergård's Table 9:
+
+| n | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|
+| raw candidates | 25 | 1193 | 537 230 | 14 732 | 1565 | 635 | 228 |
+| satisfying (5) | 24 | 922 | 20 229 | 4667 | 1565 | 635 | 228 |
+
+(`gen/levels/summary.json`, `gen/levels/L10.json`). The 228 order-10 candidates contain the 225 known patterns
+(`validate.py`), and the **three others are real**: msolve's real root isolation on the coordinate system
+(`realcheck.py`, `new3/`) finds 8 real solutions each (two similarity classes per pattern, each in 4 labelled copies),
+all six-distance sets. All six are 10-point subsets of the 73-point Minkowski sum R₁₂ + R₁₂ = {ζ^a + ζ^b : ζ¹² = 1}
+(points on circles of radii 2cos(15°k), k = 0..6, at angles that are multiples of 15°) — twelve-fold symmetric, hence
+in no lattice, not concyclic-plus-centre, and not in any 11-point six-distance set, which is why the known families
+missed them. Distance spectra: the five chords of steps 1–5 of the unit-circumradius 12-gon (2 sin 15° · {1, 2cos15°, 1+√3,
+√3·2cos15°, 2+√3}) plus one sixth distance x ∈ {√2·2 sin 15°, 1+√3, √(4−√3), √(4+√3)} (one value per shape). And they are rigid: `pat_rigid` certifies all three zero-dimensional over ℚ (`pat_rigid_10new.json`, Singular
+`dim(std(I)) = 0` with the Rabinowitsch inequation).
+
+**Hence every 10-point planar set with at most six distances is rigid, and by §2:**
+
+> **Theorem (F(7)).** Up to similarity there are only finitely many 16-point planar sets with exactly seven distinct
+> distances.
+
+Chain of dependencies, all computer-checked: Wei's core lemma (published) and the pinning lemma (§1, elementary);
+the diameter-graph table of §2 (Erdős–Fishburn for m = 14, 15; Amit–Astra Lemma 4 for m = 13 with C₁₃); the 62
+order-11 patterns certified zero-dimensional (`pat_rigid_11.json`, independent of Amit–Astra's Lemma 6); the 228
+order-10 patterns, 225 + 3, all certified zero-dimensional (`pat_rigid_10.json`, `pat_rigid_10new.json`); and the
+completeness of the 228, which rests on the regenerated orderly search agreeing with the published counts at every
+level (two independent implementations of the same hereditary enumeration). The case analysis of §3a (Theorem A,
+the leaf and cycle lemmas) is no longer needed for F(7) but stands on its own.
+
 ## 3a. What can be proved without the ten-point input (`cases/REPORT.md`)
 
 The rows of the table that need the 10-point input are m = 11 with G_D = C₁₁, m = 12, and m = 13 with G_D ≠ C₁₃.

@@ -1,0 +1,1256 @@
+21:56:20 level 4: loaded 24 pruned patterns
+21:56:20 level 5: loaded 922 pruned patterns
+21:56:20 level 6: start
+21:56:21   level 6: loaded 537230 raw candidates
+21:56:21   level 6: testing 537230 of 537230 candidates (auto, 1 workers)
+21:56:28   level 6: tested 500/537230, 7s, 13.8 ms each
+21:56:36   level 6: tested 1000/537230, 15s, 15.1 ms each
+21:56:43   level 6: tested 1500/537230, 22s, 14.9 ms each
+21:56:51   level 6: tested 2000/537230, 30s, 14.8 ms each
+21:56:58   level 6: tested 2500/537230, 37s, 14.7 ms each
+21:57:05   level 6: tested 3000/537230, 44s, 14.6 ms each
+21:57:12   level 6: tested 3500/537230, 51s, 14.5 ms each
+21:57:19   level 6: tested 4000/537230, 58s, 14.4 ms each
+21:57:26   level 6: tested 4500/537230, 65s, 14.4 ms each
+21:57:33   level 6: tested 5000/537230, 72s, 14.3 ms each
+21:57:40   level 6: tested 5500/537230, 79s, 14.3 ms each
+21:57:48   level 6: tested 6000/537230, 87s, 14.4 ms each
+21:57:55   level 6: tested 6500/537230, 94s, 14.5 ms each
+21:58:03   level 6: tested 7000/537230, 102s, 14.6 ms each
+21:58:10   level 6: tested 7500/537230, 109s, 14.6 ms each
+21:58:17   level 6: tested 8000/537230, 116s, 14.5 ms each
+21:58:24   level 6: tested 8500/537230, 123s, 14.5 ms each
+21:58:31   level 6: tested 9000/537230, 130s, 14.4 ms each
+21:58:38   level 6: tested 9500/537230, 137s, 14.4 ms each
+21:58:45   level 6: tested 10000/537230, 144s, 14.4 ms each
+21:58:52   level 6: tested 10500/537230, 151s, 14.4 ms each
+21:59:00   level 6: tested 11000/537230, 159s, 14.4 ms each
+21:59:06   level 6: tested 11500/537230, 165s, 14.4 ms each
+21:59:13   level 6: tested 12000/537230, 172s, 14.3 ms each
+21:59:20   level 6: tested 12500/537230, 179s, 14.3 ms each
+21:59:27   level 6: tested 13000/537230, 186s, 14.3 ms each
+21:59:36   level 6: tested 13500/537230, 195s, 14.4 ms each
+21:59:44   level 6: tested 14000/537230, 203s, 14.5 ms each
+21:59:52   level 6: tested 14500/537230, 211s, 14.5 ms each
+21:59:59   level 6: tested 15000/537230, 218s, 14.5 ms each
+22:00:06   level 6: tested 15500/537230, 225s, 14.5 ms each
+22:00:13   level 6: tested 16000/537230, 232s, 14.5 ms each
+22:00:20   level 6: tested 16500/537230, 239s, 14.5 ms each
+22:00:28   level 6: tested 17000/537230, 247s, 14.5 ms each
+22:00:35   level 6: tested 17500/537230, 254s, 14.5 ms each
+22:00:42   level 6: tested 18000/537230, 261s, 14.5 ms each
+22:00:50   level 6: tested 18500/537230, 269s, 14.5 ms each
+22:00:57   level 6: tested 19000/537230, 276s, 14.5 ms each
+22:01:04   level 6: tested 19500/537230, 283s, 14.5 ms each
+22:01:12   level 6: tested 20000/537230, 291s, 14.5 ms each
+22:01:19   level 6: tested 20500/537230, 298s, 14.5 ms each
+22:01:27   level 6: tested 21000/537230, 306s, 14.6 ms each
+22:01:34   level 6: tested 21500/537230, 313s, 14.5 ms each
+22:01:41   level 6: tested 22000/537230, 320s, 14.6 ms each
+22:01:49   level 6: tested 22500/537230, 328s, 14.6 ms each
+22:01:57   level 6: tested 23000/537230, 336s, 14.6 ms each
+22:02:05   level 6: tested 23500/537230, 344s, 14.6 ms each
+22:02:12   level 6: tested 24000/537230, 351s, 14.6 ms each
+22:02:19   level 6: tested 24500/537230, 358s, 14.6 ms each
+22:02:27   level 6: tested 25000/537230, 366s, 14.6 ms each
+22:02:34   level 6: tested 25500/537230, 373s, 14.6 ms each
+22:02:43   level 6: tested 26000/537230, 382s, 14.7 ms each
+22:02:50   level 6: tested 26500/537230, 389s, 14.7 ms each
+22:02:57   level 6: tested 27000/537230, 396s, 14.7 ms each
+22:03:04   level 6: tested 27500/537230, 403s, 14.7 ms each
+22:03:11   level 6: tested 28000/537230, 410s, 14.6 ms each
+22:03:18   level 6: tested 28500/537230, 417s, 14.6 ms each
+22:03:25   level 6: tested 29000/537230, 424s, 14.6 ms each
+22:03:32   level 6: tested 29500/537230, 431s, 14.6 ms each
+22:03:39   level 6: tested 30000/537230, 438s, 14.6 ms each
+22:03:46   level 6: tested 30500/537230, 445s, 14.6 ms each
+22:03:54   level 6: tested 31000/537230, 452s, 14.6 ms each
+22:04:01   level 6: tested 31500/537230, 460s, 14.6 ms each
+22:04:08   level 6: tested 32000/537230, 467s, 14.6 ms each
+22:04:15   level 6: tested 32500/537230, 474s, 14.6 ms each
+22:04:22   level 6: tested 33000/537230, 481s, 14.6 ms each
+22:04:29   level 6: tested 33500/537230, 488s, 14.6 ms each
+22:04:36   level 6: tested 34000/537230, 495s, 14.6 ms each
+22:04:43   level 6: tested 34500/537230, 502s, 14.6 ms each
+22:04:50   level 6: tested 35000/537230, 509s, 14.5 ms each
+22:04:57   level 6: tested 35500/537230, 516s, 14.5 ms each
+22:05:04   level 6: tested 36000/537230, 523s, 14.5 ms each
+22:05:11   level 6: tested 36500/537230, 530s, 14.5 ms each
+22:05:18   level 6: tested 37000/537230, 537s, 14.5 ms each
+22:05:25   level 6: tested 37500/537230, 544s, 14.5 ms each
+22:05:33   level 6: tested 38000/537230, 552s, 14.5 ms each
+22:05:40   level 6: tested 38500/537230, 559s, 14.5 ms each
+22:05:47   level 6: tested 39000/537230, 566s, 14.5 ms each
+22:05:55   level 6: tested 39500/537230, 574s, 14.5 ms each
+22:06:01   level 6: tested 40000/537230, 580s, 14.5 ms each
+22:06:08   level 6: tested 40500/537230, 587s, 14.5 ms each
+22:06:15   level 6: tested 41000/537230, 594s, 14.5 ms each
+22:06:24   level 6: tested 41500/537230, 603s, 14.5 ms each
+22:06:31   level 6: tested 42000/537230, 610s, 14.5 ms each
+22:06:38   level 6: tested 42500/537230, 617s, 14.5 ms each
+22:06:46   level 6: tested 43000/537230, 625s, 14.5 ms each
+22:06:54   level 6: tested 43500/537230, 633s, 14.5 ms each
+22:07:01   level 6: tested 44000/537230, 640s, 14.5 ms each
+22:07:08   level 6: tested 44500/537230, 647s, 14.5 ms each
+22:07:16   level 6: tested 45000/537230, 655s, 14.5 ms each
+22:07:23   level 6: tested 45500/537230, 662s, 14.6 ms each
+22:07:31   level 6: tested 46000/537230, 670s, 14.6 ms each
+22:07:39   level 6: tested 46500/537230, 678s, 14.6 ms each
+22:07:47   level 6: tested 47000/537230, 686s, 14.6 ms each
+22:07:56   level 6: tested 47500/537230, 694s, 14.6 ms each
+22:08:04   level 6: tested 48000/537230, 703s, 14.6 ms each
+22:08:11   level 6: tested 48500/537230, 710s, 14.6 ms each
+22:08:19   level 6: tested 49000/537230, 718s, 14.7 ms each
+22:08:27   level 6: tested 49500/537230, 726s, 14.7 ms each
+22:08:36   level 6: tested 50000/537230, 735s, 14.7 ms each
+22:08:44   level 6: tested 50500/537230, 743s, 14.7 ms each
+22:08:52   level 6: tested 51000/537230, 751s, 14.7 ms each
+22:08:59   level 6: tested 51500/537230, 758s, 14.7 ms each
+22:09:07   level 6: tested 52000/537230, 765s, 14.7 ms each
+22:09:13   level 6: tested 52500/537230, 772s, 14.7 ms each
+22:09:20   level 6: tested 53000/537230, 779s, 14.7 ms each
+22:09:28   level 6: tested 53500/537230, 787s, 14.7 ms each
+22:09:36   level 6: tested 54000/537230, 795s, 14.7 ms each
+22:09:43   level 6: tested 54500/537230, 802s, 14.7 ms each
+22:09:51   level 6: tested 55000/537230, 810s, 14.7 ms each
+22:09:59   level 6: tested 55500/537230, 818s, 14.7 ms each
+22:10:06   level 6: tested 56000/537230, 825s, 14.7 ms each
+22:10:14   level 6: tested 56500/537230, 833s, 14.7 ms each
+22:10:23   level 6: tested 57000/537230, 842s, 14.8 ms each
+22:10:31   level 6: tested 57500/537230, 850s, 14.8 ms each
+22:10:39   level 6: tested 58000/537230, 858s, 14.8 ms each
+22:10:47   level 6: tested 58500/537230, 866s, 14.8 ms each
+22:10:55   level 6: tested 59000/537230, 874s, 14.8 ms each
+22:11:02   level 6: tested 59500/537230, 881s, 14.8 ms each
+22:11:10   level 6: tested 60000/537230, 889s, 14.8 ms each
+22:11:17   level 6: tested 60500/537230, 896s, 14.8 ms each
+22:11:25   level 6: tested 61000/537230, 904s, 14.8 ms each
+22:11:32   level 6: tested 61500/537230, 911s, 14.8 ms each
+22:11:41   level 6: tested 62000/537230, 920s, 14.8 ms each
+22:11:49   level 6: tested 62500/537230, 928s, 14.8 ms each
+22:11:56   level 6: tested 63000/537230, 935s, 14.8 ms each
+22:12:05   level 6: tested 63500/537230, 944s, 14.9 ms each
+22:12:14   level 6: tested 64000/537230, 952s, 14.9 ms each
+22:12:21   level 6: tested 64500/537230, 960s, 14.9 ms each
+22:12:29   level 6: tested 65000/537230, 968s, 14.9 ms each
+22:12:37   level 6: tested 65500/537230, 976s, 14.9 ms each
+22:12:45   level 6: tested 66000/537230, 984s, 14.9 ms each
+22:12:52   level 6: tested 66500/537230, 991s, 14.9 ms each
+22:13:01   level 6: tested 67000/537230, 999s, 14.9 ms each
+22:13:08   level 6: tested 67500/537230, 1007s, 14.9 ms each
+22:13:16   level 6: tested 68000/537230, 1015s, 14.9 ms each
+22:13:24   level 6: tested 68500/537230, 1023s, 14.9 ms each
+22:13:32   level 6: tested 69000/537230, 1031s, 14.9 ms each
+22:13:39   level 6: tested 69500/537230, 1038s, 14.9 ms each
+22:13:47   level 6: tested 70000/537230, 1046s, 14.9 ms each
+22:13:55   level 6: tested 70500/537230, 1054s, 14.9 ms each
+22:14:03   level 6: tested 71000/537230, 1062s, 15.0 ms each
+22:14:10   level 6: tested 71500/537230, 1069s, 15.0 ms each
+22:14:18   level 6: tested 72000/537230, 1077s, 15.0 ms each
+22:14:26   level 6: tested 72500/537230, 1085s, 15.0 ms each
+22:14:34   level 6: tested 73000/537230, 1093s, 15.0 ms each
+22:14:43   level 6: tested 73500/537230, 1102s, 15.0 ms each
+22:14:51   level 6: tested 74000/537230, 1110s, 15.0 ms each
+22:15:00   level 6: tested 74500/537230, 1119s, 15.0 ms each
+22:15:07   level 6: tested 75000/537230, 1126s, 15.0 ms each
+22:15:16   level 6: tested 75500/537230, 1135s, 15.0 ms each
+22:15:24   level 6: tested 76000/537230, 1143s, 15.0 ms each
+22:15:31   level 6: tested 76500/537230, 1150s, 15.0 ms each
+22:15:40   level 6: tested 77000/537230, 1159s, 15.0 ms each
+22:15:48   level 6: tested 77500/537230, 1167s, 15.1 ms each
+22:15:56   level 6: tested 78000/537230, 1175s, 15.1 ms each
+22:16:04   level 6: tested 78500/537230, 1183s, 15.1 ms each
+22:16:13   level 6: tested 79000/537230, 1192s, 15.1 ms each
+22:16:22   level 6: tested 79500/537230, 1201s, 15.1 ms each
+22:16:30   level 6: tested 80000/537230, 1209s, 15.1 ms each
+22:16:39   level 6: tested 80500/537230, 1218s, 15.1 ms each
+22:16:47   level 6: tested 81000/537230, 1226s, 15.1 ms each
+22:16:55   level 6: tested 81500/537230, 1234s, 15.1 ms each
+22:17:03   level 6: tested 82000/537230, 1242s, 15.1 ms each
+22:17:10   level 6: tested 82500/537230, 1249s, 15.1 ms each
+22:17:17   level 6: tested 83000/537230, 1256s, 15.1 ms each
+22:17:24   level 6: tested 83500/537230, 1263s, 15.1 ms each
+22:17:32   level 6: tested 84000/537230, 1271s, 15.1 ms each
+22:17:40   level 6: tested 84500/537230, 1279s, 15.1 ms each
+22:17:48   level 6: tested 85000/537230, 1287s, 15.1 ms each
+22:17:55   level 6: tested 85500/537230, 1294s, 15.1 ms each
+22:18:02   level 6: tested 86000/537230, 1301s, 15.1 ms each
+22:18:09   level 6: tested 86500/537230, 1308s, 15.1 ms each
+22:18:17   level 6: tested 87000/537230, 1316s, 15.1 ms each
+22:18:24   level 6: tested 87500/537230, 1323s, 15.1 ms each
+22:18:31   level 6: tested 88000/537230, 1330s, 15.1 ms each
+22:18:38   level 6: tested 88500/537230, 1337s, 15.1 ms each
+22:18:44   level 6: tested 89000/537230, 1343s, 15.1 ms each
+22:18:51   level 6: tested 89500/537230, 1350s, 15.1 ms each
+22:18:57   level 6: tested 90000/537230, 1356s, 15.1 ms each
+22:19:04   level 6: tested 90500/537230, 1363s, 15.1 ms each
+22:19:11   level 6: tested 91000/537230, 1370s, 15.1 ms each
+22:19:17   level 6: tested 91500/537230, 1376s, 15.0 ms each
+22:19:23   level 6: tested 92000/537230, 1382s, 15.0 ms each
+22:19:30   level 6: tested 92500/537230, 1389s, 15.0 ms each
+22:19:37   level 6: tested 93000/537230, 1396s, 15.0 ms each
+22:19:44   level 6: tested 93500/537230, 1403s, 15.0 ms each
+22:19:52   level 6: tested 94000/537230, 1411s, 15.0 ms each
+22:19:59   level 6: tested 94500/537230, 1418s, 15.0 ms each
+22:20:06   level 6: tested 95000/537230, 1425s, 15.0 ms each
+22:20:13   level 6: tested 95500/537230, 1432s, 15.0 ms each
+22:20:20   level 6: tested 96000/537230, 1439s, 15.0 ms each
+22:20:27   level 6: tested 96500/537230, 1446s, 15.0 ms each
+22:20:34   level 6: tested 97000/537230, 1453s, 15.0 ms each
+22:20:43   level 6: tested 97500/537230, 1461s, 15.0 ms each
+22:20:49   level 6: tested 98000/537230, 1468s, 15.0 ms each
+22:20:56   level 6: tested 98500/537230, 1475s, 15.0 ms each
+22:21:03   level 6: tested 99000/537230, 1482s, 15.0 ms each
+22:21:10   level 6: tested 99500/537230, 1489s, 15.0 ms each
+22:21:16   level 6: tested 100000/537230, 1495s, 15.0 ms each
+22:21:24   level 6: tested 100500/537230, 1503s, 15.0 ms each
+22:21:31   level 6: tested 101000/537230, 1510s, 14.9 ms each
+22:21:38   level 6: tested 101500/537230, 1517s, 14.9 ms each
+22:21:46   level 6: tested 102000/537230, 1525s, 15.0 ms each
+22:21:54   level 6: tested 102500/537230, 1533s, 15.0 ms each
+22:22:00   level 6: tested 103000/537230, 1539s, 14.9 ms each
+22:22:07   level 6: tested 103500/537230, 1546s, 14.9 ms each
+22:22:14   level 6: tested 104000/537230, 1553s, 14.9 ms each
+22:22:21   level 6: tested 104500/537230, 1560s, 14.9 ms each
+22:22:28   level 6: tested 105000/537230, 1567s, 14.9 ms each
+22:22:35   level 6: tested 105500/537230, 1574s, 14.9 ms each
+22:22:42   level 6: tested 106000/537230, 1581s, 14.9 ms each
+22:22:49   level 6: tested 106500/537230, 1588s, 14.9 ms each
+22:22:56   level 6: tested 107000/537230, 1595s, 14.9 ms each
+22:23:03   level 6: tested 107500/537230, 1602s, 14.9 ms each
+22:23:11   level 6: tested 108000/537230, 1610s, 14.9 ms each
+22:23:18   level 6: tested 108500/537230, 1617s, 14.9 ms each
+22:23:25   level 6: tested 109000/537230, 1624s, 14.9 ms each
+22:23:31   level 6: tested 109500/537230, 1630s, 14.9 ms each
+22:23:38   level 6: tested 110000/537230, 1637s, 14.9 ms each
+22:23:46   level 6: tested 110500/537230, 1645s, 14.9 ms each
+22:23:54   level 6: tested 111000/537230, 1653s, 14.9 ms each
+22:24:02   level 6: tested 111500/537230, 1661s, 14.9 ms each
+22:24:09   level 6: tested 112000/537230, 1668s, 14.9 ms each
+22:24:16   level 6: tested 112500/537230, 1675s, 14.9 ms each
+22:24:24   level 6: tested 113000/537230, 1683s, 14.9 ms each
+22:24:31   level 6: tested 113500/537230, 1690s, 14.9 ms each
+22:24:39   level 6: tested 114000/537230, 1698s, 14.9 ms each
+22:24:49   level 6: tested 114500/537230, 1708s, 14.9 ms each
+22:24:56   level 6: tested 115000/537230, 1715s, 14.9 ms each
+22:25:05   level 6: tested 115500/537230, 1724s, 14.9 ms each
+22:25:13   level 6: tested 116000/537230, 1732s, 14.9 ms each
+22:25:21   level 6: tested 116500/537230, 1740s, 14.9 ms each
+22:25:29   level 6: tested 117000/537230, 1748s, 14.9 ms each
+22:25:37   level 6: tested 117500/537230, 1756s, 14.9 ms each
+22:25:45   level 6: tested 118000/537230, 1764s, 14.9 ms each
+22:25:52   level 6: tested 118500/537230, 1771s, 14.9 ms each
+22:26:00   level 6: tested 119000/537230, 1779s, 14.9 ms each
+22:26:07   level 6: tested 119500/537230, 1786s, 14.9 ms each
+22:26:14   level 6: tested 120000/537230, 1793s, 14.9 ms each
+22:26:22   level 6: tested 120500/537230, 1801s, 14.9 ms each
+22:26:29   level 6: tested 121000/537230, 1808s, 14.9 ms each
+22:26:37   level 6: tested 121500/537230, 1816s, 14.9 ms each
+22:26:44   level 6: tested 122000/537230, 1823s, 14.9 ms each
+22:26:52   level 6: tested 122500/537230, 1831s, 14.9 ms each
+22:27:00   level 6: tested 123000/537230, 1839s, 15.0 ms each
+22:27:07   level 6: tested 123500/537230, 1846s, 14.9 ms each
+22:27:15   level 6: tested 124000/537230, 1854s, 15.0 ms each
+22:27:23   level 6: tested 124500/537230, 1862s, 15.0 ms each
+22:27:31   level 6: tested 125000/537230, 1870s, 15.0 ms each
+22:27:39   level 6: tested 125500/537230, 1878s, 15.0 ms each
+22:27:48   level 6: tested 126000/537230, 1887s, 15.0 ms each
+22:27:56   level 6: tested 126500/537230, 1895s, 15.0 ms each
+22:28:04   level 6: tested 127000/537230, 1903s, 15.0 ms each
+22:28:12   level 6: tested 127500/537230, 1911s, 15.0 ms each
+22:28:20   level 6: tested 128000/537230, 1919s, 15.0 ms each
+22:28:28   level 6: tested 128500/537230, 1927s, 15.0 ms each
+22:28:37   level 6: tested 129000/537230, 1936s, 15.0 ms each
+22:28:45   level 6: tested 129500/537230, 1944s, 15.0 ms each
+22:28:53   level 6: tested 130000/537230, 1952s, 15.0 ms each
+22:29:02   level 6: tested 130500/537230, 1961s, 15.0 ms each
+22:29:10   level 6: tested 131000/537230, 1969s, 15.0 ms each
+22:29:19   level 6: tested 131500/537230, 1978s, 15.0 ms each
+22:29:27   level 6: tested 132000/537230, 1986s, 15.0 ms each
+22:29:35   level 6: tested 132500/537230, 1994s, 15.0 ms each
+22:29:44   level 6: tested 133000/537230, 2003s, 15.1 ms each
+22:29:52   level 6: tested 133500/537230, 2011s, 15.1 ms each
+22:30:01   level 6: tested 134000/537230, 2020s, 15.1 ms each
+22:30:09   level 6: tested 134500/537230, 2028s, 15.1 ms each
+22:30:18   level 6: tested 135000/537230, 2037s, 15.1 ms each
+22:30:26   level 6: tested 135500/537230, 2045s, 15.1 ms each
+22:30:34   level 6: tested 136000/537230, 2053s, 15.1 ms each
+22:30:41   level 6: tested 136500/537230, 2060s, 15.1 ms each
+22:30:48   level 6: tested 137000/537230, 2067s, 15.1 ms each
+22:30:56   level 6: tested 137500/537230, 2075s, 15.1 ms each
+22:31:03   level 6: tested 138000/537230, 2082s, 15.1 ms each
+22:31:12   level 6: tested 138500/537230, 2091s, 15.1 ms each
+22:31:20   level 6: tested 139000/537230, 2099s, 15.1 ms each
+22:31:27   level 6: tested 139500/537230, 2106s, 15.1 ms each
+22:31:35   level 6: tested 140000/537230, 2114s, 15.1 ms each
+22:31:43   level 6: tested 140500/537230, 2122s, 15.1 ms each
+22:31:50   level 6: tested 141000/537230, 2129s, 15.1 ms each
+22:31:57   level 6: tested 141500/537230, 2136s, 15.1 ms each
+22:32:04   level 6: tested 142000/537230, 2143s, 15.1 ms each
+22:32:11   level 6: tested 142500/537230, 2150s, 15.1 ms each
+22:32:19   level 6: tested 143000/537230, 2158s, 15.1 ms each
+22:32:26   level 6: tested 143500/537230, 2165s, 15.1 ms each
+22:32:34   level 6: tested 144000/537230, 2173s, 15.1 ms each
+22:32:42   level 6: tested 144500/537230, 2181s, 15.1 ms each
+22:32:49   level 6: tested 145000/537230, 2188s, 15.1 ms each
+22:32:56   level 6: tested 145500/537230, 2195s, 15.1 ms each
+22:33:04   level 6: tested 146000/537230, 2203s, 15.1 ms each
+22:33:12   level 6: tested 146500/537230, 2211s, 15.1 ms each
+22:33:20   level 6: tested 147000/537230, 2219s, 15.1 ms each
+22:33:28   level 6: tested 147500/537230, 2227s, 15.1 ms each
+22:33:35   level 6: tested 148000/537230, 2234s, 15.1 ms each
+22:33:44   level 6: tested 148500/537230, 2243s, 15.1 ms each
+22:33:51   level 6: tested 149000/537230, 2250s, 15.1 ms each
+22:33:59   level 6: tested 149500/537230, 2258s, 15.1 ms each
+22:34:06   level 6: tested 150000/537230, 2265s, 15.1 ms each
+22:34:13   level 6: tested 150500/537230, 2272s, 15.1 ms each
+22:34:21   level 6: tested 151000/537230, 2279s, 15.1 ms each
+22:34:28   level 6: tested 151500/537230, 2287s, 15.1 ms each
+22:34:36   level 6: tested 152000/537230, 2295s, 15.1 ms each
+22:34:43   level 6: tested 152500/537230, 2302s, 15.1 ms each
+22:34:50   level 6: tested 153000/537230, 2309s, 15.1 ms each
+22:34:57   level 6: tested 153500/537230, 2316s, 15.1 ms each
+22:35:04   level 6: tested 154000/537230, 2323s, 15.1 ms each
+22:35:12   level 6: tested 154500/537230, 2331s, 15.1 ms each
+22:35:19   level 6: tested 155000/537230, 2338s, 15.1 ms each
+22:35:28   level 6: tested 155500/537230, 2347s, 15.1 ms each
+22:35:36   level 6: tested 156000/537230, 2355s, 15.1 ms each
+22:35:44   level 6: tested 156500/537230, 2363s, 15.1 ms each
+22:35:51   level 6: tested 157000/537230, 2370s, 15.1 ms each
+22:35:59   level 6: tested 157500/537230, 2378s, 15.1 ms each
+22:36:06   level 6: tested 158000/537230, 2385s, 15.1 ms each
+22:36:12   level 6: tested 158500/537230, 2391s, 15.1 ms each
+22:36:19   level 6: tested 159000/537230, 2398s, 15.1 ms each
+22:36:26   level 6: tested 159500/537230, 2405s, 15.1 ms each
+22:36:33   level 6: tested 160000/537230, 2412s, 15.1 ms each
+22:36:41   level 6: tested 160500/537230, 2420s, 15.1 ms each
+22:36:48   level 6: tested 161000/537230, 2427s, 15.1 ms each
+22:36:56   level 6: tested 161500/537230, 2434s, 15.1 ms each
+22:37:03   level 6: tested 162000/537230, 2442s, 15.1 ms each
+22:37:11   level 6: tested 162500/537230, 2450s, 15.1 ms each
+22:37:19   level 6: tested 163000/537230, 2458s, 15.1 ms each
+22:37:26   level 6: tested 163500/537230, 2465s, 15.1 ms each
+22:37:34   level 6: tested 164000/537230, 2473s, 15.1 ms each
+22:37:41   level 6: tested 164500/537230, 2479s, 15.1 ms each
+22:37:47   level 6: tested 165000/537230, 2486s, 15.1 ms each
+22:37:55   level 6: tested 165500/537230, 2494s, 15.1 ms each
+22:38:02   level 6: tested 166000/537230, 2501s, 15.1 ms each
+22:38:10   level 6: tested 166500/537230, 2509s, 15.1 ms each
+22:38:17   level 6: tested 167000/537230, 2516s, 15.1 ms each
+22:38:24   level 6: tested 167500/537230, 2523s, 15.1 ms each
+22:38:31   level 6: tested 168000/537230, 2530s, 15.1 ms each
+22:38:39   level 6: tested 168500/537230, 2538s, 15.1 ms each
+22:38:47   level 6: tested 169000/537230, 2546s, 15.1 ms each
+22:38:54   level 6: tested 169500/537230, 2553s, 15.1 ms each
+22:39:02   level 6: tested 170000/537230, 2561s, 15.1 ms each
+22:39:09   level 6: tested 170500/537230, 2568s, 15.1 ms each
+22:39:16   level 6: tested 171000/537230, 2575s, 15.1 ms each
+22:39:23   level 6: tested 171500/537230, 2582s, 15.1 ms each
+22:39:31   level 6: tested 172000/537230, 2590s, 15.1 ms each
+22:39:38   level 6: tested 172500/537230, 2597s, 15.1 ms each
+22:39:45   level 6: tested 173000/537230, 2604s, 15.1 ms each
+22:39:53   level 6: tested 173500/537230, 2612s, 15.1 ms each
+22:40:00   level 6: tested 174000/537230, 2619s, 15.0 ms each
+22:40:07   level 6: tested 174500/537230, 2626s, 15.0 ms each
+22:40:14   level 6: tested 175000/537230, 2633s, 15.0 ms each
+22:40:21   level 6: tested 175500/537230, 2640s, 15.0 ms each
+22:40:29   level 6: tested 176000/537230, 2648s, 15.0 ms each
+22:40:37   level 6: tested 176500/537230, 2656s, 15.0 ms each
+22:40:45   level 6: tested 177000/537230, 2664s, 15.0 ms each
+22:40:53   level 6: tested 177500/537230, 2672s, 15.1 ms each
+22:41:01   level 6: tested 178000/537230, 2680s, 15.1 ms each
+22:41:08   level 6: tested 178500/537230, 2687s, 15.1 ms each
+22:41:15   level 6: tested 179000/537230, 2694s, 15.1 ms each
+22:41:22   level 6: tested 179500/537230, 2701s, 15.0 ms each
+22:41:30   level 6: tested 180000/537230, 2709s, 15.0 ms each
+22:41:37   level 6: tested 180500/537230, 2716s, 15.0 ms each
+22:41:46   level 6: tested 181000/537230, 2725s, 15.1 ms each
+22:41:53   level 6: tested 181500/537230, 2732s, 15.1 ms each
+22:42:01   level 6: tested 182000/537230, 2740s, 15.1 ms each
+22:42:10   level 6: tested 182500/537230, 2748s, 15.1 ms each
+22:42:19   level 6: tested 183000/537230, 2758s, 15.1 ms each
+22:42:27   level 6: tested 183500/537230, 2766s, 15.1 ms each
+22:42:36   level 6: tested 184000/537230, 2775s, 15.1 ms each
+22:42:44   level 6: tested 184500/537230, 2783s, 15.1 ms each
+22:42:53   level 6: tested 185000/537230, 2792s, 15.1 ms each
+22:43:01   level 6: tested 185500/537230, 2800s, 15.1 ms each
+22:43:09   level 6: tested 186000/537230, 2808s, 15.1 ms each
+22:43:17   level 6: tested 186500/537230, 2816s, 15.1 ms each
+22:43:25   level 6: tested 187000/537230, 2824s, 15.1 ms each
+22:43:33   level 6: tested 187500/537230, 2832s, 15.1 ms each
+22:43:41   level 6: tested 188000/537230, 2840s, 15.1 ms each
+22:43:49   level 6: tested 188500/537230, 2848s, 15.1 ms each
+22:43:56   level 6: tested 189000/537230, 2855s, 15.1 ms each
+22:44:03   level 6: tested 189500/537230, 2862s, 15.1 ms each
+22:44:11   level 6: tested 190000/537230, 2870s, 15.1 ms each
+22:44:20   level 6: tested 190500/537230, 2879s, 15.1 ms each
+22:44:28   level 6: tested 191000/537230, 2887s, 15.1 ms each
+22:44:37   level 6: tested 191500/537230, 2896s, 15.1 ms each
+22:44:44   level 6: tested 192000/537230, 2903s, 15.1 ms each
+22:44:52   level 6: tested 192500/537230, 2911s, 15.1 ms each
+22:45:00   level 6: tested 193000/537230, 2919s, 15.1 ms each
+22:45:07   level 6: tested 193500/537230, 2926s, 15.1 ms each
+22:45:14   level 6: tested 194000/537230, 2933s, 15.1 ms each
+22:45:22   level 6: tested 194500/537230, 2941s, 15.1 ms each
+22:45:31   level 6: tested 195000/537230, 2950s, 15.1 ms each
+22:45:39   level 6: tested 195500/537230, 2957s, 15.1 ms each
+22:45:46   level 6: tested 196000/537230, 2965s, 15.1 ms each
+22:45:53   level 6: tested 196500/537230, 2972s, 15.1 ms each
+22:46:01   level 6: tested 197000/537230, 2980s, 15.1 ms each
+22:46:09   level 6: tested 197500/537230, 2988s, 15.1 ms each
+22:46:17   level 6: tested 198000/537230, 2996s, 15.1 ms each
+22:46:25   level 6: tested 198500/537230, 3004s, 15.1 ms each
+22:46:34   level 6: tested 199000/537230, 3013s, 15.1 ms each
+22:46:41   level 6: tested 199500/537230, 3020s, 15.1 ms each
+22:46:48   level 6: tested 200000/537230, 3027s, 15.1 ms each
+22:46:56   level 6: tested 200500/537230, 3035s, 15.1 ms each
+22:47:04   level 6: tested 201000/537230, 3043s, 15.1 ms each
+22:47:12   level 6: tested 201500/537230, 3051s, 15.1 ms each
+22:47:19   level 6: tested 202000/537230, 3058s, 15.1 ms each
+22:47:27   level 6: tested 202500/537230, 3066s, 15.1 ms each
+22:47:34   level 6: tested 203000/537230, 3073s, 15.1 ms each
+22:47:42   level 6: tested 203500/537230, 3081s, 15.1 ms each
+22:47:49   level 6: tested 204000/537230, 3088s, 15.1 ms each
+22:47:57   level 6: tested 204500/537230, 3096s, 15.1 ms each
+22:48:04   level 6: tested 205000/537230, 3103s, 15.1 ms each
+22:48:12   level 6: tested 205500/537230, 3111s, 15.1 ms each
+22:48:21   level 6: tested 206000/537230, 3119s, 15.1 ms each
+22:48:29   level 6: tested 206500/537230, 3128s, 15.1 ms each
+22:48:37   level 6: tested 207000/537230, 3136s, 15.1 ms each
+22:48:44   level 6: tested 207500/537230, 3143s, 15.1 ms each
+22:48:52   level 6: tested 208000/537230, 3151s, 15.1 ms each
+22:49:00   level 6: tested 208500/537230, 3159s, 15.2 ms each
+22:49:08   level 6: tested 209000/537230, 3167s, 15.2 ms each
+22:49:16   level 6: tested 209500/537230, 3175s, 15.2 ms each
+22:49:24   level 6: tested 210000/537230, 3183s, 15.2 ms each
+22:49:33   level 6: tested 210500/537230, 3192s, 15.2 ms each
+22:49:40   level 6: tested 211000/537230, 3199s, 15.2 ms each
+22:49:48   level 6: tested 211500/537230, 3207s, 15.2 ms each
+22:49:56   level 6: tested 212000/537230, 3215s, 15.2 ms each
+22:50:03   level 6: tested 212500/537230, 3222s, 15.2 ms each
+22:50:11   level 6: tested 213000/537230, 3230s, 15.2 ms each
+22:50:18   level 6: tested 213500/537230, 3237s, 15.2 ms each
+22:50:26   level 6: tested 214000/537230, 3244s, 15.2 ms each
+22:50:33   level 6: tested 214500/537230, 3252s, 15.2 ms each
+22:50:40   level 6: tested 215000/537230, 3259s, 15.2 ms each
+22:50:47   level 6: tested 215500/537230, 3266s, 15.2 ms each
+22:50:54   level 6: tested 216000/537230, 3273s, 15.2 ms each
+22:51:02   level 6: tested 216500/537230, 3281s, 15.2 ms each
+22:51:10   level 6: tested 217000/537230, 3288s, 15.2 ms each
+22:51:16   level 6: tested 217500/537230, 3295s, 15.2 ms each
+22:51:23   level 6: tested 218000/537230, 3302s, 15.1 ms each
+22:51:30   level 6: tested 218500/537230, 3309s, 15.1 ms each
+22:51:37   level 6: tested 219000/537230, 3316s, 15.1 ms each
+22:51:45   level 6: tested 219500/537230, 3324s, 15.1 ms each
+22:51:52   level 6: tested 220000/537230, 3331s, 15.1 ms each
+22:52:00   level 6: tested 220500/537230, 3339s, 15.1 ms each
+22:52:08   level 6: tested 221000/537230, 3347s, 15.1 ms each
+22:52:15   level 6: tested 221500/537230, 3354s, 15.1 ms each
+22:52:23   level 6: tested 222000/537230, 3362s, 15.1 ms each
+22:52:31   level 6: tested 222500/537230, 3370s, 15.1 ms each
+22:52:38   level 6: tested 223000/537230, 3377s, 15.1 ms each
+22:52:45   level 6: tested 223500/537230, 3384s, 15.1 ms each
+22:52:52   level 6: tested 224000/537230, 3391s, 15.1 ms each
+22:52:59   level 6: tested 224500/537230, 3398s, 15.1 ms each
+22:53:06   level 6: tested 225000/537230, 3405s, 15.1 ms each
+22:53:13   level 6: tested 225500/537230, 3412s, 15.1 ms each
+22:53:21   level 6: tested 226000/537230, 3420s, 15.1 ms each
+22:53:28   level 6: tested 226500/537230, 3427s, 15.1 ms each
+22:53:36   level 6: tested 227000/537230, 3435s, 15.1 ms each
+22:53:44   level 6: tested 227500/537230, 3443s, 15.1 ms each
+22:53:51   level 6: tested 228000/537230, 3450s, 15.1 ms each
+22:53:58   level 6: tested 228500/537230, 3457s, 15.1 ms each
+22:54:05   level 6: tested 229000/537230, 3464s, 15.1 ms each
+22:54:11   level 6: tested 229500/537230, 3470s, 15.1 ms each
+22:54:18   level 6: tested 230000/537230, 3477s, 15.1 ms each
+22:54:26   level 6: tested 230500/537230, 3485s, 15.1 ms each
+22:54:33   level 6: tested 231000/537230, 3492s, 15.1 ms each
+22:54:40   level 6: tested 231500/537230, 3499s, 15.1 ms each
+22:54:47   level 6: tested 232000/537230, 3506s, 15.1 ms each
+22:54:54   level 6: tested 232500/537230, 3513s, 15.1 ms each
+22:55:01   level 6: tested 233000/537230, 3520s, 15.1 ms each
+22:55:08   level 6: tested 233500/537230, 3527s, 15.1 ms each
+22:55:15   level 6: tested 234000/537230, 3534s, 15.1 ms each
+22:55:22   level 6: tested 234500/537230, 3541s, 15.1 ms each
+22:55:30   level 6: tested 235000/537230, 3549s, 15.1 ms each
+22:55:37   level 6: tested 235500/537230, 3556s, 15.1 ms each
+22:55:44   level 6: tested 236000/537230, 3563s, 15.1 ms each
+22:55:53   level 6: tested 236500/537230, 3572s, 15.1 ms each
+22:56:00   level 6: tested 237000/537230, 3578s, 15.1 ms each
+22:56:07   level 6: tested 237500/537230, 3586s, 15.1 ms each
+22:56:15   level 6: tested 238000/537230, 3594s, 15.1 ms each
+22:56:23   level 6: tested 238500/537230, 3602s, 15.1 ms each
+22:56:31   level 6: tested 239000/537230, 3610s, 15.1 ms each
+22:56:39   level 6: tested 239500/537230, 3618s, 15.1 ms each
+22:56:47   level 6: tested 240000/537230, 3626s, 15.1 ms each
+22:56:55   level 6: tested 240500/537230, 3634s, 15.1 ms each
+22:57:02   level 6: tested 241000/537230, 3641s, 15.1 ms each
+22:57:10   level 6: tested 241500/537230, 3649s, 15.1 ms each
+22:57:18   level 6: tested 242000/537230, 3657s, 15.1 ms each
+22:57:26   level 6: tested 242500/537230, 3665s, 15.1 ms each
+22:57:34   level 6: tested 243000/537230, 3673s, 15.1 ms each
+22:57:41   level 6: tested 243500/537230, 3680s, 15.1 ms each
+22:57:49   level 6: tested 244000/537230, 3688s, 15.1 ms each
+22:57:56   level 6: tested 244500/537230, 3695s, 15.1 ms each
+22:58:05   level 6: tested 245000/537230, 3704s, 15.1 ms each
+22:58:13   level 6: tested 245500/537230, 3712s, 15.1 ms each
+22:58:21   level 6: tested 246000/537230, 3720s, 15.1 ms each
+22:58:30   level 6: tested 246500/537230, 3729s, 15.1 ms each
+22:58:38   level 6: tested 247000/537230, 3736s, 15.1 ms each
+22:58:45   level 6: tested 247500/537230, 3744s, 15.1 ms each
+22:58:53   level 6: tested 248000/537230, 3752s, 15.1 ms each
+22:59:02   level 6: tested 248500/537230, 3761s, 15.1 ms each
+22:59:10   level 6: tested 249000/537230, 3769s, 15.1 ms each
+22:59:18   level 6: tested 249500/537230, 3777s, 15.1 ms each
+22:59:26   level 6: tested 250000/537230, 3784s, 15.1 ms each
+22:59:33   level 6: tested 250500/537230, 3792s, 15.1 ms each
+22:59:41   level 6: tested 251000/537230, 3799s, 15.1 ms each
+22:59:48   level 6: tested 251500/537230, 3807s, 15.1 ms each
+22:59:56   level 6: tested 252000/537230, 3815s, 15.1 ms each
+23:00:04   level 6: tested 252500/537230, 3823s, 15.1 ms each
+23:00:12   level 6: tested 253000/537230, 3831s, 15.1 ms each
+23:00:19   level 6: tested 253500/537230, 3838s, 15.1 ms each
+23:00:26   level 6: tested 254000/537230, 3845s, 15.1 ms each
+23:00:34   level 6: tested 254500/537230, 3853s, 15.1 ms each
+23:00:42   level 6: tested 255000/537230, 3861s, 15.1 ms each
+23:00:50   level 6: tested 255500/537230, 3869s, 15.1 ms each
+23:00:57   level 6: tested 256000/537230, 3876s, 15.1 ms each
+23:01:05   level 6: tested 256500/537230, 3884s, 15.1 ms each
+23:01:11   level 6: tested 257000/537230, 3890s, 15.1 ms each
+23:01:19   level 6: tested 257500/537230, 3898s, 15.1 ms each
+23:01:26   level 6: tested 258000/537230, 3905s, 15.1 ms each
+23:01:34   level 6: tested 258500/537230, 3913s, 15.1 ms each
+23:01:42   level 6: tested 259000/537230, 3921s, 15.1 ms each
+23:01:49   level 6: tested 259500/537230, 3928s, 15.1 ms each
+23:01:57   level 6: tested 260000/537230, 3936s, 15.1 ms each
+23:02:04   level 6: tested 260500/537230, 3943s, 15.1 ms each
+23:02:12   level 6: tested 261000/537230, 3951s, 15.1 ms each
+23:02:21   level 6: tested 261500/537230, 3960s, 15.1 ms each
+23:02:28   level 6: tested 262000/537230, 3967s, 15.1 ms each
+23:02:36   level 6: tested 262500/537230, 3975s, 15.1 ms each
+23:02:45   level 6: tested 263000/537230, 3984s, 15.1 ms each
+23:02:52   level 6: tested 263500/537230, 3991s, 15.1 ms each
+23:03:00   level 6: tested 264000/537230, 3999s, 15.1 ms each
+23:03:08   level 6: tested 264500/537230, 4007s, 15.1 ms each
+23:03:16   level 6: tested 265000/537230, 4015s, 15.2 ms each
+23:03:24   level 6: tested 265500/537230, 4022s, 15.2 ms each
+23:03:31   level 6: tested 266000/537230, 4030s, 15.2 ms each
+23:03:39   level 6: tested 266500/537230, 4038s, 15.2 ms each
+23:03:47   level 6: tested 267000/537230, 4046s, 15.2 ms each
+23:03:56   level 6: tested 267500/537230, 4055s, 15.2 ms each
+23:04:04   level 6: tested 268000/537230, 4063s, 15.2 ms each
+23:04:13   level 6: tested 268500/537230, 4072s, 15.2 ms each
+23:04:21   level 6: tested 269000/537230, 4080s, 15.2 ms each
+23:04:28   level 6: tested 269500/537230, 4087s, 15.2 ms each
+23:04:36   level 6: tested 270000/537230, 4095s, 15.2 ms each
+23:04:45   level 6: tested 270500/537230, 4104s, 15.2 ms each
+23:04:53   level 6: tested 271000/537230, 4112s, 15.2 ms each
+23:05:00   level 6: tested 271500/537230, 4119s, 15.2 ms each
+23:05:08   level 6: tested 272000/537230, 4127s, 15.2 ms each
+23:05:16   level 6: tested 272500/537230, 4135s, 15.2 ms each
+23:05:24   level 6: tested 273000/537230, 4143s, 15.2 ms each
+23:05:32   level 6: tested 273500/537230, 4151s, 15.2 ms each
+23:05:40   level 6: tested 274000/537230, 4159s, 15.2 ms each
+23:05:49   level 6: tested 274500/537230, 4168s, 15.2 ms each
+23:05:57   level 6: tested 275000/537230, 4176s, 15.2 ms each
+23:06:05   level 6: tested 275500/537230, 4184s, 15.2 ms each
+23:06:13   level 6: tested 276000/537230, 4192s, 15.2 ms each
+23:06:20   level 6: tested 276500/537230, 4199s, 15.2 ms each
+23:06:28   level 6: tested 277000/537230, 4207s, 15.2 ms each
+23:06:35   level 6: tested 277500/537230, 4214s, 15.2 ms each
+23:06:43   level 6: tested 278000/537230, 4222s, 15.2 ms each
+23:06:50   level 6: tested 278500/537230, 4229s, 15.2 ms each
+23:06:58   level 6: tested 279000/537230, 4237s, 15.2 ms each
+23:07:06   level 6: tested 279500/537230, 4245s, 15.2 ms each
+23:07:14   level 6: tested 280000/537230, 4253s, 15.2 ms each
+23:07:21   level 6: tested 280500/537230, 4260s, 15.2 ms each
+23:07:29   level 6: tested 281000/537230, 4268s, 15.2 ms each
+23:07:36   level 6: tested 281500/537230, 4275s, 15.2 ms each
+23:07:43   level 6: tested 282000/537230, 4282s, 15.2 ms each
+23:07:51   level 6: tested 282500/537230, 4290s, 15.2 ms each
+23:07:59   level 6: tested 283000/537230, 4298s, 15.2 ms each
+23:08:06   level 6: tested 283500/537230, 4305s, 15.2 ms each
+23:08:14   level 6: tested 284000/537230, 4313s, 15.2 ms each
+23:08:21   level 6: tested 284500/537230, 4320s, 15.2 ms each
+23:08:29   level 6: tested 285000/537230, 4328s, 15.2 ms each
+23:08:37   level 6: tested 285500/537230, 4336s, 15.2 ms each
+23:08:44   level 6: tested 286000/537230, 4343s, 15.2 ms each
+23:08:52   level 6: tested 286500/537230, 4351s, 15.2 ms each
+23:08:59   level 6: tested 287000/537230, 4358s, 15.2 ms each
+23:09:07   level 6: tested 287500/537230, 4366s, 15.2 ms each
+23:09:15   level 6: tested 288000/537230, 4374s, 15.2 ms each
+23:09:24   level 6: tested 288500/537230, 4383s, 15.2 ms each
+23:09:32   level 6: tested 289000/537230, 4391s, 15.2 ms each
+23:09:40   level 6: tested 289500/537230, 4399s, 15.2 ms each
+23:09:48   level 6: tested 290000/537230, 4407s, 15.2 ms each
+23:09:56   level 6: tested 290500/537230, 4415s, 15.2 ms each
+23:10:04   level 6: tested 291000/537230, 4423s, 15.2 ms each
+23:10:12   level 6: tested 291500/537230, 4431s, 15.2 ms each
+23:10:20   level 6: tested 292000/537230, 4439s, 15.2 ms each
+23:10:29   level 6: tested 292500/537230, 4448s, 15.2 ms each
+23:10:37   level 6: tested 293000/537230, 4456s, 15.2 ms each
+23:10:45   level 6: tested 293500/537230, 4464s, 15.2 ms each
+23:10:54   level 6: tested 294000/537230, 4473s, 15.2 ms each
+23:11:03   level 6: tested 294500/537230, 4482s, 15.2 ms each
+23:11:11   level 6: tested 295000/537230, 4490s, 15.2 ms each
+23:11:20   level 6: tested 295500/537230, 4499s, 15.2 ms each
+23:11:27   level 6: tested 296000/537230, 4506s, 15.2 ms each
+23:11:35   level 6: tested 296500/537230, 4514s, 15.2 ms each
+23:11:43   level 6: tested 297000/537230, 4522s, 15.2 ms each
+23:11:51   level 6: tested 297500/537230, 4530s, 15.2 ms each
+23:11:58   level 6: tested 298000/537230, 4537s, 15.2 ms each
+23:12:05   level 6: tested 298500/537230, 4544s, 15.2 ms each
+23:12:13   level 6: tested 299000/537230, 4552s, 15.2 ms each
+23:12:21   level 6: tested 299500/537230, 4560s, 15.2 ms each
+23:12:28   level 6: tested 300000/537230, 4567s, 15.2 ms each
+23:12:37   level 6: tested 300500/537230, 4576s, 15.2 ms each
+23:12:45   level 6: tested 301000/537230, 4584s, 15.2 ms each
+23:12:54   level 6: tested 301500/537230, 4593s, 15.2 ms each
+23:13:02   level 6: tested 302000/537230, 4601s, 15.2 ms each
+23:13:10   level 6: tested 302500/537230, 4609s, 15.2 ms each
+23:13:18   level 6: tested 303000/537230, 4617s, 15.2 ms each
+23:13:26   level 6: tested 303500/537230, 4625s, 15.2 ms each
+23:13:35   level 6: tested 304000/537230, 4634s, 15.2 ms each
+23:13:43   level 6: tested 304500/537230, 4642s, 15.2 ms each
+23:13:50   level 6: tested 305000/537230, 4649s, 15.2 ms each
+23:13:57   level 6: tested 305500/537230, 4656s, 15.2 ms each
+23:14:04   level 6: tested 306000/537230, 4663s, 15.2 ms each
+23:14:13   level 6: tested 306500/537230, 4672s, 15.2 ms each
+23:14:20   level 6: tested 307000/537230, 4679s, 15.2 ms each
+23:14:27   level 6: tested 307500/537230, 4686s, 15.2 ms each
+23:14:35   level 6: tested 308000/537230, 4694s, 15.2 ms each
+23:14:42   level 6: tested 308500/537230, 4701s, 15.2 ms each
+23:14:50   level 6: tested 309000/537230, 4709s, 15.2 ms each
+23:14:57   level 6: tested 309500/537230, 4716s, 15.2 ms each
+23:15:05   level 6: tested 310000/537230, 4724s, 15.2 ms each
+23:15:13   level 6: tested 310500/537230, 4732s, 15.2 ms each
+23:15:21   level 6: tested 311000/537230, 4740s, 15.2 ms each
+23:15:30   level 6: tested 311500/537230, 4749s, 15.2 ms each
+23:15:39   level 6: tested 312000/537230, 4757s, 15.2 ms each
+23:15:47   level 6: tested 312500/537230, 4766s, 15.3 ms each
+23:15:56   level 6: tested 313000/537230, 4775s, 15.3 ms each
+23:16:04   level 6: tested 313500/537230, 4783s, 15.3 ms each
+23:16:12   level 6: tested 314000/537230, 4791s, 15.3 ms each
+23:16:19   level 6: tested 314500/537230, 4798s, 15.3 ms each
+23:16:27   level 6: tested 315000/537230, 4806s, 15.3 ms each
+23:16:35   level 6: tested 315500/537230, 4814s, 15.3 ms each
+23:16:43   level 6: tested 316000/537230, 4822s, 15.3 ms each
+23:16:51   level 6: tested 316500/537230, 4830s, 15.3 ms each
+23:16:59   level 6: tested 317000/537230, 4838s, 15.3 ms each
+23:17:07   level 6: tested 317500/537230, 4846s, 15.3 ms each
+23:17:15   level 6: tested 318000/537230, 4854s, 15.3 ms each
+23:17:23   level 6: tested 318500/537230, 4862s, 15.3 ms each
+23:17:32   level 6: tested 319000/537230, 4871s, 15.3 ms each
+23:17:40   level 6: tested 319500/537230, 4879s, 15.3 ms each
+23:17:48   level 6: tested 320000/537230, 4887s, 15.3 ms each
+23:17:56   level 6: tested 320500/537230, 4895s, 15.3 ms each
+23:18:05   level 6: tested 321000/537230, 4904s, 15.3 ms each
+23:18:13   level 6: tested 321500/537230, 4912s, 15.3 ms each
+23:18:21   level 6: tested 322000/537230, 4920s, 15.3 ms each
+23:18:30   level 6: tested 322500/537230, 4929s, 15.3 ms each
+23:18:38   level 6: tested 323000/537230, 4937s, 15.3 ms each
+23:18:46   level 6: tested 323500/537230, 4945s, 15.3 ms each
+23:18:54   level 6: tested 324000/537230, 4953s, 15.3 ms each
+23:19:01   level 6: tested 324500/537230, 4960s, 15.3 ms each
+23:19:09   level 6: tested 325000/537230, 4968s, 15.3 ms each
+23:19:17   level 6: tested 325500/537230, 4976s, 15.3 ms each
+23:19:25   level 6: tested 326000/537230, 4984s, 15.3 ms each
+23:19:33   level 6: tested 326500/537230, 4992s, 15.3 ms each
+23:19:40   level 6: tested 327000/537230, 4999s, 15.3 ms each
+23:19:48   level 6: tested 327500/537230, 5007s, 15.3 ms each
+23:19:55   level 6: tested 328000/537230, 5014s, 15.3 ms each
+23:20:02   level 6: tested 328500/537230, 5021s, 15.3 ms each
+23:20:09   level 6: tested 329000/537230, 5028s, 15.3 ms each
+23:20:16   level 6: tested 329500/537230, 5035s, 15.3 ms each
+23:20:24   level 6: tested 330000/537230, 5043s, 15.3 ms each
+23:20:32   level 6: tested 330500/537230, 5051s, 15.3 ms each
+23:20:40   level 6: tested 331000/537230, 5058s, 15.3 ms each
+23:20:47   level 6: tested 331500/537230, 5066s, 15.3 ms each
+23:20:54   level 6: tested 332000/537230, 5073s, 15.3 ms each
+23:21:02   level 6: tested 332500/537230, 5081s, 15.3 ms each
+23:21:11   level 6: tested 333000/537230, 5090s, 15.3 ms each
+23:21:18   level 6: tested 333500/537230, 5097s, 15.3 ms each
+23:21:26   level 6: tested 334000/537230, 5105s, 15.3 ms each
+23:21:33   level 6: tested 334500/537230, 5112s, 15.3 ms each
+23:21:41   level 6: tested 335000/537230, 5120s, 15.3 ms each
+23:21:48   level 6: tested 335500/537230, 5127s, 15.3 ms each
+23:21:55   level 6: tested 336000/537230, 5134s, 15.3 ms each
+23:22:03   level 6: tested 336500/537230, 5142s, 15.3 ms each
+23:22:11   level 6: tested 337000/537230, 5150s, 15.3 ms each
+23:22:19   level 6: tested 337500/537230, 5158s, 15.3 ms each
+23:22:27   level 6: tested 338000/537230, 5166s, 15.3 ms each
+23:22:35   level 6: tested 338500/537230, 5174s, 15.3 ms each
+23:22:42   level 6: tested 339000/537230, 5181s, 15.3 ms each
+23:22:51   level 6: tested 339500/537230, 5190s, 15.3 ms each
+23:22:58   level 6: tested 340000/537230, 5197s, 15.3 ms each
+23:23:06   level 6: tested 340500/537230, 5205s, 15.3 ms each
+23:23:14   level 6: tested 341000/537230, 5213s, 15.3 ms each
+23:23:22   level 6: tested 341500/537230, 5221s, 15.3 ms each
+23:23:29   level 6: tested 342000/537230, 5228s, 15.3 ms each
+23:23:37   level 6: tested 342500/537230, 5236s, 15.3 ms each
+23:23:45   level 6: tested 343000/537230, 5244s, 15.3 ms each
+23:23:53   level 6: tested 343500/537230, 5252s, 15.3 ms each
+23:24:01   level 6: tested 344000/537230, 5260s, 15.3 ms each
+23:24:10   level 6: tested 344500/537230, 5269s, 15.3 ms each
+23:24:17   level 6: tested 345000/537230, 5276s, 15.3 ms each
+23:24:25   level 6: tested 345500/537230, 5284s, 15.3 ms each
+23:24:33   level 6: tested 346000/537230, 5292s, 15.3 ms each
+23:24:41   level 6: tested 346500/537230, 5300s, 15.3 ms each
+23:24:49   level 6: tested 347000/537230, 5308s, 15.3 ms each
+23:24:57   level 6: tested 347500/537230, 5316s, 15.3 ms each
+23:25:04   level 6: tested 348000/537230, 5323s, 15.3 ms each
+23:25:11   level 6: tested 348500/537230, 5330s, 15.3 ms each
+23:25:19   level 6: tested 349000/537230, 5338s, 15.3 ms each
+23:25:26   level 6: tested 349500/537230, 5345s, 15.3 ms each
+23:25:33   level 6: tested 350000/537230, 5352s, 15.3 ms each
+23:25:41   level 6: tested 350500/537230, 5360s, 15.3 ms each
+23:25:50   level 6: tested 351000/537230, 5369s, 15.3 ms each
+23:25:58   level 6: tested 351500/537230, 5377s, 15.3 ms each
+23:26:06   level 6: tested 352000/537230, 5385s, 15.3 ms each
+23:26:14   level 6: tested 352500/537230, 5393s, 15.3 ms each
+23:26:22   level 6: tested 353000/537230, 5401s, 15.3 ms each
+23:26:29   level 6: tested 353500/537230, 5408s, 15.3 ms each
+23:26:36   level 6: tested 354000/537230, 5415s, 15.3 ms each
+23:26:44   level 6: tested 354500/537230, 5423s, 15.3 ms each
+23:26:51   level 6: tested 355000/537230, 5430s, 15.3 ms each
+23:26:58   level 6: tested 355500/537230, 5437s, 15.3 ms each
+23:27:06   level 6: tested 356000/537230, 5445s, 15.3 ms each
+23:27:15   level 6: tested 356500/537230, 5454s, 15.3 ms each
+23:27:24   level 6: tested 357000/537230, 5463s, 15.3 ms each
+23:27:32   level 6: tested 357500/537230, 5471s, 15.3 ms each
+23:27:39   level 6: tested 358000/537230, 5478s, 15.3 ms each
+23:27:47   level 6: tested 358500/537230, 5486s, 15.3 ms each
+23:27:56   level 6: tested 359000/537230, 5495s, 15.3 ms each
+23:28:04   level 6: tested 359500/537230, 5503s, 15.3 ms each
+23:28:12   level 6: tested 360000/537230, 5511s, 15.3 ms each
+23:28:21   level 6: tested 360500/537230, 5520s, 15.3 ms each
+23:28:29   level 6: tested 361000/537230, 5528s, 15.3 ms each
+23:28:37   level 6: tested 361500/537230, 5536s, 15.3 ms each
+23:28:44   level 6: tested 362000/537230, 5543s, 15.3 ms each
+23:28:52   level 6: tested 362500/537230, 5551s, 15.3 ms each
+23:29:00   level 6: tested 363000/537230, 5559s, 15.3 ms each
+23:29:08   level 6: tested 363500/537230, 5567s, 15.3 ms each
+23:29:16   level 6: tested 364000/537230, 5575s, 15.3 ms each
+23:29:24   level 6: tested 364500/537230, 5582s, 15.3 ms each
+23:29:32   level 6: tested 365000/537230, 5591s, 15.3 ms each
+23:29:40   level 6: tested 365500/537230, 5599s, 15.3 ms each
+23:29:47   level 6: tested 366000/537230, 5606s, 15.3 ms each
+23:29:55   level 6: tested 366500/537230, 5614s, 15.3 ms each
+23:30:02   level 6: tested 367000/537230, 5621s, 15.3 ms each
+23:30:10   level 6: tested 367500/537230, 5629s, 15.3 ms each
+23:30:18   level 6: tested 368000/537230, 5637s, 15.3 ms each
+23:30:26   level 6: tested 368500/537230, 5645s, 15.3 ms each
+23:30:34   level 6: tested 369000/537230, 5653s, 15.3 ms each
+23:30:42   level 6: tested 369500/537230, 5661s, 15.3 ms each
+23:30:49   level 6: tested 370000/537230, 5668s, 15.3 ms each
+23:30:56   level 6: tested 370500/537230, 5675s, 15.3 ms each
+23:31:04   level 6: tested 371000/537230, 5683s, 15.3 ms each
+23:31:11   level 6: tested 371500/537230, 5690s, 15.3 ms each
+23:31:18   level 6: tested 372000/537230, 5697s, 15.3 ms each
+23:31:25   level 6: tested 372500/537230, 5704s, 15.3 ms each
+23:31:32   level 6: tested 373000/537230, 5711s, 15.3 ms each
+23:31:40   level 6: tested 373500/537230, 5719s, 15.3 ms each
+23:31:47   level 6: tested 374000/537230, 5726s, 15.3 ms each
+23:31:55   level 6: tested 374500/537230, 5734s, 15.3 ms each
+23:32:02   level 6: tested 375000/537230, 5741s, 15.3 ms each
+23:32:09   level 6: tested 375500/537230, 5748s, 15.3 ms each
+23:32:17   level 6: tested 376000/537230, 5756s, 15.3 ms each
+23:32:25   level 6: tested 376500/537230, 5764s, 15.3 ms each
+23:32:32   level 6: tested 377000/537230, 5771s, 15.3 ms each
+23:32:39   level 6: tested 377500/537230, 5778s, 15.3 ms each
+23:32:47   level 6: tested 378000/537230, 5785s, 15.3 ms each
+23:32:54   level 6: tested 378500/537230, 5793s, 15.3 ms each
+23:33:01   level 6: tested 379000/537230, 5800s, 15.3 ms each
+23:33:09   level 6: tested 379500/537230, 5808s, 15.3 ms each
+23:33:16   level 6: tested 380000/537230, 5815s, 15.3 ms each
+23:33:24   level 6: tested 380500/537230, 5823s, 15.3 ms each
+23:33:31   level 6: tested 381000/537230, 5830s, 15.3 ms each
+23:33:39   level 6: tested 381500/537230, 5838s, 15.3 ms each
+23:33:48   level 6: tested 382000/537230, 5847s, 15.3 ms each
+23:33:56   level 6: tested 382500/537230, 5855s, 15.3 ms each
+23:34:04   level 6: tested 383000/537230, 5863s, 15.3 ms each
+23:34:12   level 6: tested 383500/537230, 5871s, 15.3 ms each
+23:34:19   level 6: tested 384000/537230, 5878s, 15.3 ms each
+23:34:27   level 6: tested 384500/537230, 5886s, 15.3 ms each
+23:34:35   level 6: tested 385000/537230, 5894s, 15.3 ms each
+23:34:42   level 6: tested 385500/537230, 5901s, 15.3 ms each
+23:34:49   level 6: tested 386000/537230, 5908s, 15.3 ms each
+23:34:58   level 6: tested 386500/537230, 5916s, 15.3 ms each
+23:35:06   level 6: tested 387000/537230, 5925s, 15.3 ms each
+23:35:13   level 6: tested 387500/537230, 5932s, 15.3 ms each
+23:35:21   level 6: tested 388000/537230, 5940s, 15.3 ms each
+23:35:29   level 6: tested 388500/537230, 5948s, 15.3 ms each
+23:35:37   level 6: tested 389000/537230, 5956s, 15.3 ms each
+23:35:45   level 6: tested 389500/537230, 5964s, 15.3 ms each
+23:35:52   level 6: tested 390000/537230, 5971s, 15.3 ms each
+23:35:58   level 6: tested 390500/537230, 5977s, 15.3 ms each
+23:36:06   level 6: tested 391000/537230, 5985s, 15.3 ms each
+23:36:13   level 6: tested 391500/537230, 5992s, 15.3 ms each
+23:36:20   level 6: tested 392000/537230, 5999s, 15.3 ms each
+23:36:27   level 6: tested 392500/537230, 6006s, 15.3 ms each
+23:36:34   level 6: tested 393000/537230, 6013s, 15.3 ms each
+23:36:42   level 6: tested 393500/537230, 6020s, 15.3 ms each
+23:36:50   level 6: tested 394000/537230, 6028s, 15.3 ms each
+23:36:57   level 6: tested 394500/537230, 6036s, 15.3 ms each
+23:37:04   level 6: tested 395000/537230, 6043s, 15.3 ms each
+23:37:12   level 6: tested 395500/537230, 6051s, 15.3 ms each
+23:37:19   level 6: tested 396000/537230, 6057s, 15.3 ms each
+23:37:26   level 6: tested 396500/537230, 6065s, 15.3 ms each
+23:37:34   level 6: tested 397000/537230, 6073s, 15.3 ms each
+23:37:42   level 6: tested 397500/537230, 6081s, 15.3 ms each
+23:37:49   level 6: tested 398000/537230, 6088s, 15.3 ms each
+23:37:57   level 6: tested 398500/537230, 6095s, 15.3 ms each
+23:38:04   level 6: tested 399000/537230, 6103s, 15.3 ms each
+23:38:12   level 6: tested 399500/537230, 6111s, 15.3 ms each
+23:38:19   level 6: tested 400000/537230, 6118s, 15.3 ms each
+23:38:26   level 6: tested 400500/537230, 6125s, 15.3 ms each
+23:38:33   level 6: tested 401000/537230, 6132s, 15.3 ms each
+23:38:41   level 6: tested 401500/537230, 6140s, 15.3 ms each
+23:38:49   level 6: tested 402000/537230, 6148s, 15.3 ms each
+23:38:56   level 6: tested 402500/537230, 6155s, 15.3 ms each
+23:39:03   level 6: tested 403000/537230, 6162s, 15.3 ms each
+23:39:10   level 6: tested 403500/537230, 6169s, 15.3 ms each
+23:39:17   level 6: tested 404000/537230, 6176s, 15.3 ms each
+23:39:24   level 6: tested 404500/537230, 6183s, 15.3 ms each
+23:39:31   level 6: tested 405000/537230, 6190s, 15.3 ms each
+23:39:38   level 6: tested 405500/537230, 6197s, 15.3 ms each
+23:39:45   level 6: tested 406000/537230, 6204s, 15.3 ms each
+23:39:53   level 6: tested 406500/537230, 6212s, 15.3 ms each
+23:40:00   level 6: tested 407000/537230, 6219s, 15.3 ms each
+23:40:08   level 6: tested 407500/537230, 6226s, 15.3 ms each
+23:40:15   level 6: tested 408000/537230, 6234s, 15.3 ms each
+23:40:23   level 6: tested 408500/537230, 6242s, 15.3 ms each
+23:40:30   level 6: tested 409000/537230, 6249s, 15.3 ms each
+23:40:37   level 6: tested 409500/537230, 6256s, 15.3 ms each
+23:40:45   level 6: tested 410000/537230, 6264s, 15.3 ms each
+23:40:52   level 6: tested 410500/537230, 6271s, 15.3 ms each
+23:41:00   level 6: tested 411000/537230, 6279s, 15.3 ms each
+23:41:07   level 6: tested 411500/537230, 6286s, 15.3 ms each
+23:41:15   level 6: tested 412000/537230, 6294s, 15.3 ms each
+23:41:22   level 6: tested 412500/537230, 6301s, 15.3 ms each
+23:41:29   level 6: tested 413000/537230, 6308s, 15.3 ms each
+23:41:37   level 6: tested 413500/537230, 6316s, 15.3 ms each
+23:41:45   level 6: tested 414000/537230, 6324s, 15.3 ms each
+23:41:53   level 6: tested 414500/537230, 6332s, 15.3 ms each
+23:42:01   level 6: tested 415000/537230, 6340s, 15.3 ms each
+23:42:08   level 6: tested 415500/537230, 6347s, 15.3 ms each
+23:42:15   level 6: tested 416000/537230, 6354s, 15.3 ms each
+23:42:22   level 6: tested 416500/537230, 6361s, 15.3 ms each
+23:42:29   level 6: tested 417000/537230, 6368s, 15.3 ms each
+23:42:36   level 6: tested 417500/537230, 6375s, 15.3 ms each
+23:42:43   level 6: tested 418000/537230, 6382s, 15.3 ms each
+23:42:50   level 6: tested 418500/537230, 6389s, 15.3 ms each
+23:42:57   level 6: tested 419000/537230, 6396s, 15.3 ms each
+23:43:04   level 6: tested 419500/537230, 6403s, 15.3 ms each
+23:43:12   level 6: tested 420000/537230, 6411s, 15.3 ms each
+23:43:19   level 6: tested 420500/537230, 6418s, 15.3 ms each
+23:43:26   level 6: tested 421000/537230, 6425s, 15.3 ms each
+23:43:33   level 6: tested 421500/537230, 6432s, 15.3 ms each
+23:43:41   level 6: tested 422000/537230, 6440s, 15.3 ms each
+23:43:49   level 6: tested 422500/537230, 6448s, 15.3 ms each
+23:43:57   level 6: tested 423000/537230, 6456s, 15.3 ms each
+23:44:06   level 6: tested 423500/537230, 6465s, 15.3 ms each
+23:44:13   level 6: tested 424000/537230, 6472s, 15.3 ms each
+23:44:21   level 6: tested 424500/537230, 6480s, 15.3 ms each
+23:44:28   level 6: tested 425000/537230, 6487s, 15.3 ms each
+23:44:36   level 6: tested 425500/537230, 6495s, 15.3 ms each
+23:44:44   level 6: tested 426000/537230, 6503s, 15.3 ms each
+23:44:53   level 6: tested 426500/537230, 6511s, 15.3 ms each
+23:45:01   level 6: tested 427000/537230, 6519s, 15.3 ms each
+23:45:08   level 6: tested 427500/537230, 6527s, 15.3 ms each
+23:45:16   level 6: tested 428000/537230, 6535s, 15.3 ms each
+23:45:23   level 6: tested 428500/537230, 6542s, 15.3 ms each
+23:45:31   level 6: tested 429000/537230, 6550s, 15.3 ms each
+23:45:39   level 6: tested 429500/537230, 6558s, 15.3 ms each
+23:45:46   level 6: tested 430000/537230, 6565s, 15.3 ms each
+23:45:55   level 6: tested 430500/537230, 6574s, 15.3 ms each
+23:46:02   level 6: tested 431000/537230, 6581s, 15.3 ms each
+23:46:09   level 6: tested 431500/537230, 6588s, 15.3 ms each
+23:46:17   level 6: tested 432000/537230, 6596s, 15.3 ms each
+23:46:24   level 6: tested 432500/537230, 6603s, 15.3 ms each
+23:46:32   level 6: tested 433000/537230, 6611s, 15.3 ms each
+23:46:40   level 6: tested 433500/537230, 6619s, 15.3 ms each
+23:46:47   level 6: tested 434000/537230, 6626s, 15.3 ms each
+23:46:55   level 6: tested 434500/537230, 6634s, 15.3 ms each
+23:47:03   level 6: tested 435000/537230, 6642s, 15.3 ms each
+23:47:12   level 6: tested 435500/537230, 6650s, 15.3 ms each
+23:47:20   level 6: tested 436000/537230, 6659s, 15.3 ms each
+23:47:29   level 6: tested 436500/537230, 6667s, 15.3 ms each
+23:47:37   level 6: tested 437000/537230, 6676s, 15.3 ms each
+23:47:45   level 6: tested 437500/537230, 6684s, 15.3 ms each
+23:47:54   level 6: tested 438000/537230, 6693s, 15.3 ms each
+23:48:01   level 6: tested 438500/537230, 6700s, 15.3 ms each
+23:48:09   level 6: tested 439000/537230, 6708s, 15.3 ms each
+23:48:17   level 6: tested 439500/537230, 6716s, 15.3 ms each
+23:48:24   level 6: tested 440000/537230, 6723s, 15.3 ms each
+23:48:32   level 6: tested 440500/537230, 6731s, 15.3 ms each
+23:48:40   level 6: tested 441000/537230, 6739s, 15.3 ms each
+23:48:48   level 6: tested 441500/537230, 6747s, 15.3 ms each
+23:48:57   level 6: tested 442000/537230, 6756s, 15.3 ms each
+23:49:05   level 6: tested 442500/537230, 6764s, 15.3 ms each
+23:49:13   level 6: tested 443000/537230, 6772s, 15.3 ms each
+23:49:21   level 6: tested 443500/537230, 6780s, 15.3 ms each
+23:49:29   level 6: tested 444000/537230, 6788s, 15.3 ms each
+23:49:37   level 6: tested 444500/537230, 6796s, 15.3 ms each
+23:49:45   level 6: tested 445000/537230, 6804s, 15.3 ms each
+23:49:53   level 6: tested 445500/537230, 6812s, 15.3 ms each
+23:50:00   level 6: tested 446000/537230, 6819s, 15.3 ms each
+23:50:08   level 6: tested 446500/537230, 6827s, 15.3 ms each
+23:50:16   level 6: tested 447000/537230, 6834s, 15.3 ms each
+23:50:24   level 6: tested 447500/537230, 6843s, 15.3 ms each
+23:50:32   level 6: tested 448000/537230, 6851s, 15.3 ms each
+23:50:41   level 6: tested 448500/537230, 6860s, 15.3 ms each
+23:50:49   level 6: tested 449000/537230, 6868s, 15.3 ms each
+23:50:57   level 6: tested 449500/537230, 6876s, 15.3 ms each
+23:51:05   level 6: tested 450000/537230, 6884s, 15.3 ms each
+23:51:13   level 6: tested 450500/537230, 6892s, 15.3 ms each
+23:51:21   level 6: tested 451000/537230, 6900s, 15.3 ms each
+23:51:29   level 6: tested 451500/537230, 6908s, 15.3 ms each
+23:51:37   level 6: tested 452000/537230, 6916s, 15.3 ms each
+23:51:45   level 6: tested 452500/537230, 6924s, 15.3 ms each
+23:51:53   level 6: tested 453000/537230, 6932s, 15.3 ms each
+23:52:01   level 6: tested 453500/537230, 6940s, 15.3 ms each
+23:52:09   level 6: tested 454000/537230, 6948s, 15.3 ms each
+23:52:17   level 6: tested 454500/537230, 6956s, 15.3 ms each
+23:52:24   level 6: tested 455000/537230, 6963s, 15.3 ms each
+23:52:32   level 6: tested 455500/537230, 6971s, 15.3 ms each
+23:52:40   level 6: tested 456000/537230, 6979s, 15.3 ms each
+23:52:48   level 6: tested 456500/537230, 6987s, 15.3 ms each
+23:52:55   level 6: tested 457000/537230, 6994s, 15.3 ms each
+23:53:03   level 6: tested 457500/537230, 7002s, 15.3 ms each
+23:53:11   level 6: tested 458000/537230, 7010s, 15.3 ms each
+23:53:18   level 6: tested 458500/537230, 7017s, 15.3 ms each
+23:53:27   level 6: tested 459000/537230, 7026s, 15.3 ms each
+23:53:35   level 6: tested 459500/537230, 7034s, 15.3 ms each
+23:53:44   level 6: tested 460000/537230, 7043s, 15.3 ms each
+23:53:53   level 6: tested 460500/537230, 7052s, 15.3 ms each
+23:54:03   level 6: tested 461000/537230, 7062s, 15.3 ms each
+23:54:12   level 6: tested 461500/537230, 7071s, 15.3 ms each
+23:54:20   level 6: tested 462000/537230, 7079s, 15.3 ms each
+23:54:27   level 6: tested 462500/537230, 7086s, 15.3 ms each
+23:54:37   level 6: tested 463000/537230, 7096s, 15.3 ms each
+23:54:46   level 6: tested 463500/537230, 7105s, 15.3 ms each
+23:54:55   level 6: tested 464000/537230, 7114s, 15.3 ms each
+23:55:03   level 6: tested 464500/537230, 7122s, 15.3 ms each
+23:55:12   level 6: tested 465000/537230, 7131s, 15.3 ms each
+23:55:21   level 6: tested 465500/537230, 7140s, 15.3 ms each
+23:55:29   level 6: tested 466000/537230, 7148s, 15.3 ms each
+23:55:37   level 6: tested 466500/537230, 7156s, 15.3 ms each
+23:55:46   level 6: tested 467000/537230, 7165s, 15.3 ms each
+23:55:53   level 6: tested 467500/537230, 7172s, 15.3 ms each
+23:56:01   level 6: tested 468000/537230, 7180s, 15.3 ms each
+23:56:09   level 6: tested 468500/537230, 7188s, 15.3 ms each
+23:56:17   level 6: tested 469000/537230, 7196s, 15.3 ms each
+23:56:29 level 4: loaded 24 pruned patterns
+23:56:29 level 5: loaded 922 pruned patterns
+23:56:29 level 6: start
+23:56:31   level 6: loaded 537230 raw candidates
+23:56:31   level 6: testing 68230 of 537230 candidates (auto, 1 workers)
+23:56:39   level 6: tested 500/68230, 9s, 17.3 ms each
+23:56:48   level 6: tested 1000/68230, 17s, 16.9 ms each
+23:56:56   level 6: tested 1500/68230, 25s, 16.5 ms each
+23:57:04   level 6: tested 2000/68230, 33s, 16.5 ms each
+23:57:13   level 6: tested 2500/68230, 42s, 16.8 ms each
+23:57:21   level 6: tested 3000/68230, 50s, 16.8 ms each
+23:57:30   level 6: tested 3500/68230, 59s, 16.9 ms each
+23:57:38   level 6: tested 4000/68230, 67s, 16.8 ms each
+23:57:46   level 6: tested 4500/68230, 75s, 16.6 ms each
+23:57:55   level 6: tested 5000/68230, 84s, 16.9 ms each
+23:58:03   level 6: tested 5500/68230, 93s, 16.8 ms each
+23:58:11   level 6: tested 6000/68230, 101s, 16.8 ms each
+23:58:20   level 6: tested 6500/68230, 109s, 16.7 ms each
+23:58:28   level 6: tested 7000/68230, 117s, 16.7 ms each
+23:58:35   level 6: tested 7500/68230, 125s, 16.6 ms each
+23:58:44   level 6: tested 8000/68230, 133s, 16.6 ms each
+23:58:53   level 6: tested 8500/68230, 142s, 16.7 ms each
+23:59:00   level 6: tested 9000/68230, 150s, 16.6 ms each
+23:59:09   level 6: tested 9500/68230, 159s, 16.7 ms each
+23:59:18   level 6: tested 10000/68230, 167s, 16.7 ms each
+23:59:26   level 6: tested 10500/68230, 175s, 16.7 ms each
+23:59:35   level 6: tested 11000/68230, 184s, 16.7 ms each
+23:59:43   level 6: tested 11500/68230, 192s, 16.7 ms each
+23:59:51   level 6: tested 12000/68230, 201s, 16.7 ms each
+00:00:00   level 6: tested 12500/68230, 209s, 16.7 ms each
+00:00:08   level 6: tested 13000/68230, 217s, 16.7 ms each
+00:00:17   level 6: tested 13500/68230, 226s, 16.7 ms each
+00:00:25   level 6: tested 14000/68230, 234s, 16.7 ms each
+00:00:34   level 6: tested 14500/68230, 243s, 16.8 ms each
+00:00:43   level 6: tested 15000/68230, 252s, 16.8 ms each
+00:00:52   level 6: tested 15500/68230, 261s, 16.9 ms each
+00:01:01   level 6: tested 16000/68230, 270s, 16.9 ms each
+00:01:09   level 6: tested 16500/68230, 278s, 16.9 ms each
+00:01:17   level 6: tested 17000/68230, 286s, 16.8 ms each
+00:01:26   level 6: tested 17500/68230, 295s, 16.8 ms each
+00:01:34   level 6: tested 18000/68230, 304s, 16.9 ms each
+00:01:44   level 6: tested 18500/68230, 313s, 16.9 ms each
+00:01:54   level 6: tested 19000/68230, 323s, 17.0 ms each
+00:02:05   level 6: tested 19500/68230, 334s, 17.1 ms each
+00:02:15   level 6: tested 20000/68230, 345s, 17.2 ms each
+00:02:26   level 6: tested 20500/68230, 356s, 17.3 ms each
+00:02:36   level 6: tested 21000/68230, 365s, 17.4 ms each
+00:02:45   level 6: tested 21500/68230, 374s, 17.4 ms each
+00:02:54   level 6: tested 22000/68230, 383s, 17.4 ms each
+00:03:04   level 6: tested 22500/68230, 393s, 17.5 ms each
+00:03:12   level 6: tested 23000/68230, 401s, 17.5 ms each
+00:03:21   level 6: tested 23500/68230, 411s, 17.5 ms each
+00:03:30   level 6: tested 24000/68230, 419s, 17.4 ms each
+00:03:38   level 6: tested 24500/68230, 428s, 17.4 ms each
+00:03:47   level 6: tested 25000/68230, 436s, 17.4 ms each
+00:03:57   level 6: tested 25500/68230, 446s, 17.5 ms each
+00:04:05   level 6: tested 26000/68230, 455s, 17.5 ms each
+00:04:14   level 6: tested 26500/68230, 463s, 17.5 ms each
+00:04:23   level 6: tested 27000/68230, 473s, 17.5 ms each
+00:04:32   level 6: tested 27500/68230, 481s, 17.5 ms each
+00:04:41   level 6: tested 28000/68230, 490s, 17.5 ms each
+00:04:50   level 6: tested 28500/68230, 499s, 17.5 ms each
+00:04:59   level 6: tested 29000/68230, 508s, 17.5 ms each
+00:05:08   level 6: tested 29500/68230, 517s, 17.5 ms each
+00:05:16   level 6: tested 30000/68230, 526s, 17.5 ms each
+00:05:25   level 6: tested 30500/68230, 534s, 17.5 ms each
+00:05:34   level 6: tested 31000/68230, 543s, 17.5 ms each
+00:05:45   level 6: tested 31500/68230, 554s, 17.6 ms each
+00:05:53   level 6: tested 32000/68230, 563s, 17.6 ms each
+00:06:02   level 6: tested 32500/68230, 571s, 17.6 ms each
+00:06:10   level 6: tested 33000/68230, 579s, 17.5 ms each
+00:06:18   level 6: tested 33500/68230, 587s, 17.5 ms each
+00:06:27   level 6: tested 34000/68230, 596s, 17.5 ms each
+00:06:35   level 6: tested 34500/68230, 604s, 17.5 ms each
+00:06:43   level 6: tested 35000/68230, 613s, 17.5 ms each
+00:06:51   level 6: tested 35500/68230, 621s, 17.5 ms each
+00:07:00   level 6: tested 36000/68230, 629s, 17.5 ms each
+00:07:09   level 6: tested 36500/68230, 638s, 17.5 ms each
+00:07:17   level 6: tested 37000/68230, 646s, 17.5 ms each
+00:07:25   level 6: tested 37500/68230, 654s, 17.4 ms each
+00:07:32   level 6: tested 38000/68230, 662s, 17.4 ms each
+00:07:41   level 6: tested 38500/68230, 670s, 17.4 ms each
+00:07:49   level 6: tested 39000/68230, 678s, 17.4 ms each
+00:07:58   level 6: tested 39500/68230, 687s, 17.4 ms each
+00:08:06   level 6: tested 40000/68230, 695s, 17.4 ms each
+00:08:15   level 6: tested 40500/68230, 704s, 17.4 ms each
+00:08:24   level 6: tested 41000/68230, 713s, 17.4 ms each
+00:08:32   level 6: tested 41500/68230, 721s, 17.4 ms each
+00:08:40   level 6: tested 42000/68230, 730s, 17.4 ms each
+00:08:49   level 6: tested 42500/68230, 738s, 17.4 ms each
+00:08:57   level 6: tested 43000/68230, 746s, 17.3 ms each
+00:09:06   level 6: tested 43500/68230, 755s, 17.4 ms each
+00:09:14   level 6: tested 44000/68230, 763s, 17.4 ms each
+00:09:23   level 6: tested 44500/68230, 773s, 17.4 ms each
+00:09:32   level 6: tested 45000/68230, 782s, 17.4 ms each
+00:09:42   level 6: tested 45500/68230, 791s, 17.4 ms each
+00:09:50   level 6: tested 46000/68230, 799s, 17.4 ms each
+00:10:00   level 6: tested 46500/68230, 809s, 17.4 ms each
+00:10:10   level 6: tested 47000/68230, 819s, 17.4 ms each
+00:10:19   level 6: tested 47500/68230, 828s, 17.4 ms each
+00:10:28   level 6: tested 48000/68230, 837s, 17.4 ms each
+00:10:37   level 6: tested 48500/68230, 846s, 17.4 ms each
+00:10:45   level 6: tested 49000/68230, 854s, 17.4 ms each
+00:10:53   level 6: tested 49500/68230, 863s, 17.4 ms each
+00:11:01   level 6: tested 50000/68230, 870s, 17.4 ms each
+00:11:09   level 6: tested 50500/68230, 879s, 17.4 ms each
+00:11:19   level 6: tested 51000/68230, 888s, 17.4 ms each
+00:11:27   level 6: tested 51500/68230, 897s, 17.4 ms each
+00:11:36   level 6: tested 52000/68230, 906s, 17.4 ms each
+00:11:45   level 6: tested 52500/68230, 914s, 17.4 ms each
+00:11:53   level 6: tested 53000/68230, 923s, 17.4 ms each
+00:12:03   level 6: tested 53500/68230, 932s, 17.4 ms each
+00:12:12   level 6: tested 54000/68230, 941s, 17.4 ms each
+00:12:20   level 6: tested 54500/68230, 949s, 17.4 ms each
+00:12:29   level 6: tested 55000/68230, 958s, 17.4 ms each
+00:12:38   level 6: tested 55500/68230, 968s, 17.4 ms each
+00:12:47   level 6: tested 56000/68230, 977s, 17.4 ms each
+00:12:56   level 6: tested 56500/68230, 985s, 17.4 ms each
+00:13:05   level 6: tested 57000/68230, 994s, 17.4 ms each
+00:13:14   level 6: tested 57500/68230, 1003s, 17.4 ms each
+00:13:23   level 6: tested 58000/68230, 1012s, 17.5 ms each
+00:13:33   level 6: tested 58500/68230, 1022s, 17.5 ms each
+00:13:42   level 6: tested 59000/68230, 1032s, 17.5 ms each
+00:13:52   level 6: tested 59500/68230, 1042s, 17.5 ms each
+00:14:01   level 6: tested 60000/68230, 1050s, 17.5 ms each
+00:14:09   level 6: tested 60500/68230, 1059s, 17.5 ms each
+00:14:18   level 6: tested 61000/68230, 1067s, 17.5 ms each
+00:14:26   level 6: tested 61500/68230, 1075s, 17.5 ms each
+00:14:34   level 6: tested 62000/68230, 1083s, 17.5 ms each
+00:14:43   level 6: tested 62500/68230, 1092s, 17.5 ms each
+00:14:53   level 6: tested 63000/68230, 1102s, 17.5 ms each
+00:15:02   level 6: tested 63500/68230, 1112s, 17.5 ms each
+00:15:12   level 6: tested 64000/68230, 1121s, 17.5 ms each
+00:15:21   level 6: tested 64500/68230, 1130s, 17.5 ms each
+00:15:30   level 6: tested 65000/68230, 1139s, 17.5 ms each
+00:15:39   level 6: tested 65500/68230, 1148s, 17.5 ms each
+00:15:48   level 6: tested 66000/68230, 1157s, 17.5 ms each
+00:15:56   level 6: tested 66500/68230, 1165s, 17.5 ms each
+00:16:04   level 6: tested 67000/68230, 1174s, 17.5 ms each
+00:16:13   level 6: tested 67500/68230, 1182s, 17.5 ms each
+00:16:22   level 6: tested 68000/68230, 1191s, 17.5 ms each
+00:16:26   level 6: tests done in 1195s; kept 20229 (flagged prime-disagreement 0, errors 0)
+00:16:26 level 6: raw 537230  pruned 20229  by #colours {5: 1509, 6: 18609, 3: 7, 4: 104}
+00:16:26 level 7: start
+00:18:23   level 7: 50/2529 parent chunks, 1159 raw so far, 114s
+00:20:49   level 7: 100/2529 parent chunks, 2049 raw so far, 260s
+00:24:08   level 7: 150/2529 parent chunks, 2969 raw so far, 459s
+00:26:21   level 7: 200/2529 parent chunks, 3867 raw so far, 591s
+00:28:34   level 7: 250/2529 parent chunks, 5622 raw so far, 725s
+00:31:01   level 7: 300/2529 parent chunks, 6359 raw so far, 871s
+00:33:09   level 7: 350/2529 parent chunks, 7005 raw so far, 999s
+00:35:16   level 7: 400/2529 parent chunks, 7598 raw so far, 1127s
+00:38:13   level 7: 450/2529 parent chunks, 8269 raw so far, 1303s
+00:40:24   level 7: 500/2529 parent chunks, 8844 raw so far, 1435s
+00:42:43   level 7: 550/2529 parent chunks, 9738 raw so far, 1574s
+00:44:52   level 7: 600/2529 parent chunks, 10214 raw so far, 1702s
+00:47:07   level 7: 650/2529 parent chunks, 10593 raw so far, 1837s
+00:49:36   level 7: 700/2529 parent chunks, 10973 raw so far, 1987s
+00:51:39   level 7: 750/2529 parent chunks, 11243 raw so far, 2110s
+00:53:48   level 7: 800/2529 parent chunks, 11577 raw so far, 2239s
+00:56:06   level 7: 850/2529 parent chunks, 11811 raw so far, 2376s
+00:58:24   level 7: 900/2529 parent chunks, 12073 raw so far, 2514s
+01:00:34   level 7: 950/2529 parent chunks, 12297 raw so far, 2645s
+01:02:45   level 7: 1000/2529 parent chunks, 12519 raw so far, 2776s
+01:04:57   level 7: 1050/2529 parent chunks, 12729 raw so far, 2907s
+01:07:14   level 7: 1100/2529 parent chunks, 13038 raw so far, 3044s
+01:09:26   level 7: 1150/2529 parent chunks, 13158 raw so far, 3176s
+01:11:41   level 7: 1200/2529 parent chunks, 13294 raw so far, 3312s
+01:13:54   level 7: 1250/2529 parent chunks, 13421 raw so far, 3445s
+01:16:28   level 7: 1300/2529 parent chunks, 13537 raw so far, 3599s
+01:18:54   level 7: 1350/2529 parent chunks, 13720 raw so far, 3744s
+01:21:05   level 7: 1400/2529 parent chunks, 13832 raw so far, 3875s
+01:23:13   level 7: 1450/2529 parent chunks, 13942 raw so far, 4004s
+01:25:25   level 7: 1500/2529 parent chunks, 14021 raw so far, 4135s
+01:27:41   level 7: 1550/2529 parent chunks, 14112 raw so far, 4271s
+01:29:58   level 7: 1600/2529 parent chunks, 14185 raw so far, 4408s
+01:32:11   level 7: 1650/2529 parent chunks, 14241 raw so far, 4542s
+01:35:00   level 7: 1700/2529 parent chunks, 14324 raw so far, 4710s
+01:37:26   level 7: 1750/2529 parent chunks, 14380 raw so far, 4856s
+01:40:08   level 7: 1800/2529 parent chunks, 14439 raw so far, 5018s
+01:42:40   level 7: 1850/2529 parent chunks, 14466 raw so far, 5170s
+01:45:14   level 7: 1900/2529 parent chunks, 14493 raw so far, 5325s
+01:47:44   level 7: 1950/2529 parent chunks, 14509 raw so far, 5475s
+01:50:27   level 7: 2000/2529 parent chunks, 14530 raw so far, 5638s
+01:53:01   level 7: 2050/2529 parent chunks, 14554 raw so far, 5791s
+01:55:21   level 7: 2100/2529 parent chunks, 14573 raw so far, 5932s
+02:07:53 level 4: loaded 24 pruned patterns
+02:07:53 level 5: loaded 922 pruned patterns
+02:07:53 level 6: loaded 20229 pruned patterns
+02:07:53 level 7: start
+02:09:45   level 7: 50/2529 parent chunks, 1159 raw so far, 110s
+02:12:04   level 7: 100/2529 parent chunks, 2049 raw so far, 249s
+02:15:26   level 7: 150/2529 parent chunks, 2969 raw so far, 451s
+02:17:39   level 7: 200/2529 parent chunks, 3867 raw so far, 584s
+02:19:52   level 7: 250/2529 parent chunks, 5622 raw so far, 716s
+02:22:15   level 7: 300/2529 parent chunks, 6359 raw so far, 859s
+02:24:23   level 7: 350/2529 parent chunks, 7005 raw so far, 987s
+02:26:35   level 7: 400/2529 parent chunks, 7598 raw so far, 1119s
+02:29:41   level 7: 450/2529 parent chunks, 8269 raw so far, 1305s
+02:32:02   level 7: 500/2529 parent chunks, 8844 raw so far, 1446s
+02:34:34   level 7: 550/2529 parent chunks, 9738 raw so far, 1599s
+02:36:56   level 7: 600/2529 parent chunks, 10214 raw so far, 1740s
+02:39:16   level 7: 650/2529 parent chunks, 10593 raw so far, 1881s
+02:41:55   level 7: 700/2529 parent chunks, 10973 raw so far, 2039s
+02:43:59   level 7: 750/2529 parent chunks, 11243 raw so far, 2164s
+02:46:16   level 7: 800/2529 parent chunks, 11577 raw so far, 2301s
+02:48:43   level 7: 850/2529 parent chunks, 11811 raw so far, 2447s
+02:51:05   level 7: 900/2529 parent chunks, 12073 raw so far, 2589s
+02:53:18   level 7: 950/2529 parent chunks, 12297 raw so far, 2723s
+02:55:32   level 7: 1000/2529 parent chunks, 12519 raw so far, 2856s
+02:58:05   level 7: 1050/2529 parent chunks, 12729 raw so far, 3009s
+03:00:52   level 7: 1100/2529 parent chunks, 13038 raw so far, 3176s
+03:03:15   level 7: 1150/2529 parent chunks, 13158 raw so far, 3319s
+03:05:41   level 7: 1200/2529 parent chunks, 13294 raw so far, 3466s
+03:08:02   level 7: 1250/2529 parent chunks, 13421 raw so far, 3607s
+03:10:36   level 7: 1300/2529 parent chunks, 13537 raw so far, 3761s
+03:12:59   level 7: 1350/2529 parent chunks, 13720 raw so far, 3904s
+03:15:16   level 7: 1400/2529 parent chunks, 13832 raw so far, 4041s
+03:17:29   level 7: 1450/2529 parent chunks, 13942 raw so far, 4174s
+03:19:41   level 7: 1500/2529 parent chunks, 14021 raw so far, 4305s
+03:22:01   level 7: 1550/2529 parent chunks, 14112 raw so far, 4445s
+03:24:23   level 7: 1600/2529 parent chunks, 14185 raw so far, 4588s
+03:26:38   level 7: 1650/2529 parent chunks, 14241 raw so far, 4723s
+03:29:24   level 7: 1700/2529 parent chunks, 14324 raw so far, 4889s
+03:31:49   level 7: 1750/2529 parent chunks, 14380 raw so far, 5033s
+03:34:40   level 7: 1800/2529 parent chunks, 14439 raw so far, 5204s
+03:37:25   level 7: 1850/2529 parent chunks, 14466 raw so far, 5370s
+03:40:19   level 7: 1900/2529 parent chunks, 14493 raw so far, 5544s
+03:43:00   level 7: 1950/2529 parent chunks, 14509 raw so far, 5705s
+03:45:58   level 7: 2000/2529 parent chunks, 14530 raw so far, 5882s
+03:48:56   level 7: 2050/2529 parent chunks, 14554 raw so far, 6061s
+03:51:24   level 7: 2100/2529 parent chunks, 14573 raw so far, 6209s
+03:54:28   level 7: 2150/2529 parent chunks, 14615 raw so far, 6392s
+03:57:51   level 7: 2200/2529 parent chunks, 14728 raw so far, 6596s
+04:00:37   level 7: 2250/2529 parent chunks, 14729 raw so far, 6762s
+04:03:31   level 7: 2300/2529 parent chunks, 14729 raw so far, 6935s
+04:06:20   level 7: 2350/2529 parent chunks, 14730 raw so far, 7104s
+04:08:05 level 4: loaded 24 pruned patterns
+04:08:05 level 5: loaded 922 pruned patterns
+04:08:05 level 6: loaded 20229 pruned patterns
+04:08:05 level 7: start
+04:08:09   level 7: resuming raw generation at chunk 2350/2529 with 14730 raw
+04:10:55   level 7: 2400/2529 parent chunks, 14731 raw so far, 166s
+04:13:33   level 7: 2450/2529 parent chunks, 14732 raw so far, 324s
+04:16:14   level 7: 2500/2529 parent chunks, 14732 raw so far, 485s
+04:17:39   level 7: raw generation done, 14732 candidates, 570s
+04:17:39   level 7: testing 14732 of 14732 candidates (auto, 1 workers)
+04:17:55   level 7: tested 500/14732, 15s, 30.4 ms each
+04:18:10   level 7: tested 1000/14732, 30s, 30.3 ms each
+04:18:26   level 7: tested 1500/14732, 47s, 31.0 ms each
+04:18:42   level 7: tested 2000/14732, 63s, 31.4 ms each
+04:18:59   level 7: tested 2500/14732, 79s, 31.6 ms each
+04:19:16   level 7: tested 3000/14732, 97s, 32.2 ms each
+04:19:35   level 7: tested 3500/14732, 115s, 32.9 ms each
+04:19:53   level 7: tested 4000/14732, 134s, 33.4 ms each
+04:20:10   level 7: tested 4500/14732, 150s, 33.4 ms each
+04:20:26   level 7: tested 5000/14732, 167s, 33.4 ms each
+04:20:43   level 7: tested 5500/14732, 184s, 33.5 ms each
+04:21:01   level 7: tested 6000/14732, 201s, 33.6 ms each
+04:21:18   level 7: tested 6500/14732, 219s, 33.6 ms each
+04:21:35   level 7: tested 7000/14732, 236s, 33.7 ms each
+04:21:52   level 7: tested 7500/14732, 252s, 33.6 ms each
+04:22:07   level 7: tested 8000/14732, 268s, 33.5 ms each
+04:22:23   level 7: tested 8500/14732, 283s, 33.3 ms each
+04:22:39   level 7: tested 9000/14732, 300s, 33.3 ms each
+04:22:55   level 7: tested 9500/14732, 316s, 33.3 ms each
+04:23:11   level 7: tested 10000/14732, 332s, 33.2 ms each
+04:23:27   level 7: tested 10500/14732, 348s, 33.1 ms each
+04:23:43   level 7: tested 11000/14732, 364s, 33.1 ms each
+04:23:59   level 7: tested 11500/14732, 380s, 33.0 ms each
+04:24:15   level 7: tested 12000/14732, 395s, 32.9 ms each
+04:24:30   level 7: tested 12500/14732, 411s, 32.8 ms each
+04:24:46   level 7: tested 13000/14732, 427s, 32.8 ms each
+04:25:02   level 7: tested 13500/14732, 443s, 32.8 ms each
+04:25:18   level 7: tested 14000/14732, 459s, 32.8 ms each
+04:25:34   level 7: tested 14500/14732, 475s, 32.8 ms each
+04:25:42   level 7: tests done in 483s; kept 4667 (flagged prime-disagreement 0, errors 0)
+04:25:42 level 7: raw 14732  pruned 4667  by #colours {3: 2, 5: 362, 4: 34, 6: 4269}
+04:25:42 level 8: start
+04:28:45   level 8: 50/584 parent chunks, 600 raw so far, 180s
+04:32:43   level 8: 100/584 parent chunks, 964 raw so far, 418s
+04:35:12   level 8: 150/584 parent chunks, 1204 raw so far, 567s
+04:38:02   level 8: 200/584 parent chunks, 1374 raw so far, 737s
+04:40:44   level 8: 250/584 parent chunks, 1473 raw so far, 899s
+04:43:19   level 8: 300/584 parent chunks, 1514 raw so far, 1054s
+04:46:06   level 8: 350/584 parent chunks, 1533 raw so far, 1220s
+04:48:35   level 8: 400/584 parent chunks, 1548 raw so far, 1370s
+04:51:41   level 8: 450/584 parent chunks, 1551 raw so far, 1556s
+04:54:57   level 8: 500/584 parent chunks, 1555 raw so far, 1752s
+04:58:51   level 8: 550/584 parent chunks, 1562 raw so far, 1985s
+05:01:55   level 8: raw generation done, 1565 candidates, 2170s
+05:01:55   level 8: testing 1565 of 1565 candidates (auto, 1 workers)
+05:02:19   level 8: tested 500/1565, 24s, 47.8 ms each
+05:02:41   level 8: tested 1000/1565, 46s, 46.5 ms each
+05:03:05   level 8: tested 1500/1565, 70s, 46.6 ms each
+05:03:08   level 8: tests done in 73s; kept 1565 (flagged prime-disagreement 0, errors 0)
+05:03:08 level 8: raw 1565  pruned 1565  by #colours {4: 14, 6: 1408, 5: 143}
+05:03:08 level 9: start
+05:06:20   level 9: 50/196 parent chunks, 495 raw so far, 189s
+05:08:44   level 9: 100/196 parent chunks, 610 raw so far, 333s
+05:11:28   level 9: 150/196 parent chunks, 631 raw so far, 497s
+05:14:24   level 9: raw generation done, 635 candidates, 673s
+05:14:24   level 9: testing 635 of 635 candidates (auto, 1 workers)
+05:14:51   level 9: tested 500/635, 27s, 54.5 ms each
+05:15:00   level 9: tests done in 36s; kept 635 (flagged prime-disagreement 0, errors 0)
+05:15:00 level 9: raw 635  pruned 635  by #colours {5: 53, 6: 578, 4: 4}
+05:15:00 level 10: start
+05:18:08   level 10: 50/80 parent chunks, 226 raw so far, 185s
+05:20:02   level 10: raw generation done, 228 candidates, 299s
+05:20:02   level 10: testing 228 of 228 candidates (auto, 1 workers)
+05:20:20   level 10: tests done in 17s; kept 228 (flagged prime-disagreement 0, errors 0)
+05:20:20 level 10: raw 228  pruned 228  by #colours {6: 209, 5: 19}
+05:20:20 done
