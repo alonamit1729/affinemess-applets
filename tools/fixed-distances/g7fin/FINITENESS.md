@@ -91,6 +91,39 @@ missing one of the seven colour classes is a ≤6-distance set, hence rigid, hen
 every colour class must meet every 11-subset: every class graph has vertex-cover number ≥ 6 (matching number ≥ 3).
 Likewise, once the 10-point classification is complete, every class pair must meet every 10-subset.
 
+## 3a. What can be proved without the ten-point input (`cases/REPORT.md`)
+
+The rows of the table that need the 10-point input are m = 11 with G_D = C₁₁, m = 12, and m = 13 with G_D ≠ C₁₃.
+
+**Theorem A** (computer-assisted, `cases/`): *no 11-point planar set has diameter graph C₁₁ and exactly seven
+distances.* Proof outline: C₁₁ is the step-5 star of a convex 11-gon, the bisector argument gives the chains
+|p_i p_{i+1}| < … < |p_i p_{i+5}| = D, so sides take ≤ 3 lengths; one length gives R₁₁ (5 distances); two lengths
+are excluded by the integer-interval closure certificate of Amit–Astra §6 re-run with 13 → 11 (2046 words, depth 2;
+the same script reproduces the published N = 13 certificate exactly); with three lengths a constraint-propagation
+pass over the 44 chord classes (windows, chains, monotonicity of the star-chord functions, all six smaller classes
+present) leaves two cyclic words, α⁸βγβ and (αβ)⁴γγβ, each forcing ≥ 7 chord coincidences that an interval
+branch-and-bound over 0 ≤ α ≤ β ≤ γ ≤ π/3 shows to be inconsistent (mpmath interval arithmetic; porting to the
+paper's integer intervals is routine).
+
+Since every 11-subset of a family carries all seven classes (else it is a ≤6-distance set, rigid, pinning), the
+row m = 11, G_D = C₁₁ is **closed unconditionally**, and so is every diameter graph containing an 11-cycle.
+
+Two new lemmas on diameter graphs of planar sets (leaf lemma: a diameter neighbour angularly between two others is
+a leaf; cycle lemma: every diameter edge meets the cycle) give an exact list of admissible G_D: m = 12, α = 6: 33
+caterpillar forests with a perfect matching, 3 suns on C₉, 1 on C₇; m = 13, α = 7: 158 forests with a 6-matching,
+13 C₉-suns, 4 C₇-suns. These 212 graphs are what still needs the 10-point input (or a direct argument: for the
+C₉/C₇-suns the star method applies but no nonexistence certificate was found; for the forests the chain lemma
+holds but there is no angle parametrisation).
+
+**Literature** (second agent): SÖ's order-10 candidate list is not published; monotonicity g(d−1) < g(d) is open
+for d ≥ 9; nothing in the literature addresses F(d) directly. Email to Szöllősi/Östergård drafted.
+
+**Flexible ⇒ symmetric** (third agent, `symtest/REPORT.md`): false as stated. 15 generically asymmetric families
+with e ≤ 0 (six in (5,4), and one for every n ≥ 6 by "circular equiangular chains" R·e^{ikθ}, k ∈ S, θ free), but
+every one of the 15 is a point-deletion restriction of a family with a constant nontrivial symmetry group and
+smaller e. Replacement conjecture: minimal e ≤ 0 families are symmetric. Side finding: (6,7) #4–#7 are
+2-dimensional and #8 1-dimensional (catalog dims wrong); five symmetric families missing from the catalog.
+
 ## 4. Strategy B is dead in its naive form
 
 Test (`g7fin/extend_ends.py 4`): along the 25 one-parameter families of (5,4), near their collision ends

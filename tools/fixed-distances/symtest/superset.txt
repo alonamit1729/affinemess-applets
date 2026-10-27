@@ -1,0 +1,44 @@
+(5,4) #473: d=4, extra points with all distances in the distance set: 2
+    p=[1.54143, 1.26561]  symmetry of the 6-point set: trivial
+    p=[-1.25275, -0.76561]  symmetry of the 6-point set: C_3
+    all extra points together: 7 points, 7 distances, symmetry trivial
+(5,4) #474: d=4, extra points with all distances in the distance set: 1
+    p=[-1.66974, 0.9895]  symmetry of the 6-point set: trivial
+(5,4) #475: d=4, extra points with all distances in the distance set: 0
+(5,4) #477: d=4, extra points with all distances in the distance set: 1
+    p=[3.82864, -0.5]  symmetry of the 6-point set: trivial
+(5,4) #491: d=4, extra points with all distances in the distance set: 1
+    p=[6.97899, 0.92417]  symmetry of the 6-point set: D_3
+(5,4) #492: d=4, extra points with all distances in the distance set: 1
+    p=[0.81484, -0.99127]  symmetry of the 6-point set: C_3
+(6,4) #23: d=4, extra points with all distances in the distance set: 0
+(6,6) #3: d=6, extra points with all distances in the distance set: 1
+    p=[0.58258, -0.81278]  symmetry of the 7-point set: mirror
+(6,6) #4: d=6, extra points with all distances in the distance set: 2
+    p=[-0.17531, 1.65841]  symmetry of the 7-point set: trivial
+    p=[-1.04134, 1.15841]  symmetry of the 7-point set: trivial
+    all extra points together: 8 points, 6 distances, symmetry mirror
+(6,7) #0: d=7, extra points with all distances in the distance set: 2
+    p=[0.30328, 3.34169]  symmetry of the 7-point set: trivial
+    p=[1.28694, 3.16166]  symmetry of the 7-point set: trivial
+    all extra points together: 8 points, 7 distances, symmetry mirror
+(6,7) #1: d=7, extra points with all distances in the distance set: 0
+(6,7) #2: d=7, extra points with all distances in the distance set: 0
+(6,7) #3: d=7, extra points with all distances in the distance set: 0
+(6,7) #8: d=7, extra points with all distances in the distance set: 13
+    p=[0.5, -0.86603]  symmetry of the 7-point set: trivial
+    p=[-0.5, -0.86603]  symmetry of the 7-point set: trivial
+    p=[-1.0, -0.0]  symmetry of the 7-point set: trivial
+    p=[0.5, 0.86603]  symmetry of the 7-point set: trivial
+    p=[-0.5, 0.86603]  symmetry of the 7-point set: trivial
+    p=[1.5, -0.86603]  symmetry of the 7-point set: trivial
+    p=[-1.5, 0.86603]  symmetry of the 7-point set: trivial
+    p=[1.0, -1.73205]  symmetry of the 7-point set: trivial
+    p=[-1.0, -1.73205]  symmetry of the 7-point set: trivial
+    p=[1.0, 1.73205]  symmetry of the 7-point set: trivial
+    p=[-1.0, 1.73205]  symmetry of the 7-point set: trivial
+    p=[0.5, -2.59808]  symmetry of the 7-point set: trivial
+    p=[-0.0, 1.73205]  symmetry of the 7-point set: trivial
+    all extra points together: 19 points, 10 distances, symmetry trivial
+(7,7) #4: d=7, extra points with all distances in the distance set: 1
+    p=[0.13424, -2.63955]  symmetry of the 8-point set: mirror

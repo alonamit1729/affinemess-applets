@@ -1,0 +1,181 @@
+=== (5,4) #473  1-parameter family; distance classes of sizes 5·2·2·1  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.59098), np.float64(1.9838), np.float64(2.54297)]
+  class sizes: [5, 2, 2, 1]
+  distance-class matrix (1 = shortest):
+       1 1 1 2
+     1   1 2 3
+     1 1   3 1
+     1 2 3   4
+     2 3 1 4  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(-0.86603), np.float64(-0.5)], [np.float64(-0.86603), np.float64(0.5)], [np.float64(0.71207), np.float64(-0.70211)], [np.float64(-0.61401), np.float64(1.46772)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 2
+  strat: 3 arcs of this family: | • Triangular lattice: hexagon + centre minus two adjacent vertices ↔ Regular 12‑gon: V₀V₁V₂V₃ + outer equilateral apex on V₁V₂ | • Triangular lattice: hexagon + centre minus two adjacent vertices → two points merge | • Regular 12‑gon: V₀V₂V₇V₉ + fourth vertex of the square O V₀ · V₉ → two points merge
+=== (5,4) #474  1-parameter family; distance classes of sizes 4·3·2·1  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(2.39631), np.float64(3.20959), np.float64(3.36177)]
+  class sizes: [3, 4, 2, 1]
+  distance-class matrix (1 = shortest):
+       2 2 2 3
+     2   2 3 4
+     2 2   1 1
+     2 3 1   1
+     3 4 1 1  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(-2.07527), np.float64(1.19816)], [np.float64(-2.07527), np.float64(-1.19816)], [np.float64(-1.40557), np.float64(-1.94079)], [np.float64(-2.38356), np.float64(-2.14945)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+  strat: 6 arcs of this family: | • Triangular lattice: hexagon + centre minus two vertices √3 apart → two points merge | • Triangular lattice: hexagon + centre minus two vertices √3 apart ↔ Regular 12‑gon: O + V₀V₁V₂ + outer equilateral apex on V₀V₁ | • Triangular lattice: hexagon + centre minus two adjacent vertices → two points merge | • Regular 12‑gon: O + V₀V₁V₂ + inner equilateral apex on V₀V₁, which lands at distance 1 from O → two points merge | • Regular 12‑gon: O + V₀V₁V₂ + inner equilateral apex on V₀V₁, which lands at distance 1 from O → two points merge | • Triangular lattice: hexagon + centre minus two adjacent vertices ↔ Regular 12‑gon: O + V₀V₁V₂ + outer equilateral apex on V₀V₁
+=== (5,4) #475  1-parameter family; distance classes of sizes 5·3·1·1  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.04015), np.float64(1.75492), np.float64(1.99946)]
+  class sizes: [5, 1, 3, 1]
+  distance-class matrix (1 = shortest):
+       1 1 1 2
+     1   1 4 1
+     1 1   3 3
+     1 4 3   3
+     2 1 3 3  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(-0.86603), np.float64(-0.5)], [np.float64(-0.86603), np.float64(0.5)], [np.float64(0.88841), np.float64(0.45904)], [np.float64(-0.02428), np.float64(-1.03987)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 2
+  strat: 5 arcs of this family: | • Triangular lattice: hexagon + centre minus two vertices √3 apart ↔ Regular 12‑gon: O + V₀V₁V₂ + inner equilateral apex on V₀V₁, which lands at distance 1 from O | • Triangular lattice: hexagon + centre minus two vertices √3 apart → two points merge | • Regular 12‑gon: O + V₀V₁V₂ + outer equilateral apex on V₀V₁ → two points merge | • Regular 12‑gon: O + V₀V₁V₂ + outer equilateral apex on V₀V₁ → two points merge | • Triangular lattice: side‑2 lattice triangle minus a side midpoint ↔ Regular 12‑gon: O + V₀V₁V₂ + inner equilateral apex on V₀V₁, which lands at distance 1 from O
+=== (5,4) #477  1-parameter family; distance classes of sizes 3·3·3·1  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(3.28951), np.float64(4.11731), np.float64(4.23701)]
+  class sizes: [3, 3, 3, 1]
+  distance-class matrix (1 = shortest):
+       1 1 2 2
+     1   1 2 4
+     1 1   3 3
+     2 2 3   3
+     2 4 3 3  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(-0.86603), np.float64(-0.5)], [np.float64(-0.86603), np.float64(0.5)], [np.float64(1.19263), np.float64(-3.0657)], [np.float64(3.25128), np.float64(0.5)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 2
+  strat: 5 arcs of this family: | • Triangular lattice: hexagon + centre minus two vertices √3 apart ↔ Regular 12‑gon: O + V₀V₁V₂V₃ | • Triangular lattice: hexagon + centre minus two vertices √3 apart → one distance → 0 (infinity) | • Regular 12‑gon: O + V₀V₂V₅V₇ → two points merge | • Triangular lattice: hexagon + centre minus two vertices √3 apart → two points merge | • Regular 12‑gon: O + V₀V₂V₅V₇ → one distance → 0 (infinity)
+=== (5,4) #491  1-parameter family; distance classes of sizes 4·2·2·2  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(6.03992), np.float64(6.59701), np.float64(7.03992)]
+  class sizes: [2, 2, 4, 2]
+  distance-class matrix (1 = shortest):
+       3 3 1 2
+     3   3 2 4
+     3 3   4 1
+     1 2 4   3
+     2 4 1 3  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(6.59701), np.float64(0.0)], [np.float64(3.2985), np.float64(5.71318)], [np.float64(0.60936), np.float64(-0.79289)], [np.float64(2.30716), np.float64(5.5819)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 6
+  strat: 1 arc of this family: | • Triangular lattice: regular hexagon minus a vertex → two points merge
+=== (5,4) #492  1-parameter family; distance classes of sizes 3·3·2·2  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.29955), np.float64(1.63976), np.float64(2.22254)]
+  class sizes: [2, 2, 3, 3]
+  distance-class matrix (1 = shortest):
+       3 3 4 2
+     3   3 2 1
+     3 3   1 4
+     4 2 1   4
+     2 1 4 4  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(-1.42008), np.float64(0.81988)], [np.float64(-1.42008), np.float64(-0.81988)], [np.float64(-2.2126), np.float64(-0.21004)], [np.float64(-0.49568), np.float64(1.2013)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 2
+  strat: 3 arcs of this family: | • Triangular lattice: side‑2 lattice triangle minus a side midpoint → two points merge | • Regular 12‑gon: V₀V₃V₅V₁₀ + reflection of O in the chord V₅V₁₀ → two points merge | • Triangular lattice: side‑2 lattice triangle minus a side midpoint ↔ Regular 12‑gon: V₀V₁V₂V₃ + reflection of O in V₁V₂
+=== (6,4) #23  piece of the triangular lattice  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.34178), np.float64(1.67343), np.float64(2.26371)]
+  class sizes: [4, 4, 2, 5]
+  distance-class matrix (1 = shortest):
+       4 4 3 2 1
+     4   4 2 4 2
+     4 4   1 1 4
+     3 2 1   1 2
+     2 4 1 1   3
+     1 2 4 2 3  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(-1.96043), np.float64(1.13186)], [np.float64(-1.96043), np.float64(-1.13186)], [np.float64(-1.66407), np.float64(-0.17678)], [np.float64(-0.98513), np.float64(-0.91098)], [np.float64(-0.67894), np.float64(0.7342)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 2
+=== (6,6) #3  vertices 0, 1, 2, 3, 4, 6 of a regular 12-gon  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.21745), np.float64(2.01803), np.float64(2.16595), np.float64(2.59025), np.float64(2.63597)]
+  class sizes: [1, 4, 3, 2, 4, 1]
+  distance-class matrix (1 = shortest):
+       5 2 3 4 6
+     5   5 2 3 1
+     2 5   5 2 4
+     3 2 5   5 3
+     4 3 2 5   2
+     6 1 4 3 2  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(2.59025), np.float64(0.0)], [np.float64(0.28611), np.float64(1.18336)], [np.float64(1.79512), np.float64(-0.92194)], [np.float64(1.41459), np.float64(1.64021)], [np.float64(2.44334), np.float64(0.98915)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (6,6) #4  piece of the triangular lattice  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.16394), np.float64(1.82121), np.float64(1.99049), np.float64(2.16138), np.float64(2.69794)]
+  class sizes: [6, 2, 3, 1, 1, 2]
+  distance-class matrix (1 = shortest):
+       1 1 5 3 2
+     1   4 6 6 3
+     1 4   3 1 1
+     5 6 3   2 1
+     3 6 1 2   1
+     2 3 1 1 1  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(0.0), np.float64(1.0)], [np.float64(-0.19387), np.float64(-0.98103)], [np.float64(-2.00642), np.float64(-0.80365)], [np.float64(-1.05989), np.float64(-1.48103)], [np.float64(-1.05989), np.float64(-0.48103)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (6,7) #0  vertices 0, 1, 2, 3, 4, 7 of a regular 14-gon  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.91299), np.float64(2.65952), np.float64(3.00534), np.float64(3.17465), np.float64(3.35542), np.float64(3.41355)]
+  class sizes: [4, 3, 3, 1, 2, 1, 1]
+  distance-class matrix (1 = shortest):
+       1 2 3 5 4
+     1   1 2 3 6
+     2 1   1 2 7
+     3 2 1   1 5
+     5 3 2 1   3
+     4 6 7 5 3  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(1.0), np.float64(0.0)], [np.float64(1.82976), np.float64(0.55812)], [np.float64(2.20677), np.float64(1.48433)], [np.float64(2.00267), np.float64(2.46328)], [np.float64(-0.6134), np.float64(2.94207)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (6,7) #1  vertices 0, 1, 2, 3, 4, 8 of a regular 14-gon  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.07412), np.float64(1.15033), np.float64(1.80658), np.float64(1.83427), np.float64(1.92664), np.float64(2.77289)]
+  class sizes: [1, 2, 3, 4, 2, 1, 2]
+  distance-class matrix (1 = shortest):
+       4 3 2 5 7
+     4   4 3 2 1
+     3 4   4 3 7
+     2 3 4   4 6
+     5 2 3 4   5
+     7 1 7 6 5  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(1.80658), np.float64(0.0)], [np.float64(0.36623), np.float64(1.09047)], [np.float64(0.85638), np.float64(-0.64835)], [np.float64(1.51516), np.float64(1.03383)], [np.float64(2.75455), np.float64(-0.31837)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (6,7) #2  vertices 0, 1, 2, 3, 4, 8 of a regular 15-gon  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.09241), np.float64(1.1302), np.float64(1.253), np.float64(1.38854), np.float64(2.10143), np.float64(2.20136)]
+  class sizes: [1, 1, 2, 2, 4, 2, 3]
+  distance-class matrix (1 = shortest):
+       5 7 6 3 4
+     5   5 7 6 4
+     7 5   5 7 2
+     6 7 5   5 1
+     3 6 7 5   3
+     4 4 2 1 3  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(1.38854), np.float64(0.0)], [np.float64(1.74499), np.float64(1.34201)], [np.float64(0.53945), np.float64(2.03101)], [np.float64(-0.43593), np.float64(1.04275)], [np.float64(0.69427), np.float64(1.04307)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (6,7) #3  piece of the triangular lattice  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.90294), np.float64(1.99706), np.float64(2.3717), np.float64(2.43042), np.float64(2.94769), np.float64(3.16361)]
+  class sizes: [3, 1, 2, 2, 2, 2, 3]
+  distance-class matrix (1 = shortest):
+       6 1 4 5 5
+     6   7 3 1 2
+     1 7   7 6 3
+     4 3 7   1 7
+     5 1 6 1   4
+     5 2 3 7 4  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(2.94769), np.float64(0.0)], [np.float64(-0.0542), np.float64(0.99853)], [np.float64(1.75147), np.float64(-1.59916)], [np.float64(2.30618), np.float64(-0.76711)], [np.float64(1.86157), np.float64(1.56253)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (6,7) #8  piece of the triangular lattice  catalog dim 2
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.73205), np.float64(2.0), np.float64(2.64575), np.float64(3.0), np.float64(3.4641), np.float64(3.60555)]
+  class sizes: [3, 4, 2, 2, 2, 1, 1]
+  distance-class matrix (1 = shortest):
+       2 3 1 2 2
+     2   4 3 5 2
+     3 4   5 7 1
+     1 3 5   1 4
+     2 5 7 1   6
+     2 2 1 4 6  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(0.0), np.float64(-1.73205)], [np.float64(-2.0), np.float64(0.0)], [np.float64(1.0), np.float64(0.0)], [np.float64(1.5), np.float64(0.86603)], [np.float64(-1.5), np.float64(-0.86603)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1
+=== (7,7) #4  vertices 0, 1, 2, 3, 4, 5, 7 of a regular 14-gon  catalog dim 1
+  distance values (shortest = 1): [np.float64(1.0), np.float64(1.40405), np.float64(2.30399), np.float64(2.64297), np.float64(3.337), np.float64(3.97754), np.float64(4.15029)]
+  class sizes: [1, 4, 3, 1, 5, 5, 2]
+  distance-class matrix (1 = shortest):
+       5 6 2 3 7 1
+     5   5 6 2 3 4
+     6 5   5 6 2 7
+     2 6 5   5 6 3
+     3 2 6 5   5 2
+     7 3 2 6 5   6
+     1 4 7 3 2 6  
+  sample coords (shortest distance 1): [[np.float64(0.0), np.float64(0.0)], [np.float64(3.337), np.float64(0.0)], [np.float64(2.37052), np.float64(-3.19398)], [np.float64(-0.40665), np.float64(-1.34387)], [np.float64(2.1685), np.float64(0.77843)], [np.float64(3.45402), np.float64(-2.30101)], [np.float64(0.7717), np.float64(0.63599)]]
+  symmetry of sample: trivial ; colouring automorphisms (colour-preserving): 1 ; (up to colour permutation): 1

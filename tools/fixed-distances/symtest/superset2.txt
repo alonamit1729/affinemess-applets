@@ -1,0 +1,24 @@
+(5,4) #474 [catalog sample] d=4: 1 extra points with no new distance, 8 with <=1 new distance
+    +1 point(s) -> 6 points, 5 distances, symmetry mirror: [[2.3615, -2.18766]]
+    +2 point(s) -> 7 points, 5 distances, symmetry mirror: [[-1.00005, 0.24686], [-1.66974, 0.9895]]
+(5,4) #475 [catalog sample] d=4: 0 extra points with no new distance, 6 with <=1 new distance
+    +1 point(s) -> 6 points, 5 distances, symmetry mirror: [[1.4191, -0.53987]]
+    +2 point(s) -> 7 points, 5 distances, symmetry mirror: [[-0.33534, -1.49891], [1.4191, -1.53987]]
+    +1 point(s) -> 6 points, 6 distances, symmetry mirror: [[0.59974, -0.04096]]
+(5,4) #477 [catalog sample] d=4: 1 extra points with no new distance, 8 with <=1 new distance
+    +1 point(s) -> 6 points, 5 distances, symmetry mirror: [[-2.34733, -3.0657]]
+    +1 point(s) -> 6 points, 5 distances, symmetry mirror: [[0.57735, 1.0]]
+    +2 point(s) -> 7 points, 5 distances, symmetry mirror: [[3.82864, -0.5], [2.96261, 0.0]]
+(6,4) #23 [catalog sample] d=4: 0 extra points with no new distance, 3 with <=1 new distance
+    +1 point(s) -> 7 points, 5 distances, symmetry mirror: [[1.60332, 0.95507]]
+    +1 point(s) -> 7 points, 5 distances, symmetry mirror: [[1.60332, -1.30864]]
+(6,6) #4 [catalog sample] d=6: 2 extra points with no new distance, 5 with <=1 new distance
+    +2 point(s) -> 8 points, 6 distances, symmetry mirror: [[-0.17531, 1.65841], [-1.04134, 1.15841]]
+(6,7) #1 [catalog sample] d=7: 0 extra points with no new distance, 3 with <=1 new distance
+    +1 point(s) -> 7 points, 8 distances, symmetry mirror: [[0.80714, -1.64714]]
+(6,7) #2 [catalog sample] d=7: 0 extra points with no new distance, 4 with <=1 new distance
+    +1 point(s) -> 7 points, 8 distances, symmetry mirror: [[0.79414, 0.80417]]
+(6,7) #3 [catalog sample] d=7: 0 extra points with no new distance, 2 with <=1 new distance
+    no symmetric superset with <=2 extra points and <=1 new distance
+(6,7) #8 [generic msolve sample] d=7: 0 extra points with no new distance, 5 with <=1 new distance
+    no symmetric superset with <=2 extra points and <=1 new distance

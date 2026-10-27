@@ -1,0 +1,31 @@
+{
+ "aaaaaaaabcb": {
+  "accepted": 277,
+  "discarded": 42,
+  "max_depth": 18,
+  "equation_used": [
+   164,
+   89,
+   0,
+   0,
+   0,
+   0,
+   24
+  ]
+ },
+ "ababababccb": {
+  "accepted": 344,
+  "discarded": 29,
+  "max_depth": 19,
+  "equation_used": [
+   162,
+   145,
+   0,
+   0,
+   9,
+   10,
+   0,
+   18
+  ]
+ }
+}

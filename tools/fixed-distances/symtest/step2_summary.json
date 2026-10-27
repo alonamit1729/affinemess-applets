@@ -1,0 +1,73 @@
+{
+ "4": {
+  "types": 25,
+  "verdicts": {
+   "mirror": 18,
+   "D_2": 1,
+   "trivial": 6
+  },
+  "bydim": {
+   "1": {
+    "mirror": 18,
+    "D_2": 1,
+    "trivial": 6
+   }
+  },
+  "mixed": [],
+  "nosamples": []
+ },
+ "5": {
+  "types": 407,
+  "verdicts": {
+   "trivial": 373,
+   "mirror": 33,
+   "D_2": 1
+  },
+  "bydim": {
+   "1": {
+    "trivial": 371,
+    "mirror": 27,
+    "D_2": 1
+   },
+   "2": {
+    "mirror": 6,
+    "trivial": 2
+   }
+  },
+  "mixed": [],
+  "nosamples": []
+ },
+ "6": {
+  "types": 244,
+  "verdicts": {
+   "trivial": 237,
+   "mirror": 7
+  },
+  "bydim": {
+   "2": {
+    "trivial": 237,
+    "mirror": 6
+   },
+   "3": {
+    "mirror": 1
+   }
+  },
+  "mixed": [],
+  "nosamples": []
+ },
+ "7": {
+  "types": 76,
+  "verdicts": {
+   "trivial": 75,
+   "mirror": 1
+  },
+  "bydim": {
+   "3": {
+    "trivial": 75,
+    "mirror": 1
+   }
+  },
+  "mixed": [],
+  "nosamples": []
+ }
+}

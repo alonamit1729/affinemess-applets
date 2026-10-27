@@ -1,0 +1,1125 @@
+{
+ "N": 11,
+ "scale": "100000000000000000000000000000000000000000000000000",
+ "words": 124,
+ "total_intervals": 126,
+ "max_depth": 1,
+ "certificates": [
+  {
+   "word": "00000000001",
+   "v": 1,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000000011",
+   "v": 2,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000000101",
+   "v": 2,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000000111",
+   "v": 3,
+   "degree_P": 24,
+   "degree_Q": 13,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000001001",
+   "v": 2,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000001011",
+   "v": 3,
+   "degree_P": 21,
+   "degree_Q": 11,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000001111",
+   "v": 4,
+   "degree_P": 28,
+   "degree_Q": 18,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000010001",
+   "v": 2,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000010011",
+   "v": 3,
+   "degree_P": 18,
+   "degree_Q": 7,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000010101",
+   "v": 3,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000010111",
+   "v": 4,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000011011",
+   "v": 4,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 2,
+   "max_depth": 1
+  },
+  {
+   "word": "00000011111",
+   "v": 5,
+   "degree_P": 30,
+   "degree_Q": 19,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000100001",
+   "v": 2,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000100011",
+   "v": 3,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000100101",
+   "v": 3,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000100111",
+   "v": 4,
+   "degree_P": 21,
+   "degree_Q": 11,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000101011",
+   "v": 4,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000101101",
+   "v": 4,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000101111",
+   "v": 5,
+   "degree_P": 25,
+   "degree_Q": 15,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000110011",
+   "v": 4,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000110111",
+   "v": 5,
+   "degree_P": 25,
+   "degree_Q": 15,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00000111111",
+   "v": 6,
+   "degree_P": 30,
+   "degree_Q": 20,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001000011",
+   "v": 3,
+   "degree_P": 16,
+   "degree_Q": 5,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001000101",
+   "v": 3,
+   "degree_P": 13,
+   "degree_Q": 3,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001000111",
+   "v": 4,
+   "degree_P": 21,
+   "degree_Q": 11,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001001001",
+   "v": 3,
+   "degree_P": 12,
+   "degree_Q": 1,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001001011",
+   "v": 4,
+   "degree_P": 17,
+   "degree_Q": 7,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001001101",
+   "v": 4,
+   "degree_P": 17,
+   "degree_Q": 7,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001001111",
+   "v": 5,
+   "degree_P": 24,
+   "degree_Q": 13,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001010011",
+   "v": 4,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001010101",
+   "v": 4,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001010111",
+   "v": 5,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001011011",
+   "v": 5,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001011101",
+   "v": 5,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001011111",
+   "v": 6,
+   "degree_P": 25,
+   "degree_Q": 15,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001100011",
+   "v": 4,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001100111",
+   "v": 5,
+   "degree_P": 20,
+   "degree_Q": 9,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001101011",
+   "v": 5,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001101111",
+   "v": 6,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 2,
+   "max_depth": 1
+  },
+  {
+   "word": "00001110111",
+   "v": 6,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00001111111",
+   "v": 7,
+   "degree_P": 28,
+   "degree_Q": 17,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010001001",
+   "v": 3,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010001011",
+   "v": 4,
+   "degree_P": 17,
+   "degree_Q": 7,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010001111",
+   "v": 5,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010010011",
+   "v": 4,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010010101",
+   "v": 4,
+   "degree_P": 13,
+   "degree_Q": 3,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010010111",
+   "v": 5,
+   "degree_P": 19,
+   "degree_Q": 9,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010011001",
+   "v": 4,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010011011",
+   "v": 5,
+   "degree_P": 19,
+   "degree_Q": 9,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010011101",
+   "v": 5,
+   "degree_P": 19,
+   "degree_Q": 9,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010011111",
+   "v": 6,
+   "degree_P": 25,
+   "degree_Q": 15,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010100011",
+   "v": 4,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010100101",
+   "v": 4,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010100111",
+   "v": 5,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010101011",
+   "v": 5,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010101101",
+   "v": 5,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010101111",
+   "v": 6,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010110011",
+   "v": 5,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010110111",
+   "v": 6,
+   "degree_P": 19,
+   "degree_Q": 9,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010111011",
+   "v": 6,
+   "degree_P": 19,
+   "degree_Q": 9,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010111101",
+   "v": 6,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00010111111",
+   "v": 7,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011000111",
+   "v": 5,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011001011",
+   "v": 5,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011001111",
+   "v": 6,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011010111",
+   "v": 6,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011011011",
+   "v": 6,
+   "degree_P": 18,
+   "degree_Q": 7,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011011111",
+   "v": 7,
+   "degree_P": 21,
+   "degree_Q": 11,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011100111",
+   "v": 6,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011101111",
+   "v": 7,
+   "degree_P": 21,
+   "degree_Q": 11,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00011111111",
+   "v": 8,
+   "degree_P": 24,
+   "degree_Q": 14,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100100101",
+   "v": 4,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100100111",
+   "v": 5,
+   "degree_P": 18,
+   "degree_Q": 7,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100101011",
+   "v": 5,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100101101",
+   "v": 5,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100101111",
+   "v": 6,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100110011",
+   "v": 5,
+   "degree_P": 14,
+   "degree_Q": 3,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100110111",
+   "v": 6,
+   "degree_P": 19,
+   "degree_Q": 9,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00100111111",
+   "v": 7,
+   "degree_P": 24,
+   "degree_Q": 13,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101001011",
+   "v": 5,
+   "degree_P": 13,
+   "degree_Q": 3,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101001111",
+   "v": 6,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101010011",
+   "v": 5,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101010101",
+   "v": 5,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101010111",
+   "v": 6,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101011011",
+   "v": 6,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101011101",
+   "v": 6,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101011111",
+   "v": 7,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101100111",
+   "v": 6,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101101011",
+   "v": 6,
+   "degree_P": 13,
+   "degree_Q": 3,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101101101",
+   "v": 6,
+   "degree_P": 14,
+   "degree_Q": 3,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101101111",
+   "v": 7,
+   "degree_P": 17,
+   "degree_Q": 7,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101110011",
+   "v": 6,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101110111",
+   "v": 7,
+   "degree_P": 17,
+   "degree_Q": 7,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101111011",
+   "v": 7,
+   "degree_P": 17,
+   "degree_Q": 7,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101111101",
+   "v": 7,
+   "degree_P": 20,
+   "degree_Q": 10,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00101111111",
+   "v": 8,
+   "degree_P": 21,
+   "degree_Q": 11,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110011011",
+   "v": 6,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110011111",
+   "v": 7,
+   "degree_P": 20,
+   "degree_Q": 9,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110101011",
+   "v": 6,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110101111",
+   "v": 7,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110110111",
+   "v": 7,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110111011",
+   "v": 7,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00110111111",
+   "v": 8,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00111001111",
+   "v": 7,
+   "degree_P": 16,
+   "degree_Q": 5,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00111010111",
+   "v": 7,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00111011111",
+   "v": 8,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00111101111",
+   "v": 8,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "00111111111",
+   "v": 9,
+   "degree_P": 18,
+   "degree_Q": 7,
+   "removed_z1": 1,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01010101011",
+   "v": 6,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01010101111",
+   "v": 7,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01010110111",
+   "v": 7,
+   "degree_P": 13,
+   "degree_Q": 3,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01010111111",
+   "v": 8,
+   "degree_P": 18,
+   "degree_Q": 8,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01011010111",
+   "v": 7,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01011011011",
+   "v": 7,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01011011111",
+   "v": 8,
+   "degree_P": 15,
+   "degree_Q": 5,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01011101111",
+   "v": 8,
+   "degree_P": 13,
+   "degree_Q": 3,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01011111111",
+   "v": 9,
+   "degree_P": 16,
+   "degree_Q": 6,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01101101111",
+   "v": 8,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01101110111",
+   "v": 8,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01101111111",
+   "v": 9,
+   "degree_P": 14,
+   "degree_Q": 4,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01110111111",
+   "v": 9,
+   "degree_P": 12,
+   "degree_Q": 2,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01111011111",
+   "v": 9,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  },
+  {
+   "word": "01111111111",
+   "v": 10,
+   "degree_P": 10,
+   "degree_Q": 0,
+   "removed_z1": 0,
+   "intervals": 1,
+   "max_depth": 0
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+5,4:473 e = 0 :
+    subset of (6,4) #24 [family, dim 1, symmetry C_3] deleting 1 point(s) (0,) -> 4 distances; label: 3-fold rotational symmetry: 2 regular 3-gons (free radii and
+    subset of (7,6) #61 [family, dim 1, symmetry C_3] deleting 2 point(s) (0, 1) -> 4 distances; label: 3-fold rotational symmetry: the centre + 2 regular 3-gons (f
+5,4:474 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+5,4:475 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+5,4:477 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+5,4:491 e = 0 :
+    subset of (6,4) #26 [family, dim 1, symmetry D_3] deleting 1 point(s) (0,) -> 4 distances; label: 3-fold rotational symmetry: 2 regular 3-gons (free radii and
+    subset of (7,5) #17 [family, dim 1, symmetry mirror] deleting 2 point(s) (0, 5) -> 4 distances; label: piece of the triangular lattice
+    subset of (7,5) #18 [family, dim 1, symmetry D_3] deleting 2 point(s) (0, 1) -> 4 distances; label: 3-fold rotational symmetry: the centre + 2 regular 3-gons (f
+5,4:492 e = 0 :
+    subset of (6,4) #24 [family, dim 1, symmetry C_3] deleting 1 point(s) (3,) -> 4 distances; label: 3-fold rotational symmetry: 2 regular 3-gons (free radii and
+    subset of (7,6) #61 [family, dim 1, symmetry C_3] deleting 2 point(s) (0, 4) -> 4 distances; label: 3-fold rotational symmetry: the centre + 2 regular 3-gons (f
+6,4:23 e = -3 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+6,6:3 e = -1 :
+    subset of (7,6) #58 [family, dim 1, symmetry mirror] deleting 1 point(s) (1,) -> 6 distances; label: vertices 0, 1, 2, 3, 4, 5, 6 of a regular 12-gon
+    subset of (8,7) #4 [family, dim 1, symmetry mirror] deleting 2 point(s) (0, 2) -> 6 distances; label: vertices 0, 1, 2, 3, 4, 5, 6, 7 of a regular 14-gon
+6,6:4 e = -1 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+6,7:0 e = 0 :
+    subset of (8,7) #4 [family, dim 1, symmetry mirror] deleting 2 point(s) (1, 2) -> 7 distances; label: vertices 0, 1, 2, 3, 4, 5, 6, 7 of a regular 14-gon
+6,7:1 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+6,7:2 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+6,7:3 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+6,7:8 e = 0 :
+    not found as a 1-, 2- or 3-point deletion of a symmetric catalog configuration with n<=9
+7,7:4 e = -4 :
+    subset of (8,7) #4 [family, dim 1, symmetry mirror] deleting 1 point(s) (1,) -> 7 distances; label: vertices 0, 1, 2, 3, 4, 5, 6, 7 of a regular 14-gon

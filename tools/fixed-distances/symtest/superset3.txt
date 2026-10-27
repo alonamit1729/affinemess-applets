@@ -1,0 +1,6 @@
+(6,7) #3 [catalog sample] d=7: 6 candidate extra points with <=2 new distances
+    +2 point(s) -> 8 points, 9 distances, symmetry mirror: [[-0.0542, -0.99853], [1.75147, 1.59916]]
+    +2 point(s) -> 8 points, 9 distances, symmetry mirror: [[-0.0542, -0.99853], [0.91899, 1.22854]]
+    +2 point(s) -> 8 points, 9 distances, symmetry mirror: [[0.91899, 1.22854], [0.83441, -1.20041]]
+(6,7) #8 [generic msolve sample] d=7: 16 candidate extra points with <=2 new distances
+    +3 point(s) -> 9 points, 9 distances, symmetry C_3: [[0.23827, 0.9712], [1.44874, 1.0226], [2.82044, -0.69195]]
