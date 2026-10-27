@@ -1,0 +1,3 @@
+n=10: 225 pattern classes (224 hashes) from 262 source sets
+by number of distances: {5: 19, 6: 206}
+{'mixed': 205, 'circular only': 15, 'catalog only': 1, 'lattice enumeration only': 3, 'pentagon endpoints only': 1}
