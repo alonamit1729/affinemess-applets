@@ -127,27 +127,44 @@ def _work_parents(parents):
     return list(res)
 
 
-def generate_raw(n, Lprev, tables, Lsets, workers, log):
+def generate_raw(n, Lprev, tables, Lsets, workers, log, part_file=None):
+    """part_file: checkpoint of the generation ({'done': chunks processed, 'raw': [...]}), written every 50 chunks
+    (atomically); chunks are processed in order so a resumed run skips the first `done` chunks."""
     parents = Lprev
     t0 = time.time()
     raw = set()
     chunks = [parents[i:i + 8] for i in range(0, len(parents), 8)]
     done = 0
+    if part_file and os.path.exists(part_file):
+        with open(part_file) as f:
+            part = json.load(f)
+        done = part['done']; raw = set(tuple(c) for c in part['raw'])
+        log(f'  level {n}: resuming raw generation at chunk {done}/{len(chunks)} with {len(raw)} raw')
+
+    def ckpt():
+        if part_file:
+            tmp = part_file + '.tmp'
+            with open(tmp, 'w') as f:
+                json.dump({'done': done, 'raw': [list(c) for c in raw]}, f)
+            os.replace(tmp, part_file)
+    todo = chunks[done:]
     if workers > 1:
         with Pool(workers, initializer=_init_worker, initargs=(n, tables, Lsets)) as pool:
-            for res in pool.imap_unordered(_work_parents, chunks):
+            for res in pool.imap(_work_parents, todo):
                 raw.update(res)
                 done += 1
                 if done % 50 == 0:
-                    log(f'  level {n}: {done}/{len(chunks)} parent chunks, {len(raw)} raw so far, {time.time()-t0:.0f}s')
+                    log(f'  level {n}: {done}/{len(chunks)} parent chunks, {len(raw)} raw so far, {time.time()-t0:.0f}s'); ckpt()
     else:
         _init_worker(n, tables, Lsets)
-        for ch in chunks:
+        for ch in todo:
             raw.update(_work_parents(ch))
             done += 1
             if done % 50 == 0:
-                log(f'  level {n}: {done}/{len(chunks)} parent chunks, {len(raw)} raw so far, {time.time()-t0:.0f}s')
+                log(f'  level {n}: {done}/{len(chunks)} parent chunks, {len(raw)} raw so far, {time.time()-t0:.0f}s'); ckpt()
     log(f'  level {n}: raw generation done, {len(raw)} candidates, {time.time()-t0:.0f}s')
+    if part_file and os.path.exists(part_file):
+        os.remove(part_file)
     return sorted(raw)
 
 
@@ -273,7 +290,7 @@ def main():
                         tables[j] = lookup_table(j, set(L[j]))
                     else:
                         Lsets[j] = set(L[j])
-                raw = generate_raw(n, L[n - 1], tables, Lsets, args.workers, log)
+                raw = generate_raw(n, L[n - 1], tables, Lsets, args.workers, log, part_file=os.path.join(args.out, f'rawpart{n}.json'))
             save_json(rawfn, {'n': n, 'count': len(raw), 'patterns': [list(c) for c in raw]})
         if args.gen_only and n == args.to:
             log(f'level {n}: raw {len(raw)} (gen-only, stopping)')
