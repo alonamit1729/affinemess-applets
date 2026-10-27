@@ -5,6 +5,7 @@
 <title>Partial sums of tan n · affine·mess</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="quora/katex/katex.min.css" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css'">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* am-kit v1 BEGIN */
@@ -90,7 +91,7 @@ input[type=range] { accent-color:var(--accent); }
 
 /* ---- this applet ---- */
 :root { --curve:#35598F; }
-.am-about { width:min(560px, 100%); }
+.am-about { width:min(620px, 100%); }
 .am-about .jump { font-family:var(--mono); font-size:13px; color:var(--accent-deep); cursor:pointer; text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:3px; white-space:nowrap; }
 .am-about .jump:hover { color:var(--accent); text-decoration-color:var(--accent); }
 .am-about .m { font-style:italic; white-space:nowrap; }
@@ -100,7 +101,15 @@ input[type=range] { accent-color:var(--accent); }
 .am-about th { font-weight:400; color:var(--ink-faint); font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
 .am-about td:first-child, .am-about th:first-child { text-align:left; }
 
-.formula { font-size:15px; color:var(--ink-soft); white-space:nowrap; }
+.formula { font-size:15px; color:var(--ink); white-space:nowrap; }
+.formula .katex { font-size:1.12em; }
+#readout { font-family:var(--serif); font-size:14.5px; color:var(--ink); padding:3px 9px; }
+#readout .item { display:inline-block; white-space:nowrap; margin-right:16px; }
+#readout .item:last-child { margin-right:0; }
+#readout .katex { font-size:1.02em; }
+.am-about .katex { font-size:1.06em; }
+.am-about .tex-block { display:block; margin:6px 0 14px; overflow-x:auto; overflow-y:hidden; }
+.am-about .tex-block .katex-display { margin:0; }
 .formula b { font-weight:500; font-style:italic; color:var(--ink); }
 .formula i { color:var(--ink); }
 .rng { display:inline-flex; align-items:center; gap:6px; }
@@ -135,7 +144,7 @@ select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:point
 <div class="am-app">
   <header class="am-bar">
     <a class="am-home" href="https://affinemess.com/#applets/tangent-sums" target="_top">affine<span class="sep">·</span>mess</a>
-    <span class="formula"><b>f</b>(<i>N</i>) = Σ<sub style="font-size:.7em"><i>k</i>≤<i>N</i></sub> tan <i>k</i></span>
+    <span class="formula tex" data-tex="f(N)=\sum_{k\le N}\tan k"><i>f</i>(<i>N</i>) = Σ<sub style="font-size:.7em"><i>k</i>≤<i>N</i></sub> tan <i>k</i></span>
     <span class="rng">
       <span class="am-label">N</span>
       <input class="am-input" id="inA" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Range start A">
@@ -148,17 +157,10 @@ select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:point
       <button class="am-btn" id="zout" title="Zoom out (−)">Out</button>
       <button class="am-btn" id="full" title="Show 1 to 10^8">All</button>
     </span>
-    <button class="am-btn" id="ext" title="Compute f up to 10^9 (about 60 MB of memory, tens of seconds)">Extend to 10⁹</button>
+    <button class="am-btn" id="ext" title="Compute f up to 10^10 (about 45 MB of memory; a few minutes on a laptop)">Extend to 10¹⁰</button>
     <select class="am-input" id="jump" aria-label="Jump to a landmark">
       <option value="">Jump to…</option>
     </select>
-    <span class="yctl">
-      <span class="am-label">Y</span>
-      <span class="am-seg" role="group" aria-label="Vertical scale">
-        <button class="am-btn" id="yfull" aria-pressed="true" title="Fit every value in view">Fit all</button>
-        <button class="am-btn" id="ytrim" aria-pressed="false" title="Ignore the top and bottom 1% of columns">Trim</button>
-      </span>
-    </span>
     <span class="am-spacer"></span>
     <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
   </header>
@@ -170,15 +172,15 @@ select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:point
     <aside class="am-about" id="am-about" aria-hidden="true">
       <button class="am-btn am-close">Close</button>
       <h2>The partial sums of tan&nbsp;<i>n</i></h2>
-      <p>The graph of <span class="m">f(N) = tan 1 + tan 2 + ⋯ + tan N</span> for 1&nbsp;≤&nbsp;N&nbsp;≤&nbsp;10<sup>8</sup>, or up to 10<sup>9</sup> after <em>Extend to 10<sup>9</sup></em> (asking for any range past 10<sup>8</sup> extends automatically). Drag to pan; scroll or pinch to zoom; double-click to zoom in (shift-double-click to zoom out); shift-drag across a stretch of N to zoom into it. You can also type the range: entries like <code>1e6</code>, <code>10^7</code> or <code>2,500,000</code> work. The vertical scale always refits to what is on screen.</p>
+      <p>The graph of <span class="tex" data-tex="f(N)=\tan 1+\tan 2+\cdots+\tan N">f(N) = tan 1 + tan 2 + ⋯ + tan N</span> for <span class="tex" data-tex="1\le N\le 10^8">1 ≤ N ≤ 10^8</span>, or up to <span class="tex" data-tex="10^{10}">10^10</span> after <em>Extend to 10<sup>10</sup></em> (asking for any range past <span class="tex" data-tex="10^8">10^8</span> extends automatically). Drag to pan; scroll or pinch to zoom; double-click to zoom in (shift-double-click to zoom out); shift-drag across a stretch of <span class="tex" data-tex="N">N</span> to zoom into it. You can also type the range: entries like <code>1e6</code>, <code>10^7</code> or <code>2,500,000</code> work. The vertical scale always refits to what is on screen.</p>
 
-      <h3>Why it looks self-similar</h3>
-      <p>Since π is irrational, <span class="m">n mod π</span> is equidistributed, so the values tan&nbsp;<i>n</i> are distributed like the tangent of a uniformly random angle: a standard <em>Cauchy</em> distribution. A sum of <i>N</i> independent Cauchy variables is again Cauchy, scaled by <i>N</i>: no averaging out, no √<i>N</i>. So, heuristically, <i>f</i> behaves like a Cauchy process, which is self-similar with exponent 1. Stretch the horizontal axis by λ and the typical vertical size grows by λ as well, which is why an auto-scaled window looks alike at every scale. It is only a heuristic: the terms are deterministic and highly correlated, and the correlations are exactly what makes the picture interesting.</p>
+      <h3>A first heuristic</h3>
+      <p>Since <span class="tex" data-tex="\pi">π</span> is irrational, <span class="tex" data-tex="n \bmod \pi">n mod π</span> is equidistributed, so the values <span class="tex" data-tex="\tan n">tan n</span> are distributed like the tangent of a uniformly random angle: a standard <em>Cauchy</em> distribution. A sum of <span class="tex" data-tex="N">N</span> independent Cauchy variables is again Cauchy, scaled by <span class="tex" data-tex="N">N</span>: no averaging out, no <span class="tex" data-tex="\sqrt N">√N</span>. Stretch the horizontal axis by <span class="tex" data-tex="\lambda">λ</span> and the typical vertical size grows by <span class="tex" data-tex="\lambda">λ</span> as well, which is why an auto-scaled window looks alike at every scale. The terms are not independent, though, and the precise picture (below) comes from their correlations.</p>
 
       <h3>Where the cliffs come from</h3>
-      <p>|tan&nbsp;<i>n</i>| is large when <i>n</i> is close to an odd multiple of π/2, that is, when <span class="m">2n/(2m+1)</span> is an unusually good approximation of π. The record values of |tan&nbsp;<i>n</i>| line up with convergents and semiconvergents of π that have odd denominators:</p>
+      <p><span class="tex" data-tex="|\tan n|">|tan n|</span> is large when <span class="tex" data-tex="n">n</span> is close to an odd multiple of <span class="tex" data-tex="\pi/2">π/2</span>, that is, when <span class="tex" data-tex="2n/(2m+1)">2n/(2m+1)</span> is an unusually good approximation of <span class="tex" data-tex="\pi">π</span>. The record values of <span class="tex" data-tex="|\tan n|">|tan n|</span> come from convergents and semiconvergents of <span class="tex" data-tex="\pi">π</span>:</p>
       <table>
-        <tr><th>n</th><th>tan n</th><th>2n / (2m+1)</th></tr>
+        <tr><th><span class="tex" data-tex="n">n</span></th><th><span class="tex" data-tex="\tan n">tan n</span></th><th><span class="tex" data-tex="2n/(2m+1)">2n/(2m+1)</span></th></tr>
         <tr><td><span class="jump" data-a="1" data-b="40">11</span></td><td>−225.95</td><td>22 / 7</td></tr>
         <tr><td><span class="jump" data-a="52100" data-b="52250">52,174</span></td><td>−181,570</td><td>104,348 / 33,215</td></tr>
         <tr><td><span class="jump" data-a="260440" data-b="260590">260,515</span></td><td>383,611</td><td>521,030 / 165,849</td></tr>
@@ -186,21 +188,52 @@ select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:point
         <tr><td><span class="jump" data-a="42781530" data-b="42781680">42,781,604</span></td><td>−85,369,290</td><td>85,563,208 / 27,235,615</td></tr>
         <tr><td><span class="jump" data-a="122925390" data-b="122925540">122,925,461</span></td><td>326,900,724</td><td>245,850,922 / 78,256,779</td></tr>
         <tr><td><span class="jump" data-a="534483375" data-b="534483525">534,483,448</span></td><td>1,914,547,469</td><td>1,068,966,896 / 340,262,731</td></tr>
+        <tr><td><span class="jump" data-a="3083975150" data-b="3083975300">3,083,975,227</span></td><td>13,356,993,780</td><td>6,167,950,454 / 1,963,319,607</td></tr>
       </table>
-      <p>The last two lie beyond 10<sup>8</sup>; clicking them extends the range.</p>
+      <p>Rows past <span class="tex" data-tex="10^8">10^8</span> extend the range when clicked.</p>
 
       <h3>Staircases</h3>
-      <p>Because 355 ≈ 113π (off by 3.0·10<sup>−5</sup>), tan(<i>n</i>+355) is almost tan&nbsp;<i>n</i>, with the angle nudged slightly toward the pole. Starting from <i>n</i> = 344 the terms at 344, 699, 1054, … all sit just below a pole, with values 227.5, 229.1, 230.7, … creeping upward, and the partial sums climb a long staircase. After 146 steps, at <i>n</i> = 52,174, the angle crosses the pole, tan flips to −181,570, and the whole climb is undone in a single term. <span class="jump" data-a="1" data-b="60000">See it on [1, 60,000]</span>.</p>
-      <p>The same thing happens one level up with 5,419,351 ≈ 1,725,033π: large positive terms at 4,846,147, 10,265,498, …, 37,362,253 build the climb across the full range, and the term at 42,781,604 brings it down. <span class="jump" data-a="1" data-b="100000000">See [1, 10<sup>8</sup>]</span>. Zoom far in anywhere and the near-periods 22 ≈ 7π and 355 ≈ 113π show up as approximate repetitions: <span class="jump" data-a="1" data-b="400">[1, 400]</span>.</p>
+      <p>Because <span class="tex" data-tex="355\approx 113\pi">355 ≈ 113π</span> (off by <span class="tex" data-tex="3.0\cdot 10^{-5}">3.0·10^−5</span>), <span class="tex" data-tex="\tan(n+355)">tan(n+355)</span> is almost <span class="tex" data-tex="\tan n">tan n</span>, with the angle nudged slightly toward the pole. Starting from <span class="tex" data-tex="n=344">n = 344</span> the terms at 344, 699, 1054, … all sit just below a pole, with values 227.5, 229.1, 230.7, … creeping upward, and the partial sums climb a long staircase. After 146 steps, at <span class="tex" data-tex="n=52{,}174">n = 52,174</span>, the angle crosses the pole, the tangent flips to <span class="tex" data-tex="-181{,}570">−181,570</span>, and the climb is undone in a single term. <span class="jump" data-a="1" data-b="60000">See it on [1, 60,000]</span>. Zoom far in anywhere and the near-periods <span class="tex" data-tex="22\approx 7\pi">22 ≈ 7π</span> and <span class="tex" data-tex="355\approx 113\pi">355 ≈ 113π</span> show up as approximate repetitions: <span class="jump" data-a="1" data-b="400">[1, 400]</span>.</p>
+
+      <h3>Self-similarity, made precise</h3>
+      <p>Since <span class="tex" data-tex="\tan x=-\cot(x+\tfrac{\pi}{2})">tan x = −cot(x + π/2)</span>, the function <span class="tex" data-tex="f">f</span> belongs to the two-parameter family of cotangent sums over a rotation:</p>
+      <span class="tex tex-block" data-tex="S_{\alpha,\beta}(N)=\sum_{n\le N}\cot \pi(n\alpha+\beta),\qquad f=-S_{1/\pi,\,1/2}.">S_{α,β}(N) = Σ_{n≤N} cot π(nα+β),  f = −S_{1/π,1/2}.</span>
+      <p>The key identity is that for odd <span class="tex" data-tex="q">q</span></p>
+      <span class="tex tex-block" data-tex="\sum_{j=0}^{q-1}\tan\Bigl(x+\frac{j\pi}{q}\Bigr)=q\tan qx .">Σ_{j&lt;q} tan(x + jπ/q) = q tan qx.</span>
+      <p>Take <span class="tex" data-tex="q=355">q = 355</span> and <span class="tex" data-tex="\varepsilon=355-113\pi\approx 3.0144\cdot10^{-5}">ε = 355 − 113π ≈ 3.0144·10^−5</span>. Over any 355 consecutive integers, <span class="tex" data-tex="n/\pi">n/π</span> runs through the residues <span class="tex" data-tex="j/355">j/355</span> up to a slow drift, so every block of 355 terms sums to</p>
+      <span class="tex tex-block" data-tex="f(m+355)-f(m)\approx 355\,\tan\bigl(\varepsilon\,(m+178)\bigr),">f(m+355) − f(m) ≈ 355 tan(ε(m+178)),</span>
+      <p>with relative error about <span class="tex" data-tex="1/292">1/292</span> (292 is the partial quotient of <span class="tex" data-tex="\pi">π</span> that follows 355/113). On scales beyond 355, then, <span class="tex" data-tex="f">f</span> is a Riemann sum of a tangent with a tiny step. Summing it, and treating the terms next to each pole separately with <span class="tex" data-tex="\sum_{n\in\mathbb Z}\frac{1}{n+\theta}=\pi\cot\pi\theta">Σ 1/(n+θ) = π cot πθ</span>, gives</p>
+      <span class="tex tex-block" data-tex="f(N)\approx C-\frac{1}{\varepsilon}\log\bigl|2\sin\varepsilon(N-N_0)\bigr| \;+\; \frac{\pi}{\varepsilon}\sum_{k:\,N_k&lt;N}\cot\pi(\theta_0+k\rho),">f(N) ≈ C − (1/ε) log|2 sin ε(N−N0)| + (π/ε) Σ_{N_k&lt;N} cot π(θ0 + kρ),</span>
+      <p>where the poles are at <span class="tex" data-tex="N_k=N_0+k\pi/\varepsilon">N_k = N_0 + kπ/ε</span> with <span class="tex" data-tex="N_0\approx 52{,}109.1">N_0 ≈ 52,109.1</span> and period <span class="tex" data-tex="\pi/\varepsilon\approx 104{,}218.28">π/ε ≈ 104,218.28</span>, <span class="tex" data-tex="\theta_0\approx 0.8173">θ_0 ≈ 0.8173</span>, and <span class="tex" data-tex="\rho=G^5(1/\pi)=0.634591\ldots">ρ = G⁵(1/π) = 0.634591…</span> is the fifth iterate of the Gauss map <span class="tex" data-tex="G(x)=\{1/x\}">G(x) = {1/x}</span>. The logarithm draws the arcs that rise into each cusp; the cotangent term is the jump at each pole. Numerically the fit is very good: at all 959 poles below <span class="tex" data-tex="10^8">10^8</span> the jumps match <span class="tex" data-tex="\tfrac{\pi}{\varepsilon}\cot\pi\theta_k">(π/ε) cot πθ_k</span> to within 133 on average (a typical jump is about 485,000), the phases <span class="tex" data-tex="\theta_k">θ_k</span> advance by exactly <span class="tex" data-tex="\rho">ρ</span>, and what remains of <span class="tex" data-tex="f">f</span> is constant to within a standard deviation of 280.</p>
+      <p>The jumps themselves form <span class="tex" data-tex="S_{\rho,\theta_0}">S_{ρ,θ0}</span>, a sum from the same family. So the graph on <span class="tex" data-tex="[1,10^8]">[1, 10^8]</span> is the graph of <span class="tex" data-tex="S_{\rho,\theta_0}">S_{ρ,θ0}</span> on <span class="tex" data-tex="[1,960]">[1, 960]</span>, magnified by <span class="tex" data-tex="\lambda=\pi/\varepsilon\approx10^5">λ = π/ε ≈ 10^5</span> in both directions, with logarithmic arcs attached. Zooming out by <span class="tex" data-tex="\lambda">λ</span> maps the family to itself and moves the rotation number along the Gauss map, <span class="tex" data-tex="1/\pi\mapsto G^5(1/\pi)">1/π ↦ G⁵(1/π)</span>: the partial quotients 3, 7, 15, 1, 292 have been used up, and the 292 went into the smooth arcs.</p>
+      <p>The next level repeats the pattern. <span class="tex" data-tex="\rho=[0;1,1,1,2,1,3,1,14,\ldots]">ρ = [0;1,1,1,2,1,3,1,14,…]</span> has the convergent 33/52 followed by the partial quotient 14, so every 52nd pole has <span class="tex" data-tex="\theta">θ</span> creeping toward 0. That gives a staircase of cliffs at 4,846,147, 10,265,498, …, 37,362,253, undone at 42,781,604, where <span class="tex" data-tex="\theta\approx0.9996">θ ≈ 0.9996</span>. Here <span class="tex" data-tex="52\times104{,}218\approx 5{,}419{,}351\approx 1{,}725{,}033\,\pi">52 × 104,218 ≈ 5,419,351 ≈ 1,725,033π</span> plays the role of 355, and the 14 in <span class="tex" data-tex="\pi=[3;7,15,1,292,1,1,1,2,1,3,1,14,\ldots]">π = [3;7,15,1,292,1,1,1,2,1,3,1,14,…]</span> plays the role of 292. <span class="jump" data-a="1" data-b="100000000">See [1, 10<sup>8</sup>]</span>. Length and height scale by the same factor at every level, which is the precise content of the heuristic above.</p>
+
+      <h3>When is it exactly self-similar?</h3>
+      <p>Exact self-similarity needs the renormalization to come back to where it started, that is, a periodic continued fraction: a quadratic irrational. For the golden rotation <span class="tex" data-tex="\alpha=(\sqrt5-1)/2">α = (√5−1)/2</span>, Knill proved that the rescaled cotangent sums converge, along Fibonacci scales, to a limit function with <span class="tex" data-tex="s(\alpha x)=-\alpha\,s(x)">s(αx) = −α s(x)</span>, a genuinely self-similar graph. The same happens for <span class="tex" data-tex="g(N)=\sum_{n\le N}\tan(\pi n\alpha)">g(N) = Σ tan(πnα)</span>: the curves <span class="tex" data-tex="t\mapsto g(\lfloor tF_{3k}\rfloor)/F_{3k}">t ↦ g(⌊tF_{3k}⌋)/F_{3k}</span> converge to <span class="tex" data-tex="(-1)^kH(t)">(−1)^k H(t)</span>, with differences shrinking by <span class="tex" data-tex="\varphi^3\approx4.24">φ³ ≈ 4.24</span> per step, and therefore <span class="tex" data-tex="H(\alpha^3t)=-\alpha^3H(t)">H(α³t) = −α³H(t)</span>. Since <span class="tex" data-tex="\pi">π</span> is transcendental its continued fraction never repeats, and the same comparison at the scales 355, 103,993, 104,348, … gives differences of order 1 that never settle. There is no single limiting shape, only a sequence of renormalized siblings.</p>
+
+      <h3>Is the graph a fractal?</h3>
+      <p>Not in the sense of dimension. Box counting on <span class="tex" data-tex="[1,10^8]">[1, 10^8]</span> gives local slopes of 1.04 to 1.06, the signature of a count growing like <span class="tex" data-tex="\delta^{-1}\log(1/\delta)">δ^{−1} log(1/δ)</span>, and a random walk with Cauchy steps behaves the same way. This matches the heuristic: by Blumenthal and Getoor the graph of an <span class="tex" data-tex="\alpha">α</span>-stable process has Hausdorff dimension <span class="tex" data-tex="\max(1,\,2-1/\alpha)">max(1, 2 − 1/α)</span>, which is 1 for the Cauchy case <span class="tex" data-tex="\alpha=1">α = 1</span>. What the graph has instead is structure at infinitely many levels, the same scaling in both directions, and a total variation that diverges only logarithmically.</p>
+
+      <h3>What is proved</h3>
+      <p>Each renormalization step can be checked as above; it is clean when the next partial quotient is large and only approximate when it is small. For almost every <span class="tex" data-tex="\alpha">α</span>, with a random phase, Sinai and Ulcigrai proved that <span class="tex" data-tex="S_N/N">S_N/N</span> has a limiting distribution: a statistical form of self-similarity, driven by the ergodicity of the Gauss map. For <span class="tex" data-tex="\pi">π</span> itself such statements would need its continued fraction to be typical, which is wide open; it is not even known whether the partial quotients of <span class="tex" data-tex="\pi">π</span> are bounded.</p>
+
       <h3>Beyond 10<sup>8</sup></h3>
-      <p>Between 10<sup>8</sup> and 10<sup>9</sup> the picture is dominated by two convergents of π, and this time both terms are positive: tan&nbsp;122,925,461 ≈ 3.27·10<sup>8</sup> and tan&nbsp;534,483,448 ≈ 1.91·10<sup>9</sup>, a single term more than three times its own index. They lift the curve to <span class="m">f(10<sup>9</sup>) ≈ 1.626·10<sup>9</sup></span>. <span class="jump" data-a="1" data-b="1000000000">See [1, 10<sup>9</sup>]</span>.</p>
+      <p>Between <span class="tex" data-tex="10^8">10^8</span> and <span class="tex" data-tex="10^9">10^9</span> two convergents of <span class="tex" data-tex="\pi">π</span> dominate, and this time both terms are positive: <span class="tex" data-tex="\tan 122{,}925{,}461\approx3.27\cdot10^8">tan 122,925,461 ≈ 3.27·10^8</span> and <span class="tex" data-tex="\tan 534{,}483{,}448\approx1.91\cdot10^9">tan 534,483,448 ≈ 1.91·10^9</span>, lifting the curve to <span class="tex" data-tex="f(10^9)\approx1.626\cdot10^9">f(10^9) ≈ 1.626·10^9</span>. <span class="jump" data-a="1" data-b="1000000000">See [1, 10<sup>9</sup>]</span>.</p>
+      <p>The next convergent, 6,167,950,454 / 1,963,319,607, produces the largest term below <span class="tex" data-tex="10^{10}">10^10</span>: <span class="tex" data-tex="\tan 3{,}083{,}975{,}227\approx 1.336\cdot10^{10}">tan 3,083,975,227 ≈ 1.336·10^10</span>, more than four times its own index. A single step lifts <span class="tex" data-tex="f">f</span> from about <span class="tex" data-tex="1.5\cdot10^9">1.5·10^9</span> to <span class="tex" data-tex="1.48\cdot10^{10}">1.48·10^10</span>, and the rest of the range, with cliffs at 5,633,467,006 (<span class="tex" data-tex="-2.68\cdot10^9">−2.68·10^9</span>) and 9,251,925,681 (<span class="tex" data-tex="4.45\cdot10^9">4.45·10^9</span>), ends at <span class="tex" data-tex="f(10^{10})\approx1.716\cdot10^{10}">f(10^10) ≈ 1.716·10^10</span>. <span class="jump" data-a="1" data-b="10000000000">See [1, 10<sup>10</sup>]</span>.</p>
 
       <h3>How big can tan n be?</h3>
-      <p>If |<i>n</i> − (2<i>m</i>+1)π/2| = δ then |tan&nbsp;<i>n</i>| ≈ 1/δ, so the question is how well π can be approximated by rationals. With the irrationality measure bound μ(π) ≤ 7.103 (Zeilberger and Zudilin, 2020), one gets |tan&nbsp;<i>n</i>| &lt; <i>n</i><sup>6.11</sup> for all large <i>n</i>. If, as expected, μ(π) = 2, then |tan&nbsp;<i>n</i>| = <i>O</i>(<i>n</i><sup>1+ε</sup>), consistent with the table above.</p>
+      <p>If <span class="tex" data-tex="|n-(2m+1)\pi/2|=\delta">|n − (2m+1)π/2| = δ</span> then <span class="tex" data-tex="|\tan n|\approx1/\delta">|tan n| ≈ 1/δ</span>, so the question is how well <span class="tex" data-tex="\pi">π</span> can be approximated by rationals. The irrationality measure bound <span class="tex" data-tex="\mu(\pi)\le 7.103">μ(π) ≤ 7.103</span> (Zeilberger and Zudilin, 2020) gives <span class="tex" data-tex="|\tan n|&lt;n^{6.11}">|tan n| &lt; n^6.11</span> for all large <span class="tex" data-tex="n">n</span>. If, as expected, <span class="tex" data-tex="\mu(\pi)=2">μ(π) = 2</span>, then <span class="tex" data-tex="|\tan n|=O(n^{1+\epsilon})">|tan n| = O(n^(1+ε))</span>, consistent with the table above.</p>
 
       <h3>How it is computed</h3>
-      <p>Every term is computed once, in background threads, using compensated (Neumaier) summation in double precision; JavaScript's <code>Math.tan</code> reduces integer arguments modulo π accurately. The applet stores <i>f</i> at every 256th <i>N</i>, plus the minimum and maximum of <i>f</i> within each block of 256: about 6&nbsp;MB for 10<sup>8</sup> and 60&nbsp;MB for 10<sup>9</sup>. Windows up to 400,000 wide are recomputed term by term from the nearest checkpoint, so every plotted point is exact; wider windows are drawn from the block extremes, which still show every spike. An independent extended-precision computation agrees to about 15 significant digits; for instance <span class="m">f(10<sup>8</sup>) = −55,500,322.5230…</span> On a typical laptop 10<sup>8</sup> takes a few seconds and 10<sup>9</sup> roughly ten times as long; anything already computed can be explored right away.</p>
-      <p>Hover (or tap) to read off <i>N</i> and <i>f</i>(<i>N</i>). Keys: ← → pan, + − zoom. The URL keeps the current range, so a view can be shared.</p>
+      <p>Every term is computed once, in background threads, with compensated (Neumaier) summation in double precision; JavaScript's <code>Math.tan</code> reduces integer arguments modulo <span class="tex" data-tex="\pi">π</span> accurately. Up to <span class="tex" data-tex="10^8">10^8</span> the applet stores <span class="tex" data-tex="f">f</span> at every 256th <span class="tex" data-tex="N">N</span> together with the minimum and maximum of <span class="tex" data-tex="f">f</span> on each block (about 6&nbsp;MB); beyond <span class="tex" data-tex="10^8">10^8</span> it uses blocks of 4,096 (about 39&nbsp;MB up to <span class="tex" data-tex="10^{10}">10^10</span>), plus an overview level of 65,536. Windows up to 400,000 wide are recomputed term by term from the nearest checkpoint, so every plotted point is exact; wider windows are drawn from the block extremes, which still show every spike, and narrow windows past <span class="tex" data-tex="10^8">10^8</span> are refined by a background worker a moment after you stop. An independent extended-precision computation agrees to about 15 significant digits: <span class="tex" data-tex="f(10^8)=-55{,}500{,}322.5230\ldots">f(10^8) = −55,500,322.5230…</span>, <span class="tex" data-tex="f(10^9)=1{,}625{,}640{,}367.0370\ldots">f(10^9) = 1,625,640,367.0370…</span> and <span class="tex" data-tex="f(10^{10})\approx17{,}160{,}408{,}646.91">f(10^10) ≈ 17,160,408,646.91</span>. On a typical laptop <span class="tex" data-tex="10^8">10^8</span> takes a few seconds and <span class="tex" data-tex="10^{10}">10^10</span> a few minutes; anything already computed can be explored right away.</p>
+      <p>Hover (or tap) to read off <span class="tex" data-tex="N">N</span>, <span class="tex" data-tex="f(N)">f(N)</span> and <span class="tex" data-tex="\tan N">tan N</span>. Keys: ← → pan, + − zoom. The URL keeps the current range, so a view can be shared.</p>
+
+      <h3>Further reading</h3>
+      <p>O. Knill, <a href="https://arxiv.org/abs/1206.5458" target="_blank" rel="noopener">Selfsimilarity in the Birkhoff sum of the cotangent function</a> (2012).<br>
+      O. Knill and F. Tangerman, <a href="https://arxiv.org/abs/1006.0285" target="_blank" rel="noopener">Selfsimilarity and growth in Birkhoff sums for the golden rotation</a> (2010).<br>
+      Ya. G. Sinai and C. Ulcigrai, <a href="https://arxiv.org/abs/0710.1287" target="_blank" rel="noopener">A limit theorem for Birkhoff sums of non-integrable functions over rotations</a> (2008).<br>
+      S. Bettin and S. Drappeau, <a href="https://jtnb.centre-mersenne.org/item/JTNB_2020__32_1_217_0" target="_blank" rel="noopener">Partial sums of the cotangent function</a>, J. Théor. Nombres Bordeaux (2020).<br>
+      R. M. Blumenthal and R. K. Getoor, <a href="https://projecteuclid.org/journals/illinois-journal-of-mathematics/volume-6/issue-2/The-dimension-of-the-set-of-zeros-and-the-graph/10.1215/ijm/1255632328.pdf" target="_blank" rel="noopener">The dimension of the set of zeros and the graph of a symmetric stable process</a>, Illinois J. Math. (1962).</p>
     </aside>
   </div>
 </div>
@@ -226,37 +259,58 @@ select.am-input { padding:7px 6px; font-size:12px; max-width:170px; cursor:point
 /* am-kit v1 END */
 </script>
 <script>
+/* KaTeX: the site's own copy (as on the Quora pages), else the same version from cdnjs */
+(function () {
+  function renderAll() {
+    document.querySelectorAll('.tex').forEach(function (e) {
+      try {
+        katex.render(e.getAttribute('data-tex'), e, { throwOnError: false, displayMode: e.classList.contains('tex-block') });
+      } catch (_) {}
+    });
+    window.dispatchEvent(new Event('katex-ready'));
+  }
+  function load(src, fallback) {
+    var sc = document.createElement('script');
+    sc.src = src;
+    sc.onload = renderAll;
+    if (fallback) sc.onerror = function () { load(fallback, null); };
+    document.head.appendChild(sc);
+  }
+  load('quora/katex/katex.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js');
+})();
+</script>
+<script>
 (function () {
 'use strict';
 
 /* ------------------------------------------------------------------ data */
-var N_DEFAULT = 1e8, N_EXT = 1e9;
-var NMAX = N_DEFAULT;        // current upper limit (10^8, or 10^9 once extended)
-var BS = 256;                // block size
-var NB = NMAX / BS;          // number of blocks (exact)
-var SEG = 800000;            // indices per work unit; divides 10^8 and is a multiple of BS
-var NSEG = NMAX / SEG;
+var N_DEFAULT = 1e8, N_EXT = 1e10;
+var NMAX = N_DEFAULT;        // current upper limit (10^8, or 10^10 once extended)
 var DIRECT_MAX = 400000;     // windows at most this wide are computed term by term
 var MINW = 8;                // narrowest window
 var extended = false;
 
-// bStart[j] = f(BS j) (double); bMinR/bMaxR[j] = min/max over the block of f(N) - bStart[j] (float32)
-var bStart = new Float64Array(NB + 1);
-var bMinR = new Float32Array(NB);
-var bMaxR = new Float32Array(NB);
-var readyBlocks = 0;         // blocks 0..readyBlocks-1 are known
+// A layer stores f at block boundaries n0 + j*bs (st, Float64) and, per block, the min/max of
+// f(N) - st[j] over the block (Float32). Layers: F (256-blocks up to 1e8), C (4096-blocks from
+// 1e8 to 1e10, allocated on extension), FP/CP (65536-blocks, an overview pyramid over F and C),
+// and T (a 256-block detail tile inside C, computed on demand).
+function mkLayer(n0, n1, bs) {
+  var nb = Math.ceil((n1 - n0) / bs);
+  return { n0: n0, n1: n1, bs: bs, nb: nb, st: new Float64Array(nb + 1), mn: new Float32Array(nb), mx: new Float32Array(nb), ready: 0 };
+}
+var F = mkLayer(0, N_DEFAULT, 256), FP = mkLayer(0, N_DEFAULT, 65536), C = null, CP = null, T = null;
 var frontierN = 0;           // f(N) known for N <= frontierN
 
-// One work unit: N in (n0, n1], both multiples of 256. Values relative to f(n0).
-// Shared verbatim between the workers and the main-thread fallback.
-function computeSeg(n0, n1) {
-  var nb = ((n1 - n0) / 256) | 0;
+// One work unit: N in (n0, n1], n0 a multiple of bs. Values relative to f(n0). The last block may be
+// partial. Shared verbatim between the workers and the main-thread fallback.
+function computeSeg(n0, n1, bs) {
+  var nb = Math.ceil((n1 - n0) / bs);
   var st = new Float64Array(nb), mn = new Float32Array(nb), mx = new Float32Array(nb);
   var s = 0, c = 0, k = n0;
   for (var j = 0; j < nb; j++) {
     st[j] = s + c;
-    var loc = 0, lo = Infinity, hi = -Infinity;
-    for (var i = 0; i < 256; i++) {
+    var loc = 0, lo = Infinity, hi = -Infinity, e = Math.min(n1, k + bs);
+    while (k < e) {
       k++;
       var t = Math.tan(k);
       var u = s + t;                                    // Neumaier summation
@@ -271,37 +325,63 @@ function computeSeg(n0, n1) {
   return { st: st, mn: mn, mx: mx, total: s + c };
 }
 
-var pending = new Map(), nextSeg = 0, segOff = 0, nextAssign = 0, workers = [], idle = [], doneAll = false;
-function segRange(i) { return [i * SEG, (i + 1) * SEG]; }
+var SEG1 = 800000, NSEG1 = N_DEFAULT / SEG1;                     // 125 units of 800,000 below 1e8
+var SEG2 = 4096 * 256, NSEG2 = Math.ceil((N_EXT - N_DEFAULT) / SEG2);
+var NSEG = NSEG1;
+function segInfo(i) {
+  if (i < NSEG1) return { L: F, n0: i * SEG1, n1: (i + 1) * SEG1, bs: 256 };
+  var j = i - NSEG1, n0 = N_DEFAULT + j * SEG2;
+  return { L: C, n0: n0, n1: Math.min(N_EXT, n0 + SEG2), bs: 4096 };
+}
+
+var pending = new Map(), nextSeg = 0, segOff = 0, nextAssign = 0, workers = [], idle = [], doneAll = false, workerURL = null;
+var rate = { t0: 0, n0: 0 };
 
 function onSeg(m) {
   pending.set(m.seg, m);
   while (pending.has(nextSeg)) {
     var r = pending.get(nextSeg); pending.delete(nextSeg);
-    var g = (nextSeg * SEG) / BS, nb = r.st.length;
-    for (var j = 0; j < nb; j++) bStart[g + j] = segOff + r.st[j];
-    bMinR.set(r.mn, g); bMaxR.set(r.mx, g);
+    var info = segInfo(nextSeg), L = info.L, g = (info.n0 - L.n0) / L.bs, nb = r.st.length;
+    for (var j = 0; j < nb; j++) L.st[g + j] = segOff + r.st[j];
+    L.mn.set(r.mn, g); L.mx.set(r.mx, g);
     segOff += r.total;
-    bStart[g + nb] = segOff;
-    readyBlocks = g + nb;
+    L.st[g + nb] = segOff;
+    L.ready = g + nb;
+    frontierN = info.n1;
     nextSeg++;
   }
-  frontierN = readyBlocks * BS;
+  updatePyramid(F, FP); if (C) updatePyramid(C, CP);
   doneAll = nextSeg >= NSEG;
   if (doneAll && extended) { workers.forEach(function (w) { w.terminate(); }); workers = []; idle = []; }
   updateProgress();
   if (frontierN > view.a - 1) schedule();
 }
 
+// pyramid block g covers r = P.bs / L.bs blocks of L
+function updatePyramid(L, P) {
+  var r = P.bs / L.bs;
+  while (P.ready < P.nb) {
+    var g = P.ready, j0 = g * r, j1 = Math.min(L.nb, j0 + r);
+    if (L.ready < j1) break;
+    var s0 = L.st[j0], lo = Infinity, hi = -Infinity;
+    for (var j = j0; j < j1; j++) {
+      var b = L.st[j], x = b + L.mn[j], y = b + L.mx[j];
+      if (x < lo) lo = x; if (y > hi) hi = y;
+    }
+    P.st[g] = s0; P.mn[g] = lo - s0; P.mx[g] = hi - s0; P.st[g + 1] = L.st[j1];
+    P.ready = g + 1;
+  }
+}
+
 function startCompute() {
-  var nW = Math.max(1, Math.min(6, (navigator.hardwareConcurrency || 4) - 1));
+  var nW = Math.max(1, Math.min(8, (navigator.hardwareConcurrency || 4) - 1));
   var src = computeSeg.toString() +
-    '\nself.onmessage=function(e){var d=e.data;var r=computeSeg(d.n0,d.n1);' +
-    'self.postMessage({seg:d.seg,st:r.st,mn:r.mn,mx:r.mx,total:r.total},[r.st.buffer,r.mn.buffer,r.mx.buffer]);};';
+    '\nself.onmessage=function(e){var d=e.data;var r=computeSeg(d.n0,d.n1,d.bs);' +
+    'self.postMessage({seg:d.seg,tile:d.tile,n0:d.n0,n1:d.n1,st:r.st,mn:r.mn,mx:r.mx,total:r.total},[r.st.buffer,r.mn.buffer,r.mx.buffer]);};';
   try {
-    var url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+    workerURL = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
     for (var i = 0; i < nW; i++) {
-      var w = new Worker(url);
+      var w = new Worker(workerURL);
       w.onmessage = (function (w) { return function (e) { onSeg(e.data); feed(w); }; })(w);
       w.onerror = function (e) { if (e && e.preventDefault) e.preventDefault(); toFallback(); };
       workers.push(w);
@@ -312,8 +392,8 @@ function startCompute() {
 function feed(w) {
   if (fellBack) return;
   if (nextAssign >= NSEG) { idle.push(w); return; }
-  var i = nextAssign++, r = segRange(i);
-  w.postMessage({ seg: i, n0: r[0], n1: r[1] });
+  var i = nextAssign++, r = segInfo(i);
+  w.postMessage({ seg: i, n0: r.n0, n1: r.n1, bs: r.bs });
 }
 var fellBack = false, fbRunning = false;
 function toFallback() {
@@ -328,22 +408,22 @@ function toFallback() {
   (function step() {
     while (i < NSEG && pending.has(i)) i++;
     if (i >= NSEG) { fbRunning = false; return; }
-    var r = segRange(i), res = computeSeg(r[0], r[1]);
+    var r = segInfo(i), res = computeSeg(r.n0, r.n1, r.bs);
     res.seg = i; i++;
     onSeg(res);
     setTimeout(step, 4);
   })();
 }
 
-function grow(arr, n) { var b = new arr.constructor(n); b.set(arr.subarray(0, Math.min(arr.length, n))); return b; }
 function extend() {
   if (extended) return;
   extended = true;
-  NMAX = N_EXT; NB = NMAX / BS; NSEG = NMAX / SEG;
-  bStart = grow(bStart, NB + 1); bMinR = grow(bMinR, NB); bMaxR = grow(bMaxR, NB);
+  C = mkLayer(N_DEFAULT, N_EXT, 4096); CP = mkLayer(N_DEFAULT, N_EXT, 65536);
+  NMAX = N_EXT; NSEG = NSEG1 + NSEG2;
   doneAll = false;
+  rate.t0 = performance.now(); rate.n0 = frontierN;
   extBtn.style.display = 'none';
-  fullBtn.title = 'Show 1 to 10^9';
+  fullBtn.title = 'Show 1 to 10^10';
   prog.style.opacity = '1';
   if (fellBack) toFallback();
   else { var w = idle.splice(0); w.forEach(feed); }
@@ -351,24 +431,63 @@ function extend() {
   updateProgress(); schedule();
 }
 
+/* ---- detail tiles: 256-blocks inside C, computed on demand by a dedicated worker */
+var tileWorker = null, tileBusy = false, tileWant = null;
+function requestTile(a, b) {
+  // a, b: wanted N-range inside C; align to C's grid and clip to what is computed
+  var bs = 4096, n0 = N_DEFAULT + Math.floor((Math.max(N_DEFAULT, a) - N_DEFAULT) / bs) * bs;
+  var n1 = Math.min(frontierN, N_DEFAULT + Math.ceil((b - N_DEFAULT) / bs) * bs);
+  if (n1 <= n0) return;
+  tileWant = { n0: n0, n1: n1 };
+  pumpTile();
+}
+function pumpTile() {
+  if (tileBusy || !tileWant || fellBack || !workerURL) return;
+  if (!tileWorker) {
+    try {
+      tileWorker = new Worker(workerURL);
+      tileWorker.onmessage = function (e) {
+        var d = e.data, k = (d.n0 - N_DEFAULT) / 4096, base = C.st[k];
+        var L = { n0: d.n0, n1: d.n1, bs: 256, nb: d.st.length, st: new Float64Array(d.st.length + 1), mn: d.mn, mx: d.mx, ready: d.st.length };
+        for (var j = 0; j < L.nb; j++) L.st[j] = base + d.st[j];
+        L.st[L.nb] = base + d.total;
+        T = L; tileBusy = false; pumpTile(); schedule();
+      };
+      tileWorker.onerror = function (e) { if (e && e.preventDefault) e.preventDefault(); tileWorker = null; tileBusy = false; };
+    } catch (_) { return; }
+  }
+  var w = tileWant; tileWant = null; tileBusy = true;
+  tileWorker.postMessage({ seg: -1, tile: true, n0: w.n0, n1: w.n1, bs: 256 });
+}
+
+/* ---- checkpoints: stored values of f, used for direct evaluation */
+function ckBelow(N) {                    // largest checkpoint position n < N, with its value
+  if (N <= N_DEFAULT + 1 || !C) { var j = Math.floor((N - 1) / 256); return [j * 256, F.st[j]]; }
+  if (T && N > T.n0 && N <= T.n1) { var jt = Math.floor((N - 1 - T.n0) / 256); return [T.n0 + jt * 256, T.st[jt]]; }
+  var jc = Math.floor((N - 1 - N_DEFAULT) / 4096); return [N_DEFAULT + jc * 4096, C.st[jc]];
+}
+function ckAt(n) {                       // stored f(n) if n is a checkpoint, else NaN
+  if (n <= N_DEFAULT) return n % 256 === 0 ? F.st[n / 256] : NaN;
+  if (!C) return NaN;
+  if (T && n >= T.n0 && n <= T.n1 && (n - T.n0) % 256 === 0) return T.st[(n - T.n0) / 256];
+  return (n - N_DEFAULT) % 4096 === 0 ? C.st[(n - N_DEFAULT) / 4096] : NaN;
+}
+
 // f(N) for every N in [lo, hi], kept around so that panning a narrow window stays cheap
 var dc = { lo: 1, hi: 0, v: new Float64Array(0) };
 function direct(nLo, nHi) {             // requires nHi <= frontierN
   if (dc.lo <= nLo && dc.hi >= nHi) return dc;
   var half = Math.floor((nHi - nLo + 1) / 2);
-  var j0 = Math.floor((Math.max(1, nLo - half) - 1) / BS);
-  var lo = j0 * BS + 1, hi = Math.min(frontierN, nHi + half);
+  var ck = ckBelow(Math.max(1, nLo - half));
+  var lo = ck[0] + 1, hi = Math.min(frontierN, nHi + half);
   var len = hi - lo + 1;
-  if (dc.v.length < len) dc.v = new Float64Array(Math.max(len, 2 * DIRECT_MAX + 4 * BS));
-  var v = dc.v;
-  outer: for (var j = j0; ; j++) {
-    var base = bStart[j], loc = 0, k0 = j * BS;
-    for (var i = 1; i <= BS; i++) {
-      var k = k0 + i;
-      if (k > hi) break outer;
-      loc += Math.tan(k);
-      v[k - lo] = base + loc;
-    }
+  if (dc.v.length < len) dc.v = new Float64Array(Math.max(len, 2 * DIRECT_MAX + 8192));
+  var v = dc.v, base = ck[1], loc = 0;
+  for (var k = lo; k <= hi; k++) {
+    var c = ckAt(k - 1);
+    if (c === c) { base = c; loc = 0; }
+    loc += Math.tan(k);
+    v[k - lo] = base + loc;
   }
   dc.lo = lo; dc.hi = hi;
   return dc;
@@ -377,21 +496,20 @@ function direct(nLo, nHi) {             // requires nHi <= frontierN
 // f(N) exactly as drawn: checkpoint + in-block sum
 function evalS(N) {
   if (N >= dc.lo && N <= dc.hi) return dc.v[N - dc.lo];
-  var j = Math.floor((N - 1) / BS), loc = 0;
-  for (var k = j * BS + 1; k <= N; k++) loc += Math.tan(k);
-  return bStart[j] + loc;
+  var ck = ckBelow(N), loc = 0;
+  for (var k = ck[0] + 1; k <= N; k++) loc += Math.tan(k);
+  return ck[1] + loc;
 }
 
 /* ------------------------------------------------------------------ view */
-var view = { a: 1, b: 100000 };
-var yMode = 'full';
+var view = { a: 1, b: 10 };
 var cv = document.getElementById('plot'), ctx = cv.getContext('2d');
 var stage = document.getElementById('stage');
 var inA = document.getElementById('inA'), inB = document.getElementById('inB');
 var readout = document.getElementById('readout'), statusEl = document.getElementById('status'), prog = document.getElementById('prog');
 var css = getComputedStyle(document.documentElement);
 function cssv(n) { return css.getPropertyValue(n).trim(); }
-var C = {
+var COL = {
   paper: cssv('--paper'), card: cssv('--paper-card'), ink: cssv('--ink'), soft: cssv('--ink-soft'),
   faint: cssv('--ink-faint'), accent: cssv('--accent'), line: cssv('--line'), lineSoft: cssv('--line-soft'),
   grid: cssv('--grid'), curve: cssv('--curve') || '#35598F'
@@ -494,14 +612,12 @@ function collect(p, dpr) {
       var len = avail - nLo + 1;
       if (pts.n.length < len) { pts.n = new Float64Array(len); pts.v = new Float64Array(len); }
       pts.len = len;
-      var vals = [];
       for (var q = 0; q < len; q++) {
         var k = nLo + q, v = V[k - off];
         pts.n[q] = k; pts.v[q] = v;
-        if (k >= a - 1e-9 && k <= b + 1e-9) { if (v < res.lo) res.lo = v; if (v > res.hi) res.hi = v; vals.push(v); }
+        if (k >= a - 1e-9 && k <= b + 1e-9) { if (v < res.lo) res.lo = v; if (v > res.hi) res.hi = v; }
       }
       res.mode = 'points';
-      if (yMode === 'trim' && vals.length > 20) { vals.sort(function (x, y) { return x - y; }); res.lo = vals[Math.floor(vals.length * 0.01)]; res.hi = vals[Math.ceil(vals.length * 0.99) - 1]; }
       return res;
     }
     // dense but exact: bin every N
@@ -517,35 +633,52 @@ function collect(p, dpr) {
     }
     res.mode = 'exact';
   } else {
-    // wide: block envelopes, each block assigned to the column holding its midpoint;
-    // columns are at least two blocks wide
-    nb = Math.max(1, Math.min(nb, Math.floor(R / (2 * BS))));
-    ensureBins(nb); binW = innerW / nb;
-    var Bb = bins, scb = nb / R, mid = BS / 2 + 0.5;
-    var jb0 = Math.max(0, Math.floor((nLo - 1) / BS)), jb1 = Math.min(readyBlocks - 1, Math.floor((nHi - 1) / BS));
-    for (var jb = jb0; jb <= jb1; jb++) {
-      var bib = Math.floor((jb * BS + mid - a) * scb);
-      if (bib < 0) bib = 0; else if (bib >= nb) bib = nb - 1;
-      var s0 = bStart[jb], lo = s0 + bMinR[jb], hi = s0 + bMaxR[jb];
-      if (!Bb.has[bib]) { Bb.has[bib] = 1; Bb.mn[bib] = lo; Bb.mx[bib] = hi; Bb.fi[bib] = s0; }
-      else { if (lo < Bb.mn[bib]) Bb.mn[bib] = lo; if (hi > Bb.mx[bib]) Bb.mx[bib] = hi; }
-      Bb.la[bib] = bStart[jb + 1];
+    // wide: block envelopes. Each region of the view uses the coarsest stored layer that still
+    // gives two blocks per pixel column; each block goes to the column holding its midpoint.
+    var want = R / (2 * innerW), parts = [], bsMax = 0;
+    var pick = function (cands) { for (var i = 0; i < cands.length; i++) if (cands[i].bs <= want) return cands[i]; return cands[cands.length - 1]; };
+    if (nLo <= N_DEFAULT) parts.push({ L: pick([FP, F]), lo: nLo, hi: Math.min(nHi, N_DEFAULT) });
+    if (nHi > N_DEFAULT && C && frontierN > N_DEFAULT) {
+      var lo2 = Math.max(nLo, N_DEFAULT + 1), hi2 = Math.min(nHi, frontierN);
+      var tileOK = T && T.n0 < lo2 && T.n1 >= hi2;
+      var Lc = pick(tileOK ? [CP, C, T] : [CP, C]);
+      if (!tileOK && R < 2048 * innerW && R > DIRECT_MAX) requestTile(a - R / 2, b + R / 2);
+      parts.push({ L: Lc, lo: lo2, hi: nHi });
     }
+    parts.forEach(function (P) { if (P.L.bs > bsMax) bsMax = P.L.bs; });
+    nb = Math.max(1, Math.min(nb, Math.floor(R / (2 * bsMax))));
+    ensureBins(nb); binW = innerW / nb;
+    var Bb = bins, scb = nb / R;
+    parts.forEach(function (P) {
+      var L = P.L, bs = L.bs, st = L.st, mn = L.mn, mx = L.mx, base = L.n0 + bs / 2 + 0.5 - a;
+      var jb0 = Math.max(0, Math.floor((P.lo - 1 - L.n0) / bs)), jb1 = Math.min(L.ready - 1, Math.floor((P.hi - 1 - L.n0) / bs));
+      for (var jb = jb0; jb <= jb1; jb++) {
+        var bib = Math.floor((jb * bs + base) * scb);
+        if (bib < 0) bib = 0; else if (bib >= nb) bib = nb - 1;
+        var s0 = st[jb], lo = s0 + mn[jb], hi = s0 + mx[jb];
+        if (!Bb.has[bib]) { Bb.has[bib] = 1; Bb.mn[bib] = lo; Bb.mx[bib] = hi; Bb.fi[bib] = s0; }
+        else { if (lo < Bb.mn[bib]) Bb.mn[bib] = lo; if (hi > Bb.mx[bib]) Bb.mx[bib] = hi; }
+        Bb.la[bib] = st[jb + 1];
+      }
+    });
     res.mode = 'blocks';
   }
   // y-range from bins
-  var Bx = bins, mins = yMode === 'trim' ? [] : null, maxs = yMode === 'trim' ? [] : null;
+  var Bx = bins;
   for (var t = 0; t < nbins; t++) if (Bx.has[t]) {
     if (Bx.mn[t] < res.lo) res.lo = Bx.mn[t];
     if (Bx.mx[t] > res.hi) res.hi = Bx.mx[t];
-    if (mins) { mins.push(Bx.mn[t]); maxs.push(Bx.mx[t]); }
-  }
-  if (mins && mins.length > 20) {
-    mins.sort(function (x, y) { return x - y; }); maxs.sort(function (x, y) { return x - y; });
-    res.lo = mins[Math.floor(mins.length * 0.01)];
-    res.hi = maxs[Math.ceil(maxs.length * 0.99) - 1];
   }
   return res;
+}
+
+// one "label = value" item of the hover readout, typeset with KaTeX when it is available
+function texItem(label, value, fallback) {
+  if (window.katex) {
+    var num = value.replace(/−/g, '-').replace(/,/g, '{,}');
+    try { return '<span class="item">' + katex.renderToString(label + ' = ' + num, { throwOnError: false }) + '</span>'; } catch (_) {}
+  }
+  return '<span class="item">' + fallback + ' = ' + value + '</span>';
 }
 
 function draw() {
@@ -581,8 +714,8 @@ function draw() {
 
   // background
   ctx.clearRect(0, 0, W, H);
-  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = C.card; ctx.fillRect(p.x, p.y, p.w, p.h);
+  ctx.fillStyle = COL.paper; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = COL.card; ctx.fillRect(p.x, p.y, p.w, p.h);
 
   // x ticks
   var R = view.b - view.a;
@@ -594,19 +727,19 @@ function draw() {
 
   // grid
   ctx.lineWidth = 1;
-  ctx.strokeStyle = C.lineSoft;
+  ctx.strokeStyle = COL.lineSoft;
   ctx.beginPath();
   yt.forEach(function (t) { var y = Math.round(Y(t)) + 0.5; ctx.moveTo(p.x, y); ctx.lineTo(p.x + p.w, y); });
   xt.forEach(function (t) { var x = Math.round(X(t)) + 0.5; ctx.moveTo(x, p.y); ctx.lineTo(x, p.y + p.h); });
   ctx.stroke();
   if (lo < 0 && hi > 0) {
-    ctx.strokeStyle = C.line; ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = COL.line; ctx.setLineDash([4, 4]);
     ctx.beginPath(); var y0 = Math.round(Y(0)) + 0.5; ctx.moveTo(p.x, y0); ctx.lineTo(p.x + p.w, y0); ctx.stroke();
     ctx.setLineDash([]);
   }
 
   // labels
-  ctx.fillStyle = C.faint;
+  ctx.fillStyle = COL.faint;
   ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
   if (res.mode !== 'none') yt.forEach(function (t, i) { var y = Y(t); if (y > p.y + 4 && y < p.y + p.h - 4) ctx.fillText(yl[i], p.x - 8, y); });
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
@@ -618,13 +751,13 @@ function draw() {
   });
 
   // frame
-  ctx.strokeStyle = C.line; ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
+  ctx.strokeStyle = COL.line; ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
 
   // curve (device pixels)
   ctx.save();
   ctx.beginPath(); ctx.rect(p.x + 1, p.y + 1, p.w - 2, p.h - 2); ctx.clip();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.strokeStyle = C.curve; ctx.fillStyle = C.curve;
+  ctx.strokeStyle = COL.curve; ctx.fillStyle = COL.curve;
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   var yScale = p.h * dpr / (hi - lo), yTop = p.y * dpr;
   function Yd(v) { var y = yTop + (hi - v) * yScale; return y < -1e6 ? -1e6 : y > 1e6 ? 1e6 : y; }
@@ -658,11 +791,11 @@ function draw() {
     ctx.save();
     ctx.beginPath(); ctx.rect(xf, p.y + 1, p.x + p.w - xf - 1, p.h - 2); ctx.clip();
     ctx.fillStyle = 'rgba(242,235,217,.75)'; ctx.fillRect(xf, p.y, p.x + p.w - xf, p.h);
-    ctx.strokeStyle = C.lineSoft; ctx.lineWidth = 1; ctx.beginPath();
+    ctx.strokeStyle = COL.lineSoft; ctx.lineWidth = 1; ctx.beginPath();
     for (var h = xf - p.h; h < p.x + p.w; h += 9) { ctx.moveTo(h, p.y + p.h); ctx.lineTo(h + p.h, p.y); }
     ctx.stroke();
     if (p.x + p.w - xf > 90) {
-      ctx.fillStyle = C.faint; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = COL.faint; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.font = 'italic 15px ' + "'Fraunces', Georgia, serif";
       ctx.fillText('computing…', (xf + p.x + p.w) / 2, p.y + p.h / 2);
       ctx.font = fontPx + 'px ' + MONO;
@@ -674,7 +807,7 @@ function draw() {
   if (box) {
     var bx0 = Math.max(p.x, Math.min(box.x0, box.x1)), bx1 = Math.min(p.x + p.w, Math.max(box.x0, box.x1));
     ctx.fillStyle = 'rgba(184,88,32,.10)'; ctx.fillRect(bx0, p.y, bx1 - bx0, p.h);
-    ctx.strokeStyle = C.accent; ctx.lineWidth = 1;
+    ctx.strokeStyle = COL.accent; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(Math.round(bx0) + .5, p.y); ctx.lineTo(Math.round(bx0) + .5, p.y + p.h);
     ctx.moveTo(Math.round(bx1) - .5, p.y); ctx.lineTo(Math.round(bx1) - .5, p.y + p.h); ctx.stroke();
   }
@@ -687,17 +820,18 @@ function draw() {
     N = Math.max(Math.max(1, Math.ceil(view.a - 1e-9)), Math.min(Math.floor(view.b + 1e-9), N));
     if (N >= 1 && N <= frontierN) {
       var v = evalS(N), hx = X(N), hy = Y(v);
-      ctx.strokeStyle = C.accent; ctx.globalAlpha = 0.5; ctx.lineWidth = 1;
+      ctx.strokeStyle = COL.accent; ctx.globalAlpha = 0.5; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(Math.round(hx) + .5, p.y); ctx.lineTo(Math.round(hx) + .5, p.y + p.h); ctx.stroke();
       ctx.globalAlpha = 1;
       if (hy >= p.y && hy <= p.y + p.h) {
-        ctx.fillStyle = C.card; ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
+        ctx.fillStyle = COL.card; ctx.strokeStyle = COL.accent; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(hx, hy, 4, 0, 6.2832); ctx.fill(); ctx.stroke();
       }
       var tn = Math.tan(N);
-      readout.innerHTML = '<span class="k">N</span><span class="v">' + fmt(N, 0) + '</span>' +
-        '<span class="k">f(N)</span><span class="v">' + fmt(v, Math.abs(v) < 1e7 ? 4 : 2) + '</span>' +
-        '<span class="k">tan N</span><span class="v">' + fmt(tn, Math.abs(tn) < 1e4 ? 4 : 1) + '</span>';
+      var html = texItem('N', fmt(N, 0), '<i>N</i>') +
+        texItem('f(N)', fmt(v, Math.abs(v) < 1e7 ? 4 : 2), '<i>f</i>(<i>N</i>)') +
+        texItem('\\tan N', fmt(tn, Math.abs(tn) < 1e4 ? 4 : 1), 'tan <i>N</i>');
+      if (html !== readout._html) { readout.innerHTML = html; readout._html = html; }
       readout.style.display = 'block';
     } else readout.style.display = 'none';
   } else readout.style.display = 'none';
@@ -712,7 +846,16 @@ function updateProgress() {
     statusEl.style.display = 'none';
   } else {
     statusEl.style.display = 'block';
-    statusEl.innerHTML = '<span class="k">computed to</span><span class="v">' + fmtShort(frontierN) + '</span>';
+    var eta = '';
+    if (extended && frontierN > N_DEFAULT) {
+      var dt = (performance.now() - rate.t0) / 1000, done = frontierN - rate.n0;
+      if (dt > 4 && done > 0) {
+        var left = (NMAX - frontierN) / (done / dt);
+        eta = left < 90 ? Math.max(5, Math.round(left / 5) * 5) + ' s' : Math.round(left / 60) + ' min';
+      }
+    }
+    statusEl.innerHTML = '<span class="k">computed to</span><span class="v">' + fmtShort(frontierN) + '</span>' +
+      (eta ? '<span class="k">about</span><span class="v">' + eta + ' left</span>' : '');
   }
 }
 function fmtShort(n) {
@@ -730,7 +873,7 @@ function syncURL() {
   clearTimeout(urlT);
   urlT = setTimeout(function () {
     try {
-      var q = '?a=' + Math.round(view.a) + '&b=' + Math.round(view.b) + (yMode === 'trim' ? '&y=trim' : '');
+      var q = '?a=' + Math.round(view.a) + '&b=' + Math.round(view.b);
       history.replaceState(null, '', location.pathname + q + location.hash);
     } catch (_) {}
   }, 350);
@@ -755,10 +898,6 @@ document.getElementById('zout').addEventListener('click', function () { zoomAt(c
 var fullBtn = document.getElementById('full'), extBtn = document.getElementById('ext');
 fullBtn.addEventListener('click', function () { setViewExact(1, NMAX); });
 extBtn.addEventListener('click', function () { extend(); });
-var yF = document.getElementById('yfull'), yT = document.getElementById('ytrim');
-function setY(m) { yMode = m; yF.setAttribute('aria-pressed', m === 'full'); yT.setAttribute('aria-pressed', m === 'trim'); syncURL(); schedule(); }
-yF.addEventListener('click', function () { setY('full'); });
-yT.addEventListener('click', function () { setY('trim'); });
 
 var LANDMARKS = [
   ['First pole, near 11', 1, 40],
@@ -772,14 +911,16 @@ var LANDMARKS = [
   ['All: 1 to 10^8', 1, 100000000],
   ['Cliff at 122,925,461', 122925390, 122925540],
   ['Cliff at 534,483,448', 534483375, 534483525],
-  ['All: 1 to 10^9', 1, 1000000000]
+  ['1 to 10^9', 1, 1000000000],
+  ['Cliff at 3,083,975,227', 3083975150, 3083975300],
+  ['All: 1 to 10^10', 1, 10000000000]
 ];
 var jumpSel = document.getElementById('jump');
 LANDMARKS.forEach(function (L, i) { var o = document.createElement('option'); o.value = i; jumpSel.appendChild(o); });
 function refreshJump() {
   Array.prototype.forEach.call(jumpSel.options, function (o) {
     var L = LANDMARKS[+o.value]; if (o.value === '' || !L) return;
-    o.textContent = L[0] + (L[2] > NMAX ? '  (extends to 10⁹)' : '');
+    o.textContent = L[0] + (L[2] > NMAX ? '  (extends to 10¹⁰)' : '');
   });
 }
 refreshJump();
@@ -895,16 +1036,16 @@ addEventListener('keydown', function (e) {
 });
 
 new ResizeObserver(function () { schedule(); }).observe(stage);
+addEventListener('katex-ready', function () { readout._html = null; schedule(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { M.l = 70; schedule(); });
 
 /* ------------------------------------------------------------------ start */
 (function init() {
-  var a = 1, b = 100000;
+  var a = 1, b = 10;
   try {
     var sp = new URLSearchParams(location.search);
     var qa = parseN(sp.get('a') || ''), qb = parseN(sp.get('b') || '');
     if (isFinite(qa) && isFinite(qb) && qa >= 1 && qb <= N_EXT && qb > qa) { a = qa; b = qb; }
-    if (sp.get('y') === 'trim') setY('trim');
   } catch (_) {}
   view.a = a; view.b = b;
   setViewExact(a, b);
@@ -913,7 +1054,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(function (
 })();
 
 // test hook
-window.__tanSums = { view: view, evalS: evalS, setView: setViewExact, state: function () { return { frontierN: frontierN, doneAll: doneAll, fellBack: fellBack, workers: workers.length }; } };
+window.__tanSums = { view: view, evalS: evalS, setView: setViewExact, state: function () { return { frontierN: frontierN, doneAll: doneAll, fellBack: fellBack, workers: workers.length, tile: T ? [T.n0, T.n1] : null, status: statusEl.textContent }; } };
 })();
 </script>
 </body></html>
