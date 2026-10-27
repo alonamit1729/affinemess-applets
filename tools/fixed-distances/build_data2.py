@@ -470,6 +470,14 @@ def main():
         for k,v in json.load(open(fn)).items(): SYM.setdefault(k,[]).extend(v)
     EXT=json.load(open('ext4.json')); EXT.update(json.load(open('ext5.json')))
     R12=json.load(open('r12sum.json')) if os.path.exists('r12sum.json') else {}
+    EXACT=json.load(open('exact_cells.json'))   # (10,5), (10,6), (11,6), (12,6): complete lists from the pattern enumeration + real root isolation
+    EXACT_INFO={
+      '10,5':('‡','Exactly 19 ten-point five-distance sets. Every ten-point set with at most six distances has one of the 228 candidate patterns of Szöllősi–Östergård (their count, re-derived here by an independent implementation of the orderly generation); the 19 patterns with five colours are all rigid and their real solutions (msolve) give 19 configurations up to similarity: fifteen pieces of the triangular lattice, the regular nonagon with its centre, the regular decagon, the regular 11-gon minus a vertex, and the regular pentagon with the inner pentagon of its pentagram. No published classification is known to us; the search that populated this cell earlier had found 8.',('SO20','pat')),
+      '10,6':('‡','Exactly 238 ten-point six-distance sets, from the 209 six-colour patterns among the 228 candidates (all rigid; 29 patterns have more than one real realization): 184 pieces of the triangular lattice, 37 subsets of regular polygons (R₁₃ minus three vertices, R₁₂ or R₁₂ with centre minus two or three, R₁₁ with centre minus two), three twelvefold configurations found only through the candidate list (six similarity classes, all subsets of R₁₂ + R₁₂), and a pentagonal one. No published classification is known to us.',('SO20','pat')),
+      '11,6':('†','Exactly 64 eleven-point six-distance sets: Amit–Astra (2026, Lemma 6) classify the eleven-point sets with at most six distances from the 62 candidate patterns (52 lattice and 10 circular configurations, counting the subsets of one regular polygon together); counted up to similarity, the 58 six-colour patterns give 49 pieces of the triangular lattice and 15 polygon subsets (R₁₃ minus two vertices in six ways, R₁₂ with centre minus two in six ways, R₁₂ minus a vertex, R₁₁ with centre minus a vertex, R₁₀ with centre). Re-verified here: the 62 patterns regenerated, certified rigid, and solved.',('AA26','SO20','pat')),
+      '12,6':('‡','Exactly 14 twelve-point six-distance sets, from the 14 six-colour patterns among Szöllősi–Östergård’s 15 candidates at twelve points (all rigid, one real solution each): ten pieces of the triangular lattice (the twelve-point cores of Amit–Astra), R₁₃ minus a vertex, R₁₂, R₁₂ with centre minus a vertex, and R₁₁ with its centre. No published classification is known to us.',('SO20','AA26','pat')),
+      '16,7':('‡','g(7) = 16 (Amit–Astra 2026), and exactly two sixteen-point seven-distance sets exist: Erdős–Fishburn’s two lattice pieces. Finiteness and the count are our computation (tools/fixed-distances/g7fin, g7count): every sixteen-point seven-distance set contains a ten-point subset with at most six distances (a diameter-graph argument) or is R₁₄, R₁₅ or R₁₅ minus a vertex plus one or two points; the 257 ten-point sets were each extended by six points with at most two new distance values (circle intersections and circumcentres, then a clique search), the polygon cases checked directly, and the two resulting sixteen-point patterns certified rigid with a unique realization each.',('EF','AA26','SO20','pat')),
+    }
     R12_RAD={0:'2',1:'2cos 15°',2:'√3',3:'√2',4:'1',5:'2sin 15°'}
     def r12_label(shells):
         parts=[]
@@ -483,13 +491,16 @@ def main():
             key=f'{n},{d}'
             if key in cells or d<fmin[n] or n>gmax[d]: continue
             pool=Pool()
+            if key in EXACT:   # classified cells: the exact list first (polygon / lattice labels), generic-label entries after the other sources
+                for e in EXACT[key]:
+                    if not e['label'].startswith('distances'): pool.add(e['pts'],e['label'],'pat')
             if (n,d)==(16,7):
                 for P in uniq(json.load(open('lattice_16_7.json'))):
                     rows=sorted(Counter(round(y*2/S3) for x,y in P).values(),reverse=True)
                     pool.add(P,'piece of the triangular lattice with distances 1, √3, 2, √7, 3, √12, √13 (Erdős–Fishburn, Fig. 4): rows of '+', '.join(map(str,rows))+' points','ef')
             # extension-built rigid sets
             for P in EXT.get(f'{n}{d}',[]): pool.add(P,'built by one-point extension of a smaller set','ext')
-            for lab,P,N,S in EX.polygon_examples(n,d,limit=4): pool.add(P,lab,'poly')
+            for lab,P,N,S in EX.polygon_examples(n,d,limit=(40 if key in EXACT else 4)): pool.add(P,lab,'poly')
             for lab,P,S in EX.lattice_examples(n,d): pool.add(P,lab,'lat')
             if (n,d)==(16,7): P,_=EX.ef16(); pool.add(P,'hexagon of side 2 in the triangular lattice minus one end of each long diameter (Erdős–Fishburn)','ef')
             for e in SYM.get(key,[]): pool.add(e['pts'],struct_label(e['struct']),'sym')
@@ -508,6 +519,19 @@ def main():
             for e in R12.get(key,[]):
                 before=len(pool.rigid)+len(pool.fam)
                 pool.add(e['pts'],r12_label(e['shells']),'r12',exact=e['exact']); n_r12+=len(pool.rigid)+len(pool.fam)-before
+            if key in EXACT:
+                for e in EXACT[key]:
+                    if e['label'].startswith('distances'): pool.add(e['pts'],e['label'],'pat')
+                assert not pool.fam and len(pool.rigid)==len(EXACT[key]),(key,len(pool.rigid),len(EXACT[key]),len(pool.fam))
+                for P,lab,src in pool.rigid: assert any(B.same(P,e['pts']) for e in EXACT[key]),(key,lab)
+            if key=='16,7':
+                assert not pool.fam and len(pool.rigid)==2
+            if key in EXACT_INFO:
+                mark,note,srcs=EXACT_INFO[key]
+                items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]
+                cell(n,d,{0:E(len(items))},'exact',marks=mark,note=note,finite=True)
+                cat(n,d,items,True,f'The {len(items)} {n}-point {d}-distance sets' if len(items)>2 else 'The two sixteen-point seven-distance sets','All configurations shown are rigid; the list is complete.',sources=srcs)
+                continue
             c=pool.counts()
             fin=(n,d) in finite_cells
             dims={k:X(v) for k,v in c.items()}
