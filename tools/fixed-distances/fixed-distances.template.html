@@ -212,6 +212,8 @@ input[type=range] { accent-color:var(--accent); }
       <p>Tinted cards are families. Hovering (or tapping, on a touch screen) makes the configuration move along its family: at each frame the tangent space of the solution set is computed from the Jacobian of the equal-distance equations, the configuration takes a small step along it and is projected back onto the constraint set by a few Newton iterations, so the equalities hold exactly throughout. One-parameter families glide back and forth along their curve, turning around before two points merge or two distance values coincide, so the motion loops; higher-dimensional families wander within the same bounds. Only one card moves at a time; tapping a moving card restarts it from its resting shape. Where branches of a family cross, the motion may switch branches.</p>
       <h3>Coordinates</h3>
       <p>Each catalog entry has a coordinate list in a natural frame: a regular-polygon frame (circumradius 1) or a lattice frame when the configuration has one, otherwise the shortest distance is 1 with the first point at the origin. Exact expressions are given where the frame allows; clicking the list copies the decimal coordinates as JSON.</p>
+      <h3>Code and data</h3>
+      <p>Everything behind this page is public: the build pipeline, every certificate and result file, and the write-ups are in the folder <a href="https://github.com/alonamit1729/affinemess-applets/tree/main/tools/fixed-distances" target="_blank" rel="noopener">tools/fixed-distances</a> of the site’s GitHub repository (<a href="https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/README.md" target="_blank" rel="noopener">README</a>). In particular: <a href="https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7count/REPRODUCING.md" target="_blank" rel="noopener">REPRODUCING.md</a>, a step-by-step walkthrough, with commands and expected outputs, for verifying that exactly two sixteen-point seven-distance sets exist; <a href="https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7count/REPORT.md" target="_blank" rel="noopener">g7count/REPORT.md</a>, the account of that computation; <a href="https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7fin/FINITENESS.md" target="_blank" rel="noopener">g7fin/FINITENESS.md</a>, the finiteness argument and the F(5), F(6), F(7) notes; <a href="https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7fin/gen/README.md" target="_blank" rel="noopener">g7fin/gen</a>, the candidate-pattern generator that re-derives the Szöllősi–Östergård counts.</p>
       <h3>Sources</h3>
       <p class="src">S. J. Einhorn, I. J. Schoenberg, Indag. Math. 28 (1966). · P. Erdős, P. Fishburn, Discrete Math. 160 (1996) 115–125. · M. Shinohara, European J. Combin. 25 (2004) 1039–1058; Discrete Math. 308 (2008) 3048–3055. · X. Wei, Ars Combin. 102 (2011); Electron. J. Combin. 19(4) (2012) P38. · W. Lan, X. Wei, Math. Notes (2013). · F. Szöllősi, P. R. J. Östergård, Electron. J. Combin. 27(1) (2020) P1.23. · E. Bannai, E. Bannai, D. Stanton (1983); A. Blokhuis (1984). · L.-R. Bao, W.-H. Yu, arXiv:2509.00880 (2025). · K. Balaji et al., arXiv:1911.11688.</p>
     </aside>
@@ -247,6 +249,7 @@ const DATA = __DATA__;
   const tableEl=document.getElementById('fd-table'), catEl=document.getElementById('fd-catalog');
   const backBtn=document.getElementById('fd-back'), whereEl=document.getElementById('fd-where'), hintEl=document.getElementById('fd-hint');
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function linky(s){ return esc(s).replace(/https?:\/\/[^\s)<>,;]+/g, u => `<a href="${u}" target="_blank" rel="noopener">${u.replace(/^https?:\/\//,'')}</a>`); }
   function boundText(b){ if(b.hi!=null&&b.hi===b.lo) return String(b.lo); if(b.hi!=null) return `[${b.lo}, ${b.hi}]`; return `≥ ${b.lo}`; }
   function cellHTML(key,c){
     const marks=(c.marks||[]).map(m=>`<span class="mk">${m}</span>`).join('');
@@ -413,7 +416,7 @@ const DATA = __DATA__;
     const c=cells[key], cat=cats[key]; if(!c||!cat) return;
     const nLabel=c.n, dLabel=c.d;
     let st= cat.complete?'<span class="st complete">complete list</span>':'<span class="st">known configurations · lower bounds</span>';
-    let h=`<div class="fd-cathead"><h2>${esc(cat.title)}</h2>${st}<p>${esc(c.note||'')} ${esc(cat.note||'')}</p>${cat.sources.length?`<p class="src">${cat.sources.map(esc).join(' · ')}</p>`:''}</div>`;
+    let h=`<div class="fd-cathead"><h2>${esc(cat.title)}</h2>${st}<p>${linky(c.note||'')} ${linky(cat.note||'')}</p>${cat.sources.length?`<p class="src">${cat.sources.map(linky).join(' · ')}</p>`:''}</div>`;
     if(!cat.items.length){ h+=`<div class="fd-empty">No configuration is known in this range.</div>`; }
     else{
       h+='<div class="fd-cards">';

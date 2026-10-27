@@ -115,7 +115,7 @@ SRC={
  'Bal':'K. Balaji et al., Lattice configurations determining few distances, arXiv:1911.11688',
  'cert':'exact computation for this applet (Oct 2026): msolve 0.10 (Berthomieu–Eder–Safey El Din) and Singular 4 (minAssGTZ), one polynomial system per colouring type',
  'us':'computation for this applet (Oct 2026): exhaustive enumeration of edge-colouring types with numerical realization, cross-checked by two independent methods',
- 'pat':'exact classification for this applet (Oct 2026): complete list of candidate distance patterns (a re-implementation of the Szöllősi–Östergård orderly generation, reproducing their counts at every order), every pattern certified rigid (Singular, dimension 0 over ℚ) and solved by msolve real root isolation; configurations counted up to similarity by an exact congruence test (tools/fixed-distances/g7fin, g7count)',
+ 'pat':'exact classification for this applet (Oct 2026): complete list of candidate distance patterns (a re-implementation of the Szöllősi–Östergård orderly generation, reproducing their counts at every order), every pattern certified rigid (Singular, dimension 0 over ℚ) and solved by msolve real root isolation; configurations counted up to similarity by an exact congruence test. Code, certificates and write-ups: https://github.com/alonamit1729/affinemess-applets/tree/main/tools/fixed-distances (walkthrough: https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7count/REPRODUCING.md)',
 }
 def same(P,Q,tol=1e-6):
     """similarity test: equal sorted distance multisets (quick filter) AND a vertex bijection matching every pairwise
