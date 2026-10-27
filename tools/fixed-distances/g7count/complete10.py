@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 L = json.load(open(os.path.join(SCR, 'g7fin', 'gen', 'levels', 'L10.json')))['patterns']
 w, W = int(sys.argv[1]), int(sys.argv[2])
 ONCE = len(sys.argv) > 3
-os.makedirs(os.path.join(HERE, 'ext10'), exist_ok=True)
+EXTDIR = os.environ.get('EXT10DIR', 'ext10'); os.makedirs(os.path.join(HERE, EXTDIR), exist_ok=True)
 
 
 def realizations(rec):
@@ -36,8 +36,8 @@ def realizations(rec):
 while True:
     todo = []
     for idx in range(w, len(L), W):
-        fo = os.path.join(HERE, 'ext10', f'pat_{idx}.json')
-        fi = os.path.join(HERE, 'real10', f'pat_{idx}.json')
+        fo = os.path.join(HERE, EXTDIR, f'pat_{idx}.json')
+        fi = os.path.join(HERE, os.environ.get('REAL10DIR', 'real10'), f'pat_{idx}.json')
         if os.path.exists(fo): continue
         if not os.path.exists(fi): todo.append(idx); continue
         rec = json.load(open(fi))

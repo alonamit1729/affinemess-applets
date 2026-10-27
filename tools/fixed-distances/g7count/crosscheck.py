@@ -6,7 +6,7 @@ from cores11 import all_sets
 SCR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 C = Classes()
 npat = 0
-for f in sorted(glob.glob('ext10/pat_*.json')):
+for f in sorted(glob.glob(os.environ.get('EXT10DIR','ext10')+'/pat_*.json')):
     d = json.load(open(f)); npat += 1
     for c in d['cores']:
         A = [(mp.mpf(x), mp.mpf(y)) for x, y in c['A']]

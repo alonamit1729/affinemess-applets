@@ -2,7 +2,7 @@
 import json, glob, os
 from extend import *
 SCR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-recs = [json.load(open(f)) for f in sorted(glob.glob('ext10/pat_*.json'), key=lambda f: int(f.split('_')[-1][:-5]))]
+recs = [json.load(open(f)) for f in sorted(glob.glob(os.environ.get('EXT10DIR','ext10')+'/pat_*.json'), key=lambda f: int(f.split('_')[-1][:-5]))]
 print('patterns processed:', len(recs))
 from collections import Counter
 print('status:', Counter(r['status'] for r in recs))
