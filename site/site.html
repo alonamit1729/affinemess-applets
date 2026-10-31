@@ -1,5 +1,8 @@
 <!-- =========================================================
-  VERSION 2026-10-26a
+  VERSION 2026-10-30a
+    a: Home tab (first, the landing page): a pencil-drawn floating dodecahedron whose faces name the
+       sections; rest on a face (desktop) or swipe (phone) to turn it, click/tap the front face to open
+  PREVIOUS 2026-10-26a
     a: tan n card: zoomable to 10^10 (applet extended by the "Zoomable tan(k)" session)
   PREVIOUS 2026-10-25f
     f: seven-distance paper credits GPT-6 Astra
@@ -200,6 +203,25 @@
   .am-root main { flex-grow: 1; padding: 28px 0 20px; position: relative; }
   .am-root .panel { display: none; animation: am-fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .am-root .panel.active { display: block; }
+
+  /* ============== HOME: the pencil dodecahedron (fills the space between header and footer) ============== */
+  .am-root.am-at-home main { display: flex; flex-direction: column; padding: 8px 0 14px; }
+  .am-root.am-at-home .panel.active { display: flex; flex-direction: column; flex-grow: 1; }
+  .am-root .home-stage { position: relative; flex-grow: 1; min-height: 340px; }
+  .am-root .home-canvas {
+    position: absolute; inset: 0; display: block; touch-action: none; outline: none;
+    -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none;
+  }
+  .am-root .home-canvas:focus-visible { outline: 1px dashed var(--line); outline-offset: -6px; }
+  .am-root .home-hint {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em;
+    color: var(--ink-faint); text-align: center; padding-top: 4px;
+  }
+  .am-root .home-hint .touch { display: none; }
+  @media (hover: none) {
+    .am-root .home-hint .mouse { display: none; }
+    .am-root .home-hint .touch { display: inline; }
+  }
   @keyframes am-fadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -750,15 +772,16 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-10-26a">
+<div class="am-root" data-version="2026-10-30a">
   <div class="am-container">
 
     <header class="site-head">
-      <a class="wordmark" href="#applets">
+      <a class="wordmark" href="#home">
         <span class="affine">affine</span><span class="sep">·</span><span class="mess"><span>m</span><span>e</span><span>s</span><span>s</span></span>
       </a>
       <nav class="tabs" role="tablist">
-        <button role="tab" data-tab="applets" aria-selected="true">Applets</button>
+        <button role="tab" data-tab="home"    aria-selected="true">Home</button>
+        <button role="tab" data-tab="applets" aria-selected="false">Applets</button>
         <button role="tab" data-tab="papers"  aria-selected="false">Papers</button>
         <button role="tab" data-tab="desmos"  aria-selected="false">Desmos</button>
         <button role="tab" data-tab="media"   aria-selected="false">Media</button>
@@ -768,6 +791,14 @@
     </header>
 
     <main>
+      <!-- HOME: drawn by AmHome (top of the script) -->
+      <section class="panel active" id="am-panel-home">
+        <div class="home-stage">
+          <canvas class="home-canvas" tabindex="0" role="img" aria-label="A pencil-drawn dodecahedron whose faces name the sections: Applets, Papers, Desmos, Media, Quora, About. Press Enter to open the front face."></canvas>
+        </div>
+        <div class="home-hint"><span class="mouse">rest on a face to turn it · click the front face</span><span class="touch">swipe to turn · tap the front face</span></div>
+      </section>
+
       <!-- PAPERS -->
       <section class="panel" id="am-panel-papers">
         <div class="panel-head">
@@ -863,7 +894,7 @@
       </section>
 
       <!-- APPLETS -->
-      <section class="panel active" id="am-panel-applets">
+      <section class="panel" id="am-panel-applets">
         <div class="panel-head">
           <span class="num">01</span>
           <h2>Applets</h2>

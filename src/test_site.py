@@ -4,7 +4,7 @@
 usage: python3 src/test_site.py [--shots DIR]
 Serves the repo on a free local port, loads index.html (the site) and site/preview.html
 (the legacy Squarespace loader, base URL pointed at that server), and checks: version stamp, every tab, every applet tile, the in-place
-viewer (#applets/<slug>), Quora search, and that no page errors are thrown.
+viewer (#applets/<slug>), the Home dodecahedron, Quora search, and that no page errors are thrown.
 Needs: pip install playwright && playwright install chromium (or an existing Chromium).
 """
 import functools, glob, http.server, os, re, shutil, socket, sys, tempfile, threading
@@ -50,7 +50,7 @@ def main():
             pg = b.new_page(viewport={'width': w, 'height': h})
             errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
             url = base + entry
-            pg.goto(url); pg.wait_for_selector('.am-root .tile')
+            pg.goto(url); pg.wait_for_selector('.am-root .tabs')
             print('%s at %dx%d' % (entry, w, h))
             check(pg.get_attribute('.am-root', 'data-version') == version, 'version stamp v' + version)
             tiles = pg.eval_on_selector_all('#am-panel-applets .tile', 'els=>els.map(e=>e.dataset.slug)')
@@ -60,6 +60,20 @@ def main():
                     check(os.path.exists(os.path.join(REPO, f + '.html')), 'applet file %s.html exists' % f)
             tabs = pg.eval_on_selector_all('.am-root nav button, .am-root [role=tab]', 'els=>els.map(e=>e.textContent.trim())')
             check(len(tabs) >= 6, 'tabs: ' + ', '.join(tabs))
+            # Home: the landing tab, a drawn dodecahedron; clicking its front face opens Applets
+            pg.wait_for_timeout(400)
+            active = pg.eval_on_selector('.am-root .panel.active', 'e=>e.id')
+            check(tabs[:1] == ['Home'] and active == 'am-panel-home', 'lands on Home (%s)' % active)
+            box = pg.locator('.home-canvas').bounding_box()
+            check(box and box['width'] > 250 and box['height'] > 250, 'dodecahedron stage %dx%d' % ((box or {}).get('width', 0), (box or {}).get('height', 0)))
+            inked = pg.evaluate('''() => { const c = document.querySelector('.home-canvas'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+                                     let n = 0; for (let i = 3; i < d.length; i += 16) if (d[i] > 0) n++; return n; }''')
+            check(inked > 1000, 'dodecahedron is drawn (%d px)' % inked)
+            if box and entry == 'index.html':
+                pg.mouse.click(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2); pg.wait_for_timeout(300)
+                check(pg.eval_on_selector('.am-root .panel.active', 'e=>e.id') == 'am-panel-applets', 'front face opens Applets')
+                pg.click('.am-root .tabs button[data-tab=home]'); pg.wait_for_timeout(200)
+                check(pg.eval_on_selector('.am-root .panel.active', 'e=>e.id') == 'am-panel-home', 'Home tab returns')
             first = tiles[0] if tiles else None
             if first:
                 pg.goto(url + '#applets/' + first); pg.wait_for_timeout(800)
@@ -79,7 +93,7 @@ def main():
             check(n > 0, '%d Quora rows' % n)
             if shots:
                 os.makedirs(shots, exist_ok=True)
-                pg.goto(url); pg.wait_for_selector('.am-root .tile')
+                pg.goto(url); pg.wait_for_selector('.am-root .tabs')
                 pg.screenshot(path=os.path.join(shots, '%s-%d.png' % (entry.replace('/', '_'), w)))
             check(not errs, 'no page errors' + ('' if not errs else ': ' + '; '.join(errs[:3])))
             pg.close()

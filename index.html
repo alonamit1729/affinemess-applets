@@ -14,7 +14,10 @@
 </head>
 <body>
 <!-- =========================================================
-  VERSION 2026-10-26a
+  VERSION 2026-10-30a
+    a: Home tab (first, the landing page): a pencil-drawn floating dodecahedron whose faces name the
+       sections; rest on a face (desktop) or swipe (phone) to turn it, click/tap the front face to open
+  PREVIOUS 2026-10-26a
     a: tan n card: zoomable to 10^10 (applet extended by the "Zoomable tan(k)" session)
   PREVIOUS 2026-10-25f
     f: seven-distance paper credits GPT-6 Astra
@@ -215,6 +218,25 @@
   .am-root main { flex-grow: 1; padding: 28px 0 20px; position: relative; }
   .am-root .panel { display: none; animation: am-fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .am-root .panel.active { display: block; }
+
+  /* ============== HOME: the pencil dodecahedron (fills the space between header and footer) ============== */
+  .am-root.am-at-home main { display: flex; flex-direction: column; padding: 8px 0 14px; }
+  .am-root.am-at-home .panel.active { display: flex; flex-direction: column; flex-grow: 1; }
+  .am-root .home-stage { position: relative; flex-grow: 1; min-height: 340px; }
+  .am-root .home-canvas {
+    position: absolute; inset: 0; display: block; touch-action: none; outline: none;
+    -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none;
+  }
+  .am-root .home-canvas:focus-visible { outline: 1px dashed var(--line); outline-offset: -6px; }
+  .am-root .home-hint {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em;
+    color: var(--ink-faint); text-align: center; padding-top: 4px;
+  }
+  .am-root .home-hint .touch { display: none; }
+  @media (hover: none) {
+    .am-root .home-hint .mouse { display: none; }
+    .am-root .home-hint .touch { display: inline; }
+  }
   @keyframes am-fadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -765,15 +787,16 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-10-26a">
+<div class="am-root" data-version="2026-10-30a">
   <div class="am-container">
 
     <header class="site-head">
-      <a class="wordmark" href="#applets">
+      <a class="wordmark" href="#home">
         <span class="affine">affine</span><span class="sep">·</span><span class="mess"><span>m</span><span>e</span><span>s</span><span>s</span></span>
       </a>
       <nav class="tabs" role="tablist">
-        <button role="tab" data-tab="applets" aria-selected="true">Applets</button>
+        <button role="tab" data-tab="home"    aria-selected="true">Home</button>
+        <button role="tab" data-tab="applets" aria-selected="false">Applets</button>
         <button role="tab" data-tab="papers"  aria-selected="false">Papers</button>
         <button role="tab" data-tab="desmos"  aria-selected="false">Desmos</button>
         <button role="tab" data-tab="media"   aria-selected="false">Media</button>
@@ -783,6 +806,14 @@
     </header>
 
     <main>
+      <!-- HOME: drawn by AmHome (top of the script) -->
+      <section class="panel active" id="am-panel-home">
+        <div class="home-stage">
+          <canvas class="home-canvas" tabindex="0" role="img" aria-label="A pencil-drawn dodecahedron whose faces name the sections: Applets, Papers, Desmos, Media, Quora, About. Press Enter to open the front face."></canvas>
+        </div>
+        <div class="home-hint"><span class="mouse">rest on a face to turn it · click the front face</span><span class="touch">swipe to turn · tap the front face</span></div>
+      </section>
+
       <!-- PAPERS -->
       <section class="panel" id="am-panel-papers">
         <div class="panel-head">
@@ -878,7 +909,7 @@
       </section>
 
       <!-- APPLETS -->
-      <section class="panel active" id="am-panel-applets">
+      <section class="panel" id="am-panel-applets">
         <div class="panel-head">
           <span class="num">01</span>
           <h2>Applets</h2>
@@ -1382,6 +1413,397 @@
   </div>
 </div>
 <script>
+  /* ============ HOME: pencil dodecahedron (am-home v1) ============
+     Draws into <canvas class="home-canvas"> inside .home-stage.
+     AmHome.init(stage, {onOpen(word), words}) -> {reset(), start(), stop()}
+     Geometry: a regular dodecahedron, opposite faces carry the same word,
+     so whichever face is in front, the six visible faces show all six words. */
+  var AmHome = (function () {
+    'use strict';
+    var PHI = (1 + Math.sqrt(5)) / 2;
+    var ORDER = ['Applets', 'Papers', 'Desmos', 'Media', 'Quora', 'About'];
+
+    /* ---------- small vector / quaternion kit ---------- */
+    function sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+    function add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+    function scl(a, s) { return [a[0] * s, a[1] * s, a[2] * s]; }
+    function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+    function cross(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+    function len(a) { return Math.sqrt(dot(a, a)); }
+    function unit(a) { return scl(a, 1 / len(a)); }
+    function mv(M, v) { return [dot(M[0], v), dot(M[1], v), dot(M[2], v)]; }
+    function mT(M) { return [[M[0][0], M[1][0], M[2][0]], [M[0][1], M[1][1], M[2][1]], [M[0][2], M[1][2], M[2][2]]]; }
+    function mm(A, B) { var T = mT(B); return [mv(T, A[0]), mv(T, A[1]), mv(T, A[2])]; }
+    function rotX(t) { var c = Math.cos(t), s = Math.sin(t); return [[1, 0, 0], [0, c, -s], [0, s, c]]; }
+    function rotY(t) { var c = Math.cos(t), s = Math.sin(t); return [[c, 0, s], [0, 1, 0], [-s, 0, c]]; }
+    function rotZ(t) { var c = Math.cos(t), s = Math.sin(t); return [[c, -s, 0], [s, c, 0], [0, 0, 1]]; }
+    // quaternions [w, x, y, z]
+    function qmul(a, b) {
+      return [a[0] * b[0] - a[1] * b[1] - a[2] * b[2] - a[3] * b[3],
+              a[0] * b[1] + a[1] * b[0] + a[2] * b[3] - a[3] * b[2],
+              a[0] * b[2] - a[1] * b[3] + a[2] * b[0] + a[3] * b[1],
+              a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + a[3] * b[0]];
+    }
+    function qconj(q) { return [q[0], -q[1], -q[2], -q[3]]; }
+    function qnorm(q) { var l = Math.hypot(q[0], q[1], q[2], q[3]); return [q[0] / l, q[1] / l, q[2] / l, q[3] / l]; }
+    function qaxis(ax, t) { var s = Math.sin(t / 2), u = unit(ax); return [Math.cos(t / 2), u[0] * s, u[1] * s, u[2] * s]; }
+    function qdot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]; }
+    function qmat(q) {
+      var w = q[0], x = q[1], y = q[2], z = q[3];
+      return [[1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+              [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+              [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)]];
+    }
+    function matq(M) {
+      var t = M[0][0] + M[1][1] + M[2][2], s;
+      if (t > 0) { s = Math.sqrt(t + 1) * 2; return qnorm([s / 4, (M[2][1] - M[1][2]) / s, (M[0][2] - M[2][0]) / s, (M[1][0] - M[0][1]) / s]); }
+      if (M[0][0] > M[1][1] && M[0][0] > M[2][2]) { s = Math.sqrt(1 + M[0][0] - M[1][1] - M[2][2]) * 2; return qnorm([(M[2][1] - M[1][2]) / s, s / 4, (M[0][1] + M[1][0]) / s, (M[0][2] + M[2][0]) / s]); }
+      if (M[1][1] > M[2][2]) { s = Math.sqrt(1 + M[1][1] - M[0][0] - M[2][2]) * 2; return qnorm([(M[0][2] - M[2][0]) / s, (M[0][1] + M[1][0]) / s, s / 4, (M[1][2] + M[2][1]) / s]); }
+      s = Math.sqrt(1 + M[2][2] - M[0][0] - M[1][1]) * 2; return qnorm([(M[1][0] - M[0][1]) / s, (M[0][2] + M[2][0]) / s, (M[1][2] + M[2][1]) / s, s / 4]);
+    }
+    function qslerp(a, b, t) {
+      var d = qdot(a, b);
+      if (d < 0) { b = [-b[0], -b[1], -b[2], -b[3]]; d = -d; }
+      if (d > 0.9995) return qnorm([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]), a[2] + t * (b[2] - a[2]), a[3] + t * (b[3] - a[3])]);
+      var th = Math.acos(d), s = Math.sin(th), wa = Math.sin((1 - t) * th) / s, wb = Math.sin(t * th) / s;
+      return [a[0] * wa + b[0] * wb, a[1] * wa + b[1] * wb, a[2] * wa + b[2] * wb, a[3] * wa + b[3] * wb];
+    }
+    function qangle(a, b) { return 2 * Math.acos(Math.min(1, Math.abs(qdot(a, b)))); }
+
+    /* ---------- the solid ---------- */
+    var V = [], N = [], F = [];
+    [-1, 1].forEach(function (x) { [-1, 1].forEach(function (y) { [-1, 1].forEach(function (z) { V.push([x, y, z]); }); }); });
+    [-1, 1].forEach(function (a) { [-1, 1].forEach(function (b) {
+      V.push([0, a / PHI, b * PHI], [a / PHI, b * PHI, 0], [a * PHI, 0, b / PHI]);
+      N.push(unit([0, a * PHI, b]), unit([a, 0, b * PHI]), unit([a * PHI, b, 0]));
+    }); });
+    N.forEach(function (n) {
+      var d = V.map(function (v) { return dot(v, n); }), m = Math.max.apply(null, d), idx = [];
+      for (var i = 0; i < 20; i++) if (d[i] > m - 1e-6) idx.push(i);
+      var c = scl(idx.reduce(function (s, i) { return add(s, V[i]); }, [0, 0, 0]), 1 / 5);
+      var e1 = unit(sub(V[idx[0]], c)), e2 = cross(n, e1);
+      idx.sort(function (i, j) {
+        return Math.atan2(dot(sub(V[i], c), e2), dot(sub(V[i], c), e1)) - Math.atan2(dot(sub(V[j], c), e2), dot(sub(V[j], c), e1));
+      });
+      F.push({ n: n, c: c, v: idx });
+    });
+    var ANTI = N.map(function (n) { var b = 0; for (var j = 1; j < 12; j++) if (dot(N[j], n) < dot(N[b], n)) b = j; return b; });
+    var EDGES = [];
+    (function () {
+      var seen = {};
+      F.forEach(function (f, fi) {
+        for (var k = 0; k < 5; k++) {
+          var a = f.v[k], b = f.v[(k + 1) % 5], key = Math.min(a, b) + '-' + Math.max(a, b);
+          if (seen[key] === undefined) { seen[key] = EDGES.length; EDGES.push({ a: a, b: b, f: [fi] }); }
+          else EDGES[seen[key]].f.push(fi);
+        }
+      });
+    })();
+    // a pseudo-random but fixed sketch for every edge: two pencil passes, each slightly bowed
+    var rs = 20261030;
+    function rnd() { rs = (rs * 1103515245 + 12345) % 2147483648; return rs / 2147483648; }
+    function rr(a, b) { return a + (b - a) * rnd(); }
+    EDGES.forEach(function (e) {
+      e.p = [0, 1].map(function (k) {
+        return { bend: rr(-1, 1) * (k ? 2.2 : 1.4) };   // both passes end exactly at the vertices
+      });
+    });
+    var HATCH = []; for (var h = 0; h < 40; h++) HATCH.push({ j0: rr(-0.025, 0.025), j1: rr(-0.025, 0.025), w: rr(0.6, 1), a: rr(0.75, 1.1), g: rr(0.85, 1.15) });
+
+    // "usual orientation" of face f: normal toward the viewer, vertex vi straight down
+    function canon(f, vi) {
+      var n = F[f].n, b = scl(unit(sub(V[vi], F[f].c)), -1), a = cross(b, n);
+      return matq([a, b, n]);
+    }
+    // home pose: Applets in front; neighbours, clockwise from the top: Papers, Desmos, Media, Quora, About
+    var HOME_FACE = 0, HOME_Q = canon(0, F[0].v[0]);
+    var WORD = [];
+    (function () {
+      var M = qmat(HOME_Q), nb = [];
+      for (var i = 0; i < 12; i++) if (i !== HOME_FACE && mv(M, N[i])[2] > 0.1) nb.push(i);
+      var ang = function (i) { var p = mv(M, N[i]); return ((90 - Math.atan2(p[1], p[0]) * 180 / Math.PI) % 360 + 360) % 360; };
+      nb.sort(function (i, j) { return ang(i) - ang(j); });
+      WORD[HOME_FACE] = WORD[ANTI[HOME_FACE]] = ORDER[0];
+      nb.forEach(function (i, k) { WORD[i] = WORD[ANTI[i]] = ORDER[k + 1]; });
+    })();
+
+    /* ---------- the component ---------- */
+    function init(stage, opts) {
+      var canvas = stage.querySelector('canvas');
+      var ctx = canvas.getContext('2d');
+      var GLYPHS = opts.words;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var TILT = mm(rotZ(0.6 * Math.PI / 180), mm(rotY(-5 * Math.PI / 180), rotX(6 * Math.PI / 180)));
+      var qTilt = matq(TILT);
+      var W = 0, H = 0, CX = 0, CY = 0, S = 1, dpr = 1, DIST = 14;
+      var q = HOME_Q.slice(), front = HOME_FACE, mode = 'idle', turn = null, raf = 0, running = false, t0 = performance.now();
+      var omega = [0, 0, 0], lastT = 0, ink = '30,24,16';
+      var proj = [], R = null, B = null, visible = [];
+
+      function resize() {
+        var r = stage.getBoundingClientRect();
+        dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        W = r.width; H = r.height;
+        canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+        canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+        CX = W / 2; CY = H / 2;
+        S = Math.min(W, H) * (W < 520 ? 0.52 : 0.47) / 1.95;
+      }
+
+      function drift(t) {
+        if (reduce) return { M: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], x: 0, y: 0 };
+        var s = t / 1000, d = Math.PI / 180, TAU = 2 * Math.PI;
+        var ax = 3.0 * Math.sin(TAU * s / 8.3) + 1.0 * Math.sin(TAU * s / 3.7 + 1.3);
+        var ay = 4.4 * Math.sin(TAU * s / 10.9 + 0.7) + 1.1 * Math.sin(TAU * s / 4.3 + 2.1);
+        var az = 1.6 * Math.sin(TAU * s / 13.1 + 2.0);
+        return { M: mm(rotZ(az * d), mm(rotY(ay * d), rotX(ax * d))),
+                 x: S * (0.035 * Math.sin(TAU * s / 9.7 + 0.4) + 0.012 * Math.sin(TAU * s / 4.1)),
+                 y: S * (0.05 * Math.sin(TAU * s / 6.3 + 1.1) + 0.015 * Math.sin(TAU * s / 2.9 + 0.3)) };
+      }
+
+      function P(p, D) { // model point -> screen
+        var v = mv(R, p), k = DIST / (DIST - v[2]);
+        return [CX + D.x + S * v[0] * k, CY + D.y - S * v[1] * k];
+      }
+
+      // readable frame of a face: up = screen-up projected onto the face (in the undrifted pose)
+      function frame(fi) {
+        var nb = mv(B, F[fi].n), up = [0, 1, 0], u = sub(up, scl(nb, dot(up, nb)));
+        if (len(u) < 0.06) u = [0, 0, 1];
+        u = unit(u);
+        var r = cross(u, nb), BT = mT(B);
+        return { u: mv(BT, u), r: mv(BT, r) };
+      }
+
+      function easeIO(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+      function turnTo(fi, ms) {
+        var best = null, ba = 9;
+        F[fi].v.forEach(function (vi) { var c = canon(fi, vi), a = qangle(q, c); if (a < ba) { ba = a; best = c; } });
+        var dur = reduce ? 1 : (ms || 520 + 380 * ba / Math.PI);
+        turn = { q0: q.slice(), q1: best, t0: performance.now(), dur: dur, from: front, to: fi };
+        front = fi; mode = 'turn'; armed = false;
+        wake();
+      }
+
+      function draw(now) {
+        var D = drift(now - t0);
+        var p = 1, from = front;
+        if (mode === 'turn') {
+          p = Math.min(1, (now - turn.t0) / turn.dur);
+          q = qslerp(turn.q0, turn.q1, easeIO(p));
+          from = turn.from;
+          if (p >= 1) { mode = 'idle'; armPos = lastPos ? lastPos.slice() : null; turn = null; }
+        } else if (mode === 'coast') {
+          var dt = Math.min(48, now - lastT), w = len(omega);
+          if (w * 1000 < 0.25 || reduce) { snap(); }
+          else {
+            var dq = qaxis(omega, w * dt);
+            q = qnorm(qmul(qconj(qTilt), qmul(dq, qmul(qTilt, q))));
+            omega = scl(omega, Math.pow(0.93, dt / 16));
+          }
+        }
+        lastT = now;
+        var Q = qmat(q);
+        B = mm(TILT, Q); R = mm(D.M, B);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        proj = V.map(function (v) { return P(v, D); });
+        var cam = [0, 0, DIST];
+        visible = F.map(function (f) { return dot(mv(R, f.n), sub(cam, mv(R, f.c))) > 0; });
+
+        // opaque faces
+        ctx.fillStyle = '#FBF6E8';
+        F.forEach(function (f, i) {
+          if (!visible[i]) return;
+          ctx.beginPath();
+          f.v.forEach(function (vi, k) { var s = proj[vi]; if (k) ctx.lineTo(s[0], s[1]); else ctx.moveTo(s[0], s[1]); });
+          ctx.closePath(); ctx.fill();
+        });
+        // hatching on the front face (cross-fades during a turn)
+        if (mode === 'turn' && turn) { hatch(turn.from, 1 - p, D); hatch(turn.to, p, D); }
+        else hatch(front, 1, D);
+        // words
+        F.forEach(function (f, i) { if (visible[i]) word(i, D); });
+        // edges
+        ctx.lineCap = 'round';
+        EDGES.forEach(function (e) {
+          var v0 = visible[e.f[0]], v1 = visible[e.f[1]];
+          if (!v0 && !v1) return;
+          var sil = v0 !== v1;
+          var A = V[e.a], Bv = V[e.b];
+          e.p.forEach(function (s, k) {
+            var a = P(A, D), b = P(Bv, D);
+            var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+            var m = [(a[0] + b[0]) / 2 + nx * s.bend * L / 160, (a[1] + b[1]) / 2 + ny * s.bend * L / 160];
+            ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(m[0], m[1], b[0], b[1]);
+            ctx.lineWidth = (sil ? 1.9 : 1.45) * (k ? 0.6 : 1) * Math.max(0.8, S / 130);
+            ctx.strokeStyle = 'rgba(' + ink + ',' + (k ? 0.42 : 0.82) + ')';
+            ctx.stroke();
+          });
+        });
+      }
+
+      function hatch(fi, alpha, D) {
+        if (alpha <= 0.01 || !visible[fi]) return;
+        var fr = frame(fi), c = F[fi].c, t = 38 * Math.PI / 180;
+        var hd = add(scl(fr.r, Math.cos(t)), scl(fr.u, Math.sin(t))), md = add(scl(fr.r, -Math.sin(t)), scl(fr.u, Math.cos(t)));
+        var poly = F[fi].v.map(function (vi) { var w = sub(V[vi], c); return [dot(w, hd), dot(w, md)]; });
+        ctx.lineCap = 'round';
+        var gap = 0.072, s = -1.06, k = 0;
+        while (s < 1.06) {
+          var lo = Infinity, hi = -Infinity;
+          for (var e = 0; e < 5; e++) {
+            var p0 = poly[e], p1 = poly[(e + 1) % 5];
+            if ((p0[1] - s) * (p1[1] - s) <= 0 && p0[1] !== p1[1]) {
+              var x = p0[0] + (p1[0] - p0[0]) * (s - p0[1]) / (p1[1] - p0[1]);
+              lo = Math.min(lo, x); hi = Math.max(hi, x);
+            }
+          }
+          var hh = HATCH[k % HATCH.length];
+          if (hi - lo > 0.04) {
+            var a = P(add(c, add(scl(hd, lo + 0.03 + hh.j0), scl(md, s))), D), b = P(add(c, add(scl(hd, hi - 0.03 + hh.j1), scl(md, s))), D);
+            ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
+            ctx.lineWidth = hh.w * Math.max(0.7, S / 160);
+            ctx.strokeStyle = 'rgba(' + ink + ',' + (0.3 * hh.a * alpha).toFixed(3) + ')';
+            ctx.stroke();
+          }
+          s += gap * hh.g; k++;
+        }
+      }
+
+      function word(fi, D) {
+        var g = GLYPHS[WORD[fi]]; if (!g) return;
+        var fr = frame(fi), c = add(F[fi].c, scl(F[fi].n, 0.003));
+        var k = Math.min(0.56, 1.22 / g.w);
+        var rx = scl(fr.r, k), uy = scl(fr.u, k);
+        function pt(x, y) { return P(add(c, add(scl(rx, x), scl(uy, y))), D); }
+        ctx.beginPath();
+        g.c.forEach(function (cn) {
+          var s = pt(cn[0], cn[1]); ctx.moveTo(s[0], s[1]);
+          var i = 2;
+          while (i < cn.length) {
+            if (cn[i] === 0) { s = pt(cn[i + 1], cn[i + 2]); ctx.lineTo(s[0], s[1]); i += 3; }
+            else { var cc = pt(cn[i + 1], cn[i + 2]); s = pt(cn[i + 3], cn[i + 4]); ctx.quadraticCurveTo(cc[0], cc[1], s[0], s[1]); i += 5; }
+          }
+          ctx.closePath();
+        });
+        ctx.fillStyle = 'rgba(' + ink + ',' + (fi === front ? 0.92 : 0.8) + ')';
+        ctx.fill('nonzero');
+      }
+
+      /* ---------- interaction ---------- */
+      var armed = true, armPos = null, lastPos = null, dwellFace = -1, dwellTimer = 0;
+      var down = null, moves = [];
+
+      function faceAt(x, y) {
+        for (var i = 0; i < 12; i++) {
+          if (!visible[i]) continue;
+          var vs = F[i].v, inside = false;
+          for (var a = 0, b = 4; a < 5; b = a++) {
+            var pa = proj[vs[a]], pb = proj[vs[b]];
+            if ((pa[1] > y) !== (pb[1] > y) && x < (pb[0] - pa[0]) * (y - pa[1]) / (pb[1] - pa[1]) + pa[0]) inside = !inside;
+          }
+          if (inside) return i;
+        }
+        return -1;
+      }
+      function local(e) { var r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+      function clearDwell() { clearTimeout(dwellTimer); dwellFace = -1; }
+      function snap() {
+        var best = 0, bz = -2, M = mm(TILT, qmat(q));
+        for (var i = 0; i < 12; i++) { var z = mv(M, N[i])[2]; if (z > bz) { bz = z; best = i; } }
+        mode = 'idle'; turnTo(best, 420);
+      }
+      function rotateBy(dx, dy) {
+        var ang = Math.hypot(dx, dy) / (S * 1.6);
+        if (ang < 1e-5) return;
+        var dq = qaxis([dy, dx, 0], ang);
+        q = qnorm(qmul(qconj(qTilt), qmul(dq, qmul(qTilt, q))));
+      }
+
+      canvas.addEventListener('pointermove', function (e) {
+        var p = local(e); lastPos = p;
+        if (down) {
+          var dx = p[0] - down.last[0], dy = p[1] - down.last[1];
+          if (!down.drag && Math.hypot(p[0] - down.p[0], p[1] - down.p[1]) > 6) { down.drag = true; mode = 'drag'; turn = null; clearDwell(); }
+          if (down.drag) {
+            rotateBy(dx, dy);
+            var now = performance.now();
+            moves.push({ t: now, dx: dx, dy: dy }); while (moves.length && now - moves[0].t > 90) moves.shift();
+            wake();
+          }
+          down.last = p;
+          return;
+        }
+        if (e.pointerType !== 'mouse') return;
+        var f = faceAt(p[0], p[1]);
+        canvas.style.cursor = (f === front && mode === 'idle') ? 'pointer' : '';
+        if (!armed) { if (!armPos || Math.hypot(p[0] - armPos[0], p[1] - armPos[1]) > 4) armed = true; else return; }
+        if (mode !== 'idle' || f < 0 || f === front) { clearDwell(); return; }
+        if (f !== dwellFace) {
+          clearDwell(); dwellFace = f;
+          dwellTimer = setTimeout(function () {
+            if (mode === 'idle' && armed && lastPos && faceAt(lastPos[0], lastPos[1]) === dwellFace) turnTo(dwellFace);
+            dwellFace = -1;
+          }, 200);
+        }
+      });
+      canvas.addEventListener('pointerleave', function () { clearDwell(); lastPos = null; canvas.style.cursor = ''; });
+      canvas.addEventListener('pointerdown', function (e) {
+        if (e.button !== undefined && e.button !== 0) return;
+        var p = local(e);
+        down = { p: p, last: p, t: performance.now(), drag: false, id: e.pointerId };
+        moves = []; clearDwell();
+        try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+      function release(e) {
+        if (!down) return;
+        var p = local(e), d = down; down = null;
+        if (d.drag) {
+          var now = performance.now(), sx = 0, sy = 0, t = 0;
+          moves.forEach(function (m) { if (now - m.t < 90) { sx += m.dx; sy += m.dy; } });
+          t = moves.length ? Math.max(16, now - moves[0].t) : 16;
+          var vx = sx / t, vy = sy / t, sp = Math.hypot(vx, vy);
+          omega = sp > 0.02 ? scl(unit([vy, vx, 0]), sp / (S * 1.6)) : [0, 0, 0];
+          mode = 'coast'; lastT = now; wake();
+          return;
+        }
+        if (e.type === 'pointercancel') return;
+        if (performance.now() - d.t < 600 && faceAt(p[0], p[1]) === front && mode !== 'turn') {
+          if (opts.onOpen) opts.onOpen(WORD[front]);
+        }
+      }
+      canvas.addEventListener('pointerup', release);
+      canvas.addEventListener('pointercancel', release);
+      canvas.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (opts.onOpen) opts.onOpen(WORD[front]); }
+      });
+
+      function loop(now) {
+        raf = 0;
+        if (!running) return;
+        if (!W || !H) resize();               // the panel was hidden when we last measured
+        if (W && H) draw(now);
+        raf = requestAnimationFrame(loop);
+      }
+      function wake() { if (running && !raf) raf = requestAnimationFrame(loop); }
+      if (window.ResizeObserver) new ResizeObserver(function () { resize(); if (!running && W && H) draw(performance.now()); }).observe(stage);
+      resize();
+
+      return {
+        reset: function () { q = HOME_Q.slice(); front = HOME_FACE; mode = 'idle'; turn = null; omega = [0, 0, 0]; armed = true; clearDwell(); },
+        start: function () { if (running) return; running = true; resize(); wake(); },
+        stop: function () { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; clearDwell(); },
+        front: function () { return WORD[front]; }
+      };
+    }
+    return { init: init, words: WORD };
+  })();
+  /* Caveat outlines of the six face words, generated by src/home_words.py; never edit by hand. */
+  /*HOME-WORDS BEGIN*/var AM_HOME_WORDS = {"Applets":{"w":2.448,"c":[[-1.16,-.283,1,-1.178,-.273,-1.18,-.261,1,-1.181,-.249,-1.166,-.219,1,-1.151,-.189,-1.119,-.126,1,-1.095,-.081,-1.086,-.055,1,-1.076,-.03,-1.074,-.019,1,-1.071,-.008,-1.071,-.005,1,-1.073,.004,-1.069,.01,1,-1.065,.015,-1.056,.019,1,-1.051,.024,-1.036,.037,1,-1.02,.05,-1.01,.068,1,-1.001,.089,-.989,.111,1,-.977,.133,-.958,.166,1,-.939,.2,-.907,.254,1,-.887,.289,-.86,.331,1,-.834,.372,-.807,.408,1,-.796,.422,-.785,.43,1,-.774,.438,-.765,.438,1,-.746,.438,-.726,.428,1,-.707,.417,-.691,.402,1,-.675,.386,-.669,.371,1,-.664,.363,-.665,.337,1,-.666,.311,-.669,.274,1,-.672,.237,-.676,.195,1,-.679,.154,-.685,.098,1,-.691,.042,-.697,-.019,1,-.702,-.08,-.705,-.137,1,-.708,-.193,-.705,-.235,1,-.704,-.244,-.705,-.252,1,-.706,-.26,-.706,-.265,1,-.712,-.271,-.73,-.271,1,-.748,-.27,-.765,-.264,1,-.782,-.258,-.784,-.249,1,-.787,-.246,-.787,-.243,1,-.788,-.24,-.787,-.222,1,-.786,-.204,-.785,-.16,0,-.78,-.004,0,-.793,-.005,1,-.802,-.005,-.826,-.007,1,-.85,-.009,-.878,-.013,1,-.906,-.016,-.929,-.02,1,-.953,-.023,-.962,-.026,1,-.971,-.026,-.983,-.038,1,-.996,-.05,-1.007,-.069,1,-1.011,-.083,-1.021,-.099,1,-1.032,-.114,-1.032,-.119,1,-1.039,-.124,-1.043,-.131,1,-1.047,-.138,-1.047,-.138,1,-1.047,-.144,-1.057,-.168,1,-1.066,-.191,-1.079,-.22,1,-1.093,-.248,-1.107,-.269,0,-1.132,-.305],[-.932,.054,1,-.932,.054,-.921,.056,1,-.91,.058,-.895,.06,1,-.88,.063,-.868,.063,1,-.839,.07,-.822,.073,1,-.805,.076,-.796,.077,1,-.787,.077,-.781,.074,1,-.777,.069,-.773,.068,1,-.77,.067,-.77,.067,1,-.769,.069,-.766,.089,1,-.764,.108,-.76,.137,1,-.756,.166,-.752,.198,1,-.748,.229,-.746,.256,1,-.743,.284,-.742,.299,1,-.741,.318,-.742,.333,1,-.743,.349,-.743,.349,1,-.749,.349,-.766,.327,1,-.784,.305,-.806,.27,1,-.829,.234,-.85,.193,1,-.86,.174,-.868,.162,1,-.877,.149,-.882,.149,1,-.884,.147,-.893,.133,1,-.902,.119,-.912,.102,1,-.922,.084,-.928,.07,1,-.935,.056,-.932,.054],[-.655,-.48,1,-.659,-.48,-.666,-.481,1,-.673,-.481,-.678,-.472,1,-.682,-.467,-.688,-.454,1,-.693,-.441,-.688,-.415,1,-.683,-.398,-.68,-.382,1,-.677,-.365,-.677,-.357,1,-.677,-.353,-.675,-.342,1,-.672,-.33,-.672,-.325,1,-.667,-.317,-.664,-.303,1,-.661,-.289,-.661,-.278,1,-.661,-.266,-.649,-.256,1,-.649,-.248,-.646,-.236,1,-.642,-.224,-.642,-.22,1,-.639,-.206,-.629,-.17,1,-.618,-.135,-.603,-.09,1,-.587,-.045,-.572,-.002,1,-.557,.041,-.545,.071,1,-.533,.099,-.526,.122,1,-.519,.145,-.519,.155,1,-.519,.159,-.517,.161,1,-.515,.164,-.508,.172,1,-.498,.182,-.485,.179,1,-.471,.176,-.46,.168,1,-.452,.155,-.449,.145,1,-.445,.135,-.449,.113,1,-.449,.098,-.456,.086,1,-.462,.074,-.467,.067,1,-.472,.06,-.47,.061,1,-.427,.085,-.393,.088,1,-.359,.09,-.335,.076,1,-.312,.062,-.299,.038,1,-.287,.014,-.287,-.015,1,-.287,-.027,-.294,-.046,1,-.301,-.065,-.31,-.081,1,-.319,-.097,-.325,-.103,1,-.329,-.103,-.333,-.11,1,-.337,-.116,-.341,-.124,1,-.349,-.134,-.367,-.147,1,-.386,-.159,-.404,-.167,1,-.422,-.174,-.43,-.171,1,-.43,-.171,-.433,-.173,1,-.435,-.174,-.435,-.179,1,-.435,-.181,-.45,-.187,1,-.465,-.193,-.484,-.199,1,-.504,-.204,-.52,-.204,1,-.541,-.204,-.55,-.196,1,-.552,-.198,-.554,-.202,1,-.557,-.206,-.557,-.209,1,-.557,-.215,-.561,-.229,1,-.566,-.243,-.572,-.255,1,-.578,-.267,-.583,-.267,1,-.583,-.267,-.585,-.27,1,-.587,-.273,-.583,-.278,1,-.583,-.278,-.583,-.289,1,-.584,-.301,-.589,-.309,1,-.589,-.317,-.592,-.333,1,-.595,-.349,-.599,-.357,1,-.599,-.369,-.602,-.381,1,-.606,-.392,-.61,-.392,1,-.614,-.393,-.615,-.404,1,-.616,-.416,-.616,-.421,1,-.617,-.446,-.63,-.463,1,-.643,-.48,-.655,-.48],[-.529,-.135,1,-.521,-.135,-.499,-.128,1,-.477,-.121,-.453,-.111,1,-.428,-.1,-.415,-.089,1,-.389,-.066,-.375,-.042,1,-.36,-.017,-.377,.01,1,-.385,.024,-.404,.021,1,-.423,.019,-.445,.005,1,-.467,-.009,-.489,-.03,1,-.501,-.043,-.511,-.061,1,-.521,-.079,-.528,-.096,1,-.534,-.113,-.535,-.124,1,-.536,-.135,-.529,-.135],[-.277,-.48,1,-.281,-.48,-.288,-.481,1,-.295,-.481,-.3,-.472,1,-.304,-.467,-.31,-.454,1,-.315,-.441,-.31,-.415,1,-.305,-.398,-.302,-.382,1,-.299,-.365,-.299,-.357,1,-.299,-.353,-.297,-.342,1,-.294,-.33,-.294,-.325,1,-.289,-.317,-.286,-.303,1,-.283,-.289,-.283,-.278,1,-.283,-.266,-.271,-.256,1,-.271,-.248,-.268,-.236,1,-.264,-.224,-.264,-.22,1,-.261,-.206,-.251,-.17,1,-.24,-.135,-.225,-.09,1,-.209,-.045,-.194,-.002,1,-.179,.041,-.167,.071,1,-.155,.099,-.148,.122,1,-.141,.145,-.141,.155,1,-.141,.159,-.139,.161,1,-.137,.164,-.13,.172,1,-.12,.182,-.107,.179,1,-.093,.176,-.082,.168,1,-.074,.155,-.071,.145,1,-.067,.135,-.071,.113,1,-.071,.098,-.078,.086,1,-.084,.074,-.089,.067,1,-.094,.06,-.092,.061,1,-.049,.085,-.015,.088,1,.019,.09,.043,.076,1,.066,.062,.079,.038,1,.091,.014,.091,-.015,1,.091,-.027,.084,-.046,1,.077,-.065,.068,-.081,1,.059,-.097,.053,-.103,1,.049,-.103,.045,-.11,1,.041,-.116,.037,-.124,1,.029,-.134,.011,-.147,1,-.008,-.159,-.026,-.167,1,-.044,-.174,-.052,-.171,1,-.052,-.171,-.055,-.173,1,-.057,-.174,-.057,-.179,1,-.057,-.181,-.072,-.187,1,-.087,-.193,-.106,-.199,1,-.126,-.204,-.142,-.204,1,-.163,-.204,-.172,-.196,1,-.174,-.198,-.176,-.202,1,-.179,-.206,-.179,-.209,1,-.179,-.215,-.183,-.229,1,-.188,-.243,-.194,-.255,1,-.2,-.267,-.205,-.267,1,-.205,-.267,-.207,-.27,1,-.209,-.273,-.205,-.278,1,-.205,-.278,-.205,-.289,1,-.206,-.301,-.211,-.309,1,-.211,-.317,-.214,-.333,1,-.217,-.349,-.221,-.357,1,-.221,-.369,-.224,-.381,1,-.228,-.392,-.232,-.392,1,-.236,-.393,-.237,-.404,1,-.238,-.416,-.238,-.421,1,-.239,-.446,-.252,-.463,1,-.265,-.48,-.277,-.48],[-.151,-.135,1,-.143,-.135,-.121,-.128,1,-.099,-.121,-.075,-.111,1,-.05,-.1,-.037,-.089,1,-.011,-.066,.003,-.042,1,.018,-.017,.001,.01,1,-.007,.024,-.026,.021,1,-.045,.019,-.067,.005,1,-.089,-.009,-.111,-.03,1,-.123,-.043,-.133,-.061,1,-.143,-.079,-.15,-.096,1,-.156,-.113,-.157,-.124,1,-.158,-.135,-.151,-.135],[.178,-.257,1,.159,-.262,.145,-.248,1,.131,-.233,.127,-.204,1,.122,-.175,.13,-.138,1,.135,-.126,.138,-.114,1,.141,-.103,.141,-.096,1,.143,-.086,.149,-.067,1,.155,-.047,.162,-.026,1,.169,-.005,.175,.012,1,.182,.028,.184,.032,1,.188,.032,.191,.039,1,.194,.046,.194,.053,1,.194,.061,.197,.071,1,.201,.081,.205,.085,1,.205,.09,.207,.096,1,.21,.103,.21,.107,1,.21,.111,.212,.115,1,.215,.119,.215,.123,1,.222,.136,.233,.164,1,.245,.193,.258,.228,1,.272,.263,.284,.297,1,.296,.331,.303,.355,1,.311,.378,.311,.383,1,.311,.391,.316,.397,1,.322,.403,.33,.403,1,.333,.406,.342,.407,1,.35,.409,.354,.409,1,.354,.409,.358,.405,1,.362,.401,.37,.393,1,.378,.386,.384,.377,1,.389,.368,.389,.356,1,.389,.343,.386,.331,1,.383,.32,.374,.3,1,.365,.28,.346,.24,1,.338,.22,.329,.203,1,.32,.185,.32,.181,1,.32,.177,.316,.169,1,.313,.161,.309,.149,1,.305,.141,.298,.126,1,.291,.11,.283,.093,1,.276,.075,.271,.062,1,.266,.05,.266,.048,1,.266,.044,.265,.04,1,.265,.036,.261,.032,1,.257,.032,.256,.027,1,.256,.021,.256,.021,1,.256,.011,.24,-.032,1,.224,-.087,.21,-.133,1,.197,-.179,.197,-.207,1,.197,-.231,.191,-.242,1,.186,-.253,.178,-.257],[.502,-.225,1,.475,-.242,.444,-.245,1,.412,-.248,.384,-.236,1,.356,-.225,.339,-.201,1,.326,-.185,.319,-.157,1,.311,-.128,.316,-.08,1,.321,-.037,.344,.008,1,.366,.052,.398,.087,1,.431,.121,.467,.134,1,.482,.14,.495,.142,1,.508,.143,.531,.141,1,.554,.138,.57,.131,1,.586,.123,.594,.113,1,.609,.097,.614,.083,1,.619,.068,.619,.054,1,.614,.025,.59,-.01,1,.566,-.045,.524,-.064,1,.505,-.071,.481,-.072,1,.457,-.073,.425,-.064,1,.403,-.058,.396,-.068,1,.389,-.078,.388,-.111,1,.388,-.135,.395,-.15,1,.403,-.165,.421,-.169,1,.443,-.173,.453,-.171,1,.464,-.17,.479,-.162,1,.49,-.155,.496,-.15,1,.503,-.146,.509,-.141,1,.514,-.136,.521,-.131,1,.527,-.126,.531,-.124,1,.536,-.122,.541,-.122,1,.55,-.123,.558,-.132,1,.566,-.141,.569,-.148,1,.573,-.153,.564,-.167,1,.556,-.181,.539,-.197,1,.523,-.212,.502,-.225],[.493,-.006,1,.502,-.002,.515,.008,1,.528,.019,.538,.031,1,.548,.043,.548,.051,1,.548,.063,.534,.071,1,.52,.08,.496,.074,1,.487,.072,.475,.062,1,.463,.052,.452,.04,1,.44,.027,.432,.017,1,.424,.006,.423,.001,1,.427,-.004,.439,-.006,1,.452,-.009,.468,-.009,1,.483,-.009,.493,-.006],[.72,-.248,1,.709,-.246,.696,-.236,1,.684,-.225,.674,-.211,1,.664,-.197,.661,-.187,1,.661,-.185,.658,-.182,1,.656,-.179,.656,-.179,1,.652,-.176,.651,-.152,1,.651,-.129,.654,-.1,1,.657,-.071,.661,-.054,1,.666,-.038,.676,-.011,1,.686,.017,.693,.039,0,.72,.097,0,.68,.108,1,.673,.11,.668,.116,1,.664,.122,.664,.126,1,.664,.134,.673,.148,1,.682,.162,.686,.162,1,.691,.161,.704,.161,1,.718,.161,.731,.162,1,.744,.163,.747,.164,1,.751,.166,.755,.169,1,.759,.173,.761,.18,1,.766,.191,.77,.198,1,.774,.205,.781,.217,1,.788,.23,.792,.239,1,.797,.248,.807,.264,1,.812,.271,.818,.281,1,.824,.291,.833,.298,1,.842,.306,.859,.308,1,.876,.31,.891,.297,1,.899,.287,.9,.28,1,.901,.272,.892,.258,1,.884,.241,.873,.226,1,.863,.212,.854,.195,1,.838,.173,.848,.17,1,.858,.167,.904,.174,1,.933,.179,.946,.169,1,.959,.159,.961,.142,1,.964,.118,.956,.113,1,.948,.108,.91,.108,1,.886,.104,.869,.103,1,.852,.103,.844,.103,1,.831,.102,.827,.102,1,.823,.102,.815,.1,1,.807,.098,.803,.094,1,.8,.089,.796,.081,1,.792,.077,.784,.06,1,.776,.043,.764,.023,1,.75,-.019,.74,-.058,1,.73,-.098,.724,-.136,1,.72,-.157,.725,-.166,1,.73,-.175,.751,-.177,1,.762,-.178,.784,-.176,1,.806,-.175,.82,-.171,1,.831,-.166,.843,-.16,1,.855,-.155,.865,-.149,1,.874,-.144,.883,-.138,1,.892,-.133,.892,-.133,1,.897,-.125,.905,-.133,1,.914,-.141,.918,-.153,1,.918,-.165,.913,-.18,1,.908,-.196,.876,-.214,1,.831,-.242,.788,-.248,1,.746,-.253,.72,-.248],[1.033,-.255,1,1.004,-.243,.988,-.228,1,.972,-.214,.972,-.203,1,.973,-.196,.978,-.191,1,.982,-.187,.998,-.187,1,1.015,-.188,1.051,-.195,1,1.062,-.195,1.075,-.194,1,1.089,-.192,1.1,-.19,1,1.112,-.187,1.116,-.183,1,1.121,-.182,1.119,-.178,1,1.117,-.175,1.112,-.171,1,1.108,-.167,1.103,-.165,1,1.098,-.163,1.094,-.163,1,1.093,-.158,1.085,-.153,1,1.078,-.147,1.068,-.142,1,1.046,-.124,1.029,-.11,1,1.012,-.095,1.016,-.089,1,1.016,-.085,1.016,-.084,1,1.016,-.084,1.016,-.084,1,1.009,-.084,1.002,-.064,1,.995,-.045,.995,-.029,1,.995,-.011,1.003,.008,1,1.011,.028,1.024,.046,1,1.037,.065,1.051,.079,1,1.069,.096,1.093,.115,1,1.116,.133,1.142,.147,1,1.168,.162,1.194,.169,1,1.21,.173,1.227,.173,1,1.244,.173,1.253,.167,1,1.262,.169,1.273,.161,1,1.284,.153,1.294,.141,1,1.304,.129,1.309,.118,1,1.309,.106,1.308,.09,1,1.307,.073,1.304,.061,1,1.302,.048,1.295,.048,1,1.295,.048,1.292,.048,1,1.29,.047,1.29,.042,1,1.29,.032,1.275,.019,1,1.256,.006,1.24,.0,1,1.224,-.006,1.217,.003,1,1.212,.007,1.208,.011,1,1.204,.014,1.2,.018,1,1.2,.018,1.198,.022,1,1.195,.026,1.195,.031,1,1.195,.035,1.198,.039,1,1.201,.042,1.201,.042,1,1.212,.051,1.22,.062,1,1.227,.073,1.232,.083,1,1.236,.094,1.236,.099,1,1.236,.105,1.233,.106,1,1.231,.107,1.223,.107,1,1.215,.105,1.198,.097,1,1.18,.088,1.162,.077,1,1.144,.066,1.135,.058,1,1.131,.051,1.13,.049,1,1.128,.047,1.124,.047,1,1.124,.051,1.119,.045,1,1.113,.039,1.106,.029,1,1.098,.019,1.09,.008,1,1.083,-.003,1.079,-.009,1,1.077,-.016,1.074,-.024,1,1.071,-.032,1.072,-.04,1,1.071,-.051,1.079,-.058,1,1.086,-.066,1.103,-.08,1,1.138,-.106,1.157,-.121,1,1.175,-.137,1.183,-.147,1,1.191,-.156,1.193,-.165,1,1.21,-.196,1.199,-.216,1,1.188,-.237,1.161,-.249,1,1.151,-.254,1.127,-.258,1,1.103,-.262,1.076,-.262,1,1.05,-.261,1.033,-.255]]},"Papers":{"w":2.326,"c":[[-1.05,-.304,1,-1.062,-.304,-1.07,-.291,1,-1.076,-.285,-1.081,-.273,1,-1.086,-.261,-1.082,-.232,1,-1.077,-.203,-1.058,-.146,1,-1.048,-.108,-1.042,-.09,1,-1.036,-.073,-1.036,-.065,1,-1.036,-.054,-1.034,-.047,1,-1.031,-.039,-1.031,-.032,1,-1.025,-.032,-1.019,-.021,1,-1.013,-.01,-1.009,.009,1,-1.005,.026,-1.002,.036,1,-.998,.047,-.998,.051,1,-.993,.059,-.988,.076,1,-.982,.093,-.97,.117,1,-.962,.147,-.952,.179,1,-.942,.212,-.932,.24,1,-.921,.269,-.914,.285,1,-.903,.316,-.897,.329,1,-.891,.341,-.897,.345,1,-.904,.35,-.903,.368,1,-.901,.385,-.883,.4,1,-.872,.413,-.858,.419,1,-.844,.424,-.825,.424,1,-.806,.424,-.782,.422,1,-.764,.421,-.744,.421,1,-.723,.421,-.718,.421,1,-.709,.417,-.696,.412,1,-.683,.408,-.673,.403,1,-.662,.399,-.662,.396,1,-.662,.39,-.658,.389,1,-.653,.387,-.648,.386,1,-.641,.386,-.627,.374,1,-.612,.362,-.597,.346,1,-.581,.329,-.574,.312,1,-.566,.295,-.561,.28,1,-.556,.265,-.561,.237,1,-.562,.222,-.565,.207,1,-.569,.192,-.573,.187,1,-.579,.183,-.584,.177,1,-.589,.171,-.589,.166,1,-.589,.162,-.597,.148,1,-.604,.133,-.616,.115,1,-.628,.097,-.641,.08,1,-.655,.062,-.667,.051,1,-.68,.035,-.697,.021,1,-.715,.007,-.729,-.002,1,-.755,-.014,-.788,-.025,1,-.821,-.037,-.851,-.044,1,-.881,-.051,-.9,-.05,1,-.929,-.054,-.938,-.057,1,-.946,-.061,-.951,-.075,1,-.956,-.088,-.96,-.102,1,-.965,-.116,-.965,-.121,1,-.967,-.125,-.973,-.144,1,-.98,-.163,-.989,-.188,1,-.997,-.213,-1.005,-.237,1,-1.012,-.262,-1.016,-.279,1,-1.02,-.293,-1.03,-.299,1,-1.041,-.304,-1.05,-.304],[-.914,.022,1,-.91,.018,-.886,.021,1,-.862,.024,-.831,.036,1,-.811,.043,-.791,.053,1,-.77,.063,-.751,.075,1,-.741,.082,-.727,.095,1,-.713,.108,-.693,.133,1,-.69,.138,-.683,.153,1,-.675,.167,-.669,.18,1,-.66,.194,-.651,.221,1,-.642,.249,-.647,.267,1,-.652,.293,-.669,.312,1,-.686,.331,-.711,.339,1,-.733,.343,-.748,.344,1,-.762,.345,-.779,.342,1,-.795,.337,-.802,.328,1,-.809,.319,-.821,.29,1,-.828,.276,-.841,.25,1,-.854,.224,-.863,.199,1,-.881,.133,-.896,.096,1,-.911,.058,-.915,.047,1,-.914,.036,-.916,.032,1,-.918,.027,-.914,.022],[-.578,-.224,1,-.582,-.216,-.593,-.209,1,-.604,-.202,-.604,-.198,1,-.604,-.194,-.607,-.187,1,-.61,-.18,-.614,-.176,1,-.619,-.17,-.612,-.147,1,-.604,-.124,-.589,-.091,1,-.574,-.058,-.555,-.023,1,-.547,-.015,-.539,-.002,1,-.531,.011,-.527,.015,1,-.527,.019,-.524,.023,1,-.521,.026,-.517,.026,0,-.511,.039,1,-.51,.043,-.5,.055,1,-.49,.067,-.475,.082,1,-.46,.096,-.445,.109,1,-.43,.122,-.42,.128,1,-.399,.142,-.376,.143,1,-.354,.143,-.338,.13,1,-.335,.127,-.325,.119,1,-.316,.11,-.304,.1,1,-.292,.09,-.282,.081,0,-.245,.048,0,-.262,-.002,1,-.275,-.042,-.269,-.072,1,-.262,-.102,-.25,-.124,1,-.245,-.135,-.234,-.142,1,-.223,-.15,-.209,-.152,1,-.201,-.153,-.194,-.158,1,-.187,-.163,-.187,-.174,1,-.187,-.193,-.194,-.202,1,-.201,-.211,-.211,-.213,1,-.244,-.217,-.273,-.203,1,-.303,-.189,-.327,-.143,1,-.331,-.137,-.337,-.121,1,-.344,-.104,-.345,-.099,1,-.349,-.104,-.357,-.114,1,-.365,-.123,-.371,-.129,1,-.442,-.201,-.493,-.224,1,-.544,-.246,-.578,-.224],[-.529,-.15,1,-.524,-.153,-.507,-.145,1,-.49,-.137,-.465,-.117,1,-.431,-.088,-.405,-.063,1,-.379,-.039,-.358,-.009,0,-.336,.027,1,-.346,.05,-.355,.057,1,-.364,.065,-.372,.065,1,-.385,.065,-.405,.046,1,-.426,.027,-.451,-.007,1,-.475,-.042,-.503,-.089,1,-.515,-.11,-.522,-.13,1,-.529,-.15,-.529,-.15],[-.192,-.48,1,-.196,-.48,-.203,-.481,1,-.21,-.481,-.215,-.472,1,-.219,-.467,-.225,-.454,1,-.23,-.441,-.225,-.415,1,-.22,-.398,-.217,-.382,1,-.214,-.365,-.214,-.357,1,-.214,-.353,-.212,-.342,1,-.209,-.33,-.209,-.325,1,-.204,-.317,-.201,-.303,1,-.198,-.289,-.198,-.278,1,-.198,-.266,-.186,-.256,1,-.186,-.248,-.183,-.236,1,-.179,-.224,-.179,-.22,1,-.176,-.206,-.166,-.17,1,-.155,-.135,-.14,-.09,1,-.124,-.045,-.109,-.002,1,-.094,.041,-.082,.071,1,-.07,.099,-.063,.122,1,-.056,.145,-.056,.155,1,-.056,.159,-.054,.161,1,-.052,.164,-.045,.172,1,-.035,.182,-.022,.179,1,-.008,.176,.003,.168,1,.011,.155,.014,.145,1,.018,.135,.014,.113,1,.014,.098,.007,.086,1,.001,.074,-.004,.067,1,-.009,.06,-.007,.061,1,.036,.085,.07,.088,1,.104,.09,.128,.076,1,.151,.062,.164,.038,1,.176,.014,.176,-.015,1,.176,-.027,.169,-.046,1,.162,-.065,.153,-.081,1,.144,-.097,.138,-.103,1,.134,-.103,.13,-.11,1,.126,-.116,.122,-.124,1,.114,-.134,.096,-.147,1,.077,-.159,.059,-.167,1,.041,-.174,.033,-.171,1,.033,-.171,.03,-.173,1,.028,-.174,.028,-.179,1,.028,-.181,.013,-.187,1,-.002,-.193,-.021,-.199,1,-.041,-.204,-.057,-.204,1,-.078,-.204,-.087,-.196,1,-.089,-.198,-.091,-.202,1,-.094,-.206,-.094,-.209,1,-.094,-.215,-.098,-.229,1,-.103,-.243,-.109,-.255,1,-.115,-.267,-.12,-.267,1,-.12,-.267,-.122,-.27,1,-.124,-.273,-.12,-.278,1,-.12,-.278,-.12,-.289,1,-.121,-.301,-.126,-.309,1,-.126,-.317,-.129,-.333,1,-.132,-.349,-.136,-.357,1,-.136,-.369,-.139,-.381,1,-.143,-.392,-.147,-.392,1,-.151,-.393,-.152,-.404,1,-.153,-.416,-.153,-.421,1,-.154,-.446,-.167,-.463,1,-.18,-.48,-.192,-.48],[-.066,-.135,1,-.058,-.135,-.036,-.128,1,-.014,-.121,.01,-.111,1,.035,-.1,.048,-.089,1,.074,-.066,.088,-.042,1,.103,-.017,.086,.01,1,.078,.024,.059,.021,1,.04,.019,.018,.005,1,-.004,-.009,-.026,-.03,1,-.038,-.043,-.048,-.061,1,-.058,-.079,-.065,-.096,1,-.071,-.113,-.072,-.124,1,-.073,-.135,-.066,-.135],[.412,-.225,1,.385,-.242,.354,-.245,1,.322,-.248,.294,-.236,1,.266,-.225,.249,-.201,1,.236,-.185,.229,-.157,1,.221,-.128,.226,-.08,1,.231,-.037,.254,.008,1,.276,.052,.308,.087,1,.341,.121,.377,.134,1,.392,.14,.405,.142,1,.418,.143,.441,.141,1,.464,.138,.48,.131,1,.496,.123,.504,.113,1,.519,.097,.524,.083,1,.529,.068,.529,.054,1,.524,.025,.5,-.01,1,.476,-.045,.434,-.064,1,.415,-.071,.391,-.072,1,.367,-.073,.335,-.064,1,.313,-.058,.306,-.068,1,.299,-.078,.298,-.111,1,.298,-.135,.305,-.15,1,.313,-.165,.331,-.169,1,.353,-.173,.363,-.171,1,.374,-.17,.389,-.162,1,.4,-.155,.406,-.15,1,.413,-.146,.419,-.141,1,.424,-.136,.431,-.131,1,.437,-.126,.441,-.124,1,.446,-.122,.451,-.122,1,.46,-.123,.468,-.132,1,.476,-.141,.479,-.148,1,.483,-.153,.474,-.167,1,.466,-.181,.449,-.197,1,.433,-.212,.412,-.225],[.403,-.006,1,.412,-.002,.425,.008,1,.438,.019,.448,.031,1,.458,.043,.458,.051,1,.458,.063,.444,.071,1,.43,.08,.406,.074,1,.397,.072,.385,.062,1,.373,.052,.362,.04,1,.35,.027,.342,.017,1,.334,.006,.333,.001,1,.337,-.004,.349,-.006,1,.362,-.009,.378,-.009,1,.393,-.009,.403,-.006],[.575,-.22,1,.566,-.213,.558,-.204,1,.55,-.194,.553,-.174,1,.556,-.146,.561,-.124,1,.566,-.103,.573,-.075,1,.575,-.063,.583,-.034,1,.592,-.005,.605,.029,1,.618,.063,.631,.094,1,.644,.124,.654,.139,1,.664,.148,.682,.147,1,.701,.147,.709,.139,1,.72,.13,.715,.108,1,.709,.085,.686,.038,1,.678,.021,.671,.007,1,.664,-.006,.663,-.013,1,.661,-.019,.667,-.017,1,.673,-.006,.689,.009,1,.705,.023,.723,.037,1,.741,.051,.757,.062,1,.773,.073,.779,.076,1,.787,.081,.797,.085,1,.808,.088,.812,.09,1,.835,.101,.861,.098,1,.888,.096,.894,.081,1,.895,.073,.9,.069,1,.906,.065,.906,.065,1,.91,.065,.91,.062,1,.911,.059,.911,.059,1,.911,.052,.898,.042,1,.886,.033,.87,.032,1,.857,.031,.847,.027,1,.837,.023,.823,.017,1,.785,-.005,.753,-.023,1,.721,-.041,.689,-.076,1,.682,-.084,.674,-.093,1,.667,-.101,.659,-.114,1,.654,-.119,.649,-.136,1,.644,-.153,.64,-.168,1,.637,-.184,.637,-.187,1,.637,-.187,.634,-.197,1,.631,-.206,.624,-.215,1,.612,-.231,.601,-.234,1,.591,-.236,.575,-.22],[.972,-.255,1,.943,-.243,.927,-.228,1,.911,-.214,.911,-.203,1,.912,-.196,.917,-.191,1,.921,-.187,.937,-.187,1,.954,-.188,.99,-.195,1,1.001,-.195,1.014,-.194,1,1.028,-.192,1.039,-.19,1,1.051,-.187,1.055,-.183,1,1.06,-.182,1.058,-.178,1,1.056,-.175,1.051,-.171,1,1.047,-.167,1.042,-.165,1,1.037,-.163,1.033,-.163,1,1.032,-.158,1.024,-.153,1,1.017,-.147,1.007,-.142,1,.985,-.124,.968,-.11,1,.951,-.095,.955,-.089,1,.955,-.085,.955,-.084,1,.955,-.084,.955,-.084,1,.948,-.084,.941,-.064,1,.934,-.045,.934,-.029,1,.934,-.011,.942,.008,1,.95,.028,.963,.046,1,.976,.065,.99,.079,1,1.008,.096,1.032,.115,1,1.055,.133,1.081,.147,1,1.107,.162,1.133,.169,1,1.149,.173,1.166,.173,1,1.183,.173,1.192,.167,1,1.201,.169,1.212,.161,1,1.223,.153,1.233,.141,1,1.243,.129,1.248,.118,1,1.248,.106,1.247,.09,1,1.246,.073,1.243,.061,1,1.241,.048,1.234,.048,1,1.234,.048,1.231,.048,1,1.229,.047,1.229,.042,1,1.229,.032,1.214,.019,1,1.195,.006,1.179,.0,1,1.163,-.006,1.156,.003,1,1.151,.007,1.147,.011,1,1.143,.014,1.139,.018,1,1.139,.018,1.137,.022,1,1.134,.026,1.134,.031,1,1.134,.035,1.137,.039,1,1.14,.042,1.14,.042,1,1.151,.051,1.159,.062,1,1.166,.073,1.171,.083,1,1.175,.094,1.175,.099,1,1.175,.105,1.172,.106,1,1.17,.107,1.162,.107,1,1.154,.105,1.137,.097,1,1.119,.088,1.101,.077,1,1.083,.066,1.074,.058,1,1.07,.051,1.069,.049,1,1.067,.047,1.063,.047,1,1.063,.051,1.058,.045,1,1.052,.039,1.045,.029,1,1.037,.019,1.029,.008,1,1.022,-.003,1.018,-.009,1,1.016,-.016,1.013,-.024,1,1.01,-.032,1.011,-.04,1,1.01,-.051,1.018,-.058,1,1.025,-.066,1.042,-.08,1,1.077,-.106,1.096,-.121,1,1.114,-.137,1.122,-.147,1,1.13,-.156,1.132,-.165,1,1.149,-.196,1.138,-.216,1,1.127,-.237,1.1,-.249,1,1.09,-.254,1.066,-.258,1,1.042,-.262,1.015,-.262,1,.989,-.261,.972,-.255]]},"Desmos":{"w":2.534,"c":[[-1.051,-.352,1,-1.07,-.355,-1.093,-.353,1,-1.116,-.351,-1.147,-.343,1,-1.163,-.338,-1.17,-.331,1,-1.176,-.324,-1.191,-.305,1,-1.202,-.29,-1.205,-.272,1,-1.208,-.255,-1.202,-.243,1,-1.196,-.23,-1.181,-.229,1,-1.174,-.228,-1.165,-.234,1,-1.155,-.239,-1.144,-.247,1,-1.125,-.26,-1.103,-.27,1,-1.08,-.28,-1.056,-.277,1,-1.042,-.274,-1.022,-.272,1,-1.002,-.27,-.984,-.265,1,-.965,-.26,-.954,-.252,1,-.901,-.216,-.873,-.195,1,-.845,-.174,-.845,-.174,1,-.843,-.17,-.838,-.167,1,-.832,-.165,-.824,-.162,1,-.818,-.155,-.805,-.142,1,-.791,-.129,-.779,-.116,1,-.767,-.103,-.764,-.101,1,-.762,-.092,-.76,-.086,1,-.758,-.081,-.758,-.075,1,-.75,-.067,-.736,-.042,1,-.723,-.016,-.709,.016,1,-.695,.047,-.689,.073,1,-.675,.133,-.68,.179,1,-.685,.225,-.705,.26,1,-.725,.296,-.757,.323,1,-.768,.332,-.787,.342,1,-.806,.353,-.827,.362,1,-.847,.371,-.862,.376,1,-.878,.381,-.881,.38,1,-.885,.379,-.897,.349,1,-.909,.319,-.925,.273,1,-.942,.227,-.961,.174,1,-.98,.121,-.997,.074,1,-1.002,.055,-1.009,.034,1,-1.016,.013,-1.022,-.002,1,-1.027,-.018,-1.027,-.023,1,-1.038,-.04,-1.048,-.072,1,-1.058,-.105,-1.066,-.17,1,-1.075,-.204,-1.079,-.225,1,-1.083,-.246,-1.087,-.245,1,-1.087,-.245,-1.088,-.251,1,-1.089,-.258,-1.092,-.261,1,-1.092,-.267,-1.102,-.268,1,-1.113,-.269,-1.127,-.263,1,-1.141,-.257,-1.153,-.242,1,-1.156,-.231,-1.157,-.213,1,-1.158,-.195,-1.15,-.166,1,-1.145,-.147,-1.136,-.118,1,-1.128,-.089,-1.118,-.058,1,-1.108,-.027,-1.098,-.0,1,-1.089,.026,-1.085,.039,1,-1.078,.056,-1.065,.103,1,-1.057,.129,-1.049,.155,1,-1.04,.181,-1.032,.202,1,-1.024,.222,-1.021,.228,1,-1.016,.241,-1.008,.271,1,-1.0,.301,-.984,.339,0,-.977,.372,0,-.988,.377,1,-1.0,.373,-1.006,.374,1,-1.013,.376,-1.015,.377,1,-1.021,.375,-1.031,.38,1,-1.041,.386,-1.049,.394,1,-1.056,.403,-1.058,.409,1,-1.06,.413,-1.061,.419,1,-1.061,.426,-1.061,.426,1,-1.06,.432,-1.045,.438,1,-1.03,.444,-1.005,.45,1,-.981,.455,-.953,.458,1,-.924,.46,-.899,.458,1,-.873,.456,-.84,.446,1,-.807,.437,-.78,.427,1,-.748,.415,-.712,.386,1,-.675,.356,-.645,.316,1,-.615,.276,-.605,.232,1,-.602,.22,-.599,.198,1,-.596,.176,-.595,.156,1,-.595,.135,-.6,.129,1,-.602,.125,-.602,.12,1,-.603,.114,-.599,.112,1,-.6,.109,-.606,.09,1,-.612,.07,-.617,.056,1,-.619,.03,-.63,-.002,1,-.641,-.034,-.654,-.062,1,-.667,-.091,-.677,-.108,1,-.681,-.108,-.684,-.109,1,-.688,-.111,-.684,-.112,1,-.684,-.117,-.695,-.131,1,-.699,-.134,-.707,-.145,1,-.716,-.157,-.721,-.161,1,-.722,-.168,-.727,-.172,1,-.732,-.177,-.736,-.177,1,-.736,-.177,-.737,-.177,1,-.739,-.177,-.739,-.181,1,-.747,-.193,-.765,-.211,1,-.784,-.229,-.807,-.248,1,-.83,-.267,-.853,-.284,1,-.877,-.3,-.897,-.308,1,-.907,-.315,-.918,-.32,1,-.929,-.324,-.939,-.329,1,-.944,-.333,-.966,-.338,1,-.987,-.342,-1.012,-.346,1,-1.036,-.349,-1.051,-.352],[-.396,-.225,1,-.423,-.242,-.454,-.245,1,-.486,-.248,-.514,-.236,1,-.542,-.225,-.559,-.201,1,-.572,-.185,-.579,-.157,1,-.587,-.128,-.582,-.08,1,-.577,-.037,-.554,.008,1,-.532,.052,-.5,.087,1,-.467,.121,-.431,.134,1,-.416,.14,-.403,.142,1,-.39,.143,-.367,.141,1,-.344,.138,-.328,.131,1,-.312,.123,-.304,.113,1,-.289,.097,-.284,.083,1,-.279,.068,-.279,.054,1,-.284,.025,-.308,-.01,1,-.332,-.045,-.374,-.064,1,-.393,-.071,-.417,-.072,1,-.441,-.073,-.473,-.064,1,-.495,-.058,-.502,-.068,1,-.509,-.078,-.51,-.111,1,-.51,-.135,-.503,-.15,1,-.495,-.165,-.477,-.169,1,-.455,-.173,-.445,-.171,1,-.434,-.17,-.419,-.162,1,-.408,-.155,-.402,-.15,1,-.395,-.146,-.389,-.141,1,-.384,-.136,-.377,-.131,1,-.371,-.126,-.367,-.124,1,-.362,-.122,-.357,-.122,1,-.348,-.123,-.34,-.132,1,-.332,-.141,-.329,-.148,1,-.325,-.153,-.334,-.167,1,-.342,-.181,-.359,-.197,1,-.375,-.212,-.396,-.225],[-.405,-.006,1,-.396,-.002,-.383,.008,1,-.37,.019,-.36,.031,1,-.35,.043,-.35,.051,1,-.35,.063,-.364,.071,1,-.378,.08,-.402,.074,1,-.411,.072,-.423,.062,1,-.435,.052,-.446,.04,1,-.458,.027,-.466,.017,1,-.474,.006,-.475,.001,1,-.471,-.004,-.459,-.006,1,-.446,-.009,-.43,-.009,1,-.415,-.009,-.405,-.006],[-.196,-.255,1,-.225,-.243,-.241,-.228,1,-.257,-.214,-.257,-.203,1,-.256,-.196,-.251,-.191,1,-.247,-.187,-.231,-.187,1,-.214,-.188,-.178,-.195,1,-.167,-.195,-.154,-.194,1,-.14,-.192,-.129,-.19,1,-.117,-.187,-.113,-.183,1,-.108,-.182,-.11,-.178,1,-.112,-.175,-.117,-.171,1,-.121,-.167,-.126,-.165,1,-.131,-.163,-.135,-.163,1,-.136,-.158,-.144,-.153,1,-.151,-.147,-.161,-.142,1,-.183,-.124,-.2,-.11,1,-.217,-.095,-.213,-.089,1,-.213,-.085,-.213,-.084,1,-.213,-.084,-.213,-.084,1,-.22,-.084,-.227,-.064,1,-.234,-.045,-.234,-.029,1,-.234,-.011,-.226,.008,1,-.218,.028,-.205,.046,1,-.192,.065,-.178,.079,1,-.16,.096,-.136,.115,1,-.113,.133,-.087,.147,1,-.061,.162,-.035,.169,1,-.019,.173,-.002,.173,1,.015,.173,.024,.167,1,.033,.169,.044,.161,1,.055,.153,.065,.141,1,.075,.129,.08,.118,1,.08,.106,.079,.09,1,.078,.073,.075,.061,1,.073,.048,.066,.048,1,.066,.048,.063,.048,1,.061,.047,.061,.042,1,.061,.032,.046,.019,1,.027,.006,.011,.0,1,-.005,-.006,-.012,.003,1,-.017,.007,-.021,.011,1,-.025,.014,-.029,.018,1,-.029,.018,-.031,.022,1,-.034,.026,-.034,.031,1,-.034,.035,-.031,.039,1,-.028,.042,-.028,.042,1,-.017,.051,-.009,.062,1,-.002,.073,.003,.083,1,.007,.094,.007,.099,1,.007,.105,.004,.106,1,.002,.107,-.006,.107,1,-.014,.105,-.031,.097,1,-.049,.088,-.067,.077,1,-.085,.066,-.094,.058,1,-.098,.051,-.099,.049,1,-.101,.047,-.105,.047,1,-.105,.051,-.11,.045,1,-.116,.039,-.123,.029,1,-.131,.019,-.139,.008,1,-.146,-.003,-.15,-.009,1,-.152,-.016,-.155,-.024,1,-.158,-.032,-.157,-.04,1,-.158,-.051,-.15,-.058,1,-.143,-.066,-.126,-.08,1,-.091,-.106,-.072,-.121,1,-.054,-.137,-.046,-.147,1,-.038,-.156,-.036,-.165,1,-.019,-.196,-.03,-.216,1,-.041,-.237,-.068,-.249,1,-.078,-.254,-.102,-.258,1,-.126,-.262,-.153,-.262,1,-.179,-.261,-.196,-.255],[.556,-.22,1,.55,-.218,.536,-.208,1,.523,-.198,.513,-.177,1,.503,-.156,.504,-.121,1,.505,-.091,.507,-.077,1,.51,-.063,.502,-.062,1,.496,-.061,.479,-.073,1,.461,-.085,.436,-.108,1,.41,-.132,.377,-.166,1,.366,-.177,.353,-.19,1,.34,-.202,.328,-.208,1,.315,-.213,.304,-.204,0,.293,-.195,1,.287,-.189,.283,-.181,1,.28,-.172,.282,-.165,0,.308,-.091,1,.321,-.062,.326,-.048,1,.331,-.035,.331,-.031,1,.331,-.028,.326,-.029,1,.32,-.03,.307,-.039,1,.294,-.048,.29,-.055,1,.286,-.055,.279,-.063,1,.272,-.071,.264,-.078,1,.258,-.086,.241,-.103,1,.224,-.121,.206,-.139,1,.193,-.151,.178,-.17,1,.162,-.188,.151,-.203,1,.139,-.218,.136,-.218,1,.12,-.217,.107,-.207,1,.093,-.198,.088,-.182,1,.082,-.169,.088,-.139,1,.094,-.109,.106,-.049,1,.11,-.034,.113,-.025,1,.116,-.015,.119,-.005,1,.123,.005,.129,.019,1,.134,.034,.145,.058,1,.151,.074,.15,.085,1,.15,.097,.15,.103,1,.15,.117,.158,.125,1,.166,.133,.177,.137,1,.187,.14,.194,.138,1,.217,.135,.226,.121,1,.236,.107,.237,.091,1,.238,.077,.233,.065,1,.229,.054,.226,.046,0,.215,.019,1,.207,.0,.201,-.014,1,.195,-.028,.193,-.036,1,.191,-.044,.191,-.047,1,.192,-.05,.199,-.044,1,.206,-.039,.217,-.029,1,.228,-.019,.238,-.011,1,.257,.005,.28,.022,1,.302,.038,.323,.051,1,.345,.063,.358,.067,1,.375,.065,.387,.054,1,.398,.042,.406,.03,1,.412,.018,.41,.006,1,.408,-.005,.406,-.015,1,.405,-.019,.401,-.032,1,.398,-.044,.394,-.055,1,.391,-.066,.391,-.066,1,.391,-.066,.399,-.059,1,.406,-.052,.418,-.042,1,.429,-.033,.438,-.026,1,.484,.009,.514,.019,1,.543,.029,.563,.0,1,.575,-.011,.578,-.028,1,.58,-.045,.58,-.077,1,.581,-.09,.582,-.106,1,.584,-.123,.586,-.136,1,.588,-.149,.59,-.152,1,.593,-.156,.601,-.159,1,.609,-.162,.619,-.164,1,.633,-.169,.635,-.185,1,.637,-.201,.621,-.211,1,.606,-.22,.589,-.221,1,.572,-.222,.556,-.22],[.729,-.24,1,.716,-.24,.709,-.235,1,.701,-.23,.69,-.221,1,.671,-.201,.661,-.18,1,.651,-.158,.654,-.141,1,.657,-.133,.656,-.126,1,.656,-.118,.656,-.118,1,.651,-.113,.653,-.112,1,.655,-.11,.657,-.106,1,.663,-.106,.661,-.095,1,.659,-.087,.668,-.061,1,.677,-.034,.692,-.01,1,.698,.0,.71,.017,1,.722,.033,.736,.049,1,.751,.066,.763,.076,1,.788,.097,.808,.109,1,.829,.121,.851,.126,1,.873,.131,.892,.131,1,.91,.131,.925,.115,1,.948,.105,.958,.089,1,.968,.073,.971,.046,1,.974,.016,.965,-.026,1,.957,-.068,.917,-.125,1,.892,-.161,.869,-.18,1,.846,-.199,.817,-.216,1,.796,-.23,.774,-.234,1,.752,-.238,.729,-.24],[.829,-.124,1,.852,-.102,.863,-.079,1,.874,-.055,.886,-.022,1,.89,-.015,.891,.0,1,.893,.015,.891,.029,1,.89,.043,.884,.045,1,.874,.052,.863,.048,1,.851,.045,.835,.033,1,.805,.008,.78,-.027,1,.755,-.061,.741,-.109,1,.734,-.138,.743,-.153,1,.751,-.169,.774,-.163,1,.796,-.157,.829,-.124],[1.076,-.255,1,1.047,-.243,1.031,-.228,1,1.015,-.214,1.015,-.203,1,1.016,-.196,1.021,-.191,1,1.025,-.187,1.041,-.187,1,1.058,-.188,1.094,-.195,1,1.105,-.195,1.118,-.194,1,1.132,-.192,1.143,-.19,1,1.155,-.187,1.159,-.183,1,1.164,-.182,1.162,-.178,1,1.16,-.175,1.155,-.171,1,1.151,-.167,1.146,-.165,1,1.141,-.163,1.137,-.163,1,1.136,-.158,1.128,-.153,1,1.121,-.147,1.111,-.142,1,1.089,-.124,1.072,-.11,1,1.055,-.095,1.059,-.089,1,1.059,-.085,1.059,-.084,1,1.059,-.084,1.059,-.084,1,1.052,-.084,1.045,-.064,1,1.038,-.045,1.038,-.029,1,1.038,-.011,1.046,.008,1,1.054,.028,1.067,.046,1,1.08,.065,1.094,.079,1,1.112,.096,1.136,.115,1,1.159,.133,1.185,.147,1,1.211,.162,1.237,.169,1,1.253,.173,1.27,.173,1,1.287,.173,1.296,.167,1,1.305,.169,1.316,.161,1,1.327,.153,1.337,.141,1,1.347,.129,1.352,.118,1,1.352,.106,1.351,.09,1,1.35,.073,1.347,.061,1,1.345,.048,1.338,.048,1,1.338,.048,1.335,.048,1,1.333,.047,1.333,.042,1,1.333,.032,1.318,.019,1,1.299,.006,1.283,.0,1,1.267,-.006,1.26,.003,1,1.255,.007,1.251,.011,1,1.247,.014,1.243,.018,1,1.243,.018,1.241,.022,1,1.238,.026,1.238,.031,1,1.238,.035,1.241,.039,1,1.244,.042,1.244,.042,1,1.255,.051,1.263,.062,1,1.27,.073,1.275,.083,1,1.279,.094,1.279,.099,1,1.279,.105,1.276,.106,1,1.274,.107,1.266,.107,1,1.258,.105,1.241,.097,1,1.223,.088,1.205,.077,1,1.187,.066,1.178,.058,1,1.174,.051,1.173,.049,1,1.171,.047,1.167,.047,1,1.167,.051,1.162,.045,1,1.156,.039,1.149,.029,1,1.141,.019,1.133,.008,1,1.126,-.003,1.122,-.009,1,1.12,-.016,1.117,-.024,1,1.114,-.032,1.115,-.04,1,1.114,-.051,1.122,-.058,1,1.129,-.066,1.146,-.08,1,1.181,-.106,1.2,-.121,1,1.218,-.137,1.226,-.147,1,1.234,-.156,1.236,-.165,1,1.253,-.196,1.242,-.216,1,1.231,-.237,1.204,-.249,1,1.194,-.254,1.17,-.258,1,1.146,-.262,1.119,-.262,1,1.093,-.261,1.076,-.255]]},"Media":{"w":2.092,"c":[[-.376,-.298,1,-.379,-.303,-.392,-.301,1,-.406,-.299,-.414,-.286,1,-.422,-.271,-.422,-.253,1,-.423,-.236,-.422,-.204,1,-.416,-.169,-.403,-.112,1,-.39,-.055,-.374,.015,1,-.357,.086,-.34,.161,1,-.33,.197,-.323,.224,1,-.317,.252,-.314,.267,1,-.311,.282,-.311,.282,1,-.312,.282,-.315,.279,1,-.318,.276,-.32,.272,1,-.322,.268,-.323,.266,1,-.323,.266,-.327,.258,1,-.332,.25,-.343,.233,1,-.352,.221,-.361,.201,1,-.37,.18,-.387,.154,1,-.403,.124,-.423,.086,1,-.442,.049,-.456,.026,1,-.464,.014,-.47,.003,1,-.477,-.008,-.479,-.013,1,-.483,-.024,-.492,-.039,1,-.502,-.055,-.514,-.07,1,-.52,-.079,-.528,-.09,1,-.536,-.102,-.542,-.11,1,-.548,-.119,-.548,-.119,1,-.549,-.124,-.56,-.137,1,-.57,-.151,-.585,-.167,1,-.6,-.184,-.615,-.197,1,-.65,-.228,-.672,-.234,1,-.694,-.241,-.722,-.217,1,-.735,-.201,-.742,-.183,1,-.749,-.166,-.749,-.136,1,-.749,-.107,-.74,-.057,1,-.733,-.023,-.725,.014,1,-.718,.05,-.71,.084,1,-.702,.117,-.695,.141,1,-.689,.166,-.686,.175,1,-.683,.198,-.686,.2,1,-.688,.201,-.696,.188,1,-.702,.178,-.721,.146,1,-.739,.113,-.762,.069,1,-.785,.024,-.807,-.023,1,-.848,-.099,-.876,-.15,1,-.903,-.2,-.92,-.23,1,-.938,-.26,-.946,-.275,1,-.955,-.29,-.959,-.296,1,-.963,-.302,-.965,-.304,1,-.978,-.303,-.988,-.292,1,-.999,-.281,-1.007,-.266,1,-1.009,-.257,-1.01,-.247,1,-1.01,-.237,-1.006,-.224,1,-1.002,-.21,-.992,-.19,1,-.979,-.164,-.968,-.146,1,-.956,-.127,-.952,-.123,1,-.947,-.116,-.944,-.108,1,-.94,-.1,-.939,-.092,1,-.934,-.086,-.924,-.067,1,-.913,-.048,-.902,-.026,1,-.894,-.013,-.881,.01,1,-.867,.032,-.852,.059,1,-.837,.086,-.825,.109,1,-.78,.188,-.752,.238,1,-.724,.288,-.712,.301,1,-.705,.306,-.7,.319,1,-.694,.332,-.692,.339,1,-.682,.364,-.67,.383,1,-.657,.401,-.647,.4,1,-.638,.4,-.627,.395,1,-.616,.391,-.605,.38,1,-.595,.367,-.587,.349,1,-.579,.33,-.585,.295,1,-.586,.28,-.589,.259,1,-.593,.238,-.596,.218,1,-.6,.199,-.603,.186,1,-.613,.143,-.623,.1,1,-.633,.057,-.641,.018,1,-.649,-.021,-.655,-.052,1,-.66,-.084,-.661,-.103,1,-.663,-.123,-.659,-.128,1,-.654,-.13,-.649,-.127,1,-.644,-.123,-.638,-.113,1,-.631,-.104,-.624,-.092,1,-.616,-.081,-.607,-.068,1,-.594,-.049,-.576,-.022,1,-.559,.005,-.534,.046,1,-.509,.087,-.473,.147,1,-.438,.207,-.39,.293,1,-.367,.328,-.346,.363,1,-.325,.397,-.309,.413,1,-.295,.428,-.275,.423,1,-.255,.417,-.238,.397,1,-.222,.377,-.22,.348,1,-.219,.334,-.225,.3,1,-.231,.266,-.241,.224,1,-.251,.181,-.265,.139,1,-.268,.122,-.275,.095,1,-.282,.068,-.29,.039,1,-.298,.011,-.305,-.012,1,-.312,-.046,-.317,-.07,1,-.322,-.094,-.321,-.115,1,-.33,-.131,-.333,-.161,1,-.336,-.191,-.336,-.223,1,-.34,-.262,-.349,-.278,1,-.358,-.294,-.363,-.293,1,-.372,-.29,-.376,-.298],[-.033,-.225,1,-.06,-.242,-.091,-.245,1,-.123,-.248,-.151,-.236,1,-.179,-.225,-.196,-.201,1,-.209,-.185,-.216,-.157,1,-.224,-.128,-.219,-.08,1,-.214,-.037,-.191,.008,1,-.169,.052,-.137,.087,1,-.104,.121,-.068,.134,1,-.053,.14,-.04,.142,1,-.027,.143,-.004,.141,1,.019,.138,.035,.131,1,.051,.123,.059,.113,1,.074,.097,.079,.083,1,.084,.068,.084,.054,1,.079,.025,.055,-.01,1,.031,-.045,-.011,-.064,1,-.03,-.071,-.054,-.072,1,-.078,-.073,-.11,-.064,1,-.132,-.058,-.139,-.068,1,-.146,-.078,-.147,-.111,1,-.147,-.135,-.14,-.15,1,-.132,-.165,-.114,-.169,1,-.092,-.173,-.082,-.171,1,-.071,-.17,-.056,-.162,1,-.045,-.155,-.039,-.15,1,-.032,-.146,-.026,-.141,1,-.021,-.136,-.014,-.131,1,-.008,-.126,-.004,-.124,1,.001,-.122,.006,-.122,1,.015,-.123,.023,-.132,1,.031,-.141,.034,-.148,1,.038,-.153,.029,-.167,1,.021,-.181,.004,-.197,1,-.012,-.212,-.033,-.225],[-.042,-.006,1,-.033,-.002,-.02,.008,1,-.007,.019,.003,.031,1,.013,.043,.013,.051,1,.013,.063,-.001,.071,1,-.015,.08,-.039,.074,1,-.048,.072,-.06,.062,1,-.072,.052,-.083,.04,1,-.095,.027,-.103,.017,1,-.111,.006,-.112,.001,1,-.108,-.004,-.096,-.006,1,-.083,-.009,-.067,-.009,1,-.052,-.009,-.042,-.006],[.381,-.269,1,.368,-.272,.357,-.263,1,.346,-.255,.341,-.244,1,.334,-.225,.332,-.207,1,.33,-.188,.33,-.168,0,.33,-.138,0,.29,-.173,1,.256,-.205,.226,-.218,1,.195,-.231,.171,-.231,1,.16,-.229,.146,-.219,1,.132,-.209,.121,-.195,1,.11,-.182,.105,-.172,1,.099,-.158,.101,-.133,1,.104,-.109,.113,-.079,1,.123,-.05,.137,-.021,1,.152,.007,.171,.028,1,.204,.078,.249,.09,1,.295,.102,.332,.081,1,.353,.071,.361,.073,1,.368,.075,.371,.089,1,.375,.105,.38,.12,1,.384,.135,.393,.163,1,.418,.239,.437,.282,1,.455,.325,.47,.357,1,.481,.38,.491,.388,1,.501,.396,.509,.395,1,.52,.395,.534,.387,1,.548,.379,.553,.365,1,.557,.356,.557,.347,1,.556,.338,.55,.327,1,.537,.303,.52,.263,1,.502,.224,.485,.177,1,.467,.13,.452,.084,1,.437,.038,.427,.003,1,.421,-.019,.417,-.053,1,.413,-.087,.411,-.122,1,.409,-.158,.41,-.185,1,.41,-.213,.412,-.221,1,.418,-.241,.414,-.251,1,.41,-.261,.401,-.265,1,.392,-.268,.381,-.269],[.215,-.151,1,.229,-.147,.241,-.14,1,.252,-.132,.267,-.121,1,.297,-.098,.314,-.081,1,.33,-.063,.338,-.033,1,.342,-.017,.337,-.006,1,.332,.005,.321,.015,1,.309,.024,.291,.022,1,.273,.021,.251,.001,1,.227,-.021,.208,-.053,1,.189,-.084,.178,-.138,1,.176,-.148,.185,-.153,1,.194,-.158,.215,-.151],[.516,-.228,1,.508,-.22,.504,-.205,1,.501,-.191,.502,-.176,1,.503,-.162,.507,-.154,1,.507,-.146,.509,-.142,1,.512,-.137,.511,-.133,1,.51,-.129,.513,-.119,1,.516,-.109,.519,-.1,1,.526,-.084,.534,-.059,1,.543,-.035,.551,-.01,1,.56,.015,.565,.033,1,.571,.052,.572,.056,1,.572,.068,.588,.069,1,.6,.073,.613,.062,1,.627,.052,.637,.036,1,.645,.028,.643,.014,1,.641,-.0,.63,-.024,1,.626,-.032,.62,-.05,1,.615,-.067,.613,-.079,1,.609,-.087,.603,-.102,1,.598,-.116,.594,-.129,1,.592,-.134,.59,-.146,1,.588,-.158,.585,-.171,1,.582,-.184,.577,-.192,1,.568,-.233,.55,-.24,1,.533,-.247,.516,-.228],[.62,.175,1,.611,.182,.606,.192,1,.601,.203,.6,.212,1,.6,.221,.602,.222,1,.611,.23,.62,.247,1,.629,.265,.634,.279,1,.635,.282,.639,.287,1,.642,.292,.646,.293,1,.658,.301,.676,.293,1,.694,.285,.704,.269,1,.713,.25,.71,.232,1,.706,.215,.688,.193,1,.673,.173,.654,.169,1,.634,.164,.62,.175],[.721,-.224,1,.717,-.216,.706,-.209,1,.695,-.202,.695,-.198,1,.695,-.194,.692,-.187,1,.689,-.18,.685,-.176,1,.68,-.17,.687,-.147,1,.695,-.124,.71,-.091,1,.725,-.058,.744,-.023,1,.752,-.015,.76,-.002,1,.768,.011,.772,.015,1,.772,.019,.775,.023,1,.778,.026,.782,.026,0,.788,.039,1,.789,.043,.799,.055,1,.809,.067,.824,.082,1,.839,.096,.854,.109,1,.869,.122,.879,.128,1,.9,.142,.923,.143,1,.945,.143,.961,.13,1,.964,.127,.974,.119,1,.983,.11,.995,.1,1,1.007,.09,1.017,.081,0,1.054,.048,0,1.037,-.002,1,1.024,-.042,1.03,-.072,1,1.037,-.102,1.049,-.124,1,1.054,-.135,1.065,-.142,1,1.076,-.15,1.09,-.152,1,1.098,-.153,1.105,-.158,1,1.112,-.163,1.112,-.174,1,1.112,-.193,1.105,-.202,1,1.098,-.211,1.088,-.213,1,1.055,-.217,1.026,-.203,1,.996,-.189,.972,-.143,1,.968,-.137,.962,-.121,1,.955,-.104,.954,-.099,1,.95,-.104,.942,-.114,1,.934,-.123,.928,-.129,1,.857,-.201,.806,-.224,1,.755,-.246,.721,-.224],[.77,-.15,1,.775,-.153,.792,-.145,1,.809,-.137,.834,-.117,1,.868,-.088,.894,-.063,1,.92,-.039,.941,-.009,0,.963,.027,1,.953,.05,.944,.057,1,.935,.065,.927,.065,1,.914,.065,.894,.046,1,.873,.027,.848,-.007,1,.824,-.042,.796,-.089,1,.784,-.11,.777,-.13,1,.77,-.15,.77,-.15]]},"Quora":{"w":2.027,"c":[[-.78,-.331,1,-.795,-.328,-.816,-.316,1,-.836,-.305,-.854,-.289,1,-.871,-.273,-.878,-.259,1,-.903,-.208,-.905,-.15,1,-.908,-.093,-.891,-.011,1,-.886,.006,-.877,.035,1,-.869,.064,-.859,.093,1,-.849,.122,-.841,.142,1,-.833,.162,-.831,.162,1,-.828,.165,-.828,.179,1,-.828,.184,-.819,.201,1,-.811,.217,-.797,.238,1,-.784,.259,-.769,.278,1,-.755,.298,-.742,.309,1,-.722,.335,-.696,.358,1,-.671,.381,-.646,.394,1,-.64,.398,-.626,.403,1,-.612,.408,-.595,.412,1,-.579,.416,-.568,.417,1,-.518,.42,-.488,.403,1,-.458,.386,-.439,.347,1,-.419,.325,-.417,.302,1,-.415,.28,-.411,.251,1,-.411,.224,-.416,.188,1,-.422,.151,-.431,.115,1,-.44,.08,-.451,.056,1,-.462,.033,-.472,.033,1,-.472,.033,-.475,.032,1,-.478,.032,-.478,.027,1,-.476,.02,-.482,-.005,1,-.488,-.029,-.503,-.058,1,-.535,-.148,-.581,-.211,1,-.627,-.274,-.678,-.306,1,-.73,-.337,-.78,-.331],[-.574,-.376,1,-.59,-.377,-.609,-.368,1,-.629,-.358,-.633,-.345,1,-.64,-.339,-.64,-.334,1,-.64,-.328,-.642,-.326,1,-.646,-.324,-.653,-.316,1,-.66,-.307,-.663,-.296,1,-.67,-.282,-.683,-.256,1,-.697,-.229,-.712,-.201,1,-.727,-.172,-.738,-.151,1,-.75,-.129,-.752,-.126,1,-.76,-.118,-.75,-.106,1,-.745,-.094,-.732,-.086,1,-.719,-.079,-.7,-.084,1,-.677,-.084,-.658,-.132,1,-.657,-.137,-.649,-.156,1,-.641,-.175,-.631,-.193,1,-.621,-.212,-.615,-.217,1,-.61,-.228,-.604,-.242,1,-.598,-.256,-.591,-.265,1,-.588,-.276,-.578,-.289,1,-.568,-.302,-.564,-.316,1,-.541,-.352,-.544,-.364,1,-.548,-.377,-.574,-.376],[-.767,-.254,1,-.725,-.249,-.687,-.209,1,-.649,-.169,-.614,-.102,1,-.58,-.035,-.55,.05,1,-.541,.075,-.528,.105,1,-.514,.136,-.504,.172,1,-.493,.209,-.493,.25,1,-.487,.294,-.497,.312,1,-.506,.33,-.53,.341,1,-.562,.353,-.598,.337,1,-.635,.322,-.669,.28,1,-.704,.238,-.733,.168,1,-.774,.081,-.796,.015,1,-.818,-.051,-.824,-.103,1,-.83,-.154,-.82,-.199,1,-.818,-.23,-.805,-.246,1,-.792,-.261,-.767,-.254],[-.182,-.248,1,-.192,-.238,-.199,-.221,1,-.206,-.203,-.212,-.18,1,-.214,-.172,-.214,-.161,1,-.213,-.149,-.214,-.143,1,-.217,-.15,-.224,-.16,1,-.23,-.17,-.236,-.175,1,-.24,-.179,-.254,-.191,1,-.268,-.202,-.282,-.209,1,-.315,-.23,-.339,-.23,1,-.364,-.229,-.383,-.205,1,-.399,-.192,-.407,-.174,1,-.416,-.155,-.41,-.127,1,-.408,-.092,-.4,-.058,1,-.392,-.025,-.367,.031,1,-.346,.072,-.335,.094,1,-.324,.116,-.321,.12,1,-.306,.125,-.288,.119,1,-.27,.114,-.268,.1,1,-.262,.09,-.269,.063,1,-.275,.037,-.293,.002,1,-.307,-.032,-.319,-.065,1,-.331,-.097,-.334,-.12,1,-.336,-.143,-.322,-.148,1,-.313,-.153,-.294,-.146,1,-.275,-.139,-.249,-.109,1,-.224,-.078,-.197,-.013,1,-.189,.007,-.185,.023,1,-.181,.038,-.18,.057,1,-.182,.069,-.175,.081,1,-.168,.093,-.156,.1,1,-.152,.105,-.145,.109,1,-.138,.114,-.136,.109,0,-.12,.11,1,-.116,.111,-.112,.103,1,-.108,.095,-.103,.091,1,-.092,.082,-.095,.052,1,-.097,.022,-.12,-.032,1,-.139,-.073,-.146,-.094,1,-.152,-.115,-.153,-.135,1,-.153,-.153,-.149,-.167,1,-.144,-.18,-.129,-.193,1,-.118,-.2,-.117,-.214,1,-.115,-.228,-.116,-.24,1,-.118,-.249,-.131,-.254,1,-.143,-.258,-.157,-.256,1,-.172,-.255,-.182,-.248],[.02,-.24,1,.007,-.24,-.001,-.235,1,-.008,-.23,-.019,-.221,1,-.038,-.201,-.049,-.18,1,-.059,-.158,-.056,-.141,1,-.053,-.133,-.053,-.126,1,-.054,-.118,-.054,-.118,1,-.059,-.113,-.057,-.112,1,-.055,-.11,-.053,-.106,1,-.047,-.106,-.049,-.095,1,-.051,-.087,-.042,-.061,1,-.033,-.034,-.018,-.01,1,-.012,.0,.0,.017,1,.012,.033,.027,.049,1,.041,.066,.053,.076,1,.078,.097,.099,.109,1,.119,.121,.141,.126,1,.163,.131,.182,.131,1,.201,.131,.216,.115,1,.239,.105,.248,.089,1,.258,.073,.261,.046,1,.264,.016,.256,-.026,1,.247,-.068,.207,-.125,1,.182,-.161,.159,-.18,1,.136,-.199,.107,-.216,1,.086,-.23,.065,-.234,1,.043,-.238,.02,-.24],[.12,-.124,1,.143,-.102,.154,-.079,1,.165,-.055,.176,-.022,1,.18,-.015,.182,.0,1,.183,.015,.182,.029,1,.181,.043,.175,.045,1,.165,.052,.153,.048,1,.142,.045,.126,.033,1,.095,.008,.071,-.027,1,.046,-.061,.032,-.109,1,.025,-.138,.033,-.153,1,.042,-.169,.064,-.163,1,.087,-.157,.12,-.124],[.329,-.22,1,.321,-.213,.312,-.204,1,.304,-.194,.307,-.174,1,.31,-.146,.315,-.124,1,.32,-.103,.327,-.075,1,.329,-.063,.338,-.034,1,.347,-.005,.359,.029,1,.372,.063,.385,.094,1,.399,.124,.409,.139,1,.419,.148,.437,.147,1,.455,.147,.463,.139,1,.474,.13,.469,.108,1,.464,.085,.44,.038,1,.433,.021,.426,.007,1,.419,-.006,.417,-.013,1,.416,-.019,.421,-.017,1,.427,-.006,.444,.009,1,.46,.023,.478,.037,1,.495,.051,.511,.062,1,.527,.073,.533,.076,1,.541,.081,.552,.085,1,.562,.088,.567,.09,1,.589,.101,.616,.098,1,.642,.096,.648,.081,1,.649,.073,.655,.069,1,.66,.065,.66,.065,1,.664,.065,.665,.062,1,.665,.059,.665,.059,1,.665,.052,.653,.042,1,.64,.033,.624,.032,1,.611,.031,.601,.027,1,.591,.023,.577,.017,1,.539,-.005,.507,-.023,1,.476,-.041,.444,-.076,1,.437,-.084,.429,-.093,1,.421,-.101,.413,-.114,1,.408,-.119,.403,-.136,1,.398,-.153,.395,-.168,1,.391,-.184,.391,-.187,1,.391,-.187,.388,-.197,1,.385,-.206,.378,-.215,1,.366,-.231,.356,-.234,1,.345,-.236,.329,-.22],[.689,-.224,1,.685,-.216,.674,-.209,1,.663,-.202,.663,-.198,1,.663,-.194,.66,-.187,1,.656,-.18,.652,-.176,1,.647,-.17,.655,-.147,1,.662,-.124,.677,-.091,1,.693,-.058,.712,-.023,1,.72,-.015,.728,-.002,1,.736,.011,.74,.015,1,.74,.019,.743,.023,1,.746,.026,.75,.026,0,.755,.039,1,.757,.043,.767,.055,1,.777,.067,.791,.082,1,.806,.096,.821,.109,1,.837,.122,.847,.128,1,.868,.142,.89,.143,1,.913,.143,.929,.13,1,.932,.127,.941,.119,1,.951,.11,.963,.1,1,.975,.09,.985,.081,0,1.022,.048,0,1.004,-.002,1,.992,-.042,.998,-.072,1,1.004,-.102,1.017,-.124,1,1.022,-.135,1.033,-.142,1,1.044,-.15,1.058,-.152,1,1.066,-.153,1.073,-.158,1,1.08,-.163,1.08,-.174,1,1.08,-.193,1.073,-.202,1,1.066,-.211,1.056,-.213,1,1.023,-.217,.993,-.203,1,.964,-.189,.94,-.143,1,.936,-.137,.929,-.121,1,.923,-.104,.922,-.099,1,.918,-.104,.91,-.114,1,.902,-.123,.896,-.129,1,.825,-.201,.774,-.224,1,.723,-.246,.689,-.224],[.738,-.15,1,.742,-.153,.759,-.145,1,.777,-.137,.802,-.117,1,.836,-.088,.862,-.063,1,.888,-.039,.909,-.009,0,.931,.027,1,.921,.05,.912,.057,1,.903,.065,.895,.065,1,.882,.065,.861,.046,1,.841,.027,.816,-.007,1,.791,-.042,.764,-.089,1,.752,-.11,.745,-.13,1,.738,-.15,.738,-.15]]},"About":{"w":2.009,"c":[[-.941,-.283,1,-.959,-.273,-.96,-.261,1,-.962,-.249,-.947,-.219,1,-.932,-.189,-.9,-.126,1,-.876,-.081,-.866,-.055,1,-.856,-.03,-.854,-.019,1,-.852,-.008,-.852,-.005,1,-.854,.004,-.85,.01,1,-.846,.015,-.837,.019,1,-.832,.024,-.816,.037,1,-.8,.05,-.79,.068,1,-.781,.089,-.77,.111,1,-.758,.133,-.739,.166,1,-.719,.2,-.687,.254,1,-.667,.289,-.641,.331,1,-.615,.372,-.588,.408,1,-.577,.422,-.566,.43,1,-.554,.438,-.545,.438,1,-.527,.438,-.507,.428,1,-.487,.417,-.471,.402,1,-.456,.386,-.45,.371,1,-.445,.363,-.446,.337,1,-.447,.311,-.45,.274,1,-.453,.237,-.457,.195,1,-.46,.154,-.466,.098,1,-.472,.042,-.477,-.019,1,-.483,-.08,-.486,-.137,1,-.489,-.193,-.486,-.235,1,-.485,-.244,-.486,-.252,1,-.487,-.26,-.487,-.265,1,-.493,-.271,-.511,-.271,1,-.529,-.27,-.545,-.264,1,-.562,-.258,-.564,-.249,1,-.567,-.246,-.568,-.243,1,-.569,-.24,-.568,-.222,1,-.567,-.204,-.565,-.16,0,-.56,-.004,0,-.573,-.005,1,-.582,-.005,-.606,-.007,1,-.63,-.009,-.658,-.013,1,-.686,-.016,-.71,-.02,1,-.733,-.023,-.742,-.026,1,-.751,-.026,-.764,-.038,1,-.776,-.05,-.787,-.069,1,-.791,-.083,-.802,-.099,1,-.812,-.114,-.812,-.119,1,-.819,-.124,-.824,-.131,1,-.828,-.138,-.828,-.138,1,-.828,-.144,-.837,-.168,1,-.846,-.191,-.86,-.22,1,-.873,-.248,-.887,-.269,0,-.912,-.305],[-.712,.054,1,-.712,.054,-.702,.056,1,-.691,.058,-.676,.06,1,-.66,.063,-.648,.063,1,-.619,.07,-.602,.073,1,-.586,.076,-.577,.077,1,-.567,.077,-.561,.074,1,-.557,.069,-.554,.068,1,-.55,.067,-.55,.067,1,-.549,.069,-.547,.089,1,-.544,.108,-.54,.137,1,-.536,.166,-.533,.198,1,-.529,.229,-.526,.256,1,-.523,.284,-.522,.299,1,-.521,.318,-.522,.333,1,-.523,.349,-.523,.349,1,-.529,.349,-.547,.327,1,-.564,.305,-.587,.27,1,-.609,.234,-.63,.193,1,-.64,.174,-.649,.162,1,-.658,.149,-.662,.149,1,-.664,.147,-.673,.133,1,-.682,.119,-.692,.102,1,-.702,.084,-.709,.07,1,-.715,.056,-.712,.054],[-.273,-.24,1,-.293,-.238,-.303,-.232,1,-.312,-.225,-.318,-.212,1,-.326,-.203,-.327,-.198,1,-.329,-.193,-.328,-.189,1,-.323,-.189,-.319,-.189,1,-.315,-.188,-.314,-.185,1,-.314,-.182,-.31,-.181,1,-.307,-.18,-.303,-.181,1,-.284,-.182,-.256,-.168,1,-.227,-.154,-.194,-.129,1,-.161,-.104,-.128,-.074,1,-.102,-.04,-.091,-.023,1,-.08,-.006,-.079,.004,1,-.078,.014,-.083,.023,1,-.087,.031,-.105,.03,1,-.123,.03,-.154,.01,1,-.197,-.017,-.223,-.04,1,-.249,-.063,-.271,-.092,1,-.279,-.102,-.288,-.114,1,-.297,-.127,-.303,-.135,1,-.309,-.144,-.309,-.144,1,-.309,-.148,-.32,-.154,1,-.332,-.16,-.34,-.16,1,-.344,-.158,-.35,-.152,1,-.357,-.147,-.359,-.138,1,-.367,-.132,-.372,-.127,1,-.377,-.122,-.378,-.112,1,-.378,-.105,-.375,-.093,1,-.372,-.08,-.366,-.058,1,-.36,-.032,-.353,-.004,1,-.346,.024,-.339,.045,1,-.332,.065,-.33,.067,1,-.33,.067,-.326,.076,1,-.322,.085,-.322,.097,1,-.32,.109,-.315,.118,1,-.311,.127,-.311,.131,1,-.307,.134,-.299,.155,1,-.291,.176,-.279,.21,1,-.279,.213,-.272,.23,1,-.265,.246,-.255,.269,1,-.245,.291,-.234,.316,1,-.224,.34,-.217,.359,1,-.205,.376,-.197,.393,1,-.189,.409,-.182,.412,1,-.177,.413,-.166,.409,1,-.155,.405,-.144,.399,1,-.133,.392,-.128,.384,1,-.125,.379,-.124,.374,1,-.123,.37,-.128,.358,1,-.133,.347,-.145,.322,1,-.156,.297,-.178,.251,1,-.206,.191,-.223,.149,1,-.239,.106,-.249,.075,1,-.26,.044,-.27,.018,0,-.275,-.004,0,-.249,.023,1,-.237,.033,-.224,.045,1,-.211,.056,-.197,.066,1,-.189,.072,-.176,.079,1,-.162,.085,-.149,.09,1,-.136,.095,-.13,.096,1,-.127,.097,-.112,.1,1,-.096,.103,-.079,.103,1,-.057,.103,-.042,.089,1,-.026,.076,-.013,.054,1,-.002,.033,-.005,.002,1,-.007,-.028,-.021,-.051,1,-.026,-.055,-.031,-.062,1,-.036,-.068,-.036,-.072,1,-.037,-.079,-.054,-.101,1,-.071,-.122,-.088,-.141,1,-.106,-.16,-.132,-.179,1,-.158,-.197,-.184,-.212,1,-.209,-.226,-.227,-.232,1,-.235,-.233,-.25,-.236,1,-.265,-.238,-.273,-.24],[.113,-.24,1,.1,-.24,.092,-.235,1,.085,-.23,.074,-.221,1,.055,-.201,.044,-.18,1,.034,-.158,.037,-.141,1,.04,-.133,.04,-.126,1,.039,-.118,.039,-.118,1,.034,-.113,.036,-.112,1,.038,-.11,.04,-.106,1,.046,-.106,.044,-.095,1,.042,-.087,.051,-.061,1,.06,-.034,.075,-.01,1,.081,.0,.093,.017,1,.105,.033,.12,.049,1,.134,.066,.146,.076,1,.171,.097,.192,.109,1,.212,.121,.234,.126,1,.256,.131,.275,.131,1,.294,.131,.309,.115,1,.332,.105,.341,.089,1,.351,.073,.354,.046,1,.357,.016,.349,-.026,1,.34,-.068,.3,-.125,1,.275,-.161,.252,-.18,1,.229,-.199,.2,-.216,1,.179,-.23,.158,-.234,1,.136,-.238,.113,-.24],[.213,-.124,1,.236,-.102,.247,-.079,1,.258,-.055,.269,-.022,1,.273,-.015,.275,.0,1,.276,.015,.275,.029,1,.274,.043,.268,.045,1,.258,.052,.246,.048,1,.235,.045,.219,.033,1,.188,.008,.164,-.027,1,.139,-.061,.125,-.109,1,.118,-.138,.126,-.153,1,.135,-.169,.157,-.163,1,.18,-.157,.213,-.124],[.64,-.248,1,.63,-.238,.623,-.221,1,.616,-.203,.61,-.18,1,.608,-.172,.608,-.161,1,.609,-.149,.608,-.143,1,.605,-.15,.598,-.16,1,.592,-.17,.586,-.175,1,.582,-.179,.568,-.191,1,.554,-.202,.54,-.209,1,.507,-.23,.483,-.23,1,.458,-.229,.439,-.205,1,.423,-.192,.415,-.174,1,.406,-.155,.412,-.127,1,.414,-.092,.422,-.058,1,.43,-.025,.455,.031,1,.476,.072,.487,.094,1,.498,.116,.501,.12,1,.516,.125,.534,.119,1,.552,.114,.554,.1,1,.56,.09,.553,.063,1,.547,.037,.529,.002,1,.515,-.032,.503,-.065,1,.491,-.097,.488,-.12,1,.486,-.143,.5,-.148,1,.509,-.153,.528,-.146,1,.547,-.139,.573,-.109,1,.598,-.078,.625,-.013,1,.633,.007,.637,.023,1,.641,.038,.642,.057,1,.64,.069,.647,.081,1,.654,.093,.666,.1,1,.67,.105,.677,.109,1,.684,.114,.686,.109,0,.702,.11,1,.706,.111,.71,.103,1,.714,.095,.719,.091,1,.73,.082,.727,.052,1,.725,.022,.702,-.032,1,.683,-.073,.676,-.094,1,.67,-.115,.669,-.135,1,.669,-.153,.673,-.167,1,.678,-.18,.693,-.193,1,.704,-.2,.705,-.214,1,.707,-.228,.706,-.24,1,.704,-.249,.691,-.254,1,.679,-.258,.665,-.256,1,.65,-.255,.64,-.248],[.847,-.248,1,.836,-.246,.824,-.236,1,.811,-.225,.801,-.211,1,.791,-.197,.788,-.187,1,.788,-.185,.786,-.182,1,.783,-.179,.783,-.179,1,.779,-.176,.779,-.152,1,.778,-.129,.781,-.1,1,.784,-.071,.788,-.054,1,.793,-.038,.803,-.011,1,.813,.017,.82,.039,0,.847,.097,0,.807,.108,1,.8,.11,.796,.116,1,.791,.122,.791,.126,1,.791,.134,.8,.148,1,.809,.162,.813,.162,1,.818,.161,.832,.161,1,.845,.161,.858,.162,1,.871,.163,.874,.164,1,.878,.166,.882,.169,1,.886,.173,.888,.18,1,.893,.191,.897,.198,1,.901,.205,.908,.217,1,.915,.23,.92,.239,1,.924,.248,.934,.264,1,.939,.271,.945,.281,1,.951,.291,.96,.298,1,.969,.306,.986,.308,1,1.003,.31,1.018,.297,1,1.026,.287,1.027,.28,1,1.028,.272,1.019,.258,1,1.011,.241,1.001,.226,1,.99,.212,.981,.195,1,.965,.173,.975,.17,1,.985,.167,1.031,.174,1,1.06,.179,1.073,.169,1,1.086,.159,1.088,.142,1,1.091,.118,1.083,.113,1,1.075,.108,1.037,.108,1,1.013,.104,.996,.103,1,.979,.103,.971,.103,1,.958,.102,.954,.102,1,.95,.102,.942,.1,1,.934,.098,.931,.094,1,.927,.089,.923,.081,1,.919,.077,.911,.06,1,.903,.043,.891,.023,1,.877,-.019,.868,-.058,1,.858,-.098,.851,-.136,1,.848,-.157,.853,-.166,1,.857,-.175,.878,-.177,1,.889,-.178,.911,-.176,1,.933,-.175,.948,-.171,1,.959,-.166,.971,-.16,1,.983,-.155,.993,-.149,1,1.001,-.144,1.011,-.138,1,1.02,-.133,1.02,-.133,1,1.024,-.125,1.033,-.133,1,1.041,-.141,1.045,-.153,1,1.045,-.165,1.04,-.18,1,1.035,-.196,1.003,-.214,1,.958,-.242,.916,-.248,1,.873,-.253,.847,-.248]]}};/*HOME-WORDS END*/
+
   (function() {
     const root = document.querySelector('.am-root');
     if (!root) return;
@@ -1543,9 +1965,20 @@
       if (!found) return false;
       if (currentTab && name !== currentTab) closeViewerUI();
       panels.forEach(p => p.classList.toggle('active', p.id === 'am-panel-' + name));
+      root.classList.toggle('am-at-home', name === 'home');
+      if (home) {                            // Home always comes back with Applets in front
+        if (name === 'home') { home.reset(); home.start(); } else home.stop();
+      }
       if (pushHash) history.replaceState(null, '', '#' + name);
       return true;
     }
+
+    /* ---------- home: the dodecahedron ---------- */
+    const homeStage = root.querySelector('.home-stage');
+    const home = (homeStage && window.AmHome) ? AmHome.init(homeStage, {
+      words: AM_HOME_WORDS,
+      onOpen: w => { closeViewerUI(); activate(w.toLowerCase(), true); toTop(); }
+    }) : null;
 
     tabs.forEach(btn => {
       btn.addEventListener('click', e => {
@@ -1667,12 +2100,12 @@
         if (tile) { activate(m[1], false); openViewer(tile, false); return; }
         closeViewerUI();                     // unknown item: just show its tab
         if (activate(m[1], false)) history.replaceState(null, '', '#' + m[1]);
-        else activate('applets', false);
+        else activate('home', false);
         return;
       }
       const wasViewing = !!currentKey;
       closeViewerUI(true);                   // Back from an item: restores the list's scroll position
-      if (!activate(h || 'applets', false)) activate('applets', false);
+      if (!activate(h || 'home', false)) activate('home', false);
       if (booted && !wasViewing) toTop();
     }
     let booted = false;
@@ -1681,7 +2114,7 @@
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       e.preventDefault();
       closeViewerUI();
-      activate('applets', true);
+      activate('home', true);
       toTop();
     });
     window.addEventListener('popstate', route);
