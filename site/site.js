@@ -554,7 +554,8 @@
       if (home) {                            // Home always comes back with Applets in front
         if (name === 'home') { home.reset(); home.start(); } else home.stop();
       }
-      if (pushHash) history.replaceState(null, '', '#' + name);
+      // A user's tab change is a step in history, so Back returns to the previous tab (or Home).
+      if (pushHash && location.hash !== '#' + name) history.pushState(null, '', '#' + name);
       return true;
     }
 

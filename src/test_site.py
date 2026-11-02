@@ -74,6 +74,14 @@ def main():
                 check(pg.eval_on_selector('.am-root .panel.active', 'e=>e.id') == 'am-panel-applets', 'front face opens Applets')
                 pg.click('.am-root .tabs button[data-tab=home]'); pg.wait_for_timeout(200)
                 check(pg.eval_on_selector('.am-root .panel.active', 'e=>e.id') == 'am-panel-home', 'Home tab returns')
+                # the browser's Back button steps back through tabs and stays on the site
+                pg.click('.am-root .tabs button[data-tab=papers]'); pg.wait_for_timeout(150)
+                pg.click('.am-root .tabs button[data-tab=quora]'); pg.wait_for_timeout(150)
+                pg.go_back(); pg.wait_for_timeout(250)
+                on_papers = pg.eval_on_selector('.am-root .panel.active', 'e=>e.id') == 'am-panel-papers'
+                pg.go_back(); pg.wait_for_timeout(250)
+                on_home = pg.eval_on_selector('.am-root .panel.active', 'e=>e.id') == 'am-panel-home'
+                check(on_papers and on_home and pg.url.startswith(url), 'Back steps Quora → Papers → Home')
             first = tiles[0] if tiles else None
             if first:
                 pg.goto(url + '#applets/' + first); pg.wait_for_timeout(800)

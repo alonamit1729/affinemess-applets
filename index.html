@@ -14,7 +14,10 @@
 </head>
 <body>
 <!-- =========================================================
-  VERSION 2026-10-30a
+  VERSION 2026-11-02a
+    a: every tab change (tab, front face, wordmark, ←/→) adds a history entry, so the browser's
+       Back button returns to the previous tab (and to Home) instead of leaving the site
+  PREVIOUS 2026-10-30a
     a: Home tab (first, the landing page): a pencil-drawn floating dodecahedron whose faces name the
        sections; rest on a face (desktop) or swipe (phone) to turn it, click/tap the front face to open
   PREVIOUS 2026-10-26a
@@ -787,7 +790,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-10-30a">
+<div class="am-root" data-version="2026-11-02a">
   <div class="am-container">
 
     <header class="site-head">
@@ -1969,7 +1972,8 @@
       if (home) {                            // Home always comes back with Applets in front
         if (name === 'home') { home.reset(); home.start(); } else home.stop();
       }
-      if (pushHash) history.replaceState(null, '', '#' + name);
+      // A user's tab change is a step in history, so Back returns to the previous tab (or Home).
+      if (pushHash && location.hash !== '#' + name) history.pushState(null, '', '#' + name);
       return true;
     }
 
