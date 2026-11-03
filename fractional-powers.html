@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
 /* am-kit v1 BEGIN */
@@ -148,6 +150,7 @@ input[type=range] { accent-color:var(--accent); }
 #status.err { color: var(--accent-deep); }
 #status.ok { color: var(--ink-soft); }
 #precision-info { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); }
+.am-about .katex { font-size: 1em; }
 .divider { border-top: 1px solid var(--line-soft); }
 #opts-btn { display: none; }
 @media (max-width: 700px) {
@@ -234,7 +237,7 @@ input[type=range] { accent-color:var(--accent); }
   <div id="main"><div id="plot"></div></div>
   <aside class="am-about" id="am-about" aria-hidden="true">
     <button class="am-btn am-close" type="button">Close</button>
-    <h2>Fractional parts of xⁿ</h2>
+    <h2>Fractional parts of <span data-tex="x^n">xⁿ</span></h2>
     <p>Pick a number x &gt; 1 and look at the fractional parts of x, x², x³, … Each dot is one power: n across, the part after the decimal point up.</p>
     <h3>Almost always: noise</h3>
     <p>For almost every x &gt; 1, the fractional parts of xⁿ are equidistributed in [0, 1): in the long run every interval gets its fair share (Koksma, 1935). Try √2, ∛2 or 32/17 and the dots fill the strip evenly.</p>
@@ -644,6 +647,11 @@ function updatePreview() {
 function setEx(expr) {
   document.getElementById('x-input').value = expr;
   updatePreview();
+  // phones: slide the controls away so the new plot is visible
+  document.getElementById('sidebar').classList.remove('open');
+  const ob = document.getElementById('opts-btn');
+  ob.setAttribute('aria-expanded', 'false'); ob.classList.remove('is-on');
+  doCompute();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -709,6 +717,14 @@ new ResizeObserver(() => { if (window.Plotly && document.getElementById('plot').
 
 updatePreview();
 doCompute();
+
+// render x^n in the title with KaTeX (falls back to the plain "xⁿ" if KaTeX is unavailable)
+window.addEventListener('load', () => {
+  if (!window.katex) return;
+  document.querySelectorAll('[data-tex]').forEach(el => {
+    try { katex.render(el.getAttribute('data-tex'), el, { throwOnError: false }); } catch (e) {}
+  });
+});
 </script>
 </body>
 </html>
