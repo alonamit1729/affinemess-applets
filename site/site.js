@@ -452,7 +452,7 @@
       vNote.hidden = !tile.dataset.note;
       vNote.classList.remove('open');
       viewer.classList.toggle('is-video', !!tile.querySelector('.media.video'));
-      mountFrame(tile.dataset.src || tile.getAttribute('href'), name);
+      mountFrame(tile.dataset.src || fresh(tile.getAttribute('href')), name);
       viewer.hidden = false;
       root.classList.add('am-viewing');
       if (overlayMQ.matches) document.documentElement.classList.add('am-lock');
@@ -491,6 +491,15 @@
 
     /* A brand-new iframe per open: re-pointing an existing iframe adds its own session-history
        entries, which would make the browser's Back button navigate *inside* the frame. */
+    /* Our own applet pages get a throwaway ?_v= so the iframe never shows a copy the browser
+       cached before the applet was last updated (Pages lets it keep one for ~10 min).
+       Embeds (data-src: YouTube, Desmos) and non-HTML files are left alone. */
+    function fresh(url) {
+      if (!/\.html(?:[?#]|$)/.test(url)) return url;
+      const i = url.indexOf('#'), base = i < 0 ? url : url.slice(0, i), hash = i < 0 ? '' : url.slice(i);
+      return base + (base.includes('?') ? '&' : '?') + '_v=' + Date.now() + hash;
+    }
+
     function mountFrame(url, name) {
       unmountFrame();
       const f = document.createElement('iframe');
