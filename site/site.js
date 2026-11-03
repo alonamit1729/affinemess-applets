@@ -442,7 +442,9 @@
       currentKey = key;
       currentTab = tab;
       lastTile = tile;
-      vTitle.textContent = name;
+      /* keep markup such as the superscript in "x<sup>n</sup>" (tile titles are our own HTML) */
+      const tEl = tile.dataset.name ? null : tile.querySelector('.title');
+      if (tEl) vTitle.innerHTML = tEl.innerHTML; else vTitle.textContent = name;
       vBack.textContent = '← ' + tabLabel(tab);
       vOpen.href = tile.getAttribute('href');
       vNote.textContent = '';

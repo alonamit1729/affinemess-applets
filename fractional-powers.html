@@ -163,7 +163,12 @@ input[type=range] { accent-color:var(--accent); }
   }
   #sidebar.open { transform: none; visibility: visible; transition: transform .3s cubic-bezier(.16,1,.3,1); }
   .x-preview { display: none; }
-  .x-field { flex: 1 1 100%; max-width: none; order: 4; }
+  .x-field { flex: 1 1 100%; max-width: none; order: -1; }
+  .am-bar { gap: 8px 6px; }
+  .am-bar .am-btn { padding: 8px 8px; }
+  .am-bar .am-input { font-size: 16px; padding: 6px 7px; } /* 16px stops iOS zooming the page on focus */
+  .range-field { gap: 4px; }
+  .range-field input { width: 52px; }
 }
 
 </style>
@@ -497,18 +502,22 @@ const MOD3_COLORS = ['#B85820', '#5E8A4A', '#2E5C9A']; // 0:red, 1:green, 2:blue
 const MOD2_NAMES  = ['n even', 'n odd'];
 const MOD3_NAMES  = ['n ≡ 0 (mod 3)', 'n ≡ 1 (mod 3)', 'n ≡ 2 (mod 3)'];
 
+// phones: a swipe on the plot should not box-zoom it into an empty corner
+const NARROW = window.matchMedia('(max-width: 700px)');
+
 function renderPlot() {
   if (!state) return;
+  const narrow = NARROW.matches;
   const { ns, fracs, dists, hoverTexts, xStr } = state;
   const N    = ns.length;
-  const sz   = markerSize(N);
+  const sz   = narrow ? Math.max(5, Math.round(markerSize(N) * 0.65)) : markerSize(N);
   const yVals = yMode === 'frac' ? fracs : dists;
   const yRange = yMode === 'frac' ? [-0.04, 1.04]  : [-0.02, 0.54];
   const yDtick = yMode === 'frac' ? 0.25           : 0.1;
   const yTitle = yMode === 'frac' ? '{Xⁿ}'         : 'dist(Xⁿ, ℤ)';
   const plotTitle = yMode === 'frac'
-    ? `{(${xStr})<sup>n</sup>} — fractional parts`
-    : `dist((${xStr})<sup>n</sup>, ℤ) — distance to nearest integer`;
+    ? `{(${xStr})<sup>n</sup>}` + (narrow ? '' : ' — fractional parts')
+    : `dist((${xStr})<sup>n</sup>, ℤ)` + (narrow ? '' : ' — distance to nearest integer');
 
   let traces = [];
 
@@ -523,7 +532,7 @@ function renderPlot() {
         colorscale: VALUE_COLORSCALE,
         cmin: 0,
         cmax: yMode === 'frac' ? 1 : 0.5,
-        showscale: true,
+        showscale: !narrow,
         colorbar: {
           title: { text: yTitle, font: { color: '#5C5142', size: 12, family: FONT_MONO } },
           tickfont: { color: '#8A7D66', size: 10, family: FONT_MONO },
@@ -558,7 +567,7 @@ function renderPlot() {
   const layout = {
     title: {
       text: plotTitle,
-      font: { color: '#1E1810', size: 16, family: FONT_SERIF },
+      font: { color: '#1E1810', size: narrow ? 14 : 16, family: FONT_SERIF },
       x: 0.05,
     },
     paper_bgcolor: '#F2EBD9',
@@ -586,12 +595,16 @@ function renderPlot() {
       bgcolor: '#FBF6E8', bordercolor: '#B8AB8A',
       font: { color: '#1E1810', size: 12, family: FONT_MONO },
     },
-    margin: { l: 56, r: 64, t: 48, b: 46 },
+    margin: narrow ? { l: 48, r: 14, t: 40, b: 42 } : { l: 56, r: 64, t: 48, b: 46 },
+    dragmode: narrow ? false : 'zoom',
   };
+  if (narrow) layout.legend = Object.assign(layout.legend, { orientation: 'h', x: 0, y: -0.12, yanchor: 'top' });
 
   Plotly.react('plot', traces, layout, {
     responsive: true,
     displaylogo: false,
+    displayModeBar: !narrow,
+    scrollZoom: false,
     modeBarButtonsToRemove: ['toImage', 'sendDataToCloud'],
   });
 }
@@ -717,6 +730,7 @@ new ResizeObserver(() => { if (window.Plotly && document.getElementById('plot').
 
 updatePreview();
 doCompute();
+NARROW.addEventListener('change', renderPlot);
 
 // render x^n in the title with KaTeX (falls back to the plain "xⁿ" if KaTeX is unavailable)
 window.addEventListener('load', () => {
