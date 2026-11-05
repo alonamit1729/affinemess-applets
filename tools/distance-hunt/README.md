@@ -27,3 +27,8 @@ its Galois group by factoring mod 1,500 primes; `groups.py` identifies degree 4â
 sympy; `chain.py` tests practical constructibility (lattice or polygon start, then circles of
 existing radii, lines, bisectors); `final.py` and `cross.py` combine the two. `canon.py` folds
 the verdicts and the explorer's card numbers into `catalog.json`.
+
+`analysis/slide.py` checks which catalog sets one slide reaches (a point of the set on an
+existing line or circle, the rest built from it, one equality between two of the set's distances).
+Run on the 200 sets ordinary construction cannot reach: 197 need one slide; (5,4) nos. 461, 463
+and 466 need several sliders solved together (`analysis/slide_out.json`).

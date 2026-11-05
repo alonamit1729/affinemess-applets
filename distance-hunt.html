@@ -130,15 +130,23 @@ input[type=range] { accent-color:var(--accent); }
   padding:7px 12px; border-radius:3px; opacity:0; transition:opacity .25s; pointer-events:none; max-width:80%;
 }
 .dh-toast.show { opacity:1; }
-.dh-snapbar {
-  position:absolute; left:50%; top:14px; transform:translateX(-50%); z-index:5; pointer-events:none;
+.dh-banner {
+  position:absolute; left:50%; top:46px; transform:translateX(-50%); z-index:5; pointer-events:none;
   font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; line-height:1.45; text-align:center;
-  width:max-content; max-width:calc(100% - 250px); padding:9px 16px; border-radius:3px; border:1.5px solid var(--accent);
+  width:max-content; max-width:calc(100% - 60px); padding:9px 16px; border-radius:3px; border:1.5px solid var(--accent);
   background:var(--paper-card); color:var(--accent-deep); box-shadow:0 8px 22px -14px rgba(30,24,16,.55);
 }
-.dh-snapbar[hidden] { display:none; }
-.dh-snapbar b { font-weight:500; }
-.dh-snapbar.is-lock { background:var(--accent); color:var(--paper-card); }
+.dh-banner[hidden] { display:none; }
+.dh-banner b { font-weight:500; }
+.dh-banner.is-done { background:var(--accent); color:var(--paper-card); }
+.dh-eqs { margin:0 0 10px; font-family:var(--mono); font-size:11px; color:var(--ink-soft); }
+.dh-eqs .row { display:flex; align-items:center; gap:8px; padding:3px 0; }
+.dh-eqs .tk { color:var(--accent-deep); letter-spacing:-.1em; width:22px; }
+.dh-eqs .row button { margin-left:auto; border:0; background:none; cursor:pointer; color:var(--ink-faint); font-family:var(--mono); font-size:12px; padding:0 4px; }
+.dh-eqs .row button:hover { color:var(--accent-deep); }
+.dh-eqs .row:hover { color:var(--ink); }
+.dh-eqs .sum { color:var(--ink-faint); margin-top:4px; }
+.dh-eqs .sum b { color:var(--ink); font-weight:500; }
 
 .dh-side {
   flex:0 0 auto; width:316px; display:flex; flex-direction:column; min-height:0;
@@ -258,6 +266,7 @@ input[type=range] { accent-color:var(--accent); }
       <span class="am-label">Pick</span>
       <button class="am-btn dh-tool" data-tool="mark">Select <kbd>V</kbd></button>
       <button class="am-btn dh-tool" data-tool="free">Free point <kbd>F</kbd></button>
+      <button class="am-btn dh-tool" data-tool="eq">Equal <kbd>=</kbd></button>
       <span class="am-label">Draw</span>
       <button class="am-btn dh-tool" data-tool="line">Line <kbd>L</kbd></button>
       <button class="am-btn dh-tool" data-tool="bis">Bisector <kbd>B</kbd></button>
@@ -277,7 +286,7 @@ input[type=range] { accent-color:var(--accent); }
       </div>
       <div class="dh-coord" id="coord" hidden></div>
       <div class="dh-hint" id="hint"></div>
-      <div class="dh-snapbar" id="snapbar" hidden></div>
+      <div class="dh-banner" id="banner" hidden></div>
       <div class="dh-toast" id="toast"></div>
     </div>
     <aside class="dh-side">
@@ -286,6 +295,7 @@ input[type=range] { accent-color:var(--accent); }
         <div class="dh-unit" id="s-unit">lengths · starting segment = 1</div>
         <div class="dh-dist" id="s-dist"></div>
         <div class="dh-facts" id="s-facts"></div>
+        <div class="dh-eqs" id="s-eqs" hidden></div>
         <div class="dh-actions">
           <button class="am-btn is-primary" id="b-keep" title="Add to the collection (Enter)">Keep</button>
           <button class="am-btn" id="b-unmark" title="Unmark every point">Clear marks</button>
@@ -309,20 +319,22 @@ input[type=range] { accent-color:var(--accent); }
         <li><b>Line</b> through two points; <b>Bisector</b>, the perpendicular bisector of two points.</li>
         <li><b>Circle</b>: a centre, then a point on the circle. <b>Compass</b>: two points for the radius, then the centre.</li>
         <li><b>Polygon</b>: a regular polygon with the chosen number of sides on a segment, together with its centre. It sits to the left of the segment as you pick it; pick the ends the other way round for the other side.</li>
-        <li><b>Free point</b>: a point (drawn as a diamond) that you can drag anywhere. It is not exact, but see below.</li>
+        <li><b>Free point</b>: click on a line or circle for a <em>slider</em>, a point that moves only along it; click anywhere else for a point that moves freely. Both are drawn as diamonds (a slider with a bar along its curve). They are not exact until equalities pin them down; see below.</li>
+        <li><b>Equal</b>: click a segment of your set, then another; the game moves the free points and sliders so that the two have the same length, and marks equal segments with matching ticks.</li>
         <li><b>Construction</b> (H) hides the lines, circles, polygons and unmarked points, leaving the set and its coloured distances; picking a drawing tool brings them back. The corner readout shows coordinates, in units of the starting segment, of the pointer or of the point under it.</li>
       </ul>
       <p>That is enough: every rigid set in the catalog of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> explorer except a couple of hundred, nearly all of them five points with four distances, can be built this way.</p>
-      <h3>Snapping</h3>
+      <h3>Sliders and equalities</h3>
       <p>Some sets cannot be constructed at all. For 75 of the 468 rigid five-point four-distance sets, the distances solve equations whose Galois groups (S₅, S₆, S₇) are not solvable, so no straightedge, compass, angle divider or regular polygon will ever reach them.</p>
-      <p>For those, drop a <b>free point</b> roughly where it should go and drag it. While you drag, the game keeps solving the equations "these lengths are equal" near your configuration, and marks each nearby spot where the set would have fewer distances with a blue ring and its <em>d</em>. Drag onto a ring and the point clicks into place: the banner turns ochre and the panel shows the exact set. Let go to keep it there, or drag on. Snapped points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>. With two or more free points, the others may shift a little when one clicks in.</p>
+      <p>For those, say what you want and let the game solve it. Put a <b>slider</b> on a line or circle, build the rest of the set from it (circles and intersections follow the slider as it moves), then use <b>Equal</b> to ask for two segments to have the same length. A slider has one unknown and an equality is one equation, so the slider is pinned: the game finds every position along its line or circle where the two lengths agree, moves there, and shows the others as blue rings you can click. A free point has two unknowns and needs two equalities; several sliders and free points can be solved together. Until everything is pinned, dragging keeps the equalities you asked for. The panel counts equations and unknowns, and lists the equalities (hover one to see its segments, × to remove it).</p>
+      <p>One slider and one equality are enough for all but three of the catalog's sets that ordinary construction cannot reach; the remaining three ((5,4) nos. 461, 463 and 466) need three sliders solved together. Pinned points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>.</p>
       <h3>The catalog</h3>
       <p>Every set is compared with the 2,298 rigid sets catalogued in the explorer. A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
       <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
       <h3>Saving</h3>
       <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
       <h3>Keys</h3>
-      <p class="kb">hold or Shift-click mark · Esc / V select · F free · L line · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · H construction · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
+      <p class="kb">hold or Shift-click mark · Esc / V select · F free point or slider · = equal · N next solution · L line · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · H construction · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
     </aside>
   </div>
 </div>
@@ -374,7 +386,7 @@ const clsColor = k => C.cls[k % C.cls.length];
 /* ---------------- state ---------------- */
 let S = freshState();
 function freshState() {
-  return { nodes: [{ id: 0, t: 'base', x: 0, y: 0 }, { id: 1, t: 'base', x: 1, y: 0 }], marked: [0, 1], next: 2, tri: false, sq: false };
+  return { nodes: [{ id: 0, t: 'base', x: 0, y: 0 }, { id: 1, t: 'base', x: 1, y: 0 }], marked: [0, 1], next: 2, tri: false, sq: false, cons: [] };
 }
 let cards = [];
 let V = new Map();          // id -> value
@@ -390,10 +402,12 @@ let showCons = true;          // lines, circles, polygons, candidates and unmark
 let hover = null;
 let mouse = null;           // world coords of the pointer
 let status = null;          // last analysis
-let snapSess = null;        // snap state while a free point is dragged
+let eqPick = null;          // first segment picked with the Equal tool: [idA, idB]
+let alts = [];              // other solutions of the last solve along a slider: {x, d, tx, ty}
+let anim = null;            // running solve animation
 let storageOK = true;
 
-const PT = new Set(['base', 'free', 'lat', 'pv', 'pc', 'x']);
+const PT = new Set(['base', 'free', 'glide', 'lat', 'pv', 'pc', 'x']);
 const CURVE = new Set(['line', 'bis', 'circ', 'comp']);
 const isPt = n => PT.has(n.t);
 function deps(n) {
@@ -403,6 +417,7 @@ function deps(n) {
     case 'comp': return [n.c, n.p, n.q];
     case 'pv': case 'pc': return [n.poly];
     case 'x': return [n.c1, n.c2];
+    case 'glide': return [n.on];
     default: return [];
   }
 }
@@ -489,6 +504,12 @@ function evaluate(nodes, override) {
     switch (n.t) {
       case 'base': v = { x: n.x, y: n.y }; break;
       case 'free': v = override && override.has(n.id) ? override.get(n.id) : { x: n.x, y: n.y }; break;
+      case 'glide': {
+        const c = val.get(n.on); if (!c || !c.k) break;
+        const u = override && override.has(n.id) ? override.get(n.id).u : n.u;
+        v = c.k === 'l' ? { x: c.px + u * c.dx, y: c.py + u * c.dy } : { x: c.cx + c.r * Math.cos(u), y: c.cy + c.r * Math.sin(u) };
+        break;
+      }
       case 'lat': {
         const a = P(n.a), b = P(n.b); if (!a || !b) break;
         const [ux, uy, vx, vy] = latVec(n.kind, a, b);
@@ -561,7 +582,7 @@ function provenance() {
   const f = id => {
     if (memo.has(id)) return memo.get(id);
     const n = byId.get(id); let r = 0;            // 0 exact, 1 snapped, 2 free
-    if (n.t === 'free') r = n.snap ? 1 : 2;
+    if (n.t === 'free' || n.t === 'glide') r = n.snap ? 1 : 2;
     for (const d of deps(n)) r = Math.max(r, f(d));
     memo.set(id, r); return r;
   };
@@ -702,63 +723,94 @@ function analyse() {
   renderStatus();
 }
 
-/* ---------------- snapping ---------------- */
-function freeVarsFor(ids) {
-  // free (unsnapped) points that the marked points depend on
-  const out = new Set();
-  const walk = id => { const n = byId.get(id); if (n.t === 'free' && !n.snap) out.add(id); deps(n).forEach(walk); };
-  ids.forEach(walk);
-  return [...out];
+/* ---------------- equalities ----------------
+   S.cons: groups of segments [[a,b], [c,d], ...] whose lengths must be equal.
+   Unknowns: the free points (2 each) and sliders (1 each) the constrained segments depend on.
+   Each group of k segments gives k - 1 equations. */
+const segKey = sg => Math.min(sg[0], sg[1]) + '-' + Math.max(sg[0], sg[1]);
+function consUnknowns() {
+  const out = [], seen = new Set();
+  const walk = id => {
+    if (seen.has(id)) return; seen.add(id);
+    const n = byId.get(id); if (!n) return;
+    if (n.t === 'free') out.push({ id, k: 'free' });
+    if (n.t === 'glide') out.push({ id, k: 'glide' });
+    deps(n).forEach(walk);
+  };
+  for (const g of S.cons) for (const sg of g) { walk(sg[0]); walk(sg[1]); }
+  return out;
 }
-function residuals(free, x, ids, pattern) {
-  const ov = new Map(free.map((id, k) => [id, { x: x[2 * k], y: x[2 * k + 1] }]));
-  const val = evaluate(S.nodes, ov);
-  const P = ids.map(id => val.get(id));
-  if (P.some(p => !p || p.x === undefined)) return null;
-  const d2 = (p) => (P[p[0]].x - P[p[1]].x) ** 2 + (P[p[0]].y - P[p[1]].y) ** 2;
+/* variable vector: free -> (x, y); glide -> one length-scaled parameter */
+function varLayout(U) {
+  const L = [];
+  for (const u of U) {
+    const n = byId.get(u.id);
+    if (u.k === 'free') { L.push({ id: u.id, f: 'x', sc: 1 }, { id: u.id, f: 'y', sc: 1 }); }
+    else { const c = V.get(n.on); L.push({ id: u.id, f: 'u', sc: c && c.k === 'c' ? c.r : 1 }); }
+  }
+  return L;
+}
+function getX(L) { return L.map(v => byId.get(v.id)[v.f] * v.sc); }
+function overrideFor(L, x) {
+  const ov = new Map();
+  L.forEach((v, k) => {
+    const n = byId.get(v.id), o = ov.get(v.id) || (n.t === 'free' ? { x: n.x, y: n.y } : { u: n.u });
+    o[v.f] = x[k] / v.sc; ov.set(v.id, o);
+  });
+  return ov;
+}
+function setX(L, x) { L.forEach((v, k) => { byId.get(v.id)[v.f] = x[k] / v.sc; }); }
+function consEqs(val) {
   const r = [];
-  const sc = pattern.scale;
-  for (const grp of pattern.groups) { const b = d2(grp[0]); for (let k = 1; k < grp.length; k++) r.push((d2(grp[k]) - b) / sc); }
-  return r;
+  for (const g of S.cons) {
+    const d2 = sg => { const a = val.get(sg[0]), b = val.get(sg[1]); return a && b && a.x !== undefined && b.x !== undefined ? (a.x - b.x) ** 2 + (a.y - b.y) ** 2 : NaN; };
+    const b0 = d2(g[0]);
+    for (let k = 1; k < g.length; k++) r.push(d2(g[k]) - b0);
+  }
+  return r.some(Number.isNaN) ? null : r;
 }
-function solveSnap(free, x0, ids, pattern) {
-  let x = x0.slice(), lam = 1e-3;
-  let r = residuals(free, x, ids, pattern); if (!r) return null;
-  let f = r.reduce((s, v) => s + v * v, 0);
-  const m = x.length;
-  for (let it = 0; it < 40 && f > 1e-26; it++) {
-    const J = [];
-    for (let k = 0; k < m; k++) {
-      const h = 1e-7, xp = x.slice(), xm = x.slice(); xp[k] += h; xm[k] -= h;
-      const rp = residuals(free, xp, ids, pattern), rm = residuals(free, xm, ids, pattern);
-      if (!rp || !rm) return null;
-      J.push(rp.map((v, i) => (v - rm[i]) / (2 * h)));
-    }
-    // normal equations (J is m x R, stored by column = variable)
-    const A = Array.from({ length: m }, (_, a) => Array.from({ length: m }, (_, b) => J[a].reduce((s, v, i) => s + v * J[b][i], 0)));
-    const g = Array.from({ length: m }, (_, a) => J[a].reduce((s, v, i) => s + v * r[i], 0));
+function Fx(L, x) { return consEqs(evaluate(S.nodes, overrideFor(L, x))); }
+function jac(L, x, cols) {
+  const J = [];  // rows = equations
+  const h = 1e-7;
+  let r0 = null;
+  for (const k of cols) {
+    const xp = x.slice(), xm = x.slice(); xp[k] += h; xm[k] -= h;
+    const fp = Fx(L, xp), fm = Fx(L, xm);
+    if (!fp || !fm) return null;
+    if (!r0) r0 = fp.map(() => []);
+    fp.forEach((v, i) => r0[i].push((v - fm[i]) / (2 * h)));
+  }
+  return r0 || [];
+}
+/* minimum-norm Newton projection onto the equalities, moving only the columns in cols */
+function project(L, x0, cols) {
+  let x = x0.slice(), F = Fx(L, x);
+  if (!F) return null;
+  const nrm = f => Math.sqrt(f.reduce((s, v) => s + v * v, 0));
+  let f = nrm(F), mu = 1e-9;
+  if (!F.length) return { x, ok: true };
+  for (let it = 0; it < 60 && f > 1e-13; it++) {
+    const J = jac(L, x, cols); if (!J) return null;
+    const R = J.length;
+    const A = Array.from({ length: R }, (_, i) => Array.from({ length: R }, (_, j) => J[i].reduce((s, v, k) => s + v * J[j][k], 0)));
     let ok = false;
-    for (let tries = 0; tries < 8; tries++) {
-      const M = A.map((row, a) => row.map((v, b) => v + (a === b ? lam * (A[a][a] + 1e-12) : 0)));
-      const dx = gauss(M, g.map(v => -v)); if (!dx) { lam *= 10; continue; }
-      const xn = x.map((v, k) => v + dx[k]);
-      const rn = residuals(free, xn, ids, pattern);
-      const fn = rn ? rn.reduce((s, v) => s + v * v, 0) : Infinity;
-      if (fn < f) { x = xn; r = rn; f = fn; lam = Math.max(lam / 10, 1e-15); ok = true; break; }
-      lam *= 10;
+    for (let tries = 0; tries < 12; tries++) {
+      const M = A.map((row, i) => row.map((v, j) => v + (i === j ? mu * (1 + A[i][i]) : 0)));
+      const y = gauss(M, F.slice());
+      if (!y) { mu *= 10; continue; }
+      const dx = cols.map((_, k) => -J.reduce((s, row, i) => s + row[k] * y[i], 0));
+      // keep each step on screen-sized scales
+      const st = Math.sqrt(dx.reduce((s, v) => s + v * v, 0)), cap = 0.5;
+      const sc = st > cap ? cap / st : 1;
+      const xn = x.slice(); cols.forEach((c, k) => { xn[c] += sc * dx[k]; });
+      const Fn = Fx(L, xn);
+      if (Fn && nrm(Fn) < f) { x = xn; F = Fn; f = nrm(Fn); mu = Math.max(mu / 10, 1e-12); ok = true; break; }
+      mu *= 10;
     }
     if (!ok) break;
   }
-  if (f > 1e-22) return null;
-  // pinned down? Jacobian w.r.t. the free coordinates must have full rank
-  const J = [];
-  for (let k = 0; k < m; k++) {
-    const h = 1e-6, xp = x.slice(), xm = x.slice(); xp[k] += h; xm[k] -= h;
-    const rp = residuals(free, xp, ids, pattern), rm = residuals(free, xm, ids, pattern);
-    J.push(rp.map((v, i) => (v - rm[i]) / (2 * h)));
-  }
-  const rows = J[0].map((_, i) => J.map(col => col[i]));
-  return { x, pinned: rank(rows, m) === m };
+  return f < 1e-11 ? { x, ok: true } : null;
 }
 function gauss(A, b) {
   const n = b.length, M = A.map((r, i) => [...r, b[i]]);
@@ -772,143 +824,220 @@ function gauss(A, b) {
   for (let i = n - 1; i >= 0; i--) { let s = M[i][n]; for (let k = i + 1; k < n; k++) s -= M[i][k] * x[k]; x[i] = s / M[i][i]; }
   return x;
 }
-/* All exact positions near the current one where the marked set has fewer distances.
-   free: the free points that may move; the first one is the one being dragged. */
-function findTargets(free) {
-  const st = status, ids = st.ids;
-  if (!st.dc || st.n < 3 || st.coincide) return [];
-  const x0 = []; free.forEach(id => { const n = byId.get(id); x0.push(n.x, n.y); });
-  const pairs = st.dc.pairs.slice().sort((a, b) => a.d - b.d);
-  const scale = pairs[0].d ** 2;
-  // candidate patterns: (a) merge the smallest gaps between sorted lengths first (single linkage),
-  // (b) group lengths within a few pixels of a group's first length
-  const cands = [], seen = new Set();
-  const addCand = groups => {
-    if (groups.length >= st.d) return;
-    const key = groups.map(g => g.map(q => q.i + '-' + q.j).join('.')).join('|');
-    if (seen.has(key)) return; seen.add(key); cands.push(groups);
-  };
-  const maxGap = 40 / view.s;
-  const gaps = [];
-  for (let k = 0; k + 1 < pairs.length; k++) gaps.push({ k, g: pairs[k + 1].d - pairs[k].d });
-  const merged = new Array(pairs.length).fill(false);
-  gaps.forEach(({ k, g }) => { if (g < DTOL * pairs[k + 1].d) merged[k] = true; });
-  const runs = () => { const out = []; let cur = [pairs[0]]; for (let k = 0; k + 1 < pairs.length; k++) { if (merged[k]) cur.push(pairs[k + 1]); else { out.push(cur); cur = [pairs[k + 1]]; } } out.push(cur); return out; };
-  for (const { k, g } of gaps.slice().sort((a, b) => a.g - b.g)) {
-    if (merged[k]) continue;
-    if (g > maxGap) break;
-    merged[k] = true; addCand(runs());
-    if (cands.length > 24) break;
-  }
-  for (const px of [1.5, 3, 5, 8, 12, 18, 26, 36]) {
-    const tol = px / view.s, groups = [];
-    let g = null;
-    for (const p of pairs) { if (g && (p.d - g.start) < tol) g.list.push(p); else { g = { start: p.d, list: [p] }; groups.push(g); } }
-    addCand(groups.map(g => g.list));
-  }
+/* free directions left at x: unknowns minus the rank of the equations */
+function freedom(L, x) {
+  if (!L.length) return 0;
+  const J = jac(L, x, L.map((_, k) => k));
+  if (!J) return L.length;
+  return L.length - (J.length ? rank(J, L.length) : 0);
+}
+function eqCount() { return S.cons.reduce((s, g) => s + g.length - 1, 0); }
+/* mark the unknowns exact when the equalities pin them down */
+function settle() {
+  const U = consUnknowns(), L = varLayout(U);
+  const k = L.length ? freedom(L, getX(L)) : 0;
+  const pinned = L.length > 0 && k === 0 && Fx(L, getX(L)) !== null;
+  for (const n of S.nodes) if (n.t === 'free' || n.t === 'glide') n.snap = false;
+  if (pinned) for (const u of U) byId.get(u.id).snap = true;
+  return { L, k, pinned };
+}
+/* every solution along a single slider: scan its curve, refine sign changes */
+function scanSlider(L) {
+  const n = byId.get(L[0].id), c = V.get(n.on); if (!c) return [];
   const out = [];
-  for (const groups of cands) {
-    const pattern = { groups: groups.map(g => g.map(p => [p.i, p.j])), scale };
-    const sol = solveSnap(free, x0, ids, pattern);
-    if (!sol || !sol.pinned) continue;
-    const ov = new Map(free.map((id, k) => [id, { x: sol.x[2 * k], y: sol.x[2 * k + 1] }]));
-    const val = evaluate(S.nodes, ov);
-    const P = ids.map(id => val.get(id));
-    if (P.some(q => !q || q.x === undefined)) continue;
-    const dc = distClasses(P);
-    if (dc.cls.length >= st.d || dc.cls[0].d < 1e-9) continue;
-    // the dragged point may travel to the target; the others may only shift a little
-    const lead = Math.hypot(sol.x[0] - x0[0], sol.x[1] - x0[1]) * view.s;
-    let others = 0; for (let k = 1; k < free.length; k++) others = Math.max(others, Math.hypot(sol.x[2 * k] - x0[2 * k], sol.x[2 * k + 1] - x0[2 * k + 1]) * view.s);
-    if (lead > 90 || others > 25) continue;
-    out.push({ x: sol.x, d: dc.cls.length, tx: sol.x[0], ty: sol.x[1] });
+  const N = 1400;
+  let lo, hi;
+  if (c.k === 'c') { lo = n.u - Math.PI; hi = n.u + Math.PI; }
+  else { const span = Math.max(W, H) / view.s * 1.5; lo = n.u - span; hi = n.u + span; }
+  const g = t => { const F = Fx(L, [t * L[0].sc]); return F && F.length ? F : null; };
+  // the first equation that actually depends on the slider
+  let eqi = 0;
+  { const F0 = g(n.u), F1 = g(n.u + 1e-4); if (F0 && F1) { let best = -1; F0.forEach((v, i) => { const d = Math.abs(F1[i] - v); if (d > best) { best = d; eqi = i; } }); } }
+  const root = (a, b, fa) => {   // bisection between a (value fa) and b, opposite signs
+    for (let it = 0; it < 80; it++) {
+      const m = (a + b) / 2, fm = g(m); if (!fm) return null;
+      if (Math.sign(fm[eqi]) === Math.sign(fa)) { a = m; fa = fm[eqi]; } else b = m;
+    }
+    const tm = (a + b) / 2, Fm = g(tm);
+    return Fm && Fm.every(v => Math.abs(v) < 1e-9) ? tm : null;
+  };
+  const add = t => { if (t !== null && !out.some(o => Math.abs(o - t) < 1e-7)) out.push(t); };
+  // where a point stops existing (two circles part), find the edge and look for a root right next to it
+  const edge = (a, b) => {          // g(a) defined, g(b) not
+    for (let it = 0; it < 80; it++) { const m = (a + b) / 2; if (g(m)) a = m; else b = m; }
+    return a;
+  };
+  let tp = lo, fp = g(lo);
+  for (let i = 1; i <= N; i++) {
+    const t = lo + (hi - lo) * i / N, f = g(t);
+    if (f && fp && Math.sign(f[eqi]) !== Math.sign(fp[eqi])) add(root(tp, t, fp[eqi]));
+    else if (fp && !f) { const e = edge(tp, t), fe = g(e); if (fe && Math.sign(fe[eqi]) !== Math.sign(fp[eqi])) add(root(tp, e, fp[eqi])); }
+    else if (!fp && f) { const e = edge(t, tp), fe = g(e); if (fe && Math.sign(fe[eqi]) !== Math.sign(f[eqi])) add(root(e, t, fe[eqi])); }
+    tp = t; fp = f;
   }
-  return out;
+  return out.map(t => {
+    const val = evaluate(S.nodes, overrideFor(L, [t * L[0].sc]));
+    const P = S.marked.map(id => val.get(id)).filter(q => q && q.x !== undefined);
+    const dc = P.length >= 2 ? distClasses(P) : null;
+    const q = val.get(L[0].id);
+    return { x: [t * L[0].sc], d: dc ? dc.cls.length : 0, tx: q.x, ty: q.y };
+  });
 }
-const MAG_IN = 12, MAG_OUT = 18;     // px: the dragged point clicks in / lets go
-function freePointsOf(ids) {
-  // every free point (snapped or not) that the marked points depend on
-  const out = new Set();
-  const walk = id => { const n = byId.get(id); if (n.t === 'free') out.add(id); deps(n).forEach(walk); };
-  ids.forEach(walk);
-  return [...out];
-}
-function startSnapSession(id) {
-  const all = freePointsOf(S.marked);
-  if (!all.includes(id)) { byId.get(id).snap = false; snapSess = { id, free: [], orig: new Map(), targets: [], lock: null, active: false }; return; }
-  const free = [id, ...all.filter(f => f !== id)];
-  const orig = new Map(free.map(f => { const m = byId.get(f); return [f, { x: m.x, y: m.y, snap: !!m.snap }]; }));
-  snapSess = { id, free, orig, targets: [], lock: null, active: true, lastT: 0, lastX: Infinity, lastY: Infinity };
-}
-function placeFree(raw) {
-  // the dragged point at the pointer (approximate), every other free point back as it was
-  const ss = snapSess;
-  for (const f of ss.free) {
-    const m = byId.get(f);
-    if (f === ss.id) { m.x = raw.x; m.y = raw.y; m.snap = false; }
-    else { const o = ss.orig.get(f); m.x = o.x; m.y = o.y; m.snap = o.snap; }
+/* solve after the equalities changed: animate to the nearest solution */
+function solveCons(quiet) {
+  const U = consUnknowns(), L = varLayout(U);
+  alts = [];
+  if (!S.cons.length) { settle(); return true; }
+  const x0 = getX(L);
+  if (!L.length) {
+    const F = Fx(L, x0);
+    if (F && F.every(v => Math.abs(v) < 1e-9)) { settle(); return true; }
+    return false;
   }
-}
-function dragFree(raw) {
-  const ss = snapSess, n = byId.get(ss.id);
-  if (!ss.active) { n.x = raw.x; n.y = raw.y; n.snap = false; recompute(); return; }
-  placeFree(raw); recompute();
-  // look for targets from the pointer position, at most every 70 ms and after the pointer has moved a little
-  const now = performance.now();
-  if (now - ss.lastT > 70 && Math.hypot(raw.x - ss.lastX, raw.y - ss.lastY) * view.s > 2) {
-    ss.lastT = now; ss.lastX = raw.x; ss.lastY = raw.y;
-    for (const t of findTargets(ss.free)) {
-      const same = ss.targets.find(u => Math.hypot(u.tx - t.tx, u.ty - t.ty) * view.s < 1 && u.d === t.d);
-      if (!same) ss.targets.push(t);
+  let target = null;
+  if (L.length === 1 && L[0].f === 'u') {
+    const sols = scanSlider(L);
+    if (sols.length) {
+      sols.sort((a, b) => Math.abs(a.x[0] - x0[0]) - Math.abs(b.x[0] - x0[0]));
+      target = sols[0].x; alts = sols.length > 1 ? sols : [];
     }
   }
-  // click in to the nearest ring within reach; once in, stay until clearly out or clearly nearer another ring
-  const px = t => Math.hypot(t.tx - raw.x, t.ty - raw.y) * view.s;
-  let lock = ss.lock && px(ss.lock) < MAG_OUT ? ss.lock : null;
-  let best = null;
-  for (const t of ss.targets) { const d = px(t); if (d < MAG_IN && (!best || d < best.d - 0.5 || (Math.abs(d - best.d) <= 0.5 && t.d < best.t.d))) best = { t, d }; }
-  if (best && best.t !== lock) {
-    if (!lock) lock = best.t;
-    else {
-      const sep = Math.hypot(best.t.tx - lock.tx, best.t.ty - lock.ty) * view.s;
-      if (best.d < px(lock) - Math.min(3, 0.25 * sep)) lock = best.t;
+  if (!target) { const r = project(L, x0, L.map((_, k) => k)); if (r) target = r.x; }
+  if (!target) return false;
+  animateTo(L, x0, target, quiet);
+  return true;
+}
+function animateTo(L, x0, x1, quiet) {
+  if (anim) cancelAnimationFrame(anim.raf);
+  const t0 = performance.now(), T = 650;
+  const step = () => {
+    const u = Math.min(1, (performance.now() - t0) / T), e = u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2;
+    setX(L, x0.map((v, k) => v + (x1[k] - v) * e));
+    if (u >= 1) {
+      setX(L, x1); anim = null;
+      const st = settle(); recompute(); renderEqs(); draw(); persist();
+      if (!quiet) reportSolve(st);
+      return;
     }
-  }
-  ss.lock = lock;
-  if (lock) {
-    ss.free.forEach((f, k) => { const m = byId.get(f); m.x = lock.x[2 * k]; m.y = lock.x[2 * k + 1]; m.snap = true; });
-    recompute();
+    recompute(); draw();
+    anim = { raf: requestAnimationFrame(step) };
+  };
+  anim = { raf: requestAnimationFrame(step) };
+}
+function reportSolve(st) {
+  if (st.pinned) {
+    const off = alts.filter(a => { const [x, y] = toS(a.tx, a.ty); return x < 0 || y < 0 || x > W || y > H; }).length;
+    const more = alts.length > 1 ? ` · ${alts.length} solutions on this slider${off ? ` (${off} off screen)` : ''}: click a blue ring or press N for the next` : '';
+    banner(`<b>Pinned: n = ${status.n} · d = ${status.d}</b>${status.cat ? ' · no. ' + status.cat.num + (verdictShort(status.cat.v) ? ' · ' + verdictShort(status.cat.v) : '') : ''}${more}`, true, 6000);
+  } else banner(`Equal now. <b>${st.k} free direction${st.k > 1 ? 's' : ''} left</b>: drag a free point (the equalities hold), or add another equality`, false, 6000);
+}
+function addEquality(s1, s2) {
+  const k1 = segKey(s1), k2 = segKey(s2);
+  if (k1 === k2) return;
+  pushUndo();
+  const before = JSON.stringify(S.cons);
+  let g1 = S.cons.find(g => g.some(sg => segKey(sg) === k1)), g2 = S.cons.find(g => g.some(sg => segKey(sg) === k2));
+  if (g1 && g1 === g2) { toast('These two are already equal.'); undoStack.pop(); updateUndo(); return; }
+  if (g1 && g2) { g1.push(...g2); S.cons = S.cons.filter(g => g !== g2); }
+  else if (g1) g1.push(s2);
+  else if (g2) g2.push(s1);
+  else S.cons.push([s1, s2]);
+  if (!solveCons()) {
+    S.cons = JSON.parse(before); undoStack.pop(); updateUndo();
+    const U = consUnknowns();
+    banner(U.length ? 'No position nearby makes these two equal. Move the free points closer and try again.' : 'These lengths are fixed by the construction and differ; add a free point or a slider first.', false, 5000);
+    recompute(); renderEqs(); draw();
   }
 }
-function endSnapSession() {
-  const ss = snapSess; snapSess = null;
-  renderSnapbar();
-  if (ss && ss.lock) { recompute(); toast(`Snapped: n = ${status.n}, d = ${status.d}`); }
+function removeGroup(i) {
+  pushUndo(); S.cons.splice(i, 1); alts = []; settle(); recompute(); renderEqs(); draw(); persist();
 }
-function renderSnapbar() {
-  const bar = $('#snapbar'), ss = snapSess;
-  if (!ss || !ss.active) { bar.hidden = true; return; }
-  bar.hidden = false;
-  bar.classList.toggle('is-lock', !!ss.lock);
-  if (ss.lock) {
-    const near = ss.targets.some(t => t !== ss.lock && Math.hypot(t.tx - ss.lock.tx, t.ty - ss.lock.ty) * view.s < 8);
-    const vs = status.cat ? verdictShort(status.cat.v) : '';
-    const lab = status.cat ? ` · no. ${status.cat.num}${/^rigid;/.test(status.cat.lab) ? '' : ' · ' + esc(status.cat.lab)}${vs ? ' · <b>' + vs + '</b>' : ''}` : '';
-    bar.innerHTML = `Clicked in: <b>n = ${status.n} · d = ${status.d}</b>${lab} · let go to keep${near ? '<br>another ring is close: zoom in to choose' : ''}`; return;
+let bannerT = null;
+function banner(html, done, ms) {
+  const b = $('#banner'); b.innerHTML = html; b.hidden = false; b.classList.toggle('is-done', !!done);
+  clearTimeout(bannerT); if (ms) bannerT = setTimeout(() => { if (tool === 'eq' && !eqPick) eqHint(); else b.hidden = true; }, ms);
+}
+function eqHint() {
+  if (tool !== 'eq') { $('#banner').hidden = true; return; }
+  banner(eqPick ? 'Now click the segment it should equal' : 'Equal: click a segment of your set, then the segment it should equal', false, 0);
+}
+function renderEqs() {
+  const box = $('#s-eqs');
+  if (!S.cons.length) { box.hidden = true; box.innerHTML = ''; return; }
+  const U = consUnknowns(), L = varLayout(U), k = L.length ? freedom(L, getX(L)) : 0;
+  const nU = U.filter(u => u.k === 'free').length, nG = U.length - nU;
+  const what = [nU ? `${nU} free point${nU > 1 ? 's' : ''}` : '', nG ? `${nG} slider${nG > 1 ? 's' : ''}` : ''].filter(Boolean).join(', ');
+  box.hidden = false;
+  const len = g => { const a = V.get(g[0][0]), b = V.get(g[0][1]); return a && b && a.x !== undefined && b.x !== undefined ? Math.hypot(a.x - b.x, a.y - b.y).toFixed(5) : '?'; };
+  box.innerHTML = S.cons.map((g, i) => `<div class="row" data-g="${i}" title="hover to see the segments"><span class="tk">${'|'.repeat(i + 1)}</span><span>${g.length} segments · length ${len(g)}</span><button data-rm="${i}" title="Remove this equality">×</button></div>`).join('')
+    + `<div class="sum">${eqCount()} equation${eqCount() > 1 ? 's' : ''} · ${L.length} unknown${L.length !== 1 ? 's' : ''}${what ? ' (' + what + ')' : ''} · <b>${k === 0 ? 'pinned' : k + ' free direction' + (k > 1 ? 's' : '') + ' left'}</b></div>`;
+}
+let eqHover = null;
+$('#s-eqs').addEventListener('click', e => { const b = e.target.closest('[data-rm]'); if (b) removeGroup(+b.dataset.rm); });
+$('#s-eqs').addEventListener('mouseover', e => { const r = e.target.closest('[data-g]'); eqHover = r ? +r.dataset.g : null; draw(); });
+$('#s-eqs').addEventListener('mouseout', () => { eqHover = null; draw(); });
+/* the segment (between marked points) under the pointer */
+function segAt(sx, sy) {
+  if (!status || !status.dc || status.coincide) return null;
+  const w = toW(sx, sy); let best = null, bd = 7;
+  for (const p of status.dc.pairs) {
+    const a = status.P[p.i], b = status.P[p.j];
+    const d = segDist(w, a, b) * view.s;
+    if (d < bd) { bd = d; best = [status.ids[p.i], status.ids[p.j]]; }
   }
-  const ds = [...new Set(ss.targets.map(t => t.d))].sort((a, b) => a - b);
-  let crowded = false;
-  for (let i = 0; i < ss.targets.length && !crowded; i++) for (let j = i + 1; j < ss.targets.length; j++)
-    if (Math.hypot(ss.targets[i].tx - ss.targets[j].tx, ss.targets[i].ty - ss.targets[j].ty) * view.s < 8) { crowded = true; break; }
-  bar.innerHTML = ds.length ? `Blue rings: nearby spots with <b>d = ${ds.slice(0, 4).join(', ')}</b> · drag onto one${crowded ? ' · rings close together: zoom in' : ''}` :
-    `Now <b>d = ${status.d}</b> · keep dragging: rings appear where distances can coincide`;
+  return best;
+}
+/* dragging a free point or slider while equalities hold */
+function dragUnknown(id, w) {
+  const n = byId.get(id);
+  const raw = n.t === 'free' ? { x: w.x, y: w.y } : { u: glideParam(n, w) };
+  const U = consUnknowns(), L = varLayout(U);
+  const mine = L.map((v, k) => v.id === id ? k : -1).filter(k => k >= 0);
+  if (!mine.length) { Object.assign(n, raw); n.snap = false; recompute(); return; }
+  const x = getX(L);
+  mine.forEach(k => { x[k] = raw[L[k].f] * L[k].sc; });
+  const others = L.map((_, k) => k).filter(k => !mine.includes(k));
+  let r = others.length ? project(L, x, others) : null;          // the others follow
+  if (!r) r = project(L, x, L.map((_, k) => k));                  // or the point slides along the locus
+  if (r) { setX(L, r.x); settle(); recompute(); }
+}
+function glideParam(n, w) {
+  const c = V.get(n.on); if (!c) return n.u;
+  if (c.k === 'l') return (w.x - c.px) * c.dx + (w.y - c.py) * c.dy;
+  const a = Math.atan2(w.y - c.cy, w.x - c.cx);
+  return n.u + Math.atan2(Math.sin(a - n.u), Math.cos(a - n.u));   // continuous angle
+}
+/* the line or circle under the pointer (for placing a slider) */
+function curveAt(sx, sy) {
+  const w = toW(sx, sy); let best = null, bd = 7;
+  for (const n of S.nodes) {
+    if (!CURVE.has(n.t)) continue;
+    const v = V.get(n.id); if (!v) continue;
+    const d = v.k === 'l' ? Math.abs((w.x - v.px) * v.dy - (w.y - v.py) * v.dx) * view.s : Math.abs(Math.hypot(w.x - v.cx, w.y - v.cy) - v.r) * view.s;
+    if (d < bd) { bd = d; best = n; }
+  }
+  return best;
+}
+
+function altAt(sx, sy) {
+  let best = null, bd = 12;
+  for (const a of alts) { const [x, y] = toS(a.tx, a.ty), d = Math.hypot(x - sx, y - sy); if (d < bd) { bd = d; best = a; } }
+  return best;
+}
+function pickAlt(a) {
+  const U = consUnknowns(), L = varLayout(U);
+  if (L.length !== 1) return;
+  pushUndo();
+  const keepAlts = alts;
+  animateTo(L, getX(L), a.x, true);
+  setTimeout(() => { alts = keepAlts; draw(); reportSolve(settle()); }, 700);
 }
 
 /* ---------------- undo ---------------- */
 let undoStack = [], redoStack = [];
-const snapshot = () => JSON.stringify({ nodes: S.nodes, marked: S.marked, next: S.next });
+const snapshot = () => JSON.stringify({ nodes: S.nodes, marked: S.marked, next: S.next, cons: S.cons });
 function pushUndo() { undoStack.push(snapshot()); if (undoStack.length > 300) undoStack.shift(); redoStack = []; updateUndo(); }
-function restore(js) { const o = JSON.parse(js); S.nodes = o.nodes; S.marked = o.marked; S.next = o.next; picks = []; recompute(); draw(); persist(); }
+function restore(js) { const o = JSON.parse(js); S.nodes = o.nodes; S.marked = o.marked; S.next = o.next; S.cons = o.cons || []; picks = []; eqPick = null; alts = []; recompute(); renderEqs(); draw(); persist(); }
 function undo() { if (!undoStack.length) return; redoStack.push(snapshot()); restore(undoStack.pop()); updateUndo(); }
 function redo() { if (!redoStack.length) return; undoStack.push(snapshot()); restore(redoStack.pop()); updateUndo(); }
 function updateUndo() { $('#b-undo').disabled = !undoStack.length; $('#b-redo').disabled = !redoStack.length; }
@@ -1005,7 +1134,8 @@ function segDist(p, a, b) {
 /* ---------------- tools ---------------- */
 const TOOLS = {
   mark: { need: 1, hint: () => '<b>Select</b>: click a point to mark or unmark it (with any other tool, hold the mouse on it or Shift-click). Drag free points; drag empty space to pan.' },
-  free: { need: 0, hint: () => '<b>Free point</b>: click to drop a point, then drag it. Blue rings show nearby spots with fewer distances; drag onto one and it clicks in.' },
+  free: { need: 0, hint: () => '<b>Free point</b>: click on a line or circle to put a slider on it, or anywhere else for a point that moves freely. Then use <b>Equal</b> to say which distances should coincide.' },
+  eq: { need: 0, hint: () => '<b>Equal</b>: click a segment of your set, then the segment it should equal. Free points and sliders move to make them equal; each equality uses up one unknown.' },
   line: { need: 2, hint: k => ['<b>Line</b>: pick the first point.', '<b>Line</b>: pick the second point.'][k] },
   bis: { need: 2, hint: k => ['<b>Bisector</b>: pick the first point.', '<b>Bisector</b>: pick the second point.'][k] },
   circ: { need: 2, hint: k => ['<b>Circle</b>: pick the centre.', '<b>Circle</b>: pick a point on the circle.'][k] },
@@ -1015,8 +1145,9 @@ const TOOLS = {
 };
 function setCons(on) { showCons = on; $('#b-cons').setAttribute('aria-pressed', on); hover = null; draw(); }
 function setTool(t) {
-  if (t !== 'mark' && !showCons) setCons(true);   // building needs the construction in view
-  tool = t; picks = [];
+  if (t !== 'mark' && t !== 'eq' && !showCons) setCons(true);   // building needs the construction in view
+  tool = t; picks = []; eqPick = null;
+  eqHint();
   document.querySelectorAll('.dh-tool').forEach(b => b.classList.toggle('is-on', b.dataset.tool === t));
   updateHint(); draw();
 }
@@ -1031,10 +1162,24 @@ function clickTool(sx, sy) {
   if (tool === 'mark') { toggleMark(pk); return; }
   if (tool === 'free') {
     pushUndo();
-    const w = toW(sx, sy);
-    const id = addNode({ t: 'free', x: w.x, y: w.y });
+    const w = toW(sx, sy), cn = curveAt(sx, sy);
+    let id;
+    if (cn) {
+      const c = V.get(cn.id);
+      const u = c.k === 'l' ? (w.x - c.px) * c.dx + (w.y - c.py) * c.dy : Math.atan2(w.y - c.cy, w.x - c.cx);
+      id = addNode({ t: 'glide', on: cn.id, u });
+    } else id = addNode({ t: 'free', x: w.x, y: w.y });
     if (!S.marked.includes(id)) S.marked.push(id);
     commit(); return;
+  }
+  if (tool === 'eq') {
+    if (alts.length) { const a = altAt(sx, sy); if (a) { pickAlt(a); return; } }
+    const sg = segAt(sx, sy);
+    if (!sg) { if (eqPick) { eqPick = null; eqHint(); draw(); } return; }
+    if (!eqPick) { eqPick = sg; eqHint(); draw(); return; }
+    const first = eqPick; eqPick = null;
+    if (segKey(first) === segKey(sg)) { eqHint(); draw(); return; }
+    addEquality(first, sg); draw(); return;
   }
   if (tool === 'erase') {
     if (!pk) return;
@@ -1082,8 +1227,10 @@ function eraseNode(id) {
   while (grew) { grew = false; for (const n of S.nodes) if (!kill.has(n.id) && deps(n).some(d => kill.has(d))) { kill.add(n.id); grew = true; } }
   S.nodes = S.nodes.filter(n => !kill.has(n.id));
   S.marked = S.marked.filter(m => !kill.has(m));
+  S.cons = S.cons.map(g => g.filter(sg => !kill.has(sg[0]) && !kill.has(sg[1]))).filter(g => g.length >= 2);
+  alts = []; settle();
 }
-function commit() { recompute(); updateHint(); draw(); persist(); }
+function commit() { recompute(); renderEqs(); updateHint(); draw(); persist(); }
 
 /* ---------------- drawing ---------------- */
 function draw() {
@@ -1142,20 +1289,43 @@ function draw() {
   // candidates
   ctx.strokeStyle = C.faint; ctx.lineWidth = 1;
   if (showCons) for (const c of cand) { const [x, y] = toS(c.x, c.y); ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.stroke(); }
-  // snap targets while a free point is dragged
-  if (snapSess && snapSess.active) {
-    const dmin = snapSess.targets.reduce((m, t) => Math.min(m, t.d), Infinity);
+  // equalities: congruence ticks on the constrained segments
+  if (S.cons.length) {
+    S.cons.forEach((g, gi) => {
+      for (const sg of g) {
+        const a = V.get(sg[0]), b = V.get(sg[1]); if (!a || !b || a.x === undefined || b.x === undefined) continue;
+        const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y);
+        const L = Math.hypot(x2 - x1, y2 - y1); if (L < 1) continue;
+        const ux = (x2 - x1) / L, uy = (y2 - y1) / L, mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        const hot = eqHover === gi;
+        if (!showEdges || hot) { ctx.strokeStyle = hot ? C.accent : C.faint; ctx.lineWidth = hot ? 3 : 1; ctx.setLineDash(hot ? [] : [4, 3]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
+        ctx.strokeStyle = hot ? C.accent : C.deep; ctx.lineWidth = 1.8;
+        for (let k = 0; k <= gi; k++) {
+          const o = (k - gi / 2) * 4;
+          ctx.beginPath(); ctx.moveTo(mx + o * ux - 6 * uy, my + o * uy + 6 * ux); ctx.lineTo(mx + o * ux + 6 * uy, my + o * uy - 6 * ux); ctx.stroke();
+        }
+      }
+    });
+  }
+  // Equal tool: the segment under the pointer and the one already picked
+  if (tool === 'eq') {
+    const hs = mouse ? segAt(...toS(mouse.x, mouse.y)) : null;
+    for (const [sg, col, w] of [[eqPick, C.accent, 4], [hs, C.accent, 3]]) {
+      if (!sg) continue;
+      const a = V.get(sg[0]), b = V.get(sg[1]); const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y);
+      ctx.strokeStyle = col; ctx.globalAlpha = sg === eqPick ? 1 : 0.55; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  }
+  // other solutions along the slider
+  if (alts.length) {
     ctx.font = '500 10.5px ' + css.getPropertyValue('--mono');
-    const labelled = [];
-    const order = snapSess.targets.slice().sort((a, b) => (b === snapSess.lock) - (a === snapSess.lock) || a.d - b.d);
-    for (const t of order) {
-      const [x, y] = toS(t.tx, t.ty), lock = snapSess.lock === t;
-      if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
-      ctx.strokeStyle = C.cls[1]; ctx.lineWidth = lock ? 2.5 : (t.d === dmin ? 1.8 : 1.1);
-      ctx.globalAlpha = lock || t.d === dmin ? 1 : 0.6;
-      ctx.beginPath(); ctx.arc(x, y, lock ? 12 : 9, 0, 7); ctx.stroke();
-      if (!labelled.some(([u, v]) => Math.hypot(u - x, v - y) < 22)) { ctx.fillStyle = C.cls[1]; ctx.fillText('d=' + t.d, x + 13, y - 10); labelled.push([x, y]); }
-      ctx.globalAlpha = 1;
+    const U = consUnknowns(), cur = U.length === 1 ? V.get(U[0].id) : null;
+    for (const a of alts) {
+      const [x, y] = toS(a.tx, a.ty);
+      const here = cur && Math.hypot(cur.x - a.tx, cur.y - a.ty) < 1e-9;
+      ctx.strokeStyle = C.cls[1]; ctx.lineWidth = here ? 2.4 : 1.4; ctx.globalAlpha = here ? 1 : 0.8;
+      ctx.beginPath(); ctx.arc(x, y, here ? 12 : 9, 0, 7); ctx.stroke();
+      ctx.fillStyle = C.cls[1]; ctx.fillText('d=' + a.d, x + 13, y - 10); ctx.globalAlpha = 1;
     }
   }
   // points
@@ -1165,7 +1335,16 @@ function draw() {
     const isM = marked.has(p.id), n = p.n;
     if (!showCons && !isM) continue;
     const picked = picks.includes(p.id);
-    if (n.t === 'free') {
+    if (n.t === 'glide') {
+      const c = V.get(n.on); let ang = 0;
+      if (c && c.k === 'l') ang = Math.atan2(-c.dy, c.dx); else if (c) ang = Math.atan2(-(p.x - c.cx), -(p.y - c.cy)) + Math.PI / 2;
+      ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+      ctx.strokeStyle = isM ? C.cls[1] : C.soft; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(-11, 0); ctx.lineTo(11, 0); ctx.stroke();
+      ctx.rotate(Math.PI / 4);
+      const s = isM ? 4.6 : 3.6;
+      ctx.fillStyle = n.snap ? (isM ? C.cls[1] : C.soft) : C.paper;
+      ctx.lineWidth = 1.6; ctx.beginPath(); ctx.rect(-s, -s, 2 * s, 2 * s); ctx.fill(); ctx.stroke(); ctx.restore();
+    } else if (n.t === 'free') {
       ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4);
       const s = isM ? 5.2 : 4;
       ctx.fillStyle = n.snap ? (isM ? C.cls[1] : C.soft) : C.paper;
@@ -1269,7 +1448,7 @@ function renderStatus() {
   if (st.n < 3) f.push('Mark at least three points.');
   else if (st.coincide) f.push('Two marked points coincide.');
   else if (st.prov === 2) {
-    f.push('Approximate: the set includes free points. Drag one to find exact spots where distances coincide.');
+    f.push(S.cons.length ? 'Approximate: the equalities leave some freedom. Add another with <b>Equal</b>, or drag a free point (the equalities hold).' : 'Approximate: the set includes free points or sliders. Use <b>Equal</b> to say which distances should coincide.');
   } else {
     canKeep = true;
     f.push(st.flex === 0 ? 'Rigid' + (st.prov === 1 ? ', with snapped points.' : ', and constructed exactly.') :
@@ -1294,11 +1473,12 @@ function recipeFor(markedIds) {
   const need = new Set([0, 1]);
   const walk = id => { if (need.has(id) && id > 1) return; need.add(id); deps(byId.get(id)).forEach(walk); };
   markedIds.forEach(walk);
+  const cons = S.cons.filter(g => g.every(sg => sg.every(id => need.has(id))));
   const kept = S.nodes.filter(n => need.has(n.id));
   const map = new Map(kept.map((n, k) => [n.id, k]));
-  const R = ['a', 'b', 'c', 'p', 'q', 'c1', 'c2', 'poly'];
+  const R = ['a', 'b', 'c', 'p', 'q', 'c1', 'c2', 'poly', 'on'];
   const nodes = kept.map(n => { const o = { ...n, id: map.get(n.id) }; for (const k of R) if (k in o) o[k] = map.get(o[k]); return o; });
-  return { nodes, marked: markedIds.map(id => map.get(id)) };
+  return { nodes, marked: markedIds.map(id => map.get(id)), cons: cons.map(g => g.map(sg => sg.map(id => map.get(id)))) };
 }
 function keep() {
   const st = status;
@@ -1369,8 +1549,9 @@ function loadCard(id) {
   const c = cards.find(x => x.id === id); if (!c) return;
   pushUndo();
   S.nodes = JSON.parse(JSON.stringify(c.recipe.nodes)); S.marked = c.recipe.marked.slice();
-  S.next = Math.max(...S.nodes.map(n => n.id)) + 1; picks = [];
-  recompute(); fit(); persist();
+  S.cons = JSON.parse(JSON.stringify(c.recipe.cons || []));
+  S.next = Math.max(...S.nodes.map(n => n.id)) + 1; picks = []; eqPick = null; alts = [];
+  recompute(); renderEqs(); fit(); persist();
 }
 $('#coll').addEventListener('click', e => {
   const del = e.target.closest('[data-del]');
@@ -1389,7 +1570,7 @@ let persistTimer = null, askedPersist = false;
 function persist(now) {
   clearTimeout(persistTimer);
   const go = () => {
-    try { localStorage.setItem(LS_KEY, JSON.stringify({ v: SAVE_V, cards, work: { nodes: S.nodes, marked: S.marked, next: S.next, tri: S.tri, sq: S.sq } })); if (!storageOK) { storageOK = true; renderCollection(); } }
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ v: SAVE_V, cards, work: { nodes: S.nodes, marked: S.marked, next: S.next, tri: S.tri, sq: S.sq, cons: S.cons } })); if (!storageOK) { storageOK = true; renderCollection(); } }
     catch (e) { if (storageOK) { storageOK = false; renderCollection(); } }
     if (cards.length && !askedPersist) { askedPersist = true; try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {} }
   };
@@ -1402,6 +1583,7 @@ function loadSaved() {
     if (Array.isArray(o.cards)) cards = o.cards.filter(validCard);
     if (o.work && Array.isArray(o.work.nodes) && o.work.nodes.length >= 2) {
       S.nodes = o.work.nodes; S.marked = o.work.marked || []; S.next = o.work.next || (Math.max(...S.nodes.map(n => n.id)) + 1);
+      S.cons = Array.isArray(o.work.cons) ? o.work.cons : [];
       S.tri = !!o.work.tri; S.sq = !!o.work.sq;
     }
   } catch (e) { storageOK = false; }
@@ -1474,9 +1656,9 @@ cv.addEventListener('pointerdown', e => {
   const r = cv.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
   const pk = pickAt(sx, sy, false);
   const n = pk && pk.kind === 'pt' ? byId.get(pk.id) : null;
-  if (e.button === 0 && n && n.t === 'free' && (tool === 'mark' || tool === 'free')) drag = { mode: 'pt', id: n.id, sx, sy, moved: false, wasSnap: !!n.snap };
+  if (e.button === 0 && n && (n.t === 'free' || n.t === 'glide') && (tool === 'mark' || tool === 'free' || tool === 'eq')) drag = { mode: 'pt', id: n.id, sx, sy, moved: false };
   else drag = { mode: 'pan', sx, sy, cx: view.cx, cy: view.cy, moved: false, button: e.button };
-  if (e.button === 0 && pk && pk.kind !== 'obj' && !e.shiftKey && tool !== 'erase' && !(n && n.t === 'free')) {
+  if (e.button === 0 && pk && pk.kind !== 'obj' && !e.shiftKey && tool !== 'erase' && tool !== 'eq' && !(n && (n.t === 'free' || n.t === 'glide'))) {
     hold = { pk, t0: performance.now() };
     const dr = drag;
     holdTimer = setTimeout(() => { if (!hold || drag !== dr || dr.moved) return; const p = hold.pk; hold = null; dr.longFired = true; toggleMark(p); }, HOLD_MS);
@@ -1490,20 +1672,20 @@ cv.addEventListener('pointermove', e => {
   if (drag) {
     if (!drag.moved && Math.hypot(sx - drag.sx, sy - drag.sy) > 3) {
       drag.moved = true; cancelHold();
-      if (drag.mode === 'pt') { pushUndo(); startSnapSession(drag.id); }
+      if (drag.mode === 'pt') { pushUndo(); alts = []; if (anim) { cancelAnimationFrame(anim.raf); anim = null; } }
       hover = null;
       cv.classList.toggle('is-pan', drag.mode === 'pan');
     }
     if (drag.moved) {
       if (drag.mode === 'pan') { view.cx = drag.cx - (sx - drag.sx) / view.s; view.cy = drag.cy + (sy - drag.sy) / view.s; draw(); return; }
-      dragFree(mouse); renderSnapbar(); draw(); return;
+      dragUnknown(drag.id, mouse); draw(); return;
     }
   }
   const h = pickAt(sx, sy, tool === 'erase');
   const changed = JSON.stringify(h) !== JSON.stringify(hover);
   hover = h;
   let ek = null;
-  if (!h && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
+  if (!h && tool !== 'eq' && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
     let bd = 5;
     for (const p of status.dc.pairs) {
       const a = status.P[p.i], b = status.P[p.j];
@@ -1513,8 +1695,8 @@ cv.addEventListener('pointermove', e => {
   }
   if (ek !== hlHover && !legendHover) { hlHover = ek; applyLegendHL(); draw(); }
   const n = h && h.kind === 'pt' ? byId.get(h.id) : null;
-  cv.classList.toggle('is-grab', !!(n && n.t === 'free' && (tool === 'mark' || tool === 'free')));
-  if (changed || picks.length) draw();
+  cv.classList.toggle('is-grab', !!(n && (n.t === 'free' || n.t === 'glide') && (tool === 'mark' || tool === 'free' || tool === 'eq')));
+  if (changed || picks.length || tool === 'eq') draw();
 });
 cv.addEventListener('pointerup', e => {
   if (!drag) return;
@@ -1526,10 +1708,10 @@ cv.addEventListener('pointerup', e => {
     if (e.shiftKey && tool !== 'erase') { const pk = pickAt(sx, sy, false); if (pk) toggleMark(pk); return; }
     clickTool(sx, sy); return;
   }
-  if (d.mode === 'pt') { endSnapSession(); recompute(); draw(); persist(); }
+  if (d.mode === 'pt') { const st = settle(); recompute(); renderEqs(); draw(); persist(); if (S.cons.length && st.pinned) toast('Pinned by the equalities: remove one to move it.'); }
 });
 cv.addEventListener('pointerleave', () => { if (!legendHover) { hlHover = null; applyLegendHL(); } if (!drag) { hover = null; mouse = null; draw(); } $('#coord').hidden = true; });
-cv.addEventListener('pointercancel', () => { cancelHold(); if (drag && drag.mode === 'pt' && drag.moved) { endSnapSession(); recompute(); draw(); persist(); } drag = null; });
+cv.addEventListener('pointercancel', () => { cancelHold(); if (drag && drag.mode === 'pt' && drag.moved) { settle(); recompute(); renderEqs(); draw(); persist(); } drag = null; });
 cv.addEventListener('contextmenu', e => e.preventDefault());
 cv.addEventListener('wheel', e => {
   e.preventDefault();
@@ -1548,7 +1730,7 @@ document.querySelectorAll('.dh-tool').forEach(b => b.addEventListener('click', (
 $('#i-m').addEventListener('change', () => { $('#i-m').value = polyM(); if (tool !== 'poly') setTool('poly'); });
 $('#b-undo').addEventListener('click', undo);
 $('#b-redo').addEventListener('click', redo);
-$('#b-new').addEventListener('click', () => { pushUndo(); const t = S.tri, q = S.sq; S = freshState(); S.tri = t; S.sq = q; picks = []; recompute(); fit(); persist(); });
+$('#b-new').addEventListener('click', () => { pushUndo(); const t = S.tri, q = S.sq; S = freshState(); S.tri = t; S.sq = q; picks = []; eqPick = null; alts = []; recompute(); renderEqs(); fit(); persist(); });
 function toggleLat(k) {
   const o = k === 'tri' ? 'sq' : 'tri';
   S[k] = !S[k]; if (S[k]) S[o] = false;
@@ -1577,7 +1759,7 @@ $('#b-link').addEventListener('click', async () => {
   let ok = false; try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {}
   $('#p-link').hidden = !ok;
 });
-const KEYS = { v: 'mark', f: 'free', l: 'line', b: 'bis', c: 'circ', k: 'comp', p: 'poly', x: 'erase' };
+const KEYS = { v: 'mark', f: 'free', l: 'line', b: 'bis', c: 'circ', k: 'comp', p: 'poly', x: 'erase', '=': 'eq' };
 addEventListener('keydown', e => {
   if (e.target.closest('input, textarea')) return;
   const k = e.key.toLowerCase();
@@ -1585,6 +1767,12 @@ addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); redo(); return; }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (KEYS[k]) { setTool(KEYS[k]); return; }
+  if (k === 'n' && alts.length > 1) {
+    const U = consUnknowns(), cur = U.length === 1 ? V.get(U[0].id) : null;
+    const i = cur ? alts.findIndex(a => Math.hypot(a.tx - cur.x, a.ty - cur.y) < 1e-9) : -1;
+    pickAlt(alts[(i + 1) % alts.length]); return;
+  }
+  if (k === 'escape' && eqPick) { eqPick = null; eqHint(); draw(); return; }
   if (k === 'escape') { pop.classList.remove('open'); if (picks.length) { picks = []; updateHint(); draw(); } else setTool('mark'); return; }
   if (k === 'enter') { if (!$('#b-keep').disabled) keep(); return; }
   if (k === 'g') { toggleLat('tri'); return; }
@@ -1602,9 +1790,10 @@ loadSaved();
 if (S.tri && S.sq) S.sq = false;
 $('#b-tri').setAttribute('aria-pressed', S.tri);
 $('#b-sq').setAttribute('aria-pressed', S.sq);
-recompute(); renderCollection(); updateUndo(); setTool('mark');
+if (!Array.isArray(S.cons)) S.cons = [];
+recompute(); renderEqs(); renderCollection(); updateUndo(); setTool('mark');
 resize(); fit();
 readLinkHash();
-window.DH = { get S() { return S; }, get status() { return status; }, get cards() { return cards; }, get snapSess() { return snapSess; }, V: () => V, keep, recompute, loadCard, makeLink, importText, canon, setTool, clickWorld: (x, y) => { const [sx, sy] = toS(x, y); clickTool(sx, sy); }, view };
+window.DH = { get S() { return S; }, get status() { return status; }, get cards() { return cards; }, get alts() { return alts; }, V: () => V, keep, recompute, addEquality, solveCons, consUnknowns, freedom: () => { const L = varLayout(consUnknowns()); return L.length ? freedom(L, getX(L)) : 0; }, loadCard, makeLink, importText, canon, setTool, clickWorld: (x, y) => { const [sx, sy] = toS(x, y); clickTool(sx, sy); }, view };
 </script>
 </body></html>
