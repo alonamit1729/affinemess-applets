@@ -118,6 +118,11 @@ input[type=range] { accent-color:var(--accent); }
 }
 .dh-hint b { color:var(--accent-deep); font-weight:500; }
 .dh-corner { position:absolute; top:10px; right:10px; display:flex; gap:6px; }
+.dh-coord {
+  position:absolute; top:12px; left:12px; pointer-events:none; font-family:var(--mono); font-size:11px;
+  color:var(--ink-faint); letter-spacing:.02em; font-variant-numeric:tabular-nums; white-space:pre;
+}
+.dh-coord b { color:var(--ink-soft); font-weight:500; }
 .dh-corner .am-btn { background:var(--paper-card); padding:5px 8px; }
 .dh-toast {
   position:absolute; left:50%; top:14px; transform:translateX(-50%);
@@ -180,6 +185,7 @@ input[type=range] { accent-color:var(--accent); }
 .dh-card .tag { font-family:var(--mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
 .dh-card .tag.snap { color:var(--c1); }
 .dh-card .tag.new { color:var(--accent-deep); }
+.dh-card .tag.hard { display:block; color:var(--accent-deep); }
 .dh-card .del {
   position:absolute; top:2px; right:3px; border:0; background:none; cursor:pointer; padding:2px 4px;
   font-family:var(--mono); font-size:11px; color:var(--ink-faint); opacity:0; transition:opacity .2s;
@@ -221,7 +227,10 @@ input[type=range] { accent-color:var(--accent); }
       <button class="am-btn" id="b-tri" aria-pressed="false" title="Show the triangular lattice on the two starting points (G)">Triangular</button>
       <button class="am-btn" id="b-sq" aria-pressed="false" title="Show the square lattice on the two starting points (Q)">Square</button>
     </span>
-    <button class="am-btn" id="b-edges" aria-pressed="true" title="Colour the segments between marked points by length (E)">Distances</button>
+    <span class="am-seg">
+      <button class="am-btn" id="b-cons" aria-pressed="true" title="Show lines, circles, polygons and unmarked points (H)">Construction</button>
+      <button class="am-btn" id="b-edges" aria-pressed="true" title="Colour the segments between marked points by length (E)">Distances</button>
+    </span>
     <span class="am-spacer"></span>
     <span class="dh-menu">
       <button class="am-btn" id="b-save" aria-expanded="false">Save &amp; share</button>
@@ -261,6 +270,7 @@ input[type=range] { accent-color:var(--accent); }
         <button class="am-btn" id="b-zin" title="Zoom in (+)">+</button>
         <button class="am-btn" id="b-zout" title="Zoom out (−)">−</button>
       </div>
+      <div class="dh-coord" id="coord" hidden></div>
       <div class="dh-hint" id="hint"></div>
       <div class="dh-snapbar" id="snapbar" hidden></div>
       <div class="dh-toast" id="toast"></div>
@@ -294,17 +304,19 @@ input[type=range] { accent-color:var(--accent); }
         <li><b>Circle</b>: a centre, then a point on the circle. <b>Compass</b>: two points for the radius, then the centre.</li>
         <li><b>Polygon</b>: a regular polygon with the chosen number of sides on a segment, together with its centre. It sits to the left of the segment as you pick it; pick the ends the other way round for the other side.</li>
         <li><b>Free point</b>: a point (drawn as a diamond) that you can drag anywhere. It is not exact, but see below.</li>
+        <li><b>Construction</b> (H) hides the lines, circles, polygons and unmarked points, leaving the set and its coloured distances; picking a drawing tool brings them back. The corner readout shows coordinates, in units of the starting segment, of the pointer or of the point under it.</li>
       </ul>
       <p>That is enough: every rigid set in the catalog of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> explorer except a couple of hundred, nearly all of them five points with four distances, can be built this way.</p>
       <h3>Snapping</h3>
       <p>Some sets cannot be constructed at all. For 75 of the 468 rigid five-point four-distance sets, the distances solve equations whose Galois groups (S₅, S₆, S₇) are not solvable, so no straightedge, compass, angle divider or regular polygon will ever reach them.</p>
       <p>For those, drop a <b>free point</b> roughly where it should go and drag it. While you drag, the game keeps solving the equations "these lengths are equal" near your configuration, and marks each nearby spot where the set would have fewer distances with a blue ring and its <em>d</em>. Drag onto a ring and the point clicks into place: the banner turns ochre and the panel shows the exact set. Let go to keep it there, or drag on. Snapped points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>. With two or more free points, the others may shift a little when one clicks in.</p>
       <h3>The catalog</h3>
-      <p>Every set is compared with the 2,298 rigid sets catalogued in the explorer. A matching card shows the catalog's name, and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
+      <p>Every set is compared with the 2,298 rigid sets catalogued in the explorer. A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
+      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
       <h3>Saving</h3>
       <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
       <h3>Keys</h3>
-      <p class="kb">hold or Shift-click mark · Esc / V select · F free · L line · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
+      <p class="kb">hold or Shift-click mark · Esc / V select · F free · L line · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · H construction · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
     </aside>
   </div>
 </div>
@@ -366,6 +378,7 @@ let view = { cx: 0.5, cy: 0.4, s: 90 };
 let tool = 'mark';
 let picks = [];             // points picked so far for the current tool
 let showEdges = true;
+let showCons = true;          // lines, circles, polygons, candidates and unmarked points
 let hover = null;
 let mouse = null;           // world coords of the pointer
 let status = null;          // last analysis
@@ -619,11 +632,32 @@ const sameCanon = (A, B) => A.length === B.length && A.every((a, k) => Math.abs(
 /* catalog index */
 const CATI = new Map();
 if (CAT) CAT.items.forEach((it, idx) => {
-  const [cell, lab, flat] = it; const pts = [];
+  const [cell, lab, flat, num, v] = it; const pts = [];
   for (let k = 0; k < flat.length; k += 2) pts.push([flat[k], flat[k + 1]]);
   if (!CATI.has(cell)) CATI.set(cell, []);
-  CATI.get(cell).push({ idx, lab: CAT.labels[lab], pts });
+  CATI.get(cell).push({ idx, cell, lab: CAT.labels[lab], pts, num, v });
 });
+const catEntry = idx => { const it = CAT.items[idx]; return { idx, cell: it[0], lab: CAT.labels[it[1]], num: it[3], v: it[4] }; };
+/* the catalog's label without its generic prefix */
+const catName = e => e.lab.replace(/^rigid;\s*/, '');
+const SUB = { S5: 'S₅', S6: 'S₆', S7: 'S₇' };
+/* constructibility verdicts (tools/distance-hunt/verdicts.json, from the Galois analysis) */
+function verdictShort(v) {
+  if (!v || v === 'rc') return '';
+  if (v[0] === 'p') return 'needs a ' + v.slice(1) + '-gon';
+  if (v === 'tri') return 'needs trisection';
+  if (v === 's4') return 'beyond square roots';
+  if (v === 'cbrt') return 'not constructible';
+  return 'not constructible · ' + SUB[v];
+}
+function verdictLong(v) {
+  if (!v || v === 'rc') return 'Constructible with straightedge and compass.';
+  if (v[0] === 'p') return `Needs a regular ${v.slice(1)}-gon: straightedge and compass alone cannot build it.`;
+  if (v === 'tri') return 'Needs angle trisection: straightedge and compass alone cannot build it, and no regular polygon helps.';
+  if (v === 's4') return 'Beyond straightedge and compass: a quartic with Galois group S₄ and two real roots. Solvable by radicals; it is not settled here whether an angle trisector would do.';
+  if (v === 'cbrt') return '<em>Not constructible</em> with any of these tools: it needs the real cube root of a cubic with one real root, which no straightedge, compass, angle trisector or regular polygon provides.';
+  return `<em>Not constructible</em> by straightedge, compass, angle division or regular polygons: its distances solve an equation with Galois group ${SUB[v]}, which is not solvable.`;
+}
 function catalogMatch(n, d, cf) {
   const L = CATI.get(n + ',' + d); if (!L) return null;
   return L.find(it => sameCanon(it.pts, cf)) || null;
@@ -848,7 +882,8 @@ function renderSnapbar() {
   bar.classList.toggle('is-lock', !!ss.lock);
   if (ss.lock) {
     const near = ss.targets.some(t => t !== ss.lock && Math.hypot(t.tx - ss.lock.tx, t.ty - ss.lock.ty) * view.s < 8);
-    const lab = status.cat ? (/^rigid;/.test(status.cat.lab) ? ' · in the catalog' : ' · ' + esc(status.cat.lab)) : '';
+    const vs = status.cat ? verdictShort(status.cat.v) : '';
+    const lab = status.cat ? ` · no. ${status.cat.num}${/^rigid;/.test(status.cat.lab) ? '' : ' · ' + esc(status.cat.lab)}${vs ? ' · <b>' + vs + '</b>' : ''}` : '';
     bar.innerHTML = `Clicked in: <b>n = ${status.n} · d = ${status.d}</b>${lab} · let go to keep${near ? '<br>another ring is close: zoom in to choose' : ''}`; return;
   }
   const ds = [...new Set(ss.targets.map(t => t.d))].sort((a, b) => a - b);
@@ -916,12 +951,14 @@ function latSpacingPx(L) { return Math.min(Math.hypot(L.v[0], L.v[1]), Math.hypo
 const R_PICK = 10;
 function pickAt(sx, sy, wantCurves) {
   let best = null, bd = R_PICK;
+  const markedSet = showCons ? null : new Set(S.marked);
   for (const p of pointList()) {
+    if (markedSet && !markedSet.has(p.id)) continue;
     const [px, py] = toS(p.x, p.y), d = Math.hypot(px - sx, py - sy);
     if (d < bd) { bd = d; best = { kind: 'pt', id: p.id, x: p.x, y: p.y }; }
   }
   if (best) return best;
-  for (const c of cand) {
+  if (showCons) for (const c of cand) {
     const [px, py] = toS(c.x, c.y), d = Math.hypot(px - sx, py - sy);
     if (d < bd) { bd = d; best = { kind: 'cand', ...c }; }
   }
@@ -966,7 +1003,9 @@ const TOOLS = {
   poly: { need: 2, hint: k => ['<b>Polygon</b>: pick the first end of a side.', '<b>Polygon</b>: pick the second end; the polygon goes on the left.'][k] },
   erase: { need: 1, hint: () => '<b>Erase</b>: click a point, line, circle or polygon; everything built on it goes too.' },
 };
+function setCons(on) { showCons = on; $('#b-cons').setAttribute('aria-pressed', on); hover = null; draw(); }
 function setTool(t) {
+  if (t !== 'mark' && !showCons) setCons(true);   // building needs the construction in view
   tool = t; picks = [];
   document.querySelectorAll('.dh-tool').forEach(b => b.classList.toggle('is-on', b.dataset.tool === t));
   updateHint(); draw();
@@ -1059,7 +1098,7 @@ function draw() {
   }
   // curves and polygons
   ctx.lineWidth = 1;
-  for (const n of S.nodes) {
+  if (showCons) for (const n of S.nodes) {
     const v = V.get(n.id); if (!v) continue;
     const hot = hover && hover.kind === 'obj' && hover.id === n.id;
     ctx.strokeStyle = hot ? C.accent : C.line;
@@ -1087,7 +1126,7 @@ function draw() {
   }
   // candidates
   ctx.strokeStyle = C.faint; ctx.lineWidth = 1;
-  for (const c of cand) { const [x, y] = toS(c.x, c.y); ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.stroke(); }
+  if (showCons) for (const c of cand) { const [x, y] = toS(c.x, c.y); ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.stroke(); }
   // snap targets while a free point is dragged
   if (snapSess && snapSess.active) {
     const dmin = snapSess.targets.reduce((m, t) => Math.min(m, t.d), Infinity);
@@ -1109,6 +1148,7 @@ function draw() {
   for (const p of pointList()) {
     const [x, y] = toS(p.x, p.y);
     const isM = marked.has(p.id), n = p.n;
+    if (!showCons && !isM) continue;
     const picked = picks.includes(p.id);
     if (n.t === 'free') {
       ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4);
@@ -1136,6 +1176,16 @@ function draw() {
     ctx.strokeStyle = tool === 'erase' ? C.deep : C.accent; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(x, y, 8, 0, 7); ctx.stroke();
   }
+}
+function updateCoord() {
+  const el = $('#coord');
+  if (!mouse) { el.hidden = true; return; }
+  const f = v => (v < 0 ? '−' : ' ') + Math.abs(v).toFixed(4);
+  let q = mouse, what = '';
+  if (drag && drag.mode === 'pt' && drag.moved) { const v = V.get(drag.id); if (v) { q = v; what = '<b>point</b>  '; } }
+  else if (hover && hover.kind !== 'obj') { q = hover; what = '<b>point</b>  '; }
+  el.hidden = false;
+  el.innerHTML = `${what}x ${f(q.x)}   y ${f(q.y)}`;
 }
 function drawLine(v) {
   const R = (Math.max(W, H) / view.s) * 2 + Math.hypot(v.px - view.cx, v.py - view.cy);
@@ -1200,7 +1250,7 @@ function renderStatus() {
       `Probably flexible: the first-order test leaves ${st.flex} free direction${st.flex > 1 ? 's' : ''}, so it most likely belongs to a family.`);
     if (st.flex === 0) {
       const ci = cellInfo(st.n, st.d);
-      if (st.cat) f.push(`Catalog: <em>${esc(st.cat.lab)}</em>.`);
+      if (st.cat) f.push(`Catalog (${st.n},${st.d}) no. ${st.cat.num}: <em>${esc(catName(st.cat))}</em>. ${verdictLong(st.cat.v)}`);
       else if (ci && ci.complete) f.push('Not matched in the catalog, which claims to be complete here. Please tell Alon.');
       else if (ci) f.push('<em>Not in the catalog</em>: this cell’s list is incomplete, so this may be new.');
       else f.push('Beyond the catalog’s range.');
@@ -1240,10 +1290,10 @@ function keep() {
   persist(true);
   recompute(); renderCollection(); draw();
   flashCard(card.id);
-  toast(st.cat ? 'Kept: ' + st.cat.lab : 'Kept.');
+  toast(st.cat ? `Kept: no. ${st.cat.num}, ${catName(st.cat)}` : 'Kept.');
 }
 function catLabel(c) {
-  if (c.cat >= 0 && CAT) return CAT.labels[CAT.items[c.cat][1]];
+  if (c.cat >= 0 && CAT) { const e = catEntry(c.cat); return `no. ${e.num}: ${catName(e)}`; }
   if (c.flex > 0) return 'flexible: part of a family';
   const ci = cellInfo(c.n, c.d);
   return ci && !ci.complete ? 'rigid, not in the catalog' : (ci ? 'rigid' : 'rigid, beyond the catalog');
@@ -1275,7 +1325,9 @@ function renderCollection() {
     const prog = ci && ci.rigid ? `${found} of ${ci.rigid}${ci.complete ? '' : '+'} rigid` : '';
     html += `<div class="dh-group"><h4><span>n = ${n} · d = ${d}</span><small>${prog}</small></h4><div class="dh-cards">`;
     for (const c of list) {
-      const tag = c.snapped ? '<span class="tag snap">snapped</span>' : (c.cat < 0 && !c.flex && ci && !ci.complete ? '<span class="tag new">new?</span>' : '<span class="tag">' + (c.flex ? 'flexible' : 'constructed') + '</span>');
+      const vs = c.cat >= 0 && CAT ? verdictShort(catEntry(c.cat).v) : '';
+      const tag = (c.snapped ? '<span class="tag snap">snapped</span>' : (c.cat < 0 && !c.flex && ci && !ci.complete ? '<span class="tag new">new?</span>' : '<span class="tag">' + (c.flex ? 'flexible' : 'constructed') + '</span>'))
+        + (vs ? `<span class="tag hard">${esc(vs)}</span>` : '');
       html += `<div class="dh-card" data-card="${c.id}" role="button" tabindex="0" title="Load into the canvas">${thumb(c)}<div class="nm">${esc(catLabel(c))}</div>${tag}<button class="del" data-del="${c.id}" title="Remove from the collection">×</button></div>`;
     }
     html += '</div></div>';
@@ -1408,6 +1460,7 @@ cv.addEventListener('pointerdown', e => {
 cv.addEventListener('pointermove', e => {
   const r = cv.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
   mouse = toW(sx, sy);
+  queueMicrotask(updateCoord);
   if (drag) {
     if (!drag.moved && Math.hypot(sx - drag.sx, sy - drag.sy) > 3) {
       drag.moved = true; cancelHold();
@@ -1439,7 +1492,7 @@ cv.addEventListener('pointerup', e => {
   }
   if (d.mode === 'pt') { endSnapSession(); recompute(); draw(); persist(); }
 });
-cv.addEventListener('pointerleave', () => { if (!drag) { hover = null; mouse = null; draw(); } });
+cv.addEventListener('pointerleave', () => { if (!drag) { hover = null; mouse = null; draw(); } $('#coord').hidden = true; });
 cv.addEventListener('pointercancel', () => { cancelHold(); if (drag && drag.mode === 'pt' && drag.moved) { endSnapSession(); recompute(); draw(); persist(); } drag = null; });
 cv.addEventListener('contextmenu', e => e.preventDefault());
 cv.addEventListener('wheel', e => {
@@ -1462,6 +1515,7 @@ function toggleLat(k) {
 }
 $('#b-tri').addEventListener('click', () => toggleLat('tri'));
 $('#b-sq').addEventListener('click', () => toggleLat('sq'));
+$('#b-cons').addEventListener('click', () => { if (showCons && tool !== 'mark') setTool('mark'); setCons(!showCons); });
 $('#b-edges').addEventListener('click', () => { showEdges = !showEdges; $('#b-edges').setAttribute('aria-pressed', showEdges); draw(); });
 $('#b-keep').addEventListener('click', keep);
 $('#b-unmark').addEventListener('click', () => { pushUndo(); S.marked = []; commit(); });
@@ -1494,6 +1548,7 @@ addEventListener('keydown', e => {
   if (k === 'g') { toggleLat('tri'); return; }
   if (k === 'q') { toggleLat('sq'); return; }
   if (k === 'e') { $('#b-edges').click(); return; }
+  if (k === 'h') { $('#b-cons').click(); return; }
   if (k === '0') { fit(); return; }
   if (k === '+' || k === '=') { zoom(1.4); return; }
   if (k === '-') { zoom(1 / 1.4); return; }

@@ -38,16 +38,18 @@ def classes(z):
 
 if __name__ == '__main__':
     D = json.load(open(sys.argv[1]))
+    here = __import__('os').path.dirname(__import__('os').path.abspath(__file__))
+    VER = {(c, n): v for c, n, v in json.load(open(__import__('os').path.join(here, 'verdicts.json')))}
     out = {'cells': {}, 'items': []}
     labels = []; lab_idx = {}
     dup = 0
     for cell, c in D['cats'].items():
         n, d = map(int, cell.split(','))
-        rig = [it for it in c['items'] if it['kind'] == 'rigid']
+        rig = [(k + 1, it) for k, it in enumerate(c['items']) if it['kind'] == 'rigid']
         fam = [it for it in c['items'] if it['kind'] != 'rigid']
         out['cells'][cell] = [len(rig), 1 if c.get('complete') else 0, len(fam)]
         seen = []
-        for it in rig:
+        for num, it in rig:
             z0 = [complex(float(x), float(y)) for x, y in it['coords']]
             z, res = refine.refine(it['coords'], it['cls'])
             mv = max(abs(a-b) for a,b in zip(z,z0))
@@ -60,7 +62,7 @@ if __name__ == '__main__':
             seen.append(cf)
             lab = it['label']
             if lab not in lab_idx: lab_idx[lab] = len(labels); labels.append(lab)
-            out['items'].append([cell, lab_idx[lab], [v for q in cf for v in (round(q.real, 7), round(q.imag, 7))]])
+            out['items'].append([cell, lab_idx[lab], [v for q in cf for v in (round(q.real, 7), round(q.imag, 7))], num, VER[(cell, num)]])
     out['labels'] = labels
     print('items', len(out['items']), 'labels', len(labels), 'dups', dup)
     s = json.dumps(out, separators=(',', ':'))
