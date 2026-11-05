@@ -132,6 +132,11 @@ class Pool:
             if any(hh==h and dd==dim for _,_,_,hh,dd in s.fam): return
             G=beautify(G,dim)
             s.fam.append((G,label,src,h,dim))
+    def add_rigid(s,P,label,src,exact=None):
+        """a configuration certified rigid exactly (no numerical dimension test: an isolated solution can be non-reduced)"""
+        if any(same(P,Q) for Q,_,_ in s.rigid): return
+        if exact: s.exact[len(s.rigid)]=exact
+        s.rigid.append((P,label,src))
     def counts(s):
         c={}
         if s.rigid: c[0]=len(s.rigid)
@@ -470,13 +475,15 @@ def main():
         for k,v in json.load(open(fn)).items(): SYM.setdefault(k,[]).extend(v)
     EXT=json.load(open('ext4.json')); EXT.update(json.load(open('ext5.json')))
     R12=json.load(open('r12sum.json')) if os.path.exists('r12sum.json') else {}
-    EXACT=json.load(open('exact_cells.json'))   # (10,5), (10,6), (11,6), (12,6): complete lists from the pattern enumeration + real root isolation
+    EXACT=json.load(open('exact_cells.json'))
+    EXACT2=json.load(open('exact_cells2.json')) if os.path.exists('exact_cells2.json') else {}
+    OLDCOUNTS={'6,4':(23,4),'7,5':(17,2),'8,5':(131,2),'9,5':(51,1),'9,6':(541,1),'8,6':(9,2),'6,5':(27,6),'7,6':(58,7),'6,6':(3,10)}   # catalog counts before the exact classification (rigid, families)
+    SUB={6:'₆',7:'₇',8:'₈',9:'₉',10:'₁₀'}   # (10,5), (10,6), (11,6), (12,6): complete lists from the pattern enumeration + real root isolation
     EXACT_INFO={
       '10,5':('‡','Exactly 19 ten-point five-distance sets. Every ten-point set with at most six distances has one of the 228 candidate patterns of Szöllősi–Östergård (their count, re-derived here by an independent implementation of the orderly generation); the 19 patterns with five colours are all rigid and their real solutions (msolve) give 19 configurations up to similarity: fifteen pieces of the triangular lattice, the regular nonagon with its centre, the regular decagon, the regular 11-gon minus a vertex, and the regular pentagon with the inner pentagon of its pentagram. No published classification is known to us; the search that populated this cell earlier had found 8.',('SO20','pat')),
       '10,6':('‡','Exactly 238 ten-point six-distance sets, from the 209 six-colour patterns among the 228 candidates (all rigid; 29 patterns have more than one real realization): 184 pieces of the triangular lattice, 37 subsets of regular polygons (R₁₃ minus three vertices, R₁₂ or R₁₂ with centre minus two or three, R₁₁ with centre minus two), three twelvefold configurations found only through the candidate list (six similarity classes, all subsets of R₁₂ + R₁₂), and a pentagonal one. No published classification is known to us.',('SO20','pat')),
       '11,6':('†','Exactly 64 eleven-point six-distance sets: Amit–Astra (2026, Lemma 6) classify the eleven-point sets with at most six distances from the 62 candidate patterns (52 lattice and 10 circular configurations, counting the subsets of one regular polygon together); counted up to similarity, the 58 six-colour patterns give 49 pieces of the triangular lattice and 15 polygon subsets (R₁₃ minus two vertices in six ways, R₁₂ with centre minus two in six ways, R₁₂ minus a vertex, R₁₁ with centre minus a vertex, R₁₀ with centre). Re-verified here: the 62 patterns regenerated, certified rigid, and solved.',('AA26','SO20','pat')),
       '12,6':('‡','Exactly 14 twelve-point six-distance sets, from the 14 six-colour patterns among Szöllősi–Östergård’s 15 candidates at twelve points (all rigid, one real solution each): ten pieces of the triangular lattice (the twelve-point cores of Amit–Astra), R₁₃ minus a vertex, R₁₂, R₁₂ with centre minus a vertex, and R₁₁ with its centre. No published classification is known to us.',('SO20','AA26','pat')),
-      '6,4':('‡','Exactly 149 rigid configurations and 4 one-parameter families. Every six-point set with at most four distances has one of the 104 four-colour candidate patterns of K₆ (hereditary generation with the complex-realizability test, as for the larger cells); each pattern’s polynomial system was decomposed into minimal primes over ℚ (Singular), every zero-dimensional prime solved by msolve with certified real roots (149 configurations up to similarity, by an exact congruence test; 5 patterns and 16 further components are complex-only), and the 8 one-dimensional primes (two in each of 4 patterns) have real points and an empty singular locus, so each is a smooth real curve: the 4 families, every one of them an equilateral triangle with a second triple of points (three with 3-fold symmetry). 81 of the rigid sets are subsets of the 42 seven-point four-distance sets of Lan–Wei; the other 68 are maximal. The earlier search had found 23 of the 149 and all 4 families.',('LW13','pat')),
       '16,7':('‡','g(7) = 16 (Amit–Astra 2026), and exactly two sixteen-point seven-distance sets exist: Erdős–Fishburn’s two lattice pieces. Finiteness and the count are our computation (https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7count/REPRODUCING.md): every sixteen-point seven-distance set contains a ten-point subset with at most six distances (a diameter-graph argument) or is R₁₄, R₁₅ or R₁₅ minus a vertex plus one or two points; the 257 ten-point sets were each extended by six points with at most two new distance values (circle intersections and circumcentres, then a clique search), the polygon cases checked directly, and the two resulting sixteen-point patterns certified rigid with a unique realization each.',('EF','AA26','SO20','pat')),
     }
     R12_RAD={0:'2',1:'2cos 15°',2:'√3',3:'√2',4:'1',5:'2sin 15°'}
@@ -520,13 +527,33 @@ def main():
             for e in R12.get(key,[]):
                 before=len(pool.rigid)+len(pool.fam)
                 pool.add(e['pts'],r12_label(e['shells']),'r12',exact=e['exact']); n_r12+=len(pool.rigid)+len(pool.fam)-before
-            EXACT_FAM={'6,4':4}
             if key in EXACT:
                 for e in EXACT[key]:
                     if e['label'].startswith('distances'): pool.add(e['pts'],e['label'],'pat')
-                assert len(pool.fam)==EXACT_FAM.get(key,0) and len(pool.rigid)==len(EXACT[key]),(key,len(pool.rigid),len(EXACT[key]),len(pool.fam))
-                if key=='6,4':
-                    pool.fam=[(G,('one-parameter family through a piece of the triangular lattice (the lattice piece is one point of the curve): equilateral triangle ABC with AD = CE = AB and the rest of the pattern kept' if lab.startswith('piece of the triangular lattice') else lab),src,h,dim) for G,lab,src,h,dim in pool.fam]
+                assert not pool.fam and len(pool.rigid)==len(EXACT[key]),(key,len(pool.rigid),len(EXACT[key]),len(pool.fam))
+            if key in EXACT2:   # cells classified by cells/cellcert.py (value-space certification of the complete pattern list)
+                EX2=EXACT2[key]; st=EX2['stats']
+                pool=Pool()
+                for e in EX2['rigid']: pool.add_rigid(e['pts'],e['label'],'pat')
+                assert len(pool.rigid)==len(EX2['rigid']) and not pool.fam,(key,len(pool.rigid),len(EX2['rigid']),len(pool.fam))
+                fam_items=[item(f['pts'],f['label'],'family',f['dim']) for f in EX2['fam']]
+                items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]+fam_items
+                dims={0:E(len(pool.rigid))} if pool.rigid else {}
+                byd=Counter(f['dim'] for f in EX2['fam'])
+                for kd,v in byd.items(): dims[kd]=E(v)
+                nf=len(EX2['fam']); nr=len(pool.rigid)
+                old=OLDCOUNTS.get(key,(None,None))
+                famtxt=('' if not nf else ' and '+', '.join(f'{v} {["","one","two","three","four"][kd] if kd<=4 else kd}-parameter famil{"y" if v==1 else "ies"}' for kd,v in sorted(byd.items())))
+                note=(f'Exactly {nr} rigid configurations{famtxt}. Every {n}-point set with at most {d} distances has one of the {st["npat"]} {d}-colour candidate patterns of K{SUB[n]} '
+                      f'(hereditary generation with the complex-realizability test, the re-implementation of Szöllősi–Östergård’s orderly generation that reproduces their counts). '
+                      f'Each pattern was solved in its value space — the rank conditions on the Gram matrix in the {d-1} free squared distances, with the inequation “all values distinct and nonzero” — '
+                      f'by msolve real root isolation when zero-dimensional (a real solution is a configuration exactly when its Gram matrix is positive semidefinite of rank at most 2; configurations are counted up to similarity by an exact congruence test; {st["ncomplex"]} patterns have no real configuration) '
+                      f'and, when positive-dimensional, by Singular’s minimal primes, each component tested for real points with a positive semidefinite Gram matrix by random slices and its singular locus computed (no real singular point with distinct values in any component, so every family is a smooth real curve or surface and there are no hidden rigid points). ')
+                if st.get('nmax') is not None: note+=f'{st["nmax"]} of the rigid sets are maximal (contained in no {n+1}-point {d}-distance set); the others are subsets of the classified {n+1}-point sets. '
+                if old[0] is not None: note+=f'The earlier search had found {old[0]} of the {nr} rigid sets and {old[1]} of the {nf} families.'
+                cell(n,d,dims,'exact',marks='‡',note=note,finite=not nf)
+                cat(n,d,items,True,f'The {nr} {n}-point {d}-distance sets'+((' and the family' if nf==1 else f' and {nf} families') if nf else ''),listing_note(nr,nf,True),sources=('SO20','pat'))
+                continue
                 for P,lab,src in pool.rigid: assert any(B.same(P,e['pts']) for e in EXACT[key]),(key,lab)
             if key=='16,7':
                 assert not pool.fam and len(pool.rigid)==2
