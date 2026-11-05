@@ -31,7 +31,12 @@ def canon(rgs):
         t=tuple(out)
         if best is None or t<best: best=t
     return best
-classes=sorted(set(canon(r) for r in partitions(E,d)))
+if len(sys.argv)>3 and sys.argv[3]=='L':   # restrict to the complex-realizable candidate patterns of the hereditary generator (exactly d colours)
+    L=json.load(open(f'g7fin/gen/levels/L{n}.json'))['patterns']
+    classes=sorted(set(canon(tuple(p)) for p in L if max(p)+1==d))
+    OUT=f'cert{n}{d}L.json'
+else:
+    classes=sorted(set(canon(r) for r in partitions(E,d))); OUT=f'cert{n}{d}.json'
 XV=['x1']+[v for k in range(2,n) for v in (f'x{k}',f'y{k}')]; SV=[f's{k}' for k in range(1,d)]; V=XV+SV
 SYM={v:sp.Symbol(v) for v in V+['t']}
 coords={0:('0','0'),1:('x1','0')}; coords.update({k:(f'x{k}',f'y{k}') for k in range(2,n)})
@@ -95,7 +100,7 @@ def congruent(P,Q):
         if all(abs(D1[i][j]-D2[p[i]][p[j]])<1e-9 for i in range(n) for j in range(i+1,n)): return True
     return False
 import os
-results=json.load(open(f'cert{n}{d}.json')) if os.path.exists(f'cert{n}{d}.json') else []
+results=json.load(open(OUT)) if os.path.exists(OUT) else []
 done_idx={r['idx'] for r in results}
 t0=time.time()
 for ci,col in enumerate(classes):
@@ -107,7 +112,7 @@ for ci,col in enumerate(classes):
         o=run_msolve(eqs+[expand(ineq)],V+['t']); st,_=parse_real(o)
         rec['msolve_status']=st
         results.append(rec); print(ci,'/',len(classes),'UNRESOLVED',st,'%.0fs'%(time.time()-t0),flush=True)
-        json.dump(results,open(f'cert{n}{d}.json','w')); continue
+        json.dump(results,open(OUT,'w')); continue
     random.seed(ci)
     for p in primes:
         q={'dim':p['dim'],'degenerate':p['degenerate'],'real':None}
@@ -136,5 +141,5 @@ for ci,col in enumerate(classes):
     results.append(rec)
     dims=sorted(set(q['dim'] for q in rec['primes'] if q['real']))
     print(ci,'/',len(classes),'real dims',dims,'rigid',len(rec['rigid']),'%.0fs'%(time.time()-t0),flush=True)
-    json.dump(results,open(f'cert{n}{d}.json','w'))
+    json.dump(results,open(OUT,'w'))
 print('done')

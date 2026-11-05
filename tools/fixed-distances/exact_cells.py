@@ -31,6 +31,9 @@ def polygon_label(P):
     # gap structure: runs of missing vertices between present ones
     runs=sorted([int(round(x/g))-1 for x in gaps if int(round(x/g))>1],reverse=True)
     core=f'regular {N}-gon'+(' with its centre' if centre else '')
+    if missing>=n_on:   # few vertices of a big polygon: say which ones
+        steps=[int(round(x/g)) for x in gaps]
+        return f'{n_on} vertices of a regular {N}-gon'+(' and its centre' if centre else '')+' (steps '+', '.join(map(str,steps))+')',N
     if missing==0: return core,N
     if missing==1: return core+' minus a vertex',N
     desc=' + '.join(f'{r} adjacent' if r>1 else '1' for r in runs)
