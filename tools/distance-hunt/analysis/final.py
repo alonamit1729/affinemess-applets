@@ -1,5 +1,5 @@
 import json, collections, sys
-D = '/tmp/claude-0/-home-claude/1693a547-8d48-5ad0-a97e-95e0eb5309a8/scratchpad/cons/'
+D = './'  # run from the folder holding rigid.json and the analysis outputs
 F = json.load(open(D + 'out_missing.json')) + json.load(open(D + 'out_exact1.json')) + json.load(open(D + 'out_exact2.json'))
 G = json.load(open(D + 'groups.json'))
 try:
