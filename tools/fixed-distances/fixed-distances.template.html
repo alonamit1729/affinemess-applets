@@ -90,7 +90,7 @@ input[type=range] { accent-color:var(--accent); }
 /* ---- this applet ---- */
 :root{
   --series-1:#35598F; --series-2:#B85820; --series-3:#3C7A4A; --series-4:#7A4D8A; --series-5:#8A6A1E; --series-6:#A33B3B; --series-7:#2F7F86;
-  --dim1:#DCE3EC; --dim2:#DCE8DB; --dim3:#E6DDE8; --dim4:#D9E6E6;
+  --dim0:#F3DCCB; --dim1:#DCE3EC; --dim2:#DCE8DB; --dim3:#E6DDE8; --dim4:#D9E6E6;
 }
 .am-about{ width:min(560px,100%); }
 .am-about p.src{ font-size:13.5px; color:var(--ink-soft); }
@@ -129,9 +129,10 @@ input[type=range] { accent-color:var(--accent); }
 .fd-legend .sw.i::after{ content:""; position:absolute; left:9px; top:5px; width:4px; height:4px; border-radius:50%; background:var(--grid); }
 .fd-legend code{ font-family:var(--mono); font-size:11.5px; color:var(--ink); }
 /* catalog */
-.fd-cell.dim-1.is-cell{ background:var(--dim1); } .fd-cell.dim-2.is-cell{ background:var(--dim2); } .fd-cell.dim-3.is-cell{ background:var(--dim3); } .fd-cell.dim-4.is-cell{ background:var(--dim4); }
+.fd-line.dl-0{ background:var(--dim0); } .fd-line.dl-1{ background:var(--dim1); } .fd-line.dl-2{ background:var(--dim2); } .fd-line.dl-3{ background:var(--dim3); } .fd-line.dl-4{ background:var(--dim4); }
+.fd-line[class*="dl-"]{ border-radius:2px; padding:1px 4px; }
 .fd-cell.dim-1.is-cell:hover, .fd-cell.dim-2.is-cell:hover, .fd-cell.dim-3.is-cell:hover, .fd-cell.dim-4.is-cell:hover{ filter:brightness(1.03); }
-.fd-legend .sw.d1{ background:var(--dim1); } .fd-legend .sw.d2{ background:var(--dim2); } .fd-legend .sw.d3{ background:var(--dim3); } .fd-legend .sw.d4{ background:var(--dim4); }
+.fd-legend .sw.d0{ background:var(--dim0); } .fd-legend .sw.d1{ background:var(--dim1); } .fd-legend .sw.d2{ background:var(--dim2); } .fd-legend .sw.d3{ background:var(--dim3); } .fd-legend .sw.d4{ background:var(--dim4); }
 .fd-card.flex{ cursor:pointer; }
 .fd-card.flex.dim-1{ background:var(--dim1); } .fd-card.flex.dim-2{ background:var(--dim2); } .fd-card.flex.dim-3{ background:var(--dim3); } .fd-card.flex.dim-4{ background:var(--dim4); }
 .fd-card.flex .fd-coords{ background:var(--paper-card); }
@@ -255,7 +256,7 @@ const DATA = __DATA__;
     const marks=(c.marks||[]).map(m=>`<span class="mk">${m}</span>`).join('');
     const ks=Object.keys(c.dims).map(Number).sort((a,b)=>a-b);
     let h=(c.extra_line?`<div class="fd-line"><span class="k">${c.extra_line.k}</span> <span class="v">${c.extra_line.v}</span><span class="mk">${c.extra_line.mark||''}</span></div>`:'')
-      +ks.map((k,i)=>`<div class="fd-line"><span class="k">${k}d:</span> <span class="v">${boundText(c.dims[k])}</span>${i===0?marks:''}</div>`).join('');
+      +ks.map((k,i)=>`<div class="fd-line dl-${Math.min(k,4)}"><span class="k">${k}d:</span> <span class="v">${boundText(c.dims[k])}</span>${i===0?marks:''}</div>`).join('');
     if(c.finite&&c.status==='bounds') h+=`<div class="fd-sub">finite: no families</div>`;
     return h;
   }
@@ -268,7 +269,7 @@ const DATA = __DATA__;
       for(const d of meta.cols){
         const key=row+','+d; const c=cells[key];
         if(!c){ h+='<div class="fd-cell st-impossible" title="impossible"></div>'; continue; }
-        const dmax=Math.max(0,...Object.keys(c.dims).map(Number)); const dcls=dmax>0?' dim-'+Math.min(dmax,4):'';
+        const dcls='';
         h+=`<div class="fd-cell is-cell st-${c.status}${dcls}" role="button" tabindex="0" data-key="${key}" title="${esc(c.note||'')}">${cellHTML(key,c)}</div>`;
       }
     }
@@ -276,7 +277,7 @@ const DATA = __DATA__;
     h+=`<div class="fd-legend">
       <span class="k"><span class="sw"></span><span class="t">known exactly. <code>0d: 6</code> = six rigid configurations; <code>2d: 7</code> = seven families with two continuous parameters</span></span>
       <span class="k"><span class="sw b"></span><span class="t">bounds only: <code>≥ 3</code> from constructed examples, <code>[a, b]</code> when an upper bound is known; dimensions not listed have no known example</span></span>
-      <span class="k"><span class="sw d1"></span><span class="t">tint = highest dimension present: <span class="sw d1" style="width:12px;height:10px"></span> 1 · <span class="sw d2" style="width:12px;height:10px"></span> 2 · <span class="sw d3" style="width:12px;height:10px"></span> 3 · <span class="sw d4" style="width:12px;height:10px"></span> 4; untinted cells are rigid. In a catalog, hover or tap a tinted card to watch the configuration flex</span></span>
+      <span class="k"><span class="sw d1"></span><span class="t">each line is tinted by its dimension: <span class="sw d0" style="width:12px;height:10px"></span> 0 (rigid) · <span class="sw d1" style="width:12px;height:10px"></span> 1 · <span class="sw d2" style="width:12px;height:10px"></span> 2 · <span class="sw d3" style="width:12px;height:10px"></span> 3 · <span class="sw d4" style="width:12px;height:10px"></span> 4. In a catalog, hover or tap a tinted card to watch the configuration flex</span></span>
       <span class="k"><span class="sw i"></span><span class="t">impossible</span></span>
       <span class="k"><span class="mk">†</span><span class="t">published classification, re-verified here by exact computation (msolve / Singular, one polynomial system per colouring type)</span></span>
       <span class="k"><span class="mk">‡</span><span class="t">our exact computation only — nothing published; unmarked solid cells are from the literature</span></span></div>`;
