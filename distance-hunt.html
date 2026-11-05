@@ -91,7 +91,7 @@ input[type=range] { accent-color:var(--accent); }
 /* ---- Distance Hunt ---- */
 :root{
   --c0:#B85820; --c1:#35598F; --c2:#5E7D3A; --c3:#8C4A7A;
-  --c4:#2F7F7A; --c5:#9A6B1F; --c6:#5C6B7A; --c7:#A24B3B;
+  --c4:#2F7F7A; --c5:#B8962E; --c6:#5C6B7A; --c7:#B65A80;
 }
 .dh-title { font-family:var(--serif); font-style:italic; font-size:18px; font-variation-settings:"opsz" 144, "SOFT" 80; color:var(--ink); white-space:nowrap; }
 .dh-main { display:flex; }
@@ -149,8 +149,13 @@ input[type=range] { accent-color:var(--accent); }
 .dh-nd i { color:var(--ink-soft); }
 .dh-nd b { font-weight:500; }
 .dh-dist { margin:8px 0 6px; display:flex; flex-wrap:wrap; gap:4px 12px; font-family:var(--mono); font-size:12px; color:var(--ink); }
-.dh-dist span { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
-.dh-dist i { display:inline-block; width:14px; height:3px; border-radius:2px; }
+.dh-dist span { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; padding:2px 5px; margin:-2px -5px; border-radius:3px; transition:opacity .15s, background .15s; }
+.dh-dist span[data-c] { cursor:pointer; }
+.dh-dist.has-hl span[data-c] { opacity:.38; }
+.dh-dist span.is-hl { opacity:1 !important; background:var(--paper-hover); box-shadow:0 0 0 1px var(--line); }
+.dh-dist span.is-pin { box-shadow:0 0 0 1.5px var(--accent); }
+.dh-unit { font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; color:var(--ink-faint); text-transform:uppercase; margin-top:6px; }
+.dh-dist i { display:inline-block; width:16px; height:4px; border-radius:2px; }
 .dh-dist small { color:var(--ink-faint); font-size:10.5px; }
 .dh-facts { font-size:14px; color:var(--ink-soft); line-height:1.4; margin:4px 0 10px; }
 .dh-facts em { color:var(--accent-deep); }
@@ -278,6 +283,7 @@ input[type=range] { accent-color:var(--accent); }
     <aside class="dh-side">
       <section class="dh-status">
         <div class="dh-nd" id="s-nd"></div>
+        <div class="dh-unit" id="s-unit">lengths · starting segment = 1</div>
         <div class="dh-dist" id="s-dist"></div>
         <div class="dh-facts" id="s-facts"></div>
         <div class="dh-actions">
@@ -294,7 +300,7 @@ input[type=range] { accent-color:var(--accent); }
       <h3>How to play</h3>
       <ul>
         <li>You start with two points, a unit apart. Build with the tools on the left; every intersection of two lines or circles becomes a small hollow dot you can use.</li>
-        <li><b>Mark</b> the points that belong to your set: hold the mouse on a point for a moment, with any tool, or Shift-click it (free points are marked when you drop them). With <b>Select</b> (Esc) a plain click marks too. Do the same again to unmark. The panel on the right counts them, <em>n</em>, and the distinct distances between them, <em>d</em>, and colours each segment by its length.</li>
+        <li><b>Mark</b> the points that belong to your set: hold the mouse on a point for a moment, with any tool, or Shift-click it (free points are marked when you drop them). With <b>Select</b> (Esc) a plain click marks too. Do the same again to unmark. The panel on the right counts them, <em>n</em>, and the distinct distances between them, <em>d</em>, and colours each segment by its length. Lengths are in units of the starting segment. Hover a length in the panel to bring out its segments, or hover a segment to find its length; click a length to keep it highlighted.</li>
         <li>When you like what you see, press <b>Keep</b>. Similar sets (same shape at any size, rotation or reflection) count once, so the collection only grows when you find something genuinely new.</li>
         <li>The <b>Triangular</b> and <b>Square</b> buttons reveal the lattice built on the two starting points (one at a time). Lattice points work like any other point, and since similar sets count as the same, every lattice piece can be found on these two.</li>
       </ul>
@@ -378,6 +384,8 @@ let view = { cx: 0.5, cy: 0.4, s: 90 };
 let tool = 'mark';
 let picks = [];             // points picked so far for the current tool
 let showEdges = true;
+let hlHover = null, hlPin = null, hlKey = '';   // highlighted distance class (hover / pinned)
+const hlClass = () => hlHover !== null ? hlHover : hlPin;
 let showCons = true;          // lines, circles, polygons, candidates and unmarked points
 let hover = null;
 let mouse = null;           // world coords of the pointer
@@ -689,6 +697,8 @@ function analyse() {
     }
   }
   status = st;
+  const key = st.dc ? st.n + ':' + st.dc.cls.map(c => c.pairs.length).join(',') : '';
+  if (key !== hlKey) { hlKey = key; hlPin = null; hlHover = null; }
   renderStatus();
 }
 
@@ -1116,11 +1126,16 @@ function draw() {
   // distance segments between marked points
   const st = status;
   if (showEdges && st && st.dc && st.n <= 24) {
+    const hk = hlClass();
+    const seg = p => { const a = st.P[p.i], b = st.P[p.j]; const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
     for (const p of st.dc.pairs) {
-      const a = st.P[p.i], b = st.P[p.j];
-      const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y);
-      ctx.strokeStyle = clsColor(p.c); ctx.globalAlpha = 0.75; ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      if (p.c === hk) continue;
+      ctx.strokeStyle = clsColor(p.c); ctx.globalAlpha = hk === null ? 0.85 : 0.14; ctx.lineWidth = 2.1; seg(p);
+    }
+    if (hk !== null) for (const p of st.dc.pairs) {
+      if (p.c !== hk) continue;
+      ctx.strokeStyle = C.paper; ctx.globalAlpha = 1; ctx.lineWidth = 6; seg(p);
+      ctx.strokeStyle = clsColor(p.c); ctx.lineWidth = 3.4; seg(p);
     }
     ctx.globalAlpha = 1;
   }
@@ -1229,15 +1244,26 @@ function fmtLen(r) {
   }
   return r.toFixed(5).replace(/0+$/, '');
 }
+function applyLegendHL() {
+  const k = hlClass(), dist = $('#s-dist');
+  dist.classList.toggle('has-hl', k !== null);
+  dist.querySelectorAll('span[data-c]').forEach(el => {
+    const c = +el.dataset.c;
+    el.classList.toggle('is-hl', c === k);
+    el.classList.toggle('is-pin', c === hlPin);
+  });
+}
+function setHover(k) { if (k === hlHover) return; hlHover = k; applyLegendHL(); draw(); }
 function renderStatus() {
   const st = status;
   const nd = $('#s-nd'), dist = $('#s-dist'), facts = $('#s-facts');
   nd.innerHTML = `<i>n</i> = <b>${st.n}</b> &nbsp;·&nbsp; <i>d</i> = <b>${st.d}</b>`;
   if (st.dc && !st.coincide) {
-    const u = st.dc.cls[0].d;
     dist.innerHTML = st.dc.cls.length > 12 ? `<span><small>${st.dc.cls.length} lengths</small></span>` :
-      st.dc.cls.map((c, k) => `<span><i style="background:${clsColor(k)}"></i>${fmtLen(c.d / u)}<small>×${c.pairs.length}</small></span>`).join('');
+      st.dc.cls.map((c, k) => `<span data-c="${k}" title="hover to highlight, click to pin"><i style="background:${clsColor(k)}"></i>${fmtLen(c.d)}<small>×${c.pairs.length}</small></span>`).join('');
   } else dist.innerHTML = '';
+  $('#s-unit').hidden = !(st.dc && !st.coincide);
+  applyLegendHL();
   const f = [];
   let canKeep = false;
   if (st.n < 3) f.push('Mark at least three points.');
@@ -1476,6 +1502,16 @@ cv.addEventListener('pointermove', e => {
   const h = pickAt(sx, sy, tool === 'erase');
   const changed = JSON.stringify(h) !== JSON.stringify(hover);
   hover = h;
+  let ek = null;
+  if (!h && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
+    let bd = 5;
+    for (const p of status.dc.pairs) {
+      const a = status.P[p.i], b = status.P[p.j];
+      const d = segDist(toW(sx, sy), a, b) * view.s;
+      if (d < bd) { bd = d; ek = p.c; }
+    }
+  }
+  if (ek !== hlHover && !legendHover) { hlHover = ek; applyLegendHL(); draw(); }
   const n = h && h.kind === 'pt' ? byId.get(h.id) : null;
   cv.classList.toggle('is-grab', !!(n && n.t === 'free' && (tool === 'mark' || tool === 'free')));
   if (changed || picks.length) draw();
@@ -1492,7 +1528,7 @@ cv.addEventListener('pointerup', e => {
   }
   if (d.mode === 'pt') { endSnapSession(); recompute(); draw(); persist(); }
 });
-cv.addEventListener('pointerleave', () => { if (!drag) { hover = null; mouse = null; draw(); } $('#coord').hidden = true; });
+cv.addEventListener('pointerleave', () => { if (!legendHover) { hlHover = null; applyLegendHL(); } if (!drag) { hover = null; mouse = null; draw(); } $('#coord').hidden = true; });
 cv.addEventListener('pointercancel', () => { cancelHold(); if (drag && drag.mode === 'pt' && drag.moved) { endSnapSession(); recompute(); draw(); persist(); } drag = null; });
 cv.addEventListener('contextmenu', e => e.preventDefault());
 cv.addEventListener('wheel', e => {
@@ -1500,6 +1536,12 @@ cv.addEventListener('wheel', e => {
   const r = cv.getBoundingClientRect();
   zoom(Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
 }, { passive: false });
+
+/* ---------------- legend highlighting ---------------- */
+let legendHover = false;
+$('#s-dist').addEventListener('mouseover', e => { const el = e.target.closest('span[data-c]'); if (el) { legendHover = true; setHover(+el.dataset.c); } });
+$('#s-dist').addEventListener('mouseout', e => { const el = e.target.closest('span[data-c]'); if (el && !el.contains(e.relatedTarget)) { legendHover = false; setHover(null); } });
+$('#s-dist').addEventListener('click', e => { const el = e.target.closest('span[data-c]'); if (!el) return; const c = +el.dataset.c; hlPin = hlPin === c ? null : c; applyLegendHL(); draw(); });
 
 /* ---------------- buttons & keys ---------------- */
 document.querySelectorAll('.dh-tool').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
