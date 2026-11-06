@@ -132,9 +132,10 @@ class Pool:
             if any(hh==h and dd==dim for _,_,_,hh,dd in s.fam): return
             G=beautify(G,dim)
             s.fam.append((G,label,src,h,dim))
-    def add_rigid(s,P,label,src,exact=None):
-        """a configuration certified rigid exactly (no numerical dimension test: an isolated solution can be non-reduced)"""
-        if any(same(P,Q) for Q,_,_ in s.rigid): return
+    def add_rigid(s,P,label,src,exact=None,dedup=True):
+        """a configuration certified rigid exactly (no numerical dimension test: an isolated solution can be non-reduced);
+        dedup=False for the exact lists, which are already free of congruent duplicates (an O(N^2) test is infeasible at 44k items)"""
+        if dedup and any(same(P,Q) for Q,_,_ in s.rigid): return
         if exact: s.exact[len(s.rigid)]=exact
         s.rigid.append((P,label,src))
     def counts(s):
@@ -534,7 +535,7 @@ def main():
             if key in EXACT2:   # cells classified by cells/cellcert.py (value-space certification of the complete pattern list)
                 EX2=EXACT2[key]; st=EX2['stats']
                 pool=Pool()
-                for e in EX2['rigid']: pool.add_rigid(e['pts'],e['label'],'pat')
+                for e in EX2['rigid']: pool.add_rigid(e['pts'],e['label'],'pat',dedup=False)
                 assert len(pool.rigid)==len(EX2['rigid']) and not pool.fam,(key,len(pool.rigid),len(EX2['rigid']),len(pool.fam))
                 fam_items=[item(f['pts'],f['label'],'family',f['dim']) for f in EX2['fam']]
                 items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]+fam_items

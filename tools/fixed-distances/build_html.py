@@ -8,6 +8,7 @@ inline=copy.deepcopy(data)
 for key,cat in inline['cats'].items():
     if len(cat['items'])>LIMIT:
         n,d=key.split(','); fn=f'catalogs/{n}_{d}.json'
+        cat['items']=sorted(cat['items'],key=lambda x: x['kind']!='family')   # families first: they are the rare, interesting ones and the first page of a long catalog
         json.dump(cat['items'],open(fn,'w'),ensure_ascii=False,separators=(',',':'))
         cat['remote']='tools/fixed-distances/data/'+fn; cat['remoteCount']=len(cat['items']); cat['items']=[]
         print('remote catalog',key,cat['remoteCount'],'items ->',fn,os.path.getsize(fn),'bytes')

@@ -88,12 +88,58 @@ def singular(script, timeout=600):
     r = subprocess.run([SG, '-q', fn], capture_output=True, text=True, timeout=timeout)
     return [l.strip() for l in r.stdout.splitlines() if l.strip() and not l.startswith('//')]
 
+def _sing_primes(ring, gens, algo, tmo):
+    """minimal associated primes of the ideal <gens> by `algo`; list of generator-lists (strings)"""
+    script = (ring + '\nLIB "primdec.lib";\nideal i=' + ',\n'.join(gens) + ';\nlist L=' + algo + '(i);\nint k; for(k=1;k<=size(L);k++){ print("PRIME"); print(L[k]); }\nquit;\n')
+    out = singular(script, timeout=tmo); res = []
+    for l in out:
+        if l == 'PRIME': res.append([])
+        elif res: res[-1].append((l.split('=', 1)[1].strip() if '=' in l else l).rstrip(','))
+    return res
+
 def decompose(SV, polys, facs):
+    """minimal primes: minAssGTZ on the whole ideal (20 s); failing that, split by facstd and decompose each piece with
+    minAssGTZ (60 s) or else minAssChar (60 s) -- on the hard patterns one of the two always finishes in seconds on each
+    piece (they stall on different pieces) -- then discard non-minimal primes."""
     ring = 'ring r=0,(' + ','.join(SV) + '),dp;'
-    script = (ring + '\nLIB "primdec.lib"; LIB "sing.lib";\nideal i=' + ',\n'.join(polys) + ';\nlist L=minAssGTZ(i);\nint k; ideal G; ideal S; int bad;\n'
-              'for(k=1;k<=size(L);k++){ G=std(L[k]); print("PRIME"); print(dim(G)); bad=0; ' + ' '.join(f'if(reduce({f},G)==0){{bad=1;}}' for f in facs) +
-              ' print(bad); S=std(slocus(L[k])); print(dim(S)); print("GENS"); print(L[k]); print("SLOCUS"); print(S); }\nquit;\n')
-    lines = singular(script)
+    pre = ring + '\nLIB "primdec.lib"; LIB "sing.lib";\n'
+    post = ('int k; ideal G; ideal S; int bad;\n'
+            'for(k=1;k<=size(L);k++){ G=std(L[k]); print("PRIME"); print(dim(G)); bad=0; ' + ' '.join(f'if(reduce({f},G)==0){{bad=1;}}' for f in facs) +
+            ' print(bad); S=std(slocus(L[k])); print(dim(S)); print("GENS"); print(L[k]); print("SLOCUS"); print(S); }\nquit;\n')
+    try:
+        lines = singular(pre + 'ideal i=' + ',\n'.join(polys) + ';\nlist L=minAssGTZ(i);\n' + post, timeout=20)
+    except subprocess.TimeoutExpired:
+        log('   minAssGTZ timeout (20s): splitting with facstd')
+        rring = 'ring r=0,(' + ','.join(SV[::-1]) + '),dp;'   # reversed variable order: a different term order often makes the stalled step finish at once
+        allp = None
+        for rg in (ring, rring):
+            try:
+                sp = singular(rg + '\nLIB "primdec.lib";\nideal i=' + ',\n'.join(polys) + ';\nlist L=facstd(i); int k; for(k=1;k<=size(L);k++){ print("PIECE"); print(L[k]); }\nquit;\n', timeout=300)
+                pieces = []
+                for l in sp:
+                    if l == 'PIECE': pieces.append([])
+                    elif pieces: pieces[-1].append((l.split('=', 1)[1].strip() if '=' in l else l).rstrip(','))
+                cur_p = []
+                for pc in pieces:
+                    for algo in ('minAssGTZ', 'minAssChar'):
+                        try:
+                            cur_p += _sing_primes(rg, pc, algo, 60); break
+                        except subprocess.TimeoutExpired:
+                            log(f'   piece: {algo} timeout ({"reversed" if rg is rring else "plain"} order)')
+                    else:
+                        raise subprocess.TimeoutExpired('piece', 0)
+                allp = cur_p; break
+            except subprocess.TimeoutExpired:
+                log(f'   split/decompose failed in {"reversed" if rg is rring else "plain"} order')
+        if allp is None: raise subprocess.TimeoutExpired('pieces', 0)
+        decl = 'list P;\n' + ''.join(f'P[{k+1}]=ideal({",".join(g)});\n' for k, g in enumerate(allp))
+        filt = ('list L; int a; int b; int keep; ideal Pa; ideal Pb;\n'
+                'for(a=1;a<=size(P);a++){ keep=1; Pa=modStd(P[a]); for(b=1;b<=size(P);b++){ if(b!=a){ Pb=modStd(P[b]); '
+                'if(size(reduce(Pb,Pa))==0){ if(size(reduce(Pa,Pb))!=0 || b<a){ keep=0; } } } } if(keep){ L[size(L)+1]=P[a]; } }\n')
+        post2 = ('int k; ideal G; ideal S; ideal M; matrix Jm; int c; int bad;\n'
+                 'for(k=1;k<=size(L);k++){ G=modStd(L[k]); print("PRIME"); print(dim(G)); bad=0; ' + ' '.join(f'if(reduce({f},G)==0){{bad=1;}}' for f in facs) +
+                 ' print(bad); c=' + str(len(SV)) + '-dim(G); Jm=jacob(G); M=minor(Jm,c,G); S=modStd(G+M); print(dim(S)); print("GENS"); print(L[k]); print("SLOCUS"); print(S); }\nquit;\n')
+        lines = singular(pre.replace('LIB "sing.lib";', 'LIB "sing.lib"; LIB "modstd.lib";') + decl + filt + post2, timeout=600)
     primes = []; cur = None; mode = None
     for line in lines:
         if line == 'PRIME': cur = {'dim': None, 'degenerate': None, 'sdim': None, 'gens': [], 'slocus': []}; primes.append(cur); mode = None; continue
