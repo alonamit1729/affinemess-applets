@@ -5,9 +5,13 @@
     python3 build.py                       # writes ../../distance-hunt.html
 
 `catalog.json` holds a similarity fingerprint of every rigid set in the fixed-distances
-catalog (2,298 sets, reflections identified). Rebuild it when that catalog changes:
+catalog (15,138 sets on 2026-11-05, reflections identified). Cells with more than 1,000
+rigid sets ((6,5), (7,6), (8,6)) go to `catalogs/<n>_<d>.json`, which the applet fetches when
+first needed. Rebuild when that catalog changes, passing the previous `catalog.json` so the
+constructibility verdicts carry over by shape (card numbers may shift between versions):
 
-    python3 canon.py ../fixed-distances/data/applet_data.json catalog.json
+    cp catalog.json /tmp/catalog.old.json
+    python3 canon.py ../fixed-distances/data/applet_data.json catalog.json /tmp/catalog.old.json
 
 `canon.py` polishes each catalog set by Newton's method on its distance pattern (`refine.py`;
 nine (6,3) entries of the source data are off by ~1e-8) and computes the canonical form:
@@ -17,7 +21,7 @@ The game computes the same form in JavaScript (`canon()` in the template) and ma
 tolerance 1e-5.
 
 `verdicts.json` lists, for every catalog card (cell, card number), what it takes to construct
-it: `rc` straightedge and compass, `p<m>` a regular m-gon, `tri` angle trisection, `s4` a
+it (null: not analysed; the analysis covers the 2,298 sets of 2026-11-03): `rc` straightedge and compass, `p<m>` a regular m-gon, `tri` angle trisection, `s4` a
 quartic with Galois group S4 and two real roots, `S5`/`S6`/`S7` not constructible (non-solvable
 Galois group), `cbrt` not constructible (real root of a cubic with one real root). It was made
 by the scripts in `analysis/` (run from a folder holding `rigid.json`, the rigid catalog sets

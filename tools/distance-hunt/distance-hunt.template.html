@@ -96,15 +96,23 @@ input[type=range] { accent-color:var(--accent); }
 .dh-title { font-family:var(--serif); font-style:italic; font-size:18px; font-variation-settings:"opsz" 144, "SOFT" 80; color:var(--ink); white-space:nowrap; }
 .dh-main { display:flex; }
 .dh-tools {
-  flex:0 0 auto; width:150px; overflow-y:auto; padding:12px 10px;
+  flex:0 0 auto; width:58px; overflow-y:auto; padding:10px 8px;
   background:var(--paper-card); border-right:1px solid var(--line);
-  display:flex; flex-direction:column; gap:5px;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
 }
-.dh-tools .am-label { margin:10px 2px 2px; }
-.dh-tools .am-label:first-child { margin-top:0; }
-.dh-tool { display:flex; justify-content:space-between; align-items:center; text-align:left; padding:7px 9px; }
-.dh-tool kbd { font-family:var(--mono); font-size:9.5px; color:var(--ink-faint); letter-spacing:0; }
-.dh-tool.is-on kbd { color:var(--line-soft); }
+.dh-tools .dh-tool { width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center; }
+.dh-tool svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.dh-tool svg .f { fill:currentColor; stroke:none; }
+.dh-tool.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.dh-sep { width:28px; border-top:1px solid var(--line-soft); margin:5px 0; }
+.dh-sides { width:40px; padding:3px 2px; font-size:12px; text-align:center; }
+.dh-tip {
+  position:absolute; z-index:30; left:64px; pointer-events:none; width:250px;
+  background:var(--ink); color:var(--paper-card); border-radius:3px; padding:8px 11px;
+  font-size:13px; line-height:1.4; box-shadow:0 8px 20px -12px rgba(30,24,16,.6);
+}
+.dh-tip b { font-weight:500; }
+.dh-tip kbd { font-family:var(--mono); font-size:10.5px; color:var(--line-soft); margin-left:6px; }
 .dh-opt { display:flex; align-items:center; gap:6px; padding:0 2px 4px 10px; font-family:var(--mono); font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.1em; }
 .dh-opt .am-input { width:54px; padding:4px 6px; font-size:12px; }
 .dh-opt .am-seg .am-btn { padding:4px 8px; font-size:9.5px; }
@@ -131,13 +139,16 @@ input[type=range] { accent-color:var(--accent); }
 }
 .dh-toast.show { opacity:1; }
 .dh-banner {
-  position:absolute; left:50%; top:46px; transform:translateX(-50%); z-index:5; pointer-events:none;
+  position:absolute; left:50%; top:46px; transform:translateX(-50%); z-index:5;
   font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; line-height:1.45; text-align:center;
   width:max-content; max-width:calc(100% - 60px); padding:9px 16px; border-radius:3px; border:1.5px solid var(--accent);
   background:var(--paper-card); color:var(--accent-deep); box-shadow:0 8px 22px -14px rgba(30,24,16,.55);
 }
 .dh-banner[hidden] { display:none; }
 .dh-banner b { font-weight:500; }
+.dh-banner .x { border:0; background:none; cursor:pointer; color:inherit; opacity:.7; font-family:var(--mono); font-size:13px; padding:0 0 0 12px; vertical-align:baseline; }
+.dh-banner .x:hover { opacity:1; }
+.dh-banner a.dh-catlink { color:inherit; text-decoration-color:currentColor; }
 .dh-banner.is-done { background:var(--accent); color:var(--paper-card); }
 .dh-eqs { margin:0 0 10px; font-family:var(--mono); font-size:11px; color:var(--ink-soft); }
 .dh-eqs .row { display:flex; align-items:center; gap:8px; padding:3px 0; }
@@ -199,6 +210,8 @@ input[type=range] { accent-color:var(--accent); }
 .dh-card .tag.snap { color:var(--c1); }
 .dh-card .tag.new { color:var(--accent-deep); }
 .dh-card .tag.hard { display:block; color:var(--accent-deep); }
+a.dh-catlink { color:inherit; text-decoration:underline; text-decoration-color:var(--line); text-underline-offset:2px; }
+a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accent); }
 .dh-card .del {
   position:absolute; top:2px; right:3px; border:0; background:none; cursor:pointer; padding:2px 4px;
   font-family:var(--mono); font-size:11px; color:var(--ink-faint); opacity:0; transition:opacity .2s;
@@ -221,7 +234,6 @@ input[type=range] { accent-color:var(--accent); }
 .am-about li { margin:0 0 6px; }
 .am-about .kb { font-family:var(--mono); font-size:12px; color:var(--ink-soft); }
 @media (max-width:900px) {
-  .dh-tools { width:128px; }
   .dh-side { width:260px; }
 }
 </style></head>
@@ -263,20 +275,22 @@ input[type=range] { accent-color:var(--accent); }
   </header>
   <div class="am-stage dh-main">
     <nav class="dh-tools" aria-label="Construction tools">
-      <span class="am-label">Pick</span>
-      <button class="am-btn dh-tool" data-tool="mark">Select <kbd>V</kbd></button>
-      <button class="am-btn dh-tool" data-tool="free">Free point <kbd>F</kbd></button>
-      <button class="am-btn dh-tool" data-tool="eq">Equal <kbd>=</kbd></button>
-      <span class="am-label">Draw</span>
-      <button class="am-btn dh-tool" data-tool="line">Line <kbd>L</kbd></button>
-      <button class="am-btn dh-tool" data-tool="bis">Bisector <kbd>B</kbd></button>
-      <button class="am-btn dh-tool" data-tool="circ">Circle <kbd>C</kbd></button>
-      <button class="am-btn dh-tool" data-tool="comp">Compass <kbd>K</kbd></button>
-      <button class="am-btn dh-tool" data-tool="poly">Polygon <kbd>P</kbd></button>
-      <div class="dh-opt"><span>sides</span><input class="am-input" id="i-m" type="number" min="3" max="30" value="5"></div>
-      <span class="am-label">Edit</span>
-      <button class="am-btn dh-tool" data-tool="erase">Erase <kbd>X</kbd></button>
+      <button class="am-btn dh-tool" data-tool="mark" aria-label="Select (V or Esc)" data-tip="Select" data-key="V or Esc" data-desc="Click a point to mark or unmark it. Drag free points and sliders; drag empty space to pan."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5v15.2l3.9-3.8 2.6 6 2.4-1-2.6-5.9h5.4z"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="free" aria-label="Free point or slider (F)" data-tip="Free point or slider" data-key="F" data-desc="On a line or circle: a slider that moves along it. Anywhere else: a point that moves freely."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-7 7-7-7z"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="eq" aria-label="Equal (=)" data-tip="Equal" data-key="=" data-desc="Click a segment of your set, then the segment it should equal."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9.2h14M5 14.8h14" stroke-width="2.2"/></svg></button>
+      <span class="dh-sep"></span>
+      <button class="am-btn dh-tool" data-tool="line" aria-label="Line (L)" data-tip="Line" data-key="L" data-desc="Through two points."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19.5L21 4.5"/><circle class="f" cx="7.8" cy="15.5" r="2"/><circle class="f" cx="16.2" cy="8.5" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="par" aria-label="Parallel line (I)" data-tip="Parallel line" data-key="I" data-desc="Pick a line and a point: the line through the point parallel to it."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14L14 3M10 21L21 10"/><circle class="f" cx="15.5" cy="15.5" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="perp" aria-label="Perpendicular line (T)" data-tip="Perpendicular line" data-key="T" data-desc="Pick a line and a point: the line through the point at right angles to it."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18M10 18.5V3"/><path d="M10 14.5h4v4" stroke-width="1.3"/><circle class="f" cx="10" cy="7.5" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="bis" aria-label="Perpendicular bisector (B)" data-tip="Perpendicular bisector" data-key="B" data-desc="Of two points."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15.5h16"/><path d="M12 3.5v17" stroke-dasharray="2.4 2"/><circle class="f" cx="4.5" cy="15.5" r="2"/><circle class="f" cx="19.5" cy="15.5" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="circ" aria-label="Circle (C)" data-tip="Circle" data-key="C" data-desc="Pick the centre, then a point on the circle."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle class="f" cx="12" cy="12" r="1.8"/><circle class="f" cx="19.9" cy="12" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="comp" aria-label="Compass (K)" data-tip="Compass" data-key="K" data-desc="Pick two points for the radius, then the centre."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="1.6"/><path d="M11.2 6L6 19.5M12.8 6L18 19.5"/><path d="M4 16.5a9.5 9.5 0 0 0 16 0" stroke-dasharray="2.2 2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="poly" aria-label="Regular polygon (P)" data-tip="Regular polygon" data-key="P" data-desc="Pick the two ends of a side; the polygon goes on the left, with its centre. Number of sides below (keys 3–9)."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l8.4 6.1-3.2 9.9H6.8L3.6 9.3z"/></svg></button>
+      <input class="am-input dh-sides" id="i-m" type="number" min="3" max="30" value="5" aria-label="Number of sides" title="Number of sides of the regular polygon">
+      <span class="dh-sep"></span>
+      <button class="am-btn dh-tool" data-tool="erase" aria-label="Erase (X)" data-tip="Erase" data-key="X" data-desc="Click a point, line, circle or polygon; everything built on it goes too."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20.5L3.5 15 13.5 5l7 7-8.5 8.5z"/><path d="M8.5 10L14.5 16M9 20.5h11"/></svg></button>
     </nav>
+    <div class="dh-tip" id="tip" hidden></div>
     <div class="dh-canvas-wrap">
       <canvas id="dh-canvas"></canvas>
       <div class="dh-corner">
@@ -316,7 +330,7 @@ input[type=range] { accent-color:var(--accent); }
       </ul>
       <h3>The tools</h3>
       <ul>
-        <li><b>Line</b> through two points; <b>Bisector</b>, the perpendicular bisector of two points.</li>
+        <li><b>Line</b> through two points; <b>Parallel</b> and <b>Perpendicular</b>: pick a line and a point; <b>Bisector</b>, the perpendicular bisector of two points. Hover a tool to see what it does.</li>
         <li><b>Circle</b>: a centre, then a point on the circle. <b>Compass</b>: two points for the radius, then the centre.</li>
         <li><b>Polygon</b>: a regular polygon with the chosen number of sides on a segment, together with its centre. It sits to the left of the segment as you pick it; pick the ends the other way round for the other side.</li>
         <li><b>Free point</b>: click on a line or circle for a <em>slider</em>, a point that moves only along it; click anywhere else for a point that moves freely. Both are drawn as diamonds (a slider with a bar along its curve). They are not exact until equalities pin them down; see below.</li>
@@ -329,12 +343,12 @@ input[type=range] { accent-color:var(--accent); }
       <p>For those, say what you want and let the game solve it. Put a <b>slider</b> on a line or circle, build the rest of the set from it (circles and intersections follow the slider as it moves), then use <b>Equal</b> to ask for two segments to have the same length. A slider has one unknown and an equality is one equation, so the slider is pinned: the game finds every position along its line or circle where the two lengths agree, moves there, and shows the others as blue rings you can click. A free point has two unknowns and needs two equalities; several sliders and free points can be solved together. Until everything is pinned, dragging keeps the equalities you asked for. The panel counts equations and unknowns, and lists the equalities (hover one to see its segments, × to remove it).</p>
       <p>One slider and one equality are enough for all but three of the catalog's sets that ordinary construction cannot reach; the remaining three ((5,4) nos. 461, 463 and 466) need three sliders solved together. Pinned points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>.</p>
       <h3>The catalog</h3>
-      <p>Every set is compared with the 2,298 rigid sets catalogued in the explorer. A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
-      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
+      <p>Every set is compared with the 15,138 rigid sets catalogued in the explorer (the three largest cells, (6,5), (7,6) and (8,6), are fetched when first needed). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
+      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number links to that cell of the explorer. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
       <h3>Saving</h3>
       <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
       <h3>Keys</h3>
-      <p class="kb">hold or Shift-click mark · Esc / V select · F free point or slider · = equal · N next solution · L line · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · H construction · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
+      <p class="kb">hold or Shift-click mark · Esc / V select · F free point or slider · = equal · N next solution · L line · I parallel · T perpendicular · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · H construction · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
     </aside>
   </div>
 </div>
@@ -402,13 +416,14 @@ let showCons = true;          // lines, circles, polygons, candidates and unmark
 let hover = null;
 let mouse = null;           // world coords of the pointer
 let status = null;          // last analysis
+let parLine = null, parPt = null;   // Parallel / Perpendicular: the line and the point picked so far
 let eqPick = null;          // first segment picked with the Equal tool: [idA, idB]
 let alts = [];              // other solutions of the last solve along a slider: {x, d, tx, ty}
 let anim = null;            // running solve animation
 let storageOK = true;
 
 const PT = new Set(['base', 'free', 'glide', 'lat', 'pv', 'pc', 'x']);
-const CURVE = new Set(['line', 'bis', 'circ', 'comp']);
+const CURVE = new Set(['line', 'bis', 'par', 'perp', 'circ', 'comp']);
 const isPt = n => PT.has(n.t);
 function deps(n) {
   switch (n.t) {
@@ -418,6 +433,7 @@ function deps(n) {
     case 'pv': case 'pc': return [n.poly];
     case 'x': return [n.c1, n.c2];
     case 'glide': return [n.on];
+    case 'par': case 'perp': return [n.l, n.p];
     default: return [];
   }
 }
@@ -443,7 +459,11 @@ function polyGeom(a, b, m) {
   if (verts.length > 1) { verts[0] = { x: a.x, y: a.y }; verts[1] = { x: b.x, y: b.y }; }
   return { cx, cy, verts };
 }
-function curveVal(n, P) {
+function curveVal(n, P, val) {
+  if (n.t === 'par' || n.t === 'perp') {
+    const L = val && val.get(n.l), p = P(n.p); if (!L || L.k !== 'l' || !p) return null;
+    return n.t === 'par' ? { k: 'l', px: p.x, py: p.y, dx: L.dx, dy: L.dy } : { k: 'l', px: p.x, py: p.y, dx: -L.dy, dy: L.dx };
+  }
   if (n.t === 'line') {
     const a = P(n.a), b = P(n.b); if (!a || !b) return null;
     const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy); if (L < EPS) return null;
@@ -524,7 +544,7 @@ function evaluate(nodes, override) {
         if (A && B && A.k && B.k) { const m = meet(A, B); if (m.length) v = m[Math.min(n.k, m.length - 1)]; }
         break;
       }
-      default: v = curveVal(n, P);
+      default: v = curveVal(n, P, val);
     }
     val.set(n.id, v);
   }
@@ -659,20 +679,37 @@ function cmpList(A, B) { for (let k = 0; k < A.length; k++) { const c = cmpc(A[k
 const sameCanon = (A, B) => A.length === B.length && A.every((a, k) => Math.abs(a[0] - B[k][0]) < 1e-5 && Math.abs(a[1] - B[k][1]) < 1e-5);
 
 /* catalog index */
-const CATI = new Map();
-if (CAT) CAT.items.forEach((it, idx) => {
-  const [cell, lab, flat, num, v] = it; const pts = [];
-  for (let k = 0; k < flat.length; k += 2) pts.push([flat[k], flat[k + 1]]);
+const CATI = new Map(), CATK = new Map(), catLoad = new Map();
+function addCat(cell, lab, flat, num, v) {
+  const pts = []; for (let k = 0; k < flat.length; k += 2) pts.push([flat[k], flat[k + 1]]);
+  const e = { key: cell + '#' + num, cell, lab, pts, num, v };
   if (!CATI.has(cell)) CATI.set(cell, []);
-  CATI.get(cell).push({ idx, cell, lab: CAT.labels[lab], pts, num, v });
-});
-const catEntry = idx => { const it = CAT.items[idx]; return { idx, cell: it[0], lab: CAT.labels[it[1]], num: it[3], v: it[4] }; };
+  CATI.get(cell).push(e); CATK.set(e.key, e);
+}
+if (CAT) CAT.items.forEach(([cell, lab, flat, num, v]) => addCat(cell, CAT.labels[lab], flat, num, v));
+const isRemote = cell => !!(CAT && CAT.cells[cell] && CAT.cells[cell][3] === 1);
+/* the three largest cells (thousands of sets) come from tools/distance-hunt/catalogs/ when first needed */
+function ensureCell(cell) {
+  if (!isRemote(cell)) return 'ok';
+  const st = catLoad.get(cell); if (st) return st;
+  catLoad.set(cell, 'loading');
+  fetch('tools/distance-hunt/catalogs/' + cell.replace(',', '_') + '.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(o => { o.items.forEach(([lab, flat, num, v]) => addCat(cell, o.labels[lab], flat, num, v)); catLoad.set(cell, 'ok'); rematchCards(); recompute(); renderCollection(); draw(); })
+    .catch(() => { catLoad.set(cell, 'failed'); recompute(); });
+  return 'loading';
+}
+/* a link to the catalog applet, open at this cell */
+function catLink(e) {
+  const [n, d] = e.cell.split(',');
+  return `<a class="dh-catlink" href="fixed-distances.html#n${n}d${d}" target="_blank" rel="noopener" title="Open the (${n},${d}) catalog of n points, d distances in a new tab: this is card no. ${e.num}">no. ${e.num}</a>`;
+}
 /* the catalog's label without its generic prefix */
 const catName = e => e.lab.replace(/^rigid;\s*/, '');
 const SUB = { S5: 'S₅', S6: 'S₆', S7: 'S₇' };
 /* constructibility verdicts (tools/distance-hunt/verdicts.json, from the Galois analysis) */
 function verdictShort(v) {
-  if (!v || v === 'rc') return '';
+  if (!v || v === 'rc') return '';   // no verdict yet (sets added to the catalog after the analysis), or plain straightedge and compass
   if (v[0] === 'p') return 'needs a ' + v.slice(1) + '-gon';
   if (v === 'tri') return 'needs trisection';
   if (v === 's4') return 'beyond square roots';
@@ -680,7 +717,8 @@ function verdictShort(v) {
   return 'not constructible · ' + SUB[v];
 }
 function verdictLong(v) {
-  if (!v || v === 'rc') return 'Constructible with straightedge and compass.';
+  if (!v) return '';
+  if (v === 'rc') return 'Constructible with straightedge and compass.';
   if (v[0] === 'p') return `Needs a regular ${v.slice(1)}-gon: straightedge and compass alone cannot build it.`;
   if (v === 'tri') return 'Needs angle trisection: straightedge and compass alone cannot build it, and no regular polygon helps.';
   if (v === 's4') return 'Beyond straightedge and compass: a quartic with Galois group S₄ and two real roots. Solvable by radicals; it is not settled here whether an angle trisector would do.';
@@ -688,8 +726,19 @@ function verdictLong(v) {
   return `<em>Not constructible</em> by straightedge, compass, angle division or regular polygons: its distances solve an equation with Galois group ${SUB[v]}, which is not solvable.`;
 }
 function catalogMatch(n, d, cf) {
-  const L = CATI.get(n + ',' + d); if (!L) return null;
+  const cell = n + ',' + d;
+  if (ensureCell(cell) !== 'ok') return null;
+  const L = CATI.get(cell); if (!L) return null;
   return L.find(it => sameCanon(it.pts, cf)) || null;
+}
+/* cards remember their catalog entry by key; re-match them after loading a cell or a newer catalog */
+function rematchCards() {
+  for (const c of cards) {
+    if (c.flex) { c.ck = null; continue; }
+    const cell = c.n + ',' + c.d;
+    if (ensureCell(cell) !== 'ok') continue;
+    const m = catalogMatch(c.n, c.d, c.canon); c.ck = m ? m.key : null;
+  }
 }
 function cellInfo(n, d) { return CAT && CAT.cells[n + ',' + d] ? { rigid: CAT.cells[n + ',' + d][0], complete: !!CAT.cells[n + ',' + d][1] } : null; }
 
@@ -712,6 +761,7 @@ function analyse() {
       if (pv < 2) {
         st.canon = canon(P);
         st.cat = catalogMatch(st.n, st.d, st.canon);
+        st.catState = ensureCell(st.n + ',' + st.d);
         if (st.cat) st.flex = 0;   // the catalog's sets are rigid (a few are singular points, where the first-order test is blind)
         st.dup = cards.find(c => c.n === st.n && c.d === st.d && sameCanon(c.canon, st.canon)) || null;
       }
@@ -928,7 +978,7 @@ function reportSolve(st) {
   if (st.pinned) {
     const off = alts.filter(a => { const [x, y] = toS(a.tx, a.ty); return x < 0 || y < 0 || x > W || y > H; }).length;
     const more = alts.length > 1 ? ` · ${alts.length} solutions on this slider${off ? ` (${off} off screen)` : ''}: click a blue ring or press N for the next` : '';
-    banner(`<b>Pinned: n = ${status.n} · d = ${status.d}</b>${status.cat ? ' · no. ' + status.cat.num + (verdictShort(status.cat.v) ? ' · ' + verdictShort(status.cat.v) : '') : ''}${more}`, true, 6000);
+    banner(`<b>Pinned: n = ${status.n} · d = ${status.d}</b>${status.cat ? ' · ' + catLink(status.cat) + (verdictShort(status.cat.v) ? ' · ' + verdictShort(status.cat.v) : '') : ''}${more}`, true, 6000);
   } else banner(`Equal now. <b>${st.k} free direction${st.k > 1 ? 's' : ''} left</b>: drag a free point (the equalities hold), or add another equality`, false, 6000);
 }
 function addEquality(s1, s2) {
@@ -952,14 +1002,15 @@ function addEquality(s1, s2) {
 function removeGroup(i) {
   pushUndo(); S.cons.splice(i, 1); alts = []; settle(); recompute(); renderEqs(); draw(); persist();
 }
-let bannerT = null;
-function banner(html, done, ms) {
-  const b = $('#banner'); b.innerHTML = html; b.hidden = false; b.classList.toggle('is-done', !!done);
+let bannerT = null, eqHintOff = false;
+function banner(html, done, ms, isHint) {
+  const b = $('#banner'); b.innerHTML = html + '<button class="x" title="Close" aria-label="Close">×</button>'; b.hidden = false; b.classList.toggle('is-done', !!done);
+  b.querySelector('.x').onclick = () => { b.hidden = true; clearTimeout(bannerT); if (isHint) eqHintOff = true; };
   clearTimeout(bannerT); if (ms) bannerT = setTimeout(() => { if (tool === 'eq' && !eqPick) eqHint(); else b.hidden = true; }, ms);
 }
 function eqHint() {
-  if (tool !== 'eq') { $('#banner').hidden = true; return; }
-  banner(eqPick ? 'Now click the segment it should equal' : 'Equal: click a segment of your set, then the segment it should equal', false, 0);
+  if (tool !== 'eq' || eqHintOff) { $('#banner').hidden = true; return; }
+  banner(eqPick ? 'Now click the segment it should equal' : 'Equal: click a segment of your set, then the segment it should equal', false, 0, true);
 }
 function renderEqs() {
   const box = $('#s-eqs');
@@ -1141,12 +1192,14 @@ const TOOLS = {
   circ: { need: 2, hint: k => ['<b>Circle</b>: pick the centre.', '<b>Circle</b>: pick a point on the circle.'][k] },
   comp: { need: 3, hint: k => ['<b>Compass</b>: pick one end of the radius.', '<b>Compass</b>: pick the other end of the radius.', '<b>Compass</b>: pick the centre.'][k] },
   poly: { need: 2, hint: k => ['<b>Polygon</b>: pick the first end of a side.', '<b>Polygon</b>: pick the second end; the polygon goes on the left.'][k] },
+  par: { need: 0, hint: () => parLine === null ? '<b>Parallel</b>: pick a line' + (parPt === null ? ' and a point, in either order.' : ' to be parallel to.') : '<b>Parallel</b>: now pick the point it goes through.' },
+  perp: { need: 0, hint: () => parLine === null ? '<b>Perpendicular</b>: pick a line' + (parPt === null ? ' and a point, in either order.' : ' to be perpendicular to.') : '<b>Perpendicular</b>: now pick the point it goes through.' },
   erase: { need: 1, hint: () => '<b>Erase</b>: click a point, line, circle or polygon; everything built on it goes too.' },
 };
 function setCons(on) { showCons = on; $('#b-cons').setAttribute('aria-pressed', on); hover = null; draw(); }
 function setTool(t) {
   if (t !== 'mark' && t !== 'eq' && !showCons) setCons(true);   // building needs the construction in view
-  tool = t; picks = []; eqPick = null;
+  tool = t; picks = []; eqPick = null; parLine = null; parPt = null;
   eqHint();
   document.querySelectorAll('.dh-tool').forEach(b => b.classList.toggle('is-on', b.dataset.tool === t));
   updateHint(); draw();
@@ -1158,7 +1211,7 @@ function updateHint() {
 const polyM = () => Math.max(3, Math.min(30, parseInt($('#i-m').value, 10) || 5));
 
 function clickTool(sx, sy) {
-  const pk = pickAt(sx, sy, tool === 'erase');
+  const pk = pickAt(sx, sy, tool === 'erase' || tool === 'par' || tool === 'perp');
   if (tool === 'mark') { toggleMark(pk); return; }
   if (tool === 'free') {
     pushUndo();
@@ -1180,6 +1233,21 @@ function clickTool(sx, sy) {
     const first = eqPick; eqPick = null;
     if (segKey(first) === segKey(sg)) { eqHint(); draw(); return; }
     addEquality(first, sg); draw(); return;
+  }
+  if (tool === 'par' || tool === 'perp') {
+    if (!pk) return;
+    const isLine = pk.kind === 'obj' && V.get(pk.id) && V.get(pk.id).k === 'l';
+    if (pk.kind === 'obj' && !isLine) return;
+    const before = snapshot();
+    if (isLine) parLine = pk.id;
+    else { const n0 = S.nodes.length; parPt = materialize(pk); if (S.nodes.length !== n0) { undoStack.push(before); redoStack = []; updateUndo(); } }
+    if (parLine !== null && parPt !== null) {
+      pushUndo();
+      const dup = S.nodes.find(n => n.t === tool && n.l === parLine && n.p === parPt);
+      if (!dup) addNode({ t: tool, l: parLine, p: parPt });
+      parLine = null; parPt = null; commit(); return;
+    }
+    updateHint(); draw(); return;
   }
   if (tool === 'erase') {
     if (!pk) return;
@@ -1291,12 +1359,21 @@ function draw() {
   if (showCons) for (const c of cand) { const [x, y] = toS(c.x, c.y); ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.stroke(); }
   // equalities: congruence ticks on the constrained segments
   if (S.cons.length) {
+    const placed = [];   // tick centres already drawn, so crossing segments don't stack their ticks
     S.cons.forEach((g, gi) => {
       for (const sg of g) {
         const a = V.get(sg[0]), b = V.get(sg[1]); if (!a || !b || a.x === undefined || b.x === undefined) continue;
         const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y);
         const L = Math.hypot(x2 - x1, y2 - y1); if (L < 1) continue;
-        const ux = (x2 - x1) / L, uy = (y2 - y1) / L, mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        const ux = (x2 - x1) / L, uy = (y2 - y1) / L;
+        let mx = (x1 + x2) / 2, my = (y1 + y2) / 2, bestD = -1;
+        for (const f of [0.5, 0.38, 0.62, 0.28, 0.72, 0.2, 0.8]) {
+          const qx = x1 + f * (x2 - x1), qy = y1 + f * (y2 - y1);
+          const dmin = placed.reduce((m, [px, py]) => Math.min(m, Math.hypot(px - qx, py - qy)), Infinity);
+          if (dmin > 30) { mx = qx; my = qy; bestD = dmin; break; }
+          if (dmin > bestD) { bestD = dmin; mx = qx; my = qy; }
+        }
+        placed.push([mx, my]);
         const hot = eqHover === gi;
         if (!showEdges || hot) { ctx.strokeStyle = hot ? C.accent : C.faint; ctx.lineWidth = hot ? 3 : 1; ctx.setLineDash(hot ? [] : [4, 3]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
         ctx.strokeStyle = hot ? C.accent : C.deep; ctx.lineWidth = 1.8;
@@ -1335,16 +1412,7 @@ function draw() {
     const isM = marked.has(p.id), n = p.n;
     if (!showCons && !isM) continue;
     const picked = picks.includes(p.id);
-    if (n.t === 'glide') {
-      const c = V.get(n.on); let ang = 0;
-      if (c && c.k === 'l') ang = Math.atan2(-c.dy, c.dx); else if (c) ang = Math.atan2(-(p.x - c.cx), -(p.y - c.cy)) + Math.PI / 2;
-      ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
-      ctx.strokeStyle = isM ? C.cls[1] : C.soft; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(-11, 0); ctx.lineTo(11, 0); ctx.stroke();
-      ctx.rotate(Math.PI / 4);
-      const s = isM ? 4.6 : 3.6;
-      ctx.fillStyle = n.snap ? (isM ? C.cls[1] : C.soft) : C.paper;
-      ctx.lineWidth = 1.6; ctx.beginPath(); ctx.rect(-s, -s, 2 * s, 2 * s); ctx.fill(); ctx.stroke(); ctx.restore();
-    } else if (n.t === 'free') {
+    if (n.t === 'free' || n.t === 'glide') {
       ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4);
       const s = isM ? 5.2 : 4;
       ctx.fillStyle = n.snap ? (isM ? C.cls[1] : C.soft) : C.paper;
@@ -1387,6 +1455,18 @@ function drawLine(v) {
   ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
 }
 function drawPreview() {
+  if ((tool === 'par' || tool === 'perp') && mouse) {
+    const L = parLine !== null ? V.get(parLine) : null;
+    if (L) {
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 2; drawLine(L);
+      const q = parPt !== null ? V.get(parPt) : (hover && hover.kind !== 'obj' ? hover : mouse);
+      ctx.globalAlpha = 0.6; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
+      drawLine(tool === 'par' ? { k: 'l', px: q.x, py: q.y, dx: L.dx, dy: L.dy } : { k: 'l', px: q.x, py: q.y, dx: -L.dy, dy: L.dx });
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    if (parPt !== null) { const q = V.get(parPt), [x, y] = toS(q.x, q.y); ctx.strokeStyle = C.accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); }
+    return;
+  }
   if (!picks.length || !mouse) return;
   const tgt = hover && hover.kind !== 'obj' ? hover : mouse;
   const P = id => V.get(id);
@@ -1455,7 +1535,9 @@ function renderStatus() {
       `Probably flexible: the first-order test leaves ${st.flex} free direction${st.flex > 1 ? 's' : ''}, so it most likely belongs to a family.`);
     if (st.flex === 0) {
       const ci = cellInfo(st.n, st.d);
-      if (st.cat) f.push(`Catalog (${st.n},${st.d}) no. ${st.cat.num}: <em>${esc(catName(st.cat))}</em>. ${verdictLong(st.cat.v)}`);
+      if (st.cat) f.push(`Catalog (${st.n},${st.d}) ${catLink(st.cat)}: <em>${esc(catName(st.cat))}</em>. ${verdictLong(st.cat.v)}`);
+      else if (st.catState === 'loading') f.push(`Looking it up in the (${st.n},${st.d}) catalog…`);
+      else if (st.catState === 'failed') f.push(`The (${st.n},${st.d}) catalog could not be loaded here, so this set is not identified.`);
       else if (ci && ci.complete) f.push('Not matched in the catalog, which claims to be complete here. Please tell Alon.');
       else if (ci) f.push('<em>Not in the catalog</em>: this cell’s list is incomplete, so this may be new.');
       else f.push('Beyond the catalog’s range.');
@@ -1476,7 +1558,7 @@ function recipeFor(markedIds) {
   const cons = S.cons.filter(g => g.every(sg => sg.every(id => need.has(id))));
   const kept = S.nodes.filter(n => need.has(n.id));
   const map = new Map(kept.map((n, k) => [n.id, k]));
-  const R = ['a', 'b', 'c', 'p', 'q', 'c1', 'c2', 'poly', 'on'];
+  const R = ['a', 'b', 'c', 'p', 'q', 'c1', 'c2', 'poly', 'on', 'l'];
   const nodes = kept.map(n => { const o = { ...n, id: map.get(n.id) }; for (const k of R) if (k in o) o[k] = map.get(o[k]); return o; });
   return { nodes, marked: markedIds.map(id => map.get(id)), cons: cons.map(g => g.map(sg => sg.map(id => map.get(id)))) };
 }
@@ -1488,7 +1570,7 @@ function keep() {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
     n: st.n, d: st.d, at: new Date().toISOString().slice(0, 10),
     snapped: st.prov === 1, flex: st.flex,
-    cat: st.cat ? st.cat.idx : -1,
+    ck: st.cat ? st.cat.key : null,
     canon: st.canon.map(p => [+p[0].toFixed(9), +p[1].toFixed(9)]),
     recipe: recipeFor(st.ids),
   };
@@ -1499,9 +1581,10 @@ function keep() {
   toast(st.cat ? `Kept: no. ${st.cat.num}, ${catName(st.cat)}` : 'Kept.');
 }
 function catLabel(c) {
-  if (c.cat >= 0 && CAT) { const e = catEntry(c.cat); return `no. ${e.num}: ${catName(e)}`; }
+  if (c.ck) { const e = CATK.get(c.ck); return e ? `${catLink(e)}: ${esc(catName(e))}` : 'no. ' + c.ck.split('#')[1]; }
   if (c.flex > 0) return 'flexible: part of a family';
   const ci = cellInfo(c.n, c.d);
+  if (ci && isRemote(c.n + ',' + c.d) && catLoad.get(c.n + ',' + c.d) !== 'ok') return 'rigid';
   return ci && !ci.complete ? 'rigid, not in the catalog' : (ci ? 'rigid' : 'rigid, beyond the catalog');
 }
 function thumb(c) {
@@ -1527,14 +1610,14 @@ function renderCollection() {
   for (const k of keys) {
     const [n, d] = k.split(',').map(Number), list = groups.get(k);
     const ci = cellInfo(n, d);
-    const found = new Set(list.filter(c => c.cat >= 0).map(c => c.cat)).size;
+    const found = new Set(list.filter(c => c.ck).map(c => c.ck)).size;
     const prog = ci && ci.rigid ? `${found} of ${ci.rigid}${ci.complete ? '' : '+'} rigid` : '';
     html += `<div class="dh-group"><h4><span>n = ${n} · d = ${d}</span><small>${prog}</small></h4><div class="dh-cards">`;
     for (const c of list) {
-      const vs = c.cat >= 0 && CAT ? verdictShort(catEntry(c.cat).v) : '';
-      const tag = (c.snapped ? '<span class="tag snap">snapped</span>' : (c.cat < 0 && !c.flex && ci && !ci.complete ? '<span class="tag new">new?</span>' : '<span class="tag">' + (c.flex ? 'flexible' : 'constructed') + '</span>'))
+      const ce = c.ck ? CATK.get(c.ck) : null, vs = ce ? verdictShort(ce.v) : '';
+      const tag = (c.snapped ? '<span class="tag snap">snapped</span>' : (!c.ck && !c.flex && ci && !ci.complete ? '<span class="tag new">new?</span>' : '<span class="tag">' + (c.flex ? 'flexible' : 'constructed') + '</span>'))
         + (vs ? `<span class="tag hard">${esc(vs)}</span>` : '');
-      html += `<div class="dh-card" data-card="${c.id}" role="button" tabindex="0" title="Load into the canvas">${thumb(c)}<div class="nm">${esc(catLabel(c))}</div>${tag}<button class="del" data-del="${c.id}" title="Remove from the collection">×</button></div>`;
+      html += `<div class="dh-card" data-card="${c.id}" role="button" tabindex="0" title="Load into the canvas">${thumb(c)}<div class="nm">${catLabel(c)}</div>${tag}<button class="del" data-del="${c.id}" title="Remove from the collection">×</button></div>`;
     }
     html += '</div></div>';
   }
@@ -1554,6 +1637,7 @@ function loadCard(id) {
   recompute(); renderEqs(); fit(); persist();
 }
 $('#coll').addEventListener('click', e => {
+  if (e.target.closest('.dh-catlink')) return;
   const del = e.target.closest('[data-del]');
   if (del) {
     e.stopPropagation();
@@ -1580,7 +1664,7 @@ function loadSaved() {
   try {
     const raw = localStorage.getItem(LS_KEY); if (!raw) return;
     const o = JSON.parse(raw);
-    if (Array.isArray(o.cards)) cards = o.cards.filter(validCard);
+    if (Array.isArray(o.cards)) { cards = o.cards.filter(validCard); cards.forEach(c => { delete c.cat; }); }
     if (o.work && Array.isArray(o.work.nodes) && o.work.nodes.length >= 2) {
       S.nodes = o.work.nodes; S.marked = o.work.marked || []; S.next = o.work.next || (Math.max(...S.nodes.map(n => n.id)) + 1);
       S.cons = Array.isArray(o.work.cons) ? o.work.cons : [];
@@ -1598,7 +1682,8 @@ function mergeCards(list) {
     if (!validCard(c)) continue;
     if (cards.some(x => x.n === c.n && x.d === c.d && sameCanon(x.canon, c.canon))) continue;
     // re-check against the catalog (the catalog may have grown since the card was made)
-    if (!c.flex && CAT) { const m = catalogMatch(c.n, c.d, c.canon); c.cat = m ? m.idx : -1; }
+    delete c.cat; c.ck = null;
+    if (!c.flex && CAT) { const m = catalogMatch(c.n, c.d, c.canon); c.ck = m ? m.key : null; }
     if (!c.id) c.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     cards.push(c); added++;
   }
@@ -1681,7 +1766,7 @@ cv.addEventListener('pointermove', e => {
       dragUnknown(drag.id, mouse); draw(); return;
     }
   }
-  const h = pickAt(sx, sy, tool === 'erase');
+  const h = pickAt(sx, sy, tool === 'erase' || tool === 'par' || tool === 'perp');
   const changed = JSON.stringify(h) !== JSON.stringify(hover);
   hover = h;
   let ek = null;
@@ -1726,7 +1811,15 @@ $('#s-dist').addEventListener('mouseout', e => { const el = e.target.closest('sp
 $('#s-dist').addEventListener('click', e => { const el = e.target.closest('span[data-c]'); if (!el) return; const c = +el.dataset.c; hlPin = hlPin === c ? null : c; applyLegendHL(); draw(); });
 
 /* ---------------- buttons & keys ---------------- */
-document.querySelectorAll('.dh-tool').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
+document.querySelectorAll('.dh-tool').forEach(b => {
+  b.addEventListener('click', () => setTool(b.dataset.tool));
+  b.addEventListener('mouseenter', () => {
+    const t = $('#tip'), r = b.getBoundingClientRect(), host = b.closest('.am-stage').getBoundingClientRect();
+    t.innerHTML = `<b>${b.dataset.tip}</b><kbd>${b.dataset.key}</kbd><br>${b.dataset.desc}`;
+    t.hidden = false; t.style.top = Math.max(4, r.top - host.top) + 'px';
+  });
+  b.addEventListener('mouseleave', () => { $('#tip').hidden = true; });
+});
 $('#i-m').addEventListener('change', () => { $('#i-m').value = polyM(); if (tool !== 'poly') setTool('poly'); });
 $('#b-undo').addEventListener('click', undo);
 $('#b-redo').addEventListener('click', redo);
@@ -1759,7 +1852,7 @@ $('#b-link').addEventListener('click', async () => {
   let ok = false; try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {}
   $('#p-link').hidden = !ok;
 });
-const KEYS = { v: 'mark', f: 'free', l: 'line', b: 'bis', c: 'circ', k: 'comp', p: 'poly', x: 'erase', '=': 'eq' };
+const KEYS = { v: 'mark', f: 'free', l: 'line', i: 'par', t: 'perp', b: 'bis', c: 'circ', k: 'comp', p: 'poly', x: 'erase', '=': 'eq' };
 addEventListener('keydown', e => {
   if (e.target.closest('input, textarea')) return;
   const k = e.key.toLowerCase();
@@ -1773,6 +1866,7 @@ addEventListener('keydown', e => {
     pickAlt(alts[(i + 1) % alts.length]); return;
   }
   if (k === 'escape' && eqPick) { eqPick = null; eqHint(); draw(); return; }
+  if (k === 'escape' && (parLine !== null || parPt !== null)) { parLine = null; parPt = null; updateHint(); draw(); return; }
   if (k === 'escape') { pop.classList.remove('open'); if (picks.length) { picks = []; updateHint(); draw(); } else setTool('mark'); return; }
   if (k === 'enter') { if (!$('#b-keep').disabled) keep(); return; }
   if (k === 'g') { toggleLat('tri'); return; }
@@ -1791,6 +1885,7 @@ if (S.tri && S.sq) S.sq = false;
 $('#b-tri').setAttribute('aria-pressed', S.tri);
 $('#b-sq').setAttribute('aria-pressed', S.sq);
 if (!Array.isArray(S.cons)) S.cons = [];
+rematchCards();
 recompute(); renderEqs(); renderCollection(); updateUndo(); setTool('mark');
 resize(); fit();
 readLinkHash();

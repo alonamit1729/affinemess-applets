@@ -36,35 +36,70 @@ def classes(z):
         if d - cl[-1] > 1e-7 * d: cl.append(d)
     return len(cl)
 
+def fingerprint(job):
+    cell, num, lab, coords, cls, n, d = job
+    z, res = refine.refine(coords, cls)
+    if len(z) != n or classes(z) != d: return (cell, num, lab, None, res)
+    cf = canon(z)
+    return (cell, num, lab, [v for q in cf for v in (round(q.real, 7), round(q.imag, 7))], res)
+
+
+BIG = 1000   # cells with more rigid sets than this are written to catalogs/<n>_<d>.json and loaded on demand
+
 if __name__ == '__main__':
+    # python3 canon.py <fixed-distances applet_data.json> catalog.json [old catalog.json for verdicts]
+    import os
+    from multiprocessing import Pool
+    here = os.path.dirname(os.path.abspath(__file__))
     D = json.load(open(sys.argv[1]))
-    here = __import__('os').path.dirname(__import__('os').path.abspath(__file__))
-    VER = {(c, n): v for c, n, v in json.load(open(__import__('os').path.join(here, 'verdicts.json')))}
+    old = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else None
+    oldv = collections.defaultdict(list)          # cell -> [(flat, verdict)]
+    if old:
+        for it in old['items']:
+            if len(it) > 4: oldv[it[0]].append((it[2], it[4]))
+    elif os.path.exists(os.path.join(here, 'verdicts.json')):
+        print('no old catalog given: verdicts are matched by shape only when one is given')
+    jobs = []
     out = {'cells': {}, 'items': []}
-    labels = []; lab_idx = {}
-    dup = 0
     for cell, c in D['cats'].items():
         n, d = map(int, cell.split(','))
         rig = [(k + 1, it) for k, it in enumerate(c['items']) if it['kind'] == 'rigid']
         fam = [it for it in c['items'] if it['kind'] != 'rigid']
-        out['cells'][cell] = [len(rig), 1 if c.get('complete') else 0, len(fam)]
-        seen = []
-        for num, it in rig:
-            z0 = [complex(float(x), float(y)) for x, y in it['coords']]
-            z, res = refine.refine(it['coords'], it['cls'])
-            mv = max(abs(a-b) for a,b in zip(z,z0))
-            if mv > 1e-8 or res > 1e-10: print('REFINED', cell, it['label'][:50], '%.1e %.1e' % (mv, res))
-            assert len(z) == n and classes(z) == d, (cell, it['label'], classes(z))
-            cf = canon(z)
-            for s in seen:
-                if all(abs(a - b) < 1e-5 for a, b in zip(s, cf)):
-                    dup += 1; print('DUP', cell, it['label'][:60]); break
-            seen.append(cf)
-            lab = it['label']
+        out['cells'][cell] = [len(rig), 1 if c.get('complete') else 0, len(fam)] + ([1] if len(rig) > BIG else [])
+        jobs += [(cell, num, it['label'], it['coords'], it['cls'], n, d) for num, it in rig]
+    with Pool(2) as P: res = P.map(fingerprint, jobs, chunksize=64)
+    per = collections.defaultdict(list); bad = 0; dup = 0; ver = []
+    for cell, num, lab, flat, r in res:
+        if flat is None: bad += 1; print('SKIP (distance count off after refining)', cell, num, lab[:50]); continue
+        v = None
+        for f2, v2 in oldv.get(cell, []):
+            if all(abs(a - b) < 1e-5 for a, b in zip(f2, flat)): v = v2; break
+        per[cell].append((num, lab, flat, v)); ver.append([cell, num, v])
+    for cell, L in per.items():
+        seen = set()
+        for num, lab, flat, v in L:
+            key = tuple(round(x, 4) for x in flat)
+            if key in seen: dup += 1
+            seen.add(key)
+    os.makedirs(os.path.join(here, 'catalogs'), exist_ok=True)
+    labels = []; lab_idx = {}
+    for cell, L in sorted(per.items(), key=lambda a: tuple(map(int, a[0].split(',')))):
+        if out['cells'][cell][0] > BIG:
+            bl = []; bi = {}; items = []
+            for num, lab, flat, v in L:
+                if lab not in bi: bi[lab] = len(bl); bl.append(lab)
+                items.append([bi[lab], [round(x, 6) for x in flat], num, v])
+            fn = os.path.join(here, 'catalogs', cell.replace(',', '_') + '.json')
+            open(fn, 'w').write(json.dumps({'cell': cell, 'labels': bl, 'items': items}, separators=(',', ':')))
+            print('wrote', fn, os.path.getsize(fn))
+            continue
+        for num, lab, flat, v in L:
             if lab not in lab_idx: lab_idx[lab] = len(labels); labels.append(lab)
-            out['items'].append([cell, lab_idx[lab], [v for q in cf for v in (round(q.real, 7), round(q.imag, 7))], num, VER[(cell, num)]])
+            out['items'].append([cell, lab_idx[lab], flat, num, v])
     out['labels'] = labels
-    print('items', len(out['items']), 'labels', len(labels), 'dups', dup)
+    json.dump(ver, open(os.path.join(here, 'verdicts.json'), 'w'), separators=(',', ':'))
+    known = sum(1 for _, _, v in ver if v)
+    print('sets', len(res), 'embedded', len(out['items']), 'skipped', bad, 'duplicates', dup, 'with verdict', known)
     s = json.dumps(out, separators=(',', ':'))
     open(sys.argv[2], 'w').write(s)
     print('bytes', len(s))
