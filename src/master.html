@@ -1,5 +1,7 @@
 <!-- =========================================================
-  VERSION 2026-11-05b
+  VERSION 2026-11-05c
+    c: Quora answers open with the viewer-bar title in Source Serif 4 (is-quora), matching the answer pages' new headings
+  PREVIOUS 2026-11-05b
     b: Quora question text (answer of the day + list rows) in Source Serif 4, upright, for readability; Fraunces stays for headings
   PREVIOUS 2026-11-05a
     a: Distance Hunt card (Applets, after n points with d distances)
@@ -719,6 +721,11 @@
   }
   .am-root .viewer-stage iframe.loaded { opacity: 1; }
   /* videos: 16:9 player, letterboxed on dark, as large as the stage allows */
+  /* Quora questions are reading text, not headlines: plain serif, upright */
+  .am-root .viewer.is-quora .viewer-bar .vtitle {
+    font-family: 'Source Serif 4', Georgia, serif; font-style: normal; font-weight: 500;
+    font-variation-settings: normal; font-size: 19px; line-height: 1.25; letter-spacing: 0;
+  }
   .am-root .viewer.is-video .viewer-stage { background: #1E1810; border-color: #1E1810; container-type: size; }
   .am-root .viewer.is-video .viewer-stage iframe {
     margin: auto;
@@ -746,6 +753,7 @@
       border-bottom: 1px solid var(--line);
     }
     .am-root .viewer-bar .vtitle { font-size: 17px; }
+    .am-root .viewer.is-quora .viewer-bar .vtitle { font-size: 16px; }
     .am-root .vbtn { padding: 11px 12px; }   /* comfortable tap target */
     .am-root .viewer-stage { border: 0; border-radius: 0; }
     .am-root .viewer-note {
@@ -783,7 +791,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-11-05b">
+<div class="am-root" data-version="2026-11-05c">
   <div class="am-container">
 
     <header class="site-head">
@@ -1789,6 +1797,7 @@
       vNote.hidden = !tile.dataset.note;
       vNote.classList.remove('open');
       viewer.classList.toggle('is-video', !!tile.querySelector('.media.video'));
+      viewer.classList.toggle('is-quora', tab === 'quora');
       mountFrame(tile.dataset.src || fresh(tile.getAttribute('href')), name);
       viewer.hidden = false;
       root.classList.add('am-viewing');
