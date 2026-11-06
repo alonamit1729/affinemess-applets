@@ -452,6 +452,7 @@
       vNote.hidden = !tile.dataset.note;
       vNote.classList.remove('open');
       viewer.classList.toggle('is-video', !!tile.querySelector('.media.video'));
+      viewer.classList.toggle('is-quora', tab === 'quora');
       mountFrame(tile.dataset.src || fresh(tile.getAttribute('href')), name);
       viewer.hidden = false;
       root.classList.add('am-viewing');
