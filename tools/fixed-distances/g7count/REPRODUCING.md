@@ -2,7 +2,7 @@
 
 **Claim.** Up to similarity there are exactly two sets of sixteen points in the plane that determine exactly seven distinct distances: the two triangular-lattice pieces of Erdős and Fishburn (the 12-point block of three rows of four, with a row of two above and a row of two below, the short rows on the same side or on opposite sides).
 
-This note explains, for someone who wants to check the claim rather than take it on trust, what has to be believed, what has to be run, and what the runs must print. All code and data are in the folder `tools/fixed-distances/` of the repository `github.com/alonamit1729/affinemess-applets`; paths below are relative to it. The computation has six steps, of which one (the candidate patterns) takes about half a day on one core and the others minutes.
+This note explains, for someone who wants to check the claim rather than take it on trust, what has to be believed, what has to be run, and what the runs must print. All code and data are in the folder `tools/fixed-distances/` of the repository `github.com/alonamit1729/affinemess-applets`; paths below are relative to it. The computation has six steps, of which one (the candidate patterns) takes about half a day on one core and the others minutes. None of the files this note uses was moved out of the tree; the large files of the other cells (`cells/`, `data/strat_*`, …) are listed in [`../DATA.md`](../DATA.md) with a script that restores them.
 
 ## 0. Shape of the argument
 

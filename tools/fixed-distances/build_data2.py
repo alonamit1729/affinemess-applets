@@ -477,7 +477,10 @@ def main():
     EXT=json.load(open('ext4.json')); EXT.update(json.load(open('ext5.json')))
     R12=json.load(open('r12sum.json')) if os.path.exists('r12sum.json') else {}
     EXACT=json.load(open('exact_cells.json'))
-    EXACT2=json.load(open('exact_cells2.json')) if os.path.exists('exact_cells2.json') else {}
+    if not os.path.exists('exact_cells2.json'):
+        raise SystemExit('exact_cells2.json is missing: run  python3 fetch_data.py data/exact_cells2.json  (it is not in the published tree, see DATA.md), '
+                 'or rebuild it with cells/export_cells.py.  Without it the exact cells would silently fall back to lower bounds.')
+    EXACT2=json.load(open('exact_cells2.json'))
     OLDCOUNTS={'6,4':(23,4),'7,5':(17,2),'8,5':(131,2),'9,5':(51,1),'9,6':(541,1),'8,6':(9,2),'6,5':(27,6),'7,6':(58,7),'6,6':(3,10)}   # catalog counts before the exact classification (rigid, families)
     SUB={6:'₆',7:'₇',8:'₈',9:'₉',10:'₁₀'}   # (10,5), (10,6), (11,6), (12,6): complete lists from the pattern enumeration + real root isolation
     EXACT_INFO={

@@ -1,0 +1,12 @@
+# large files, see DATA.md (fetch with fetch_data.py)
+data/exact_cells2.json
+data/strat_4.json
+data/strat_5.json
+data/degen_5.json
+data/degen_s_5.json
+data/degen_s_6.json
+data/sat56.json
+cells/cert_6_6.json
+cells/rigid_6_6.json
+cells/cert_7_6.json
+cells/rigid_7_6.json
