@@ -1,6 +1,7 @@
 """Patterns (edge colourings of K_n up to vertex and colour permutations) of all known n-point sets with at most 6 distances,
 for n = 10 (and 9, 11 for comparison), from: the 13-point sets R13, R12+O, the 11 twelve-point lattice cores, R11+O, R10+O,
 and the applet's catalogs.  Counts distinct pattern classes via a Weisfeiler-Lehman style hash, with VF2 confirmation of merges."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, math, itertools, collections, hashlib, sys
 import numpy as np, networkx as nx
 from networkx.algorithms import isomorphism
@@ -20,7 +21,7 @@ if os.path.exists(f'g7/latt_tri_4_25_{n}.json'):
         sets.append((f'lat{n}#{i}',[(a+b/2,b*S3/2) for a,b in P]))
 if n==10 and os.path.exists('g7fin/pent_ends.json'):
     for i,o in enumerate(json.load(open('g7fin/pent_ends.json'))): sets.append((f'pent{o["family"]}#{i}',[tuple(p) for p in o['pts']]))
-A=json.load(open('applet_data.json'))
+A=datautil.load('applet_data.json')
 for key in (f'{n},5',f'{n},6',f'{n},4'):
     if key in A['cats']:
         for k,it in enumerate(A['cats'][key]['items']):

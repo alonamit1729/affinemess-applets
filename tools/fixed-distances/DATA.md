@@ -27,9 +27,13 @@ The restored files are git-ignored. Rule used: files over 1 MB that no page fetc
 
 ## What stays in the tree, and why
 
-- `data/applet_data.json` (47 MB): the master data of the applet. `build_html.py` turns it into `fixed-distances.html`
-  and `data/catalogs/*.json`; Distance Hunt (`tools/distance-hunt/canon.py`) rebuilds its catalog from it.
-- `data/catalogs/*.json` (38 MB): fetched on demand by the live page when a cell with more than 1000 configurations
+- `data/applet_data.json` (3.6 MB, *slim* since 2026-11-07): the master data of the applet. The items of the four cells with
+  more than 1000 configurations are not repeated in it, only their counts and a `remote` pointer; they live in
+  `data/catalogs/`. `datautil.load('data/applet_data.json')` returns the full structure (it was 47 MB), and the
+  scripts that need every item (`cells/export_cells.py`, `symtest/`, `strat_analyze.py`, `g7fin/catalog_match.py`, Distance
+  Hunt's `canon.py`, ...) call it. `build_html.py` writes the catalogs and slims the file; it is idempotent and rewrites a
+  file only when its bytes change.
+- `data/catalogs/*.json` (38 MB; the cards keep their numbers, the page shows families first): fetched on demand by the live page when a cell with more than 1000 configurations
   is opened. `catalogs/6_6.json` alone holds the 44 242 + 757 items of the (6,6) cell.
 - `cells/fam_*.json` and the smaller `cells/cert_*`, `cells/rigid_*` (under 1 MB each): the classification results
   of the other cells.

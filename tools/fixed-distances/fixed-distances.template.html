@@ -431,23 +431,24 @@ const DATA = __DATA__;
       h+='<div class="fd-cards"></div><div class="fd-more"></div>';
     }
     const PAGE=600; let shown=0;
+    const order=cat.items.map((_,i)=>i); if(order.length>PAGE) order.sort((a,b)=>(cat.items[a].kind==='family'?0:1)-(cat.items[b].kind==='family'?0:1)||a-b);   // long catalogs: families first
     function cardHTML(it,i){
           const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
           const fx=it.kind==='family'&&it.dim>=1;
           return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
     }
-    function wireCards(from){
+    function wireCards(){
     catEl.querySelectorAll('.fd-card.flex').forEach(card=>{
-      if(+card.dataset.card<from||card._flexer) return;
+      if(card._flexer) return;
       const it=cat.items[+card.dataset.card]; const svgEl=card.querySelector('svg');
       const fl=makeFlexer(it,svgEl); card._flexer=fl;
       if(HOVER){ card.addEventListener('pointerenter',()=>fl.start()); card.addEventListener('pointerleave',()=>fl.stop()); }
       card.addEventListener('click',e=>{ if(e.target.closest('button,pre')) return; if(HOVER) return; fl.start(); });
     });
-    catEl.querySelectorAll('button[data-i]').forEach(b=>{ if(+b.dataset.i<from||b._w) return; b._w=1; b.addEventListener('click',()=>{
+    catEl.querySelectorAll('button[data-i]').forEach(b=>{ if(b._w) return; b._w=1; b.addEventListener('click',()=>{
       const pre=catEl.querySelector(`pre[data-i="${b.dataset.i}"]`); const show=pre.hidden; pre.hidden=!show; b.setAttribute('aria-expanded',show?'true':'false'); b.textContent=show?'Hide coordinates':'Coordinates';
     }); });
-    catEl.querySelectorAll('pre[data-i]').forEach(pre=>{ if(+pre.dataset.i<from||pre._w) return; pre._w=1; pre.addEventListener('click',()=>{
+    catEl.querySelectorAll('pre[data-i]').forEach(pre=>{ if(pre._w) return; pre._w=1; pre.addEventListener('click',()=>{
       const it=cat.items[+pre.dataset.i]; const txt=JSON.stringify(it.coords.map(c=>[+c[0],+c[1]]));
       const done=()=>{ let ok=pre.querySelector('.ok'); if(!ok){ ok=document.createElement('span'); ok.className='ok'; pre.appendChild(ok);} ok.textContent='copied'; setTimeout(()=>ok.remove(),1400); };
       if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{ const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(pre); sel.removeAllRanges(); sel.addRange(rg); }); }
@@ -457,8 +458,8 @@ const DATA = __DATA__;
     function showMore(){
       const box=catEl.querySelector('.fd-cards'); if(!box) return;
       const from=shown, to=Math.min(cat.items.length,from+PAGE); let hh='';
-      for(let i=from;i<to;i++) hh+=cardHTML(cat.items[i],i);
-      box.insertAdjacentHTML('beforeend',hh); shown=to; wireCards(from);
+      for(let k=from;k<to;k++){ const i=order[k]; hh+=cardHTML(cat.items[i],i); }   // cards keep their catalog numbers (i+1); only the order of paging differs
+      box.insertAdjacentHTML('beforeend',hh); shown=to; wireCards();
       const more=catEl.querySelector('.fd-more');
       if(shown<cat.items.length){
         more.innerHTML=`<p>Showing ${shown} of ${cat.items.length}. </p><button class="am-btn" type="button">Show ${Math.min(PAGE,cat.items.length-shown)} more</button>`;

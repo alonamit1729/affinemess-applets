@@ -3,12 +3,13 @@
 otherwise the distance spectrum; plus "maximal" / "subset of k of the (n+1)-point sets" when the (n+1,d) cell is exact.
 Family labels: the catalog's structural label when a catalog family has the same colouring type, else generic.
 Usage: python3 cells/export_cells.py n d [n d ...]"""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, sys, os, math, itertools, collections
 HERE=os.path.dirname(os.path.abspath(__file__)); SCR=os.path.dirname(HERE)
 src=open(os.path.join(SCR,'exact_cells.py')).read()
 exec(src[:src.index('out={}')].replace("S10=json.load(open('g7count/sets10_by_d.json')); S11=json.load(open('g7count/sets1113_by_d.json'))",""))
 sys.path.insert(0,os.path.join(SCR,'r12')); from congr import congruent
-A=json.load(open(os.path.join(SCR,'applet_data.json')))
+A=datautil.load(os.path.join(SCR,'applet_data.json'))
 OUT=os.path.join(HERE,'exact_cells2.json')
 out=json.load(open(OUT)) if os.path.exists(OUT) else {}
 def dvals(P): return len(set(round(math.dist(a,b),7) for a,b in itertools.combinations(P,2)))

@@ -1,5 +1,6 @@
 """For a counterexample sample: find extra points p whose distances to all n points lie in the configuration's
 distance set (possibly also allowing one new value), and the symmetry of the enlarged configurations."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, os, sys, itertools, math
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -24,7 +25,7 @@ def extra_points(P, vals, tol=1e-6, new_allowed=0):
                         out.append(p)
     return out
 if __name__ == '__main__':
-    D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+    D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
     for a in sys.argv[1:]:
         cell, idx = a.split(':'); it = D['cats'][cell]['items'][int(idx)]
         P = [[float(x), float(y)] for x, y in it['coords']]; n = len(P); Dm = dmat(P)

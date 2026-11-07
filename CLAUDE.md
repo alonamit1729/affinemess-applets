@@ -37,6 +37,20 @@ Claude Projects push here; these rules keep them from overwriting each other.
 - Commit only the paths you meant to change: `git add <slug>.html` (and the
   applet's own folder), never `git add -A` or `git add .`.
 
+## Large files
+
+GitHub Pages publishes everything on `main`, and every committed version of a file stays in history for every
+clone. So:
+
+- Don't commit generated or intermediate files over **1 MB** under `tools/`. Exceptions: `tools/fixed-distances/data/catalogs/*`
+  (fetched live by the applet) and `tools/fixed-distances/data/applet_data.json` (slim: the big cells' items live in
+  the catalogs; `tools/fixed-distances/datautil.py` merges them back). Anything else that big goes behind a
+  `fetch_data.py` + `DATA.md` pointer, as in `tools/fixed-distances/DATA.md` (files stay in history at a pinned
+  commit; never rewrite history, the pointer depends on it).
+- Rebuild generated data only when its content changed, and commit it only then (the builders write a file only if
+  the bytes differ). A 30 MB catalog rewritten on every rebuild adds megabytes to every future clone.
+- The GitHub check `size-check` flags (red X and email) a push that adds or changes a file over 5 MB outside the exceptions; it flags, it does not block.
+
 ## Before every push
 
 1. `git fetch origin main` and rebase onto it; never force-push.

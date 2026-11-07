@@ -1,5 +1,6 @@
 """independent check of an n-point family item: solve the colouring system with x1=1 and dim random linear slices
 with msolve; list real solutions with distinct nonzero distance values and their symmetry."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, sys, os, re, random, itertools, subprocess
 from os import getpid
 from fractions import Fraction
@@ -7,7 +8,7 @@ import numpy as np, sympy as sp
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from symmetry import classify
 from step2_sample_lib import run_msolve, parse_real
-D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
 cell = sys.argv[1]; idx = int(sys.argv[2]) if sys.argv[1] != 'super' else 0; nsl = int(sys.argv[3]) if len(sys.argv) > 3 else 3
 if cell == 'super':
     S = json.load(open(os.path.join(HERE, 'superset_families.json'))); it = S[sys.argv[2]]; idx = sys.argv[2]; it['dim'] = 1

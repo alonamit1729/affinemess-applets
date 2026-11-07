@@ -1,8 +1,9 @@
 """Figures for the stratification summary page: the (5,4) incidence graph with configuration glyphs, the (5,5) valence
 histogram, the degeneration-poset diagram.  Writes summary/figs.json with SVG strings."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, math, collections, itertools, random
 import networkx as nx, numpy as np
-A=json.load(open('applet_data.json')); G4=json.load(open('strat_graph_4.json')); G5=json.load(open('strat_graph_5.json'))
+A=datautil.load('applet_data.json'); G4=json.load(open('strat_graph_4.json')); G5=json.load(open('strat_graph_5.json'))
 def esc(s): return s.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
 # ---------------- (5,4) graph ----------------
 V={v['id']:v for v in G4['vertices']}

@@ -10,3 +10,4 @@ cells/cert_6_6.json
 cells/rigid_6_6.json
 cells/cert_7_6.json
 cells/rigid_7_6.json
+__pycache__/

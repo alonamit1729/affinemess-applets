@@ -1,12 +1,13 @@
 """Is every counterexample a sub-configuration (delete 1 or 2 points) of a symmetric catalog family?
 Match by canonical edge colouring type (up to relabelling points and colours), then confirm numerically that the
 colouring of the sub-configuration of the symmetric sample equals that of the counterexample (same type)."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, os, sys, itertools, collections
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from symmetry import dmat, e_dim
 rows = json.load(open(os.path.join(HERE, 'step1_families.json')))
-D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
 def canon_col(n, cls):
     E = list(itertools.combinations(range(n), 2)); idx = {e: k for k, e in enumerate(E)}; best = None
     # cheap invariant first: sorted class sizes

@@ -1,9 +1,10 @@
 """Step 1: symmetry of the sample configuration of every family item in applet_data.json."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, collections, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from symmetry import classify, e_dim
 HERE = os.path.dirname(os.path.abspath(__file__))
-D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
 cats = D['cats']
 rows = []
 for key, c in cats.items():

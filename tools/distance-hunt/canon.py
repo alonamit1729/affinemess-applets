@@ -51,7 +51,9 @@ if __name__ == '__main__':
     import os
     from multiprocessing import Pool
     here = os.path.dirname(os.path.abspath(__file__))
-    D = json.load(open(sys.argv[1]))
+    # applet_data.json is slim since 2026-11-07 (the big cells' items live in its data/catalogs/); datautil merges them back
+    sys.path.insert(0, os.path.join(here, '..', 'fixed-distances')); import datautil
+    D = datautil.load(sys.argv[1])
     old = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else None
     oldv = collections.defaultdict(list)          # cell -> [(flat, verdict)]
     if old:

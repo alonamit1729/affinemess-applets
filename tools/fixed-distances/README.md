@@ -2,7 +2,7 @@
 
 Source of `../../fixed-distances.html` (Planar sets with a fixed number of distances).
 Everything is reproducible from this folder; the page is `fixed-distances.template.html` with
-`data/applet_data.json` injected by `build_html.py`.
+`data/applet_data.json` injected by `build_html.py`. Since 2026-11-07 `applet_data.json` is slim (the big cells' items are only in `data/catalogs/`); scripts that need every item use `datautil.load()`.
 
 ## Rebuild
     cd tools/fixed-distances

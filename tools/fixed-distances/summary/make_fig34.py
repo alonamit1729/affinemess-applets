@@ -1,5 +1,6 @@
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, math, itertools, collections, numpy as np, networkx as nx
-A=json.load(open('applet_data.json')); G=json.load(open('strat_graph_4_3.json'))
+A=datautil.load('applet_data.json'); G=json.load(open('strat_graph_4_3.json'))
 V={v['id']:v for v in G['vertices']}
 items2=A['cats']['4,2']['items']
 def glyph(v):

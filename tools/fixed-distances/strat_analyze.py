@@ -1,6 +1,7 @@
 """Shape-space incidence graph from strat_{d}.json (geometric arcs per type).  Usage: python3 strat_analyze.py d
 Vertices: rigid (5,<d)-sets (identified in the applet's certified catalogs); edges: geometric arcs of the one-parameter
 families; half-open edges end at degenerate configurations (two points coincide) or at infinity."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '.')); import datautil
 import json, sys, math, itertools, collections
 import numpy as np, networkx as nx
 d=int(sys.argv[1]); n=int(sys.argv[2]) if len(sys.argv)>2 else 5
@@ -14,7 +15,7 @@ def canon(P):
         if best is None or t<best: best=t
     return best
 def close(c1,c2,tol=2e-5): return max(abs(a-b) for a,b in zip(c1,c2))<tol
-A=json.load(open('applet_data.json'))
+A=datautil.load('applet_data.json')
 ref=[]
 for dd in range(2,d):
     key=f'{n},{dd}'

@@ -1,9 +1,10 @@
 """Match the applet's (n,d) catalog items (applet_data.json, kind 'rigid') to the candidate patterns of
 gen/levels/L{n}.json with <= d colours, by nauty canonical form (gen/patlib.py).  Usage: python3 g7fin/catalog_match.py"""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import sys, json, math, itertools, collections
 sys.path.insert(0, 'g7fin/gen')
 import patlib
-A = json.load(open('applet_data.json'))
+A = datautil.load('applet_data.json')
 out = {}
 for n, d in [(7, 4), (8, 4), (9, 4), (8, 5), (9, 5), (10, 5)]:
     L = json.load(open(f'g7fin/gen/levels/L{n}.json'))['patterns']

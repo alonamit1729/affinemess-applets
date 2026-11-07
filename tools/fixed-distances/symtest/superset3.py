@@ -1,10 +1,11 @@
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, os, sys, itertools, math
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from symmetry import classify, dmat
 from superset import extra_points
 from subsets import colouring
-D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
 G = json.load(open(os.path.join(HERE, 'generic_samples.json')))
 def nd(Q): return colouring(Q)[1]
 for a in sys.argv[1:]:

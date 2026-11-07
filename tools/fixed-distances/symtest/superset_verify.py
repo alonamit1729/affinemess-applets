@@ -1,5 +1,6 @@
 """verify that the symmetric supersets found by superset2 are genuine families: tangent dimension of the enlarged
 colouring system and a numerical trace keeping the symmetry; then msolve confirmation of the enlarged system."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, os, sys, itertools, math
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -7,7 +8,7 @@ from symmetry import classify, dmat, e_dim
 from famcheck import Family
 from subsets import colouring
 from superset import extra_points
-D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
 G = json.load(open(os.path.join(HERE, 'generic_samples.json')))
 cases = {'5,4:474': [[2.3615, -2.18766]], '5,4:475': [[1.4191, -0.53987]], '5,4:477': [[-2.34733, -3.0657]], '6,4:23': [[1.60332, 0.95507]],
          '6,6:4': [[-0.17531, 1.65841], [-1.04134, 1.15841]], '6,7:1': [[0.80714, -1.64714]], '6,7:2': [[0.79414, 0.80417]],

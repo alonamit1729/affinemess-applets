@@ -1,0 +1,31 @@
+name: size-check
+
+# Flags (red X on the commit, and an email to the repo owner) when a push adds or changes a file over 5 MB that is not
+# one of the documented exceptions (see "Large files" in CLAUDE.md). It flags, it does not block. Fix: move the file
+# behind a fetch_data.py + DATA.md pointer (tools/fixed-distances/DATA.md) or, if it really must be published, add it
+# to the exceptions below and to CLAUDE.md.
+on:
+  push:
+    branches: [main]
+
+jobs:
+  size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: files over 5 MB outside the exceptions
+        run: |
+          before='${{ github.event.before }}'
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then before="$(git rev-parse HEAD^ 2>/dev/null || true)"; fi
+          [ -z "$before" ] && exit 0
+          bad=0
+          while IFS= read -r f; do
+            case "$f" in
+              tools/fixed-distances/data/catalogs/*|tools/fixed-distances/data/applet_data.json) continue;;
+            esac
+            size=$(git cat-file -s "HEAD:$f" 2>/dev/null || echo 0)
+            if [ "$size" -gt 5000000 ]; then echo "::error file=$f::$f is $((size/1000000)) MB (over 5 MB); see Large files in CLAUDE.md"; bad=1; fi
+          done < <(git diff --name-only --diff-filter=AM "$before" HEAD)
+          exit $bad

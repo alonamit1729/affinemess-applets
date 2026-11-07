@@ -1,5 +1,6 @@
 """detect circular equiangular chains (subsets of an orbit of a rotation) inside a configuration, and test the
 explicit chain construction S = {0..n-2, n} for n = 6..12."""
+import sys as _s, os as _o; _s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), '..')); import datautil
 import json, os, sys, itertools, math
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -33,7 +34,7 @@ def chains(P, tol=1e-6):
                     found.append((idx, S, th)); break
     return found
 if __name__ == '__main__':
-    D = json.load(open(os.path.join(HERE, '..', 'applet_data.json')))
+    D = datautil.load(os.path.join(HERE, '..', 'applet_data.json'))
     for a in ['5,4:473', '5,4:474', '5,4:475', '5,4:477', '5,4:491', '5,4:492', '6,4:23', '6,6:3', '6,6:4', '6,7:0', '6,7:1', '6,7:2', '6,7:3', '6,7:8', '7,7:4']:
         cell, idx = a.split(':'); it = D['cats'][cell]['items'][int(idx)]
         P = [[float(x), float(y)] for x, y in it['coords']]

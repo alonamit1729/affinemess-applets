@@ -13,6 +13,7 @@ may shift between versions; compare before publishing):
 
     cp catalog.json /tmp/catalog.old.json
     python3 canon.py ../fixed-distances/data/applet_data.json catalog.json /tmp/catalog.old.json
+(`applet_data.json` is slim since 2026-11-07: `canon.py` restores the big cells' items from `../fixed-distances/data/catalogs/` through `datautil.py`; the result is identical.)
 
 `canon.py` polishes each catalog set by Newton's method on its distance pattern (`refine.py`;
 nine (6,3) entries of the source data are off by ~1e-8) and computes the canonical form:
