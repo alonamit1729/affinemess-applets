@@ -1045,15 +1045,32 @@ $('#s-eqs').addEventListener('click', e => { const b = e.target.closest('[data-r
 $('#s-eqs').addEventListener('mouseover', e => { const r = e.target.closest('[data-g]'); eqHover = r ? +r.dataset.g : null; draw(); });
 $('#s-eqs').addEventListener('mouseout', () => { eqHover = null; draw(); });
 /* the segment (between marked points) under the pointer */
-function segAt(sx, sy) {
+/* the pair (segment between marked points) under the pointer. Collinear segments overlap (a
+   length-2 lattice segment covers two unit edges), so among equally close segments the shortest
+   wins; with throughPoint, pointing at a marked point picks a segment passing through it, which
+   reaches long segments that shorter ones cover completely. */
+function segPick(sx, sy, throughPoint, reach = 6) {
   if (!status || !status.dc || status.coincide) return null;
-  const w = toW(sx, sy); let best = null, bd = 7;
+  const w = toW(sx, sy), C = [];
   for (const p of status.dc.pairs) {
-    const a = status.P[p.i], b = status.P[p.j];
-    const d = segDist(w, a, b) * view.s;
-    if (d < bd) { bd = d; best = [status.ids[p.i], status.ids[p.j]]; }
+    const d = segDist(w, status.P[p.i], status.P[p.j]) * view.s;
+    if (d < reach) C.push({ p, d });
   }
-  return best;
+  if (!C.length) return null;
+  const best = L => L.reduce((a, b) => (b.d < a.d - 1 || (Math.abs(b.d - a.d) <= 1 && b.p.d < a.p.d)) ? b : a).p;
+  if (throughPoint) {
+    let q = -1, qd = 9;
+    status.P.forEach((P0, k) => { const d = Math.hypot(P0.x - w.x, P0.y - w.y) * view.s; if (d < qd) { qd = d; q = k; } });
+    if (q >= 0) {
+      const inner = C.filter(c => c.p.i !== q && c.p.j !== q && segDist(status.P[q], status.P[c.p.i], status.P[c.p.j]) * view.s < 1);
+      if (inner.length) return best(inner);
+    }
+  }
+  return best(C);
+}
+function segAt(sx, sy) {
+  const p = segPick(sx, sy, true, 7);
+  return p ? [status.ids[p.i], status.ids[p.j]] : null;
 }
 /* dragging a free point or slider while equalities hold */
 function dragUnknown(id, w) {
@@ -1363,7 +1380,7 @@ function draw() {
   if (showEdges && st && st.dc && st.n <= 24) {
     const hk = hlClass();
     const seg = p => { const a = st.P[p.i], b = st.P[p.j]; const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
-    for (const p of st.dc.pairs) {
+    for (const p of st.dc.pairs.slice().reverse()) {
       if (p.c === hk) continue;
       ctx.strokeStyle = clsColor(p.c); ctx.globalAlpha = hk === null ? 0.85 : 0.14; ctx.lineWidth = 2.1; seg(p);
     }
@@ -1627,7 +1644,7 @@ function thumb(c) {
   let svg = `<svg viewBox="0 0 ${Wt} ${Ht}" aria-hidden="true">`;
   if (P.length <= 10) {
     const pts = P.map(([x, y]) => ({ x, y })), dc = distClasses(pts);
-    for (const p of dc.pairs) svg += `<line x1="${X(P[p.i][0]).toFixed(1)}" y1="${Y(P[p.i][1]).toFixed(1)}" x2="${X(P[p.j][0]).toFixed(1)}" y2="${Y(P[p.j][1]).toFixed(1)}" stroke="${clsColor(p.c)}" stroke-width="0.9" opacity="0.6"/>`;
+    for (const p of dc.pairs.slice().reverse()) svg += `<line x1="${X(P[p.i][0]).toFixed(1)}" y1="${Y(P[p.i][1]).toFixed(1)}" x2="${X(P[p.j][0]).toFixed(1)}" y2="${Y(P[p.j][1]).toFixed(1)}" stroke="${clsColor(p.c)}" stroke-width="0.9" opacity="0.6"/>`;
   }
   for (const [x, y] of P) svg += `<circle cx="${X(x).toFixed(1)}" cy="${Y(y).toFixed(1)}" r="2.4" fill="${C.ink}"/>`;
   return svg + '</svg>';
@@ -1803,12 +1820,8 @@ cv.addEventListener('pointermove', e => {
   hover = h;
   let ek = null;
   if (!h && tool !== 'eq' && tool !== 'par' && tool !== 'perp' && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
-    let bd = 5;
-    for (const p of status.dc.pairs) {
-      const a = status.P[p.i], b = status.P[p.j];
-      const d = segDist(toW(sx, sy), a, b) * view.s;
-      if (d < bd) { bd = d; ek = p.c; }
-    }
+    const pp = segPick(sx, sy, false, 5);
+    if (pp) ek = pp.c;
   }
   if (ek !== hlHover && !legendHover) { hlHover = ek; applyLegendHL(); draw(); }
   const n = h && h.kind === 'pt' ? byId.get(h.id) : null;
