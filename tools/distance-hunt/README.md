@@ -5,10 +5,11 @@
     python3 build.py                       # writes ../../distance-hunt.html
 
 `catalog.json` holds a similarity fingerprint of every rigid set in the fixed-distances
-catalog (15,138 sets on 2026-11-05, reflections identified). Cells with more than 1,000
-rigid sets ((6,5), (7,6), (8,6)) go to `catalogs/<n>_<d>.json`, which the applet fetches when
-first needed. Rebuild when that catalog changes, passing the previous `catalog.json` so the
-constructibility verdicts carry over by shape (card numbers may shift between versions):
+catalog (59,377 sets on 2026-11-06, reflections identified). Cells with more than 1,000
+rigid sets ((6,5), (6,6), (7,6), (8,6)) go to `catalogs/<n>_<d>.json`, which the applet fetches when
+first needed. Rebuild when that catalog changes, passing the previous `catalog.json` (with its
+`catalogs/` folder beside it) so the constructibility verdicts carry over by shape (card numbers
+may shift between versions; compare before publishing):
 
     cp catalog.json /tmp/catalog.old.json
     python3 canon.py ../fixed-distances/data/applet_data.json catalog.json /tmp/catalog.old.json

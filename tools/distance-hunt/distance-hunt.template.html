@@ -343,7 +343,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <p>For those, say what you want and let the game solve it. Put a <b>slider</b> on a line or circle, build the rest of the set from it (circles and intersections follow the slider as it moves), then use <b>Equal</b> to ask for two segments to have the same length. A slider has one unknown and an equality is one equation, so the slider is pinned: the game finds every position along its line or circle where the two lengths agree, moves there, and shows the others as blue rings you can click. A free point has two unknowns and needs two equalities; several sliders and free points can be solved together. Until everything is pinned, dragging keeps the equalities you asked for. The panel counts equations and unknowns, and lists the equalities (hover one to see its segments, × to remove it).</p>
       <p>One slider and one equality are enough for all but three of the catalog's sets that ordinary construction cannot reach; the remaining three ((5,4) nos. 461, 463 and 466) need three sliders solved together. Pinned points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>.</p>
       <h3>The catalog</h3>
-      <p>Every set is compared with the 15,138 rigid sets catalogued in the explorer (the three largest cells, (6,5), (7,6) and (8,6), are fetched when first needed). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
+      <p>Every set is compared with the 59,377 rigid sets catalogued in the explorer (the four largest cells, (6,5), (6,6), (7,6) and (8,6), are fetched when a rigid set first appears there; (6,6) alone holds 44,242 sets, about 8 MB). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
       <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number links to that cell of the explorer. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
       <h3>Saving</h3>
       <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
@@ -775,8 +775,10 @@ function analyse() {
       st.flex = flexDim(P, st.dc);
       if (pv < 2) {
         st.canon = canon(P);
-        st.cat = catalogMatch(st.n, st.d, st.canon);
-        st.catState = ensureCell(st.n + ',' + st.d);
+        // the big cells are fetched only for sets that pass the rigidity test
+        const big = isRemote(st.n + ',' + st.d) && catLoad.get(st.n + ',' + st.d) !== 'ok';
+        st.cat = big && st.flex !== 0 ? null : catalogMatch(st.n, st.d, st.canon);
+        st.catState = big && st.flex !== 0 ? 'ok' : ensureCell(st.n + ',' + st.d);
         if (st.cat) st.flex = 0;   // the catalog's sets are rigid (a few are singular points, where the first-order test is blind)
         st.dup = cards.find(c => c.n === st.n && c.d === st.d && sameCanon(c.canon, st.canon)) || null;
       }

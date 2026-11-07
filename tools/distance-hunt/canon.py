@@ -57,6 +57,13 @@ if __name__ == '__main__':
     if old:
         for it in old['items']:
             if len(it) > 4: oldv[it[0]].append((it[2], it[4]))
+        # the big cells of the previous build live in catalogs/ next to it (read before they are overwritten)
+        import glob
+        for fn in glob.glob(os.path.join(os.path.dirname(os.path.abspath(sys.argv[3])), 'catalogs', '*.json')) + \
+                  (glob.glob(os.path.join(here, 'catalogs', '*.json')) if os.path.dirname(os.path.abspath(sys.argv[3])) != here else []):
+            o = json.load(open(fn))
+            for lab, flat, num, v in o['items']:
+                if v: oldv[o['cell']].append((flat, v))
     elif os.path.exists(os.path.join(here, 'verdicts.json')):
         print('no old catalog given: verdicts are matched by shape only when one is given')
     jobs = []
