@@ -1642,9 +1642,11 @@ function thumb(c) {
   const Wt = 130, Ht = 62, pad = 7, s = Math.min((Wt - 2 * pad) / Math.max(x1 - x0, 1e-9), (Ht - 2 * pad) / Math.max(y1 - y0, 1e-9));
   const X = x => (Wt - (x1 - x0) * s) / 2 + (x - x0) * s, Y = y => (Ht + (y1 - y0) * s) / 2 - (y - y0) * s;
   let svg = `<svg viewBox="0 0 ${Wt} ${Ht}" aria-hidden="true">`;
-  if (P.length <= 10) {
+  if (P.length <= 24) {
+    // bigger sets get thinner, lighter segments so the thumbnail stays readable
     const pts = P.map(([x, y]) => ({ x, y })), dc = distClasses(pts);
-    for (const p of dc.pairs.slice().reverse()) svg += `<line x1="${X(P[p.i][0]).toFixed(1)}" y1="${Y(P[p.i][1]).toFixed(1)}" x2="${X(P[p.j][0]).toFixed(1)}" y2="${Y(P[p.j][1]).toFixed(1)}" stroke="${clsColor(p.c)}" stroke-width="0.9" opacity="0.6"/>`;
+    const sw = P.length <= 8 ? 0.9 : P.length <= 14 ? 0.7 : 0.5, op = P.length <= 8 ? 0.6 : P.length <= 14 ? 0.5 : 0.4;
+    for (const p of dc.pairs.slice().reverse()) svg += `<line x1="${X(P[p.i][0]).toFixed(1)}" y1="${Y(P[p.i][1]).toFixed(1)}" x2="${X(P[p.j][0]).toFixed(1)}" y2="${Y(P[p.j][1]).toFixed(1)}" stroke="${clsColor(p.c)}" stroke-width="${sw}" opacity="${op}"/>`;
   }
   for (const [x, y] of P) svg += `<circle cx="${X(x).toFixed(1)}" cy="${Y(y).toFixed(1)}" r="2.4" fill="${C.ink}"/>`;
   return svg + '</svg>';
