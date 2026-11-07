@@ -280,8 +280,8 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <button class="am-btn dh-tool" data-tool="eq" aria-label="Equal (=)" data-tip="Equal" data-key="=" data-desc="Click a segment of your set, then the segment it should equal."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9.2h14M5 14.8h14" stroke-width="2.2"/></svg></button>
       <span class="dh-sep"></span>
       <button class="am-btn dh-tool" data-tool="line" aria-label="Line (L)" data-tip="Line" data-key="L" data-desc="Through two points."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19.5L21 4.5"/><circle class="f" cx="7.8" cy="15.5" r="2"/><circle class="f" cx="16.2" cy="8.5" r="2"/></svg></button>
-      <button class="am-btn dh-tool" data-tool="par" aria-label="Parallel line (I)" data-tip="Parallel line" data-key="I" data-desc="Pick a line and a point: the line through the point parallel to it."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14L14 3M10 21L21 10"/><circle class="f" cx="15.5" cy="15.5" r="2"/></svg></button>
-      <button class="am-btn dh-tool" data-tool="perp" aria-label="Perpendicular line (T)" data-tip="Perpendicular line" data-key="T" data-desc="Pick a line and a point: the line through the point at right angles to it."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18M10 18.5V3"/><path d="M10 14.5h4v4" stroke-width="1.3"/><circle class="f" cx="10" cy="7.5" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="par" aria-label="Parallel line (I)" data-tip="Parallel line" data-key="I" data-desc="Pick a line or a segment of your set, and a point: the line through the point parallel to it."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14L14 3M10 21L21 10"/><circle class="f" cx="15.5" cy="15.5" r="2"/></svg></button>
+      <button class="am-btn dh-tool" data-tool="perp" aria-label="Perpendicular line (T)" data-tip="Perpendicular line" data-key="T" data-desc="Pick a line or a segment of your set, and a point: the line through the point at right angles to it."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18M10 18.5V3"/><path d="M10 14.5h4v4" stroke-width="1.3"/><circle class="f" cx="10" cy="7.5" r="2"/></svg></button>
       <button class="am-btn dh-tool" data-tool="bis" aria-label="Perpendicular bisector (B)" data-tip="Perpendicular bisector" data-key="B" data-desc="Of two points."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15.5h16"/><path d="M12 3.5v17" stroke-dasharray="2.4 2"/><circle class="f" cx="4.5" cy="15.5" r="2"/><circle class="f" cx="19.5" cy="15.5" r="2"/></svg></button>
       <button class="am-btn dh-tool" data-tool="circ" aria-label="Circle (C)" data-tip="Circle" data-key="C" data-desc="Pick the centre, then a point on the circle."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle class="f" cx="12" cy="12" r="1.8"/><circle class="f" cx="19.9" cy="12" r="2"/></svg></button>
       <button class="am-btn dh-tool" data-tool="comp" aria-label="Compass (K)" data-tip="Compass" data-key="K" data-desc="Pick two points for the radius, then the centre."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="1.6"/><path d="M11.2 6L6 19.5M12.8 6L18 19.5"/><path d="M4 16.5a9.5 9.5 0 0 0 16 0" stroke-dasharray="2.2 2"/></svg></button>
@@ -330,7 +330,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       </ul>
       <h3>The tools</h3>
       <ul>
-        <li><b>Line</b> through two points; <b>Parallel</b> and <b>Perpendicular</b>: pick a line and a point; <b>Bisector</b>, the perpendicular bisector of two points. Hover a tool to see what it does.</li>
+        <li><b>Line</b> through two points; <b>Parallel</b> and <b>Perpendicular</b>: pick a line (or a segment between two marked points) and a point; <b>Bisector</b>, the perpendicular bisector of two points. Hover a tool to see what it does.</li>
         <li><b>Circle</b>: a centre, then a point on the circle. <b>Compass</b>: two points for the radius, then the centre.</li>
         <li><b>Polygon</b>: a regular polygon with the chosen number of sides on a segment, together with its centre. It sits to the left of the segment as you pick it; pick the ends the other way round for the other side.</li>
         <li><b>Free point</b>: click on a line or circle for a <em>slider</em>, a point that moves only along it; click anywhere else for a point that moves freely. Both are drawn as diamonds (a slider with a bar along its curve). They are not exact until equalities pin them down; see below.</li>
@@ -416,7 +416,15 @@ let showCons = true;          // lines, circles, polygons, candidates and unmark
 let hover = null;
 let mouse = null;           // world coords of the pointer
 let status = null;          // last analysis
-let parLine = null, parPt = null;   // Parallel / Perpendicular: the line and the point picked so far
+let parLine = null, parPt = null;   // Parallel / Perpendicular: the line (node id, or [a, b] for a segment) and the point picked so far
+/* the direction picked for Parallel / Perpendicular, as a line value */
+function parRef() {
+  if (parLine === null) return null;
+  if (!Array.isArray(parLine)) return V.get(parLine) || null;
+  const a = V.get(parLine[0]), b = V.get(parLine[1]); if (!a || !b) return null;
+  const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy);
+  return d < EPS ? null : { k: 'l', px: a.x, py: a.y, dx: dx / d, dy: dy / d, a, b };
+}
 let eqPick = null;          // first segment picked with the Equal tool: [idA, idB]
 let alts = [];              // other solutions of the last solve along a slider: {x, d, tx, ty}
 let anim = null;            // running solve animation
@@ -433,7 +441,7 @@ function deps(n) {
     case 'pv': case 'pc': return [n.poly];
     case 'x': return [n.c1, n.c2];
     case 'glide': return [n.on];
-    case 'par': case 'perp': return [n.l, n.p];
+    case 'par': case 'perp': return n.l !== undefined ? [n.l, n.p] : [n.a, n.b, n.p];
     default: return [];
   }
 }
@@ -461,8 +469,15 @@ function polyGeom(a, b, m) {
 }
 function curveVal(n, P, val) {
   if (n.t === 'par' || n.t === 'perp') {
-    const L = val && val.get(n.l), p = P(n.p); if (!L || L.k !== 'l' || !p) return null;
-    return n.t === 'par' ? { k: 'l', px: p.x, py: p.y, dx: L.dx, dy: L.dy } : { k: 'l', px: p.x, py: p.y, dx: -L.dy, dy: L.dx };
+    let ux, uy;
+    if (n.l !== undefined) { const L = val && val.get(n.l); if (!L || L.k !== 'l') return null; ux = L.dx; uy = L.dy; }
+    else {
+      const a = P(n.a), b = P(n.b); if (!a || !b) return null;
+      const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy); if (d < EPS) return null;
+      ux = dx / d; uy = dy / d;
+    }
+    const p = P(n.p); if (!p) return null;
+    return n.t === 'par' ? { k: 'l', px: p.x, py: p.y, dx: ux, dy: uy } : { k: 'l', px: p.x, py: p.y, dx: -uy, dy: ux };
   }
   if (n.t === 'line') {
     const a = P(n.a), b = P(n.b); if (!a || !b) return null;
@@ -1192,8 +1207,8 @@ const TOOLS = {
   circ: { need: 2, hint: k => ['<b>Circle</b>: pick the centre.', '<b>Circle</b>: pick a point on the circle.'][k] },
   comp: { need: 3, hint: k => ['<b>Compass</b>: pick one end of the radius.', '<b>Compass</b>: pick the other end of the radius.', '<b>Compass</b>: pick the centre.'][k] },
   poly: { need: 2, hint: k => ['<b>Polygon</b>: pick the first end of a side.', '<b>Polygon</b>: pick the second end; the polygon goes on the left.'][k] },
-  par: { need: 0, hint: () => parLine === null ? '<b>Parallel</b>: pick a line' + (parPt === null ? ' and a point, in either order.' : ' to be parallel to.') : '<b>Parallel</b>: now pick the point it goes through.' },
-  perp: { need: 0, hint: () => parLine === null ? '<b>Perpendicular</b>: pick a line' + (parPt === null ? ' and a point, in either order.' : ' to be perpendicular to.') : '<b>Perpendicular</b>: now pick the point it goes through.' },
+  par: { need: 0, hint: () => parLine === null ? '<b>Parallel</b>: pick a line or a segment of your set' + (parPt === null ? ', and a point, in either order.' : ' to be parallel to.') : '<b>Parallel</b>: now pick the point it goes through.' },
+  perp: { need: 0, hint: () => parLine === null ? '<b>Perpendicular</b>: pick a line or a segment of your set' + (parPt === null ? ', and a point, in either order.' : ' to be perpendicular to.') : '<b>Perpendicular</b>: now pick the point it goes through.' },
   erase: { need: 1, hint: () => '<b>Erase</b>: click a point, line, circle or polygon; everything built on it goes too.' },
 };
 function setCons(on) { showCons = on; $('#b-cons').setAttribute('aria-pressed', on); hover = null; draw(); }
@@ -1235,16 +1250,19 @@ function clickTool(sx, sy) {
     addEquality(first, sg); draw(); return;
   }
   if (tool === 'par' || tool === 'perp') {
-    if (!pk) return;
-    const isLine = pk.kind === 'obj' && V.get(pk.id) && V.get(pk.id).k === 'l';
-    if (pk.kind === 'obj' && !isLine) return;
+    const isLine = pk && pk.kind === 'obj' && V.get(pk.id) && V.get(pk.id).k === 'l';
+    const sg = !pk || (pk.kind === 'obj' && !isLine) ? segAt(sx, sy) : null;
+    if (!pk && !sg) return;
+    if (pk && pk.kind === 'obj' && !isLine && !sg) return;
     const before = snapshot();
     if (isLine) parLine = pk.id;
+    else if (sg) parLine = sg;
     else { const n0 = S.nodes.length; parPt = materialize(pk); if (S.nodes.length !== n0) { undoStack.push(before); redoStack = []; updateUndo(); } }
     if (parLine !== null && parPt !== null) {
       pushUndo();
-      const dup = S.nodes.find(n => n.t === tool && n.l === parLine && n.p === parPt);
-      if (!dup) addNode({ t: tool, l: parLine, p: parPt });
+      const seg = Array.isArray(parLine);
+      const dup = S.nodes.find(n => n.t === tool && n.p === parPt && (seg ? (n.a === parLine[0] && n.b === parLine[1]) || (n.a === parLine[1] && n.b === parLine[0]) : n.l === parLine));
+      if (!dup) addNode(seg ? { t: tool, a: parLine[0], b: parLine[1], p: parPt } : { t: tool, l: parLine, p: parPt });
       parLine = null; parPt = null; commit(); return;
     }
     updateHint(); draw(); return;
@@ -1387,11 +1405,14 @@ function draw() {
   // Equal tool: the segment under the pointer and the one already picked
   if (tool === 'eq') {
     const hs = mouse ? segAt(...toS(mouse.x, mouse.y)) : null;
-    for (const [sg, col, w] of [[eqPick, C.accent, 4], [hs, C.accent, 3]]) {
-      if (!sg) continue;
-      const a = V.get(sg[0]), b = V.get(sg[1]); const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y);
-      ctx.strokeStyle = col; ctx.globalAlpha = sg === eqPick ? 1 : 0.55; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.globalAlpha = 1;
+    for (const [sg, w] of [[eqPick, 4.5], [hs, 3]]) {
+      if (sg) hiSeg(V.get(sg[0]), V.get(sg[1]), w);
     }
+  }
+  // Parallel / Perpendicular: the segment under the pointer and the one picked
+  if ((tool === 'par' || tool === 'perp') && mouse) {
+    if (parLine === null && !hover) { const hs = segAt(...toS(mouse.x, mouse.y)); if (hs) hiSeg(V.get(hs[0]), V.get(hs[1]), 3); }
+    if (Array.isArray(parLine)) hiSeg(V.get(parLine[0]), V.get(parLine[1]), 4.5);
   }
   // other solutions along the slider
   if (alts.length) {
@@ -1449,6 +1470,15 @@ function updateCoord() {
   el.hidden = false;
   el.innerHTML = `${what}x ${f(q.x)}   y ${f(q.y)}`;
 }
+/* a highlighted segment (hover or picked): dark ochre on a paper halo, visible over any length colour */
+function hiSeg(a, b, w) {
+  if (!a || !b) return;
+  const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y);
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = C.paper; ctx.lineWidth = w + 3.5; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  ctx.strokeStyle = C.deep; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  ctx.lineCap = 'butt';
+}
 function drawLine(v) {
   const R = (Math.max(W, H) / view.s) * 2 + Math.hypot(v.px - view.cx, v.py - view.cy);
   const [x1, y1] = toS(v.px - R * v.dx, v.py - R * v.dy), [x2, y2] = toS(v.px + R * v.dx, v.py + R * v.dy);
@@ -1456,9 +1486,9 @@ function drawLine(v) {
 }
 function drawPreview() {
   if ((tool === 'par' || tool === 'perp') && mouse) {
-    const L = parLine !== null ? V.get(parLine) : null;
+    const L = parRef();
     if (L) {
-      ctx.strokeStyle = C.accent; ctx.lineWidth = 2; drawLine(L);
+      if (!L.a) { ctx.strokeStyle = C.accent; ctx.lineWidth = 2; drawLine(L); }   // a picked segment is highlighted later, over the distances
       const q = parPt !== null ? V.get(parPt) : (hover && hover.kind !== 'obj' ? hover : mouse);
       ctx.globalAlpha = 0.6; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
       drawLine(tool === 'par' ? { k: 'l', px: q.x, py: q.y, dx: L.dx, dy: L.dy } : { k: 'l', px: q.x, py: q.y, dx: -L.dy, dy: L.dx });
@@ -1770,7 +1800,7 @@ cv.addEventListener('pointermove', e => {
   const changed = JSON.stringify(h) !== JSON.stringify(hover);
   hover = h;
   let ek = null;
-  if (!h && tool !== 'eq' && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
+  if (!h && tool !== 'eq' && tool !== 'par' && tool !== 'perp' && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
     let bd = 5;
     for (const p of status.dc.pairs) {
       const a = status.P[p.i], b = status.P[p.j];
@@ -1781,7 +1811,7 @@ cv.addEventListener('pointermove', e => {
   if (ek !== hlHover && !legendHover) { hlHover = ek; applyLegendHL(); draw(); }
   const n = h && h.kind === 'pt' ? byId.get(h.id) : null;
   cv.classList.toggle('is-grab', !!(n && (n.t === 'free' || n.t === 'glide') && (tool === 'mark' || tool === 'free' || tool === 'eq')));
-  if (changed || picks.length || tool === 'eq') draw();
+  if (changed || picks.length || tool === 'eq' || tool === 'par' || tool === 'perp') draw();
 });
 cv.addEventListener('pointerup', e => {
   if (!drag) return;
