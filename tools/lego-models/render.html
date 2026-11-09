@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lego models: renders · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px; }
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px; }
+.am-about h3 { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin:22px 0 8px; }
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+/* ---- this page: a zoomable render, background matched to the studio sweep ---- */
+a.am-btn { text-decoration:none; display:inline-block; }
+.view { position:absolute; inset:0; overflow:hidden; background:#DAD8D5; touch-action:none; cursor:grab; }
+.view.dragging { cursor:grabbing; }
+.view img { position:absolute; left:0; top:0; transform-origin:0 0; user-select:none; -webkit-user-drag:none; max-width:none; }
+.zoom { font-family:var(--mono); font-size:11px; color:var(--ink-faint); min-width:44px; text-align:right; }
+.facts { width:100%; border-collapse:collapse; font-size:14.5px; }
+.facts td { padding:5px 0; border-bottom:1px solid var(--line-soft); }
+.facts td:last-child { text-align:right; font-family:var(--mono); font-size:12.5px; }
+</style></head>
+<body>
+<div class="am-app">
+  <header class="am-bar">
+    <a class="am-home" href="https://affinemess.com/#applets/lego-models" target="_top">affine<span class="sep">·</span>mess</a>
+    <a class="am-btn" href="../../lego-models.html">Contents</a>
+    <div class="am-seg" role="group" aria-label="Model">
+      <button class="am-btn" id="b-mobius">Möbius strip</button>
+      <button class="am-btn" id="b-trefoil">Trefoil surface</button>
+    </div>
+    <span class="am-spacer"></span>
+    <span class="zoom" id="zoom"></span>
+    <button class="am-btn" id="fit">Fit</button>
+    <button class="am-btn" id="one">1:1</button>
+    <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+  </header>
+  <div class="am-stage">
+    <div class="view" id="view"><img id="img" alt=""></div>
+    <aside class="am-about" id="am-about" aria-hidden="true">
+      <button class="am-btn am-close">Close</button>
+      <div id="about"></div>
+      <h3>Looking around</h3>
+      <p>Scroll or pinch to zoom, drag to move, double-click to switch between the whole picture and full size. At full size every stud is visible.</p>
+      <h3>How it was made</h3>
+      <p>Every brick is a real brick of the buildable model: the same brick list drives the 3D view and the instructions. Rendered in Blender (Cycles) from that list, with rounded stud edges and a glossy ABS-like material.</p>
+    </aside>
+  </div>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+</script>
+<script>
+const MODELS = {
+  mobius: { src: "img/render-mobius.webp", w: 3200, h: 2560, alt: "Photo-real render of the red brick Möbius strip on two grey pillars",
+    html: `<h2>A Möbius strip in bricks</h2>
+      <p>A band with a half twist: one side, one edge. Tilted 65° so that no part of the band is flatter than about 51°, which lets it go up layer by layer like a curved wall.</p>
+      <table class="facts"><tr><td>Bricks</td><td>3,448</td></tr><tr><td>Red 2×4 / 2×2</td><td>2,983 / 317</td></tr><tr><td>Grey 2×4 / 2×2</td><td>146 / 2</td></tr>
+      <tr><td>Size</td><td>78 × 40 × 82 cm</td></tr><tr><td>Layers</td><td>85</td></tr><tr><td>Weight</td><td>≈ 7.6 kg</td></tr></table>` },
+  trefoil: { src: "img/render-trefoil.webp", w: 1552, h: 1940, alt: "Photo-real render of the trefoil Seifert surface in orange, azure and white bricks",
+    html: `<h2>A Seifert surface for the trefoil</h2>
+      <p>One page of the Milnor fibration of <em>z² + w³</em>: a punctured torus whose single edge is the trefoil knot. It is orientable, so its two sides get two colours, orange and azure; the white bricks trace the knot.</p>
+      <table class="facts"><tr><td>Bricks</td><td>8,379</td></tr><tr><td>Orange 2×4 / 2×2</td><td>3,013 / 84</td></tr><tr><td>Azure 2×4 / 2×2</td><td>2,936 / 150</td></tr>
+      <tr><td>White 2×4 / 2×2</td><td>1,910 / 155</td></tr><tr><td>Grey 2×4 / 2×2</td><td>129 / 2</td></tr>
+      <tr><td>Size</td><td>66 × 82 × 81 cm</td></tr><tr><td>Layers</td><td>84</td></tr><tr><td>Weight</td><td>≈ 19 kg</td></tr></table>` },
+};
+const view = document.getElementById("view"), img = document.getElementById("img"), zoomOut = document.getElementById("zoom");
+let cur, s = 1, tx = 0, ty = 0, fitScale = 1;
+function apply() { img.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`; zoomOut.textContent = Math.round(s * 100) + "%"; }
+function clamp() {
+  const W = view.clientWidth, H = view.clientHeight, iw = cur.w * s, ih = cur.h * s;
+  tx = iw <= W ? (W - iw) / 2 : Math.min(0, Math.max(W - iw, tx));
+  ty = ih <= H ? (H - ih) / 2 : Math.min(0, Math.max(H - ih, ty));
+}
+function fit() { const W = view.clientWidth, H = view.clientHeight; fitScale = Math.min(W / cur.w, H / cur.h); s = fitScale; clamp(); apply(); }
+function zoomAt(f, cx, cy) {
+  const ns = Math.min(1.5, Math.max(fitScale * 0.9, s * f)); const k = ns / s;
+  tx = cx - (cx - tx) * k; ty = cy - (cy - ty) * k; s = ns; clamp(); apply();
+}
+function load(name) {
+  cur = MODELS[name];
+  img.src = cur.src; img.alt = cur.alt; img.width = cur.w; img.height = cur.h;
+  document.getElementById("about").innerHTML = cur.html;
+  document.getElementById("b-mobius").setAttribute("aria-pressed", name === "mobius");
+  document.getElementById("b-trefoil").setAttribute("aria-pressed", name === "trefoil");
+  if (location.hash !== "#" + name && location.hash !== "#about") history.replaceState(null, "", "#" + name);
+  fit();
+}
+view.addEventListener("wheel", e => { e.preventDefault(); const r = view.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+const pts = new Map(); let last = null;
+view.addEventListener("pointerdown", e => { view.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); view.classList.add("dragging"); });
+view.addEventListener("pointermove", e => {
+  if (!pts.has(e.pointerId)) return;
+  const prev = pts.get(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pts.size === 1) { tx += e.clientX - prev[0]; ty += e.clientY - prev[1]; clamp(); apply(); }
+  else if (pts.size === 2) {
+    const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]), r = view.getBoundingClientRect();
+    if (last) zoomAt(d / last, (a[0] + b[0]) / 2 - r.left, (a[1] + b[1]) / 2 - r.top);
+    last = d;
+  }
+});
+function up(e) { pts.delete(e.pointerId); if (pts.size < 2) last = null; if (!pts.size) view.classList.remove("dragging"); }
+view.addEventListener("pointerup", up); view.addEventListener("pointercancel", up);
+view.addEventListener("dblclick", e => { const r = view.getBoundingClientRect(); if (s < 0.99) zoomAt(1 / s, e.clientX - r.left, e.clientY - r.top); else fit(); });
+document.getElementById("fit").onclick = fit;
+document.getElementById("one").onclick = () => zoomAt(1 / s, view.clientWidth / 2, view.clientHeight / 2);
+document.getElementById("b-mobius").onclick = () => load("mobius");
+document.getElementById("b-trefoil").onclick = () => load("trefoil");
+new ResizeObserver(() => cur && fit()).observe(view);
+load(location.hash === "#mobius" ? "mobius" : "trefoil");
+</script>
+</body></html>

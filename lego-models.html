@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lego Models · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px; }
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px; }
+.am-about h3 { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin:22px 0 8px; }
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+/* ---- this applet: a table of contents, one row per model, three cards per row ---- */
+.toc-wrap { position:absolute; inset:0; overflow-y:auto; }
+.toc { max-width:1040px; margin:0 auto; padding:26px 22px 34px; display:grid; gap:26px; }
+.toc-head { display:flex; align-items:baseline; gap:12px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+.model { display:grid; grid-template-columns:minmax(180px, 250px) 1fr; gap:14px 26px; align-items:start;
+         background:var(--paper-card); border:1px solid var(--line-soft); border-radius:4px; padding:18px 20px 20px; }
+.model h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:25px; line-height:1.1; margin:0 0 8px;
+            font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; }
+.model p { margin:0 0 10px; font-size:15px; line-height:1.5; color:var(--ink-soft); }
+.model .facts { font-family:var(--mono); font-size:11px; color:var(--ink-faint); line-height:1.7; }
+.cards { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
+.card { display:block; text-decoration:none; color:var(--ink-soft); border:1px solid var(--line); border-radius:3px; overflow:hidden;
+        background:var(--paper-card); transition:border-color .2s, transform .2s, box-shadow .2s; }
+.card img { display:block; width:100%; height:auto; aspect-ratio:4 / 3; object-fit:cover; background:#E6E3DE; border-bottom:1px solid var(--line-soft); }
+.card span { display:flex; justify-content:space-between; align-items:center; padding:8px 10px;
+             font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; }
+.card span::after { content:"\2192"; letter-spacing:0; color:var(--ink-faint); transition:color .2s, transform .2s; }
+.card:hover, .card:focus-visible { border-color:var(--accent); color:var(--accent); outline:none; transform:translateY(-2px); box-shadow:0 10px 22px -16px rgba(30,24,16,.5); }
+.card:hover span::after, .card:focus-visible span::after { color:var(--accent); transform:translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .card, .card span::after { transition:none; } .card:hover { transform:none; } }
+@media (max-width:760px) {
+  .model { grid-template-columns:1fr; padding:14px 14px 16px; }
+  .toc { padding:16px 12px 26px; gap:18px; }
+}
+@media (max-width:430px) { .cards { gap:8px; } .card span { padding:6px 7px; font-size:9.5px; letter-spacing:.06em; } }
+</style></head>
+<body>
+<div class="am-app">
+  <header class="am-bar">
+    <a class="am-home" href="https://affinemess.com/#applets/lego-models" target="_top">affine<span class="sep">·</span>mess</a>
+    <span class="am-hint"><b>Lego models</b> of surfaces, buildable from standard bricks</span>
+    <span class="am-spacer"></span>
+    <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+  </header>
+  <div class="am-stage am-dots">
+    <div class="toc-wrap">
+      <main class="toc">
+        <div class="toc-head"><span class="am-label">Table of contents</span></div>
+
+        <section class="model" aria-labelledby="t-mobius">
+          <div>
+            <h2 id="t-mobius">Möbius strip</h2>
+            <p>One side, one edge. Tilted so every part of the band is steep enough to build layer by layer.</p>
+            <div class="facts">3,448 bricks · 2×4 and 2×2<br>78 × 40 × 82 cm · 85 layers</div>
+          </div>
+          <div class="cards">
+            <a class="card" href="tools/lego-models/render.html#mobius"><img src="tools/lego-models/img/card-mobius-render.webp" alt="Render of the Möbius strip" width="480" height="360"><span>Render</span></a>
+            <a class="card" href="tools/lego-models/viewer.html#mobius"><img data-anim src="tools/lego-models/img/card-mobius-3d.webp" data-still="tools/lego-models/img/card-mobius-3d-still.webp" alt="The Möbius strip turning in 3D" width="480" height="360"><span>3D view</span></a>
+            <a class="card" href="tools/lego-models/mobius/index.html"><img data-anim src="tools/lego-models/img/card-mobius-steps.webp" data-still="tools/lego-models/img/card-mobius-steps-still.webp" alt="Layer maps from the Möbius strip instructions" width="480" height="360"><span>Instructions</span></a>
+          </div>
+        </section>
+
+        <section class="model" aria-labelledby="t-trefoil">
+          <div>
+            <h2 id="t-trefoil">Trefoil Seifert surface</h2>
+            <p>A punctured torus whose single edge, in white, is a trefoil knot. Two sides, two colours.</p>
+            <div class="facts">8,379 bricks · 2×4 and 2×2<br>66 × 82 × 81 cm · 84 layers</div>
+          </div>
+          <div class="cards">
+            <a class="card" href="tools/lego-models/render.html#trefoil"><img src="tools/lego-models/img/card-trefoil-render.webp" alt="Render of the trefoil Seifert surface" width="480" height="360"><span>Render</span></a>
+            <a class="card" href="tools/lego-models/viewer.html#trefoil"><img data-anim src="tools/lego-models/img/card-trefoil-3d.webp" data-still="tools/lego-models/img/card-trefoil-3d-still.webp" alt="The trefoil surface turning in 3D" width="480" height="360"><span>3D view</span></a>
+            <a class="card" href="tools/lego-models/trefoil/index.html"><img data-anim src="tools/lego-models/img/card-trefoil-steps.webp" data-still="tools/lego-models/img/card-trefoil-steps-still.webp" alt="Layer maps from the trefoil surface instructions" width="480" height="360"><span>Instructions</span></a>
+          </div>
+        </section>
+      </main>
+    </div>
+    <aside class="am-about" id="am-about" aria-hidden="true">
+      <button class="am-btn am-close">Close</button>
+      <h2>Lego models</h2>
+      <p>Surfaces from topology, rebuilt as real brick models: standard 2×4 bricks, with 2×2s where a layer needs them, all studs up. Each model is a list of bricks that can actually be built, and everything here is drawn from that one list.</p>
+      <h3>What you can open</h3>
+      <p><em>Render</em>: a photo-real picture you can zoom into down to the studs. <em>3D view</em>: turn the model around, or slide through it layer by layer. <em>Instructions</em>: step-by-step pages with a picture and a top-down map of each layer.</p>
+      <h3>Making them buildable</h3>
+      <p>The surface is thickened to a band about four studs thick, cut into the Lego grid layer by layer, and each layer is tiled with bricks so that bricks overlap the joints below them. A computer check confirms that every brick, at the moment it is placed, clips onto a brick already there (pressed on top, or occasionally onto the underside of the brick above), that the whole model is one connected piece, and that it stands without tipping: grey pillars hold it up where needed.</p>
+      <h3>The two surfaces</h3>
+      <p>The <em>Möbius strip</em> is tilted 65° so that no part of the band is flatter than about 51°, which lets it go up like a curved wall. The <em>trefoil surface</em> is one page of the Milnor fibration of z² + w³, projected to keep its three-fold symmetry. It is a genus-one Seifert surface; its two sides are orange and azure, and the white bricks trace the knot.</p>
+    </aside>
+  </div>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+</script>
+<script>
+// show still frames instead of the loops when the viewer prefers reduced motion
+if (matchMedia("(prefers-reduced-motion: reduce)").matches)
+  document.querySelectorAll("img[data-anim]").forEach(i => { i.src = i.dataset.still; });
+</script>
+</body></html>
