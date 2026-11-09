@@ -943,6 +943,40 @@ const SAMPLE_IMG2 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYE
 const SOLVER_SRC = document.getElementById('solver-src').textContent;
 const Game = new Function(SOLVER_SRC + '\n;return {makeGame, analyze};')();
 const $ = s => document.querySelector(s);
+// Scroll el into view inside the applet only. element.scrollIntoView() scrolls EVERY scrollable ancestor, and when
+// the applet sits in the site's iframe that includes the affinemess.com page around the frame, which pushes the
+// site header and the applet's bar out of sight. This moves just the nearest scrolling panel (the main panel,
+// or the solution's step list) with scrollTo, which never reaches past the frame.
+function scrollInApp(el, block = 'start', smooth = true){
+  if (!el) return;
+  let sc = el.parentElement;
+  while (sc && sc !== document.body) {
+    const oy = getComputedStyle(sc).overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && sc.scrollHeight > sc.clientHeight) break;
+    sc = sc.parentElement;
+  }
+  if (!sc || sc === document.body) sc = document.getElementById('am-scroll');
+  if (!sc) return;
+  const a = sc.getBoundingClientRect(), r = el.getBoundingClientRect();
+  let top = sc.scrollTop;
+  if (block === 'nearest') {
+    if (r.top < a.top) top += r.top - a.top;
+    else if (r.bottom > a.bottom) top += Math.min(r.bottom - a.bottom, r.top - a.top);
+    else return;
+  } else top += r.top - a.top;
+  const reduce = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+  sc.scrollTo({ top: Math.max(0, top), behavior: smooth && !reduce ? 'smooth' : 'auto' });
+  // content above the target sometimes grows just after the call (a scan message, a panel filling in);
+  // once the scroll has settled, correct for any such shift
+  if (block === 'start') {
+    const token = scrollInApp.token = (scrollInApp.token || 0) + 1;
+    setTimeout(() => {
+      if (token !== scrollInApp.token) return;
+      const d = el.getBoundingClientRect().top - sc.getBoundingClientRect().top;
+      if (Math.abs(d) > 2 && !(d > 0 && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2)) sc.scrollTo({ top: Math.max(0, sc.scrollTop + d), behavior: smooth && !reduce ? 'smooth' : 'auto' });
+    }, smooth && !reduce ? 650 : 60);
+  }
+}
 const fmt = n => n.toLocaleString('en-US');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -1033,7 +1067,7 @@ function loadBoard(id, andPlay){
   $('#textmsg').textContent = ''; $('#gomsg').textContent = '';
   renderEditor();
   if (andPlay) $('#play').click();
-  else $('#s-pos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  else scrollInApp($('#s-pos'));
 }
 $('#gallery').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -1049,7 +1083,7 @@ document.querySelectorAll('#s-start [role="tab"]').forEach(t => {
   t.addEventListener('keydown', e => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
     const all = [...document.querySelectorAll('#s-start [role="tab"]')], k = all.indexOf(t), nx = all[(k + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length];
-    setTab(nx.dataset.tab); nx.focus();
+    setTab(nx.dataset.tab); nx.focus({ preventScroll: true });
   });
 });
 renderGallery();
@@ -1116,9 +1150,9 @@ function handleImage(src){
       const hid = res.bottles.reduce((n, b) => n + (b.ignored ? 0 : b.slots.filter(c => c < 0).length), 0);
       msgs.unshift(`Found ${res.bottles.length} bottles, ${res.palette.length} colors, ${res.cap} units per bottle${res.capDetected ? ' (detected)' : ''}.` + (hid ? ` ${hid} hidden units ("?").` : '') + (ign.length ? ` Skipped bottle ${ign.join(', ')}.` : ''));
       renderEditor();
-      $('#s-pos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollInApp($('#s-pos'));
     } else {
-      $('#preview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollInApp($('#preview'));
     }
     $('#scanmsg').textContent = msgs.join(' ');
     $('#scanmsg').classList.toggle('warn', !res.bottles.length);
@@ -1341,13 +1375,13 @@ function finish(r, act, orig, K, pal, cap, title){
     $('#results').hidden = true;
     startPlay(act, cap);
     $('#s-play').hidden = false;
-    $('#s-play').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollInApp($('#s-play'));
     return;
   }
   const samePlay = P && P.cap === cap && JSON.stringify(P.start) === JSON.stringify(act);
   if (P && !samePlay) { P = null; $('#s-play').hidden = true; } else if (P) renderPlay();
   $('#results').hidden = false;
-  $('#s-sol').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  scrollInApp($('#s-sol'));
 }
 
 /* ---------- real-move replay ---------- */
@@ -1489,7 +1523,7 @@ function selStep(k){
   $('#bt').textContent = `Before step ${k + 1}`;
   $('#bd').innerHTML = boardSVG(before, { unit: 17, moves: ms });
   $('#bn').textContent = ms.length > 1 ? 'Do these pours in any order.' : '';
-  const sel = document.querySelector(`.step[data-k="${k}"]`); if (sel) sel.scrollIntoView({ block: 'nearest' });
+  const sel = document.querySelector(`.step[data-k="${k}"]`); if (sel) scrollInApp(sel, 'nearest', false);
 }
 
 /* ---------- tree ---------- */
@@ -2010,7 +2044,7 @@ function startDiscovery(){
   disc = D; discOrig = orig; discUndo = []; discPlan = null; discAsk = null; discMsg = '';
   $('#s-disc').hidden = false;
   discRefresh();
-  $('#s-disc').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  scrollInApp($('#s-disc'));
 }
 function discRefresh(){
   renderDisc();
@@ -2337,7 +2371,7 @@ function animFinish(){
   if (!A) return;
   const f = A.refocus; A = null;
   $('#pl-board').innerHTML = playSVG();
-  if (f >= 0) { const el = document.querySelector(`#pl-board .pb[data-i="${f}"]`); if (el) el.focus(); }
+  if (f >= 0) { const el = document.querySelector(`#pl-board .pb[data-i="${f}"]`); if (el) el.focus({ preventScroll: true }); }
 }
 // the travelling bottle: glass, liquid bands with level surfaces, and the stream while pouring
 function movingBottleSVG(g, fr){
@@ -2480,7 +2514,7 @@ $('#pl-board').addEventListener('keydown', e => {
   const g = e.target.closest('.pb'); if (!g) return;
   e.preventDefault(); const i = +g.dataset.i; plClick(i);
   if (A) A.refocus = i; // the board is redrawn every frame; focus comes back when the pour lands
-  else { const again = document.querySelector(`#pl-board .pb[data-i="${i}"]`); if (again) again.focus(); }
+  else { const again = document.querySelector(`#pl-board .pb[data-i="${i}"]`); if (again) again.focus({ preventScroll: true }); }
 });
 $('#pl-speed').value = animSpeed;
 $('#pl-speed').onchange = () => { animSpeed = $('#pl-speed').value; try { localStorage.setItem('wc-anim', animSpeed); } catch (e) {} if (animSpeed === 'off') animFinish(); };
@@ -2497,7 +2531,7 @@ document.querySelectorAll('#s-play .seg button').forEach(b => b.onclick = () => 
   playMode = b.dataset.mode; try { localStorage.setItem('wc-play-mode', playMode); } catch (e) {}
   if (P) { P.msg = plOver() ? P.msg : null; renderPlay(); }
 });
-$('#pl-show').onclick = () => { $('#results').hidden = false; $('#s-sol').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+$('#pl-show').onclick = () => { $('#results').hidden = false; scrollInApp($('#s-sol')); };
 
 loadExample('full');
 </script>
