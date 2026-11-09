@@ -93,6 +93,7 @@ main { max-width: 1240px; margin: 0 auto; padding: 12px 16px 40px; display: grid
         --am-line:#B8AB8A; --am-faint:#8A7D66; --am-accent:#B85820; --am-accent-deep:#8A3F12;
         --display:'Fraunces', Georgia, 'Times New Roman', serif; --body:'Fraunces', Georgia, serif;
         --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; }
+html, body { overscroll-behavior: contain; }
 body { font-weight:380; font-variation-settings:"opsz" 14, "SOFT" 50; -webkit-font-smoothing:antialiased; }
 header { background:var(--panel); color:var(--ink); border-bottom:1px solid var(--am-line); padding:10px 14px; }
 header h1 { font-family:var(--display); font-style:italic; font-weight:400; font-size:20px; font-variation-settings:"opsz" 144, "SOFT" 80; }
@@ -174,7 +175,7 @@ html.am-standalone .am-home { display:inline-block; }
         <li>Some steps continue with short <b>parts</b> (12·2, 12·3…). Each part works on one layer only and does one kind of placement. Parts with blue bricks also show a view from underneath.</li>
         <li>Faint outlines on the map show the neighbouring layer, for lining things up. Tap any brick to see its exact columns and rows.</li>
       </ul>
-      <p style="margin-top:14px"><button class="primary" id="start">Start with step 1 ▶</button></p>
+      <p style="margin-top:14px"><button class="primary" id="begin-btn">Start with step 1 ▶</button></p>
     </div>
   </section>
 
@@ -278,8 +279,9 @@ function show(i) {
   $("introView").classList.toggle("hidden", i >= 0);
   $("stepView").classList.toggle("hidden", i < 0);
   $("pct").textContent = i < 0 ? "start" : `${cum[i].toLocaleString()} / ${bricks.length.toLocaleString()}`;
-  const h = i < 0 ? "#start" : `#step-${pages[i].s + 1}-${pages[i].q + 1}`;
-  if (location.hash !== h) history.replaceState(null, "", h);
+  // intro has no hash: a hash matching an element id makes the browser scroll (and, in the site's frame, scroll the site too)
+  const h = i < 0 ? "" : `#step-${pages[i].s + 1}-${pages[i].q + 1}`;
+  if (location.hash !== h) history.replaceState(null, "", location.pathname + location.search + h);
   if (i < 0) return;
   const pg = pages[i], s = pg.s, n = partsIn(s);
   const cnt4 = (p) => pg.items.filter(b => b.p === p && b.o !== 2).length, cnt2 = (p) => pg.items.filter(b => b.p === p && b.o === 2).length;
@@ -325,7 +327,7 @@ $("mapwrap").addEventListener("click", e => {
 });
 $("prev").onclick = () => show(page - 1);
 $("next").onclick = () => show(page + 1);
-$("start").onclick = () => show(0);
+$("begin-btn").onclick = () => show(0);
 $("range").oninput = e => show(+e.target.value - 1);
 $("zoom").onclick = e => { const z = $("mapwrap").classList.toggle("zoom"); e.target.setAttribute("aria-pressed", z); e.target.textContent = z ? "Fit" : "Zoom"; };
 document.addEventListener("keydown", e => {
