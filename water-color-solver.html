@@ -2300,7 +2300,7 @@ function plGeom(){
   const cap = P.cap, unit = 24, bw = 46, gap = 12, pad = 6, bh = cap * unit + 12, top = 56, rowH = bh + 52, n = P.cur.length, cols = 7;
   const at = i => ctx.lp ? ctx.lp[i] : { r: Math.floor(i / cols), c: i % cols };
   const ncol = ctx.lp ? Math.max(...ctx.lp.map(p => p.c)) + 1 : Math.min(n, cols), rows = ctx.lp ? Math.max(...ctx.lp.map(p => p.r)) + 1 : Math.ceil(n / cols);
-  const W = 2 * pad + ncol * (bw + gap) - gap, H = rows * rowH + 4;
+  const W = 2 * pad + ncol * (bw + gap) - gap, H = top + (rows - 1) * rowH + bh + 24; // last row's numbers sit at bh + 16
   return { cap, unit, bw, bh, W, H, ncol, lift: 16, iw: bw - 10, at, xy: i => ({ x: pad + at(i).c * (bw + gap), y: top + at(i).r * rowH }) };
 }
 
