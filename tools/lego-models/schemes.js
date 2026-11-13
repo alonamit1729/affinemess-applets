@@ -12,8 +12,8 @@
     ],
     trefoil: [
       { id: "classic", name: "Orange, azure, white", colors: [["#fe8a18", "orange"], ["#36aebf", "medium azure"], WHITE, DBG] },
-      // { id: "red-white-black", name: "Red rim, white and black", colors: [WHITE, ["#1b2a34", "black"], RED, DBG] },
-      // { id: "red-white-grey", name: "Red rim, white and grey", colors: [WHITE, ["#a0a5a9", "light bluish grey"], RED, DBG] },
+      { id: "red-white-black", name: "Red rim, white and black", colors: [WHITE, ["#05131d", "black"], RED, DBG] },
+      { id: "red-white-grey", name: "Red rim, white and grey", colors: [WHITE, ["#a0a5a9", "light bluish grey"], RED, DBG] },
     ],
   };
   function get(model, id) {
