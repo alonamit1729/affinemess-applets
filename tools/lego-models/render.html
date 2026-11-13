@@ -92,6 +92,8 @@ a.am-btn { text-decoration:none; display:inline-block; }
 .view { position:absolute; inset:0; overflow:hidden; background:#DAD8D5; touch-action:none; cursor:grab; }
 .view.dragging { cursor:grabbing; }
 .view img { position:absolute; left:0; top:0; transform-origin:0 0; user-select:none; -webkit-user-drag:none; max-width:none; }
+.colours { display:inline-flex; align-items:center; gap:8px; }
+.colours select { font-size:11px; padding:6px 8px; cursor:pointer; letter-spacing:.02em; text-transform:none; }
 .zoom { font-family:var(--mono); font-size:11px; color:var(--ink-faint); min-width:44px; text-align:right; }
 .facts { width:100%; border-collapse:collapse; font-size:14.5px; }
 .facts td { padding:5px 0; border-bottom:1px solid var(--line-soft); }
@@ -106,6 +108,7 @@ a.am-btn { text-decoration:none; display:inline-block; }
       <button class="am-btn" id="b-mobius">Möbius strip</button>
       <button class="am-btn" id="b-trefoil">Trefoil surface</button>
     </div>
+    <label class="am-label colours">Colours <select class="am-input" id="scheme" aria-label="Colour scheme"></select></label>
     <span class="am-spacer"></span>
     <span class="zoom" id="zoom"></span>
     <button class="am-btn" id="fit">Fit</button>
@@ -145,18 +148,26 @@ a.am-btn { text-decoration:none; display:inline-block; }
 })();
 /* am-kit v1 END */
 </script>
+<script src="schemes.js"></script>
 <script>
+// bricks per role (0 side A, 1 side B, 2 rim, 3 pillar) as [2x4, 2x2]
+const COUNTS = { mobius: [[2155, 196], null, [828, 121], [146, 2]], trefoil: [[3013, 84], [2936, 150], [1910, 155], [129, 2]] };
+function partsRows(name, sc) {
+  return LEGO_SCHEMES.distinct(sc).map(c => {
+    const n4 = c.roles.reduce((a, r) => a + COUNTS[name][r][0], 0), n2 = c.roles.reduce((a, r) => a + COUNTS[name][r][1], 0);
+    return `<tr><td>${c.name[0].toUpperCase() + c.name.slice(1)} 2×4 / 2×2</td><td>${n4.toLocaleString("en-US")} / ${n2}</td></tr>`;
+  }).join("");
+}
 const MODELS = {
-  mobius: { src: "img/render-mobius.webp", w: 3200, h: 2560, alt: "Photo-real render of the red brick Möbius strip on two grey pillars",
+  mobius: { w: 3200, h: 2560, alt: sc => `Photo-real render of the brick Möbius strip in ${LEGO_SCHEMES.distinct(sc).map(c => c.name).join(", ")}`,
     html: `<h2>A Möbius strip in bricks</h2>
       <p>A band with a half twist: one side, one edge. Tilted 65° so that no part of the band is flatter than about 51°, which lets it go up layer by layer like a curved wall.</p>
-      <table class="facts"><tr><td>Bricks</td><td>3,448</td></tr><tr><td>Red 2×4 / 2×2</td><td>2,983 / 317</td></tr><tr><td>Grey 2×4 / 2×2</td><td>146 / 2</td></tr>
+      <table class="facts"><tr><td>Bricks</td><td>3,448</td></tr>__PARTS__
       <tr><td>Size</td><td>78 × 40 × 82 cm</td></tr><tr><td>Layers</td><td>85</td></tr><tr><td>Weight</td><td>≈ 7.6 kg</td></tr></table>` },
-  trefoil: { src: "img/render-trefoil.webp", w: 1552, h: 1940, alt: "Photo-real render of the trefoil Seifert surface in orange, azure and white bricks",
+  trefoil: { w: 1552, h: 1940, alt: sc => `Photo-real render of the trefoil Seifert surface in ${LEGO_SCHEMES.distinct(sc).map(c => c.name).join(", ")} bricks`,
     html: `<h2>A Seifert surface for the trefoil</h2>
-      <p>One page of the Milnor fibration of <em>z² + w³</em>: a punctured torus whose single edge is the trefoil knot. It is orientable, so its two sides get two colours, orange and azure; the white bricks trace the knot.</p>
-      <table class="facts"><tr><td>Bricks</td><td>8,379</td></tr><tr><td>Orange 2×4 / 2×2</td><td>3,013 / 84</td></tr><tr><td>Azure 2×4 / 2×2</td><td>2,936 / 150</td></tr>
-      <tr><td>White 2×4 / 2×2</td><td>1,910 / 155</td></tr><tr><td>Grey 2×4 / 2×2</td><td>129 / 2</td></tr>
+      <p>One page of the Milnor fibration of <em>z² + w³</em>: a punctured torus whose single edge is the trefoil knot. It is orientable, so its two sides get two colours, __C0__ and __C1__; the __C2__ bricks trace the knot.</p>
+      <table class="facts"><tr><td>Bricks</td><td>8,379</td></tr>__PARTS__
       <tr><td>Size</td><td>66 × 82 × 81 cm</td></tr><tr><td>Layers</td><td>84</td></tr><tr><td>Weight</td><td>≈ 19 kg</td></tr></table>` },
 };
 const view = document.getElementById("view"), img = document.getElementById("img"), zoomOut = document.getElementById("zoom");
@@ -172,13 +183,18 @@ function zoomAt(f, cx, cy) {
   const ns = Math.min(1.5, Math.max(fitScale * 0.9, s * f)); const k = ns / s;
   tx = cx - (cx - tx) * k; ty = cy - (cy - ty) * k; s = ns; clamp(); apply();
 }
-function load(name) {
+let schemeId = new URLSearchParams(location.search).get("scheme");
+function load(name, id = schemeId) {
   cur = MODELS[name];
-  img.src = cur.src; img.alt = cur.alt; img.width = cur.w; img.height = cur.h;
-  document.getElementById("about").innerHTML = cur.html;
+  const sc = LEGO_SCHEMES.get(name, id); schemeId = sc.id;
+  img.src = `img/render-${name}${LEGO_SCHEMES.suffix(sc)}.webp`; img.alt = cur.alt(sc); img.width = cur.w; img.height = cur.h;
+  document.getElementById("about").innerHTML = cur.html.replace("__PARTS__", partsRows(name, sc))
+    .replace(/__C(\d)__/g, (_, r) => sc.colors[+r][1]);
+  document.getElementById("scheme").parentElement.hidden = LEGO_SCHEMES.MODELS[name].length < 2;
+  document.getElementById("scheme").innerHTML = LEGO_SCHEMES.MODELS[name].map(s => `<option value="${s.id}"${s.id === sc.id ? " selected" : ""}>${s.name}</option>`).join("");
   document.getElementById("b-mobius").setAttribute("aria-pressed", name === "mobius");
   document.getElementById("b-trefoil").setAttribute("aria-pressed", name === "trefoil");
-  if (location.hash !== "#" + name && location.hash !== "#about") history.replaceState(null, "", "#" + name);
+  history.replaceState(null, "", LEGO_SCHEMES.url(sc, location.hash === "#about" ? "#about" : "#" + name));
   fit();
 }
 view.addEventListener("wheel", e => { e.preventDefault(); const r = view.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
@@ -201,6 +217,7 @@ document.getElementById("fit").onclick = fit;
 document.getElementById("one").onclick = () => zoomAt(1 / s, view.clientWidth / 2, view.clientHeight / 2);
 document.getElementById("b-mobius").onclick = () => load("mobius");
 document.getElementById("b-trefoil").onclick = () => load("trefoil");
+document.getElementById("scheme").onchange = e => { const keep = [s, tx, ty]; load(cur === MODELS.mobius ? "mobius" : "trefoil", e.target.value); [s, tx, ty] = keep; clamp(); apply(); };
 new ResizeObserver(() => cur && fit()).observe(view);
 load(location.hash === "#mobius" ? "mobius" : "trefoil");
 </script>

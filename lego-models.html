@@ -107,6 +107,17 @@ input[type=range] { accent-color:var(--accent); }
 .card:hover, .card:focus-visible { border-color:var(--accent); color:var(--accent); outline:none; transform:translateY(-2px); box-shadow:0 10px 22px -16px rgba(30,24,16,.5); }
 .card:hover span::after, .card:focus-visible span::after { color:var(--accent); transform:translateX(3px); }
 @media (prefers-reduced-motion: reduce) { .card, .card span::after { transition:none; } .card:hover { transform:none; } }
+.schemes { margin-top:14px; }
+.schemes .am-label { display:block; margin-bottom:6px; }
+.schemes div { display:flex; flex-wrap:wrap; gap:6px; }
+.scheme { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:10px; letter-spacing:.04em; color:var(--ink-soft);
+          background:transparent; border:1px solid var(--line-soft); border-radius:3px; padding:5px 8px; cursor:pointer; text-align:left;
+          transition:color .2s, border-color .2s, background .2s; }
+.scheme:hover, .scheme:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.scheme[aria-pressed="true"] { color:var(--ink); border-color:var(--ink); background:var(--paper-hover); }
+.scheme .dots { display:inline-flex; }
+.scheme .dots i { width:11px; height:11px; border-radius:50%; border:1px solid rgba(30,24,16,.35); margin-left:-3px; }
+.scheme .dots i:first-child { margin-left:0; }
 @media (max-width:760px) {
   .model { grid-template-columns:1fr; padding:14px 14px 16px; }
   .toc { padding:16px 12px 26px; gap:18px; }
@@ -126,29 +137,31 @@ input[type=range] { accent-color:var(--accent); }
       <main class="toc">
         <div class="toc-head"><span class="am-label">Table of contents</span></div>
 
-        <section class="model" aria-labelledby="t-mobius">
+        <section class="model" aria-labelledby="t-mobius" data-model="mobius">
           <div>
             <h2 id="t-mobius">Möbius strip</h2>
             <p>One side, one edge. Tilted so every part of the band is steep enough to build layer by layer.</p>
             <div class="facts">3,448 bricks · 2×4 and 2×2<br>78 × 40 × 82 cm · 85 layers</div>
+            <div class="schemes" role="group" aria-label="Möbius strip colours"><span class="am-label">Colours</span><div></div></div>
           </div>
           <div class="cards">
-            <a class="card" href="tools/lego-models/render.html#mobius"><img src="tools/lego-models/img/card-mobius-render.webp" alt="Render of the Möbius strip" width="480" height="360"><span>Render</span></a>
-            <a class="card" href="tools/lego-models/viewer.html#mobius"><img data-anim src="tools/lego-models/img/card-mobius-3d.webp" data-still="tools/lego-models/img/card-mobius-3d-still.webp" alt="The Möbius strip turning in 3D" width="480" height="360"><span>3D view</span></a>
-            <a class="card" href="tools/lego-models/mobius/index.html"><img data-anim src="tools/lego-models/img/card-mobius-steps.webp" data-still="tools/lego-models/img/card-mobius-steps-still.webp" alt="Layer maps from the Möbius strip instructions" width="480" height="360"><span>Instructions</span></a>
+            <a class="card" data-kind="render" href="tools/lego-models/render.html#mobius"><img src="tools/lego-models/img/card-mobius-render.webp" alt="Render of the Möbius strip" width="480" height="360"><span>Render</span></a>
+            <a class="card" data-kind="3d" href="tools/lego-models/viewer.html#mobius"><img data-anim src="tools/lego-models/img/card-mobius-3d.webp" data-still="tools/lego-models/img/card-mobius-3d-still.webp" alt="The Möbius strip turning in 3D" width="480" height="360"><span>3D view</span></a>
+            <a class="card" data-kind="steps" href="tools/lego-models/mobius/index.html"><img data-anim src="tools/lego-models/img/card-mobius-steps.webp" data-still="tools/lego-models/img/card-mobius-steps-still.webp" alt="Layer maps from the Möbius strip instructions" width="480" height="360"><span>Instructions</span></a>
           </div>
         </section>
 
-        <section class="model" aria-labelledby="t-trefoil">
+        <section class="model" aria-labelledby="t-trefoil" data-model="trefoil">
           <div>
             <h2 id="t-trefoil">Trefoil Seifert surface</h2>
-            <p>A punctured torus whose single edge, in white, is a trefoil knot. Two sides, two colours.</p>
+            <p>A punctured torus whose single edge, in <span data-rim>white</span>, is a trefoil knot. Two sides, two colours.</p>
             <div class="facts">8,379 bricks · 2×4 and 2×2<br>66 × 82 × 81 cm · 84 layers</div>
+            <div class="schemes" role="group" aria-label="Trefoil surface colours"><span class="am-label">Colours</span><div></div></div>
           </div>
           <div class="cards">
-            <a class="card" href="tools/lego-models/render.html#trefoil"><img src="tools/lego-models/img/card-trefoil-render.webp" alt="Render of the trefoil Seifert surface" width="480" height="360"><span>Render</span></a>
-            <a class="card" href="tools/lego-models/viewer.html#trefoil"><img data-anim src="tools/lego-models/img/card-trefoil-3d.webp" data-still="tools/lego-models/img/card-trefoil-3d-still.webp" alt="The trefoil surface turning in 3D" width="480" height="360"><span>3D view</span></a>
-            <a class="card" href="tools/lego-models/trefoil/index.html"><img data-anim src="tools/lego-models/img/card-trefoil-steps.webp" data-still="tools/lego-models/img/card-trefoil-steps-still.webp" alt="Layer maps from the trefoil surface instructions" width="480" height="360"><span>Instructions</span></a>
+            <a class="card" data-kind="render" href="tools/lego-models/render.html#trefoil"><img src="tools/lego-models/img/card-trefoil-render.webp" alt="Render of the trefoil Seifert surface" width="480" height="360"><span>Render</span></a>
+            <a class="card" data-kind="3d" href="tools/lego-models/viewer.html#trefoil"><img data-anim src="tools/lego-models/img/card-trefoil-3d.webp" data-still="tools/lego-models/img/card-trefoil-3d-still.webp" alt="The trefoil surface turning in 3D" width="480" height="360"><span>3D view</span></a>
+            <a class="card" data-kind="steps" href="tools/lego-models/trefoil/index.html"><img data-anim src="tools/lego-models/img/card-trefoil-steps.webp" data-still="tools/lego-models/img/card-trefoil-steps-still.webp" alt="Layer maps from the trefoil surface instructions" width="480" height="360"><span>Instructions</span></a>
           </div>
         </section>
       </main>
@@ -159,6 +172,8 @@ input[type=range] { accent-color:var(--accent); }
       <p>Surfaces from topology, rebuilt as real brick models: standard 2×4 bricks, with 2×2s where a layer needs them, all studs up. Each model is a list of bricks that can actually be built, and everything here is drawn from that one list.</p>
       <h3>What you can open</h3>
       <p><em>Render</em>: a photo-real picture you can zoom into down to the studs. <em>3D view</em>: turn the model around, or slide through it layer by layer. <em>Instructions</em>: step-by-step pages with a picture and a top-down map of each layer.</p>
+      <h3>Colours</h3>
+      <p>Each model comes in a few colour schemes. Pick one under the model's name and all three cards follow it: the render, the 3D view, and the instructions with their parts list. The bricks themselves stay the same; only their colours change.</p>
       <h3>Making them buildable</h3>
       <p>The surface is thickened to a band about four studs thick, cut into the Lego grid layer by layer, and each layer is tiled with bricks so that bricks overlap the joints below them. A computer check confirms that every brick, at the moment it is placed, clips onto a brick already there (pressed on top, or occasionally onto the underside of the brick above), that the whole model is one connected piece, and that it stands without tipping: grey pillars hold it up where needed.</p>
       <h3>The two surfaces</h3>
@@ -187,9 +202,31 @@ input[type=range] { accent-color:var(--accent); }
 })();
 /* am-kit v1 END */
 </script>
+<script src="tools/lego-models/schemes.js"></script>
 <script>
-// show still frames instead of the loops when the viewer prefers reduced motion
-if (matchMedia("(prefers-reduced-motion: reduce)").matches)
-  document.querySelectorAll("img[data-anim]").forEach(i => { i.src = i.dataset.still; });
+// colour schemes: each row's picker points its three cards (and their previews) at that scheme
+const LS = LEGO_SCHEMES, still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAGE = { render: m => `render.html?$#${m}`, "3d": m => `viewer.html?$#${m}`, steps: m => `${m}/index.html?$` };
+function choose(row, sc) {
+  const m = row.dataset.model, sx = LS.suffix(sc), q = sc.id === "classic" ? "" : "scheme=" + sc.id;
+  row.querySelectorAll(".card").forEach(a => {
+    const k = a.dataset.kind, img = a.querySelector("img");
+    a.href = "tools/lego-models/" + PAGE[k](m).replace("?$", q ? "?" + q : "");
+    const base = `tools/lego-models/img/card-${m}-${k}${sx}`;
+    if (img.dataset.still) img.dataset.still = base + "-still.webp";
+    img.src = img.dataset.still && still ? base + "-still.webp" : base + ".webp";
+  });
+  row.querySelectorAll("[data-rim]").forEach(e => { e.textContent = sc.colors[2][1]; });
+  row.querySelectorAll(".scheme").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === sc.id));
+  try { localStorage.setItem("lego-scheme-" + m, sc.id); } catch (_) {}
+}
+document.querySelectorAll(".model[data-model]").forEach(row => {
+  const m = row.dataset.model, box = row.querySelector(".schemes div");
+  row.querySelector(".schemes").hidden = LS.MODELS[m].length < 2;
+  box.innerHTML = LS.MODELS[m].map(sc => `<button class="scheme" data-id="${sc.id}" aria-pressed="false"><span class="dots">${LS.dots(sc)}</span>${sc.name}</button>`).join("");
+  box.addEventListener("click", e => { const b = e.target.closest(".scheme"); if (b) choose(row, LS.get(m, b.dataset.id)); });
+  let saved = null; try { saved = localStorage.getItem("lego-scheme-" + m); } catch (_) {}
+  choose(row, LS.get(m, saved || "classic"));
+});
 </script>
 </body></html>
