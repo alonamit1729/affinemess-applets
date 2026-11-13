@@ -164,6 +164,19 @@ input[type=range] { accent-color:var(--accent); }
             <a class="card" data-kind="steps" href="tools/lego-models/trefoil/index.html"><img data-anim src="tools/lego-models/img/card-trefoil-steps.webp" data-still="tools/lego-models/img/card-trefoil-steps-still.webp" alt="Layer maps from the trefoil surface instructions" width="480" height="360"><span>Instructions</span></a>
           </div>
         </section>
+        <section class="model" aria-labelledby="t-boy" data-model="boy">
+          <div>
+            <h2 id="t-boy">Boy's surface, opened</h2>
+            <p>The projective plane immersed in space, with a disc cut out of the top: a Möbius band. The <span data-dc>orange</span> bricks trace where it passes through itself.</p>
+            <div class="facts">7,034 bricks · 2×4 and 2×2<br>56 × 56 × 34 cm · 35 layers</div>
+            <div class="schemes" role="group" aria-label="Boy's surface colours"><span class="am-label">Colours</span><div></div></div>
+          </div>
+          <div class="cards">
+            <a class="card" data-kind="render" href="tools/lego-models/render.html#boy"><img src="tools/lego-models/img/card-boy-render.webp" alt="Render of the open Boy's surface" width="480" height="360"><span>Render</span></a>
+            <a class="card" data-kind="3d" href="tools/lego-models/viewer.html#boy"><img data-anim src="tools/lego-models/img/card-boy-3d.webp" data-still="tools/lego-models/img/card-boy-3d-still.webp" alt="Boy's surface turning in 3D" width="480" height="360"><span>3D view</span></a>
+            <a class="card" data-kind="steps" href="tools/lego-models/boy/index.html"><img data-anim src="tools/lego-models/img/card-boy-steps.webp" data-still="tools/lego-models/img/card-boy-steps-still.webp" alt="Layer maps from the Boy's surface instructions" width="480" height="360"><span>Instructions</span></a>
+          </div>
+        </section>
       </main>
     </div>
     <aside class="am-about" id="am-about" aria-hidden="true">
@@ -176,8 +189,8 @@ input[type=range] { accent-color:var(--accent); }
       <p>Each model comes in a few colour schemes. Pick one under the model's name and all three cards follow it: the render, the 3D view, and the instructions with their parts list. The bricks themselves stay the same; only their colours change.</p>
       <h3>Making them buildable</h3>
       <p>The surface is thickened to a band about four studs thick, cut into the Lego grid layer by layer, and each layer is tiled with bricks so that bricks overlap the joints below them. A computer check confirms that every brick, at the moment it is placed, clips onto a brick already there (pressed on top, or occasionally onto the underside of the brick above), that the whole model is one connected piece, and that it stands without tipping: grey pillars hold it up where needed.</p>
-      <h3>The two surfaces</h3>
-      <p>The <em>Möbius strip</em> is tilted 65° so that no part of the band is flatter than about 51°, which lets it go up like a curved wall. The <em>trefoil surface</em> is one page of the Milnor fibration of z² + w³, projected to keep its three-fold symmetry. It is a genus-one Seifert surface; its two sides are orange and azure, and the white bricks trace the knot.</p>
+      <h3>The surfaces</h3>
+      <p>The <em>Möbius strip</em> is tilted 65° so that no part of the band is flatter than about 51°, which lets it go up like a curved wall. The <em>trefoil surface</em> is one page of the Milnor fibration of z² + w³, projected to keep its three-fold symmetry. It is a genus-one Seifert surface; its two sides are orange and azure, and the white bricks trace the knot. <em>Boy's surface</em> uses the Bryant–Kusner formula, the least bent way to immerse the projective plane in space. A disc around the pole is cut out so you can see inside, which leaves a Möbius band standing on three lobes; the double curve, where the surface crosses itself, meets itself at a single triple point in the middle.</p>
     </aside>
   </div>
 </div>
@@ -217,6 +230,7 @@ function choose(row, sc) {
     img.src = img.dataset.still && still ? base + "-still.webp" : base + ".webp";
   });
   row.querySelectorAll("[data-rim]").forEach(e => { e.textContent = sc.colors[2][1]; });
+  row.querySelectorAll("[data-dc]").forEach(e => { e.textContent = sc.colors[4][1]; });
   row.querySelectorAll(".scheme").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === sc.id));
   try { localStorage.setItem("lego-scheme-" + m, sc.id); } catch (_) {}
 }

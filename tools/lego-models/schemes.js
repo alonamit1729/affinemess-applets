@@ -1,5 +1,6 @@
 /* Colour schemes for the Lego models, shared by the contents page, the renders, the 3D view and the instructions.
-   Every brick has a role: 0 = side A (the whole band, for the one-sided Möbius strip), 1 = side B, 2 = rim, 3 = pillar.
+   Every brick has a role: 0 = side A (the whole surface, for one-sided ones), 1 = side B, 2 = rim, 3 = pillar,
+   4 = double curve (where an immersed surface crosses itself).
    A scheme gives each role a Lego colour [hex, name]; roles a model doesn't use are null.
    Images for a scheme live next to the default ones with "-<id>" appended (steps-<id>/, render-<model>-<id>.webp, ...);
    the first scheme of each model is the default and has no suffix. */
@@ -14,6 +15,10 @@
       { id: "classic", name: "Orange, azure, white", colors: [["#fe8a18", "orange"], ["#36aebf", "medium azure"], WHITE, DBG] },
       { id: "red-white-black", name: "Red rim, white and black", colors: [WHITE, ["#05131d", "black"], RED, DBG] },
       { id: "red-white-grey", name: "Red rim, white and grey", colors: [WHITE, ["#a0a5a9", "light bluish grey"], RED, DBG] },
+    ],
+    boy: [   // one-sided: no side B; no pillars; role 4 is the double curve
+      { id: "classic", name: "Azure, orange curve", colors: [["#36aebf", "medium azure"], null, WHITE, null, ["#fe8a18", "orange"]] },
+      { id: "white-red", name: "White, red rim, black curve", colors: [WHITE, null, RED, null, ["#05131d", "black"]] },
     ],
   };
   function get(model, id) {
