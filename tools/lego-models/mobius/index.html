@@ -152,6 +152,7 @@ html.am-standalone .am-home { display:inline-block; }
     </div>
     <div class="panel">
       <h2>Before you start</h2>
+      <p id="note" hidden></p>
       <p>The model goes up one layer per step, from the floor. Each page shows the model after the step and a top-down map of the one layer you're working on.</p>
       <h3>Parts</h3>
       <table class="bom" id="bom">
@@ -170,8 +171,10 @@ html.am-standalone .am-home { display:inline-block; }
       </ol>
       <h3>Reading a step</h3>
       <ul>
-        <li>Each step builds one layer. New bricks are coloured: <span class="sw" style="background:var(--new-top);vertical-align:-1px"></span> <b>yellow</b> bricks go <b>on top</b> of what's there; <span class="sw" style="background:var(--new-below);vertical-align:-1px"></span> <b>blue</b> bricks are <b>pressed onto the underside</b> of the bricks above them. Bricks in their own colours are already in place.</li>
-        <li>Some steps continue with short <b>parts</b> (12·2, 12·3…). Each part works on one layer only and does one kind of placement. Parts with blue bricks also show a view from underneath.</li>
+        <li data-style="true">Each step builds one layer. In the picture, new bricks have <b>bold outlines and full colour</b>; earlier layers are faded.</li>
+        <li data-style="true">Some steps continue with short <b>parts</b> (12·2, 12·3…). Each part works on one layer only. On the map, a <span style="color:#8a6400;font-weight:600">yellow outline</span> means place on top; a <span style="color:#1e6fd6;font-weight:600">blue outline</span> means press onto the <b>underside</b> of the bricks above. Parts with blue outlines also show a view from underneath.</li>
+        <li data-style="highlight">Each step builds one layer. New bricks are coloured: <span class="sw" style="background:var(--new-top);vertical-align:-1px"></span> <b>yellow</b> bricks go <b>on top</b> of what's there; <span class="sw" style="background:var(--new-below);vertical-align:-1px"></span> <b>blue</b> bricks are <b>pressed onto the underside</b> of the bricks above them. Bricks in their own colours are already in place.</li>
+        <li data-style="highlight">Some steps continue with short <b>parts</b> (12·2, 12·3…). Each part works on one layer only and does one kind of placement. Parts with blue bricks also show a view from underneath.</li>
         <li>Faint outlines on the map show the neighbouring layer, for lining things up. Tap any brick to see its exact columns and rows.</li>
       </ul>
       <p style="margin-top:14px"><button class="primary" id="begin-btn">Start with step 1 ▶</button></p>
@@ -189,7 +192,7 @@ html.am-standalone .am-home { display:inline-block; }
         <img id="shot" alt="Model after this step" width="1600" height="1280">
         <div id="belowwrap" class="hidden" style="display:grid;gap:6px">
           <h2>View from underneath</h2>
-          <img id="below" alt="View from underneath, showing where the blue bricks go" width="1600" height="1280">
+          <img id="below" alt="View from underneath, showing where the bricks pressed on from below go" width="1600" height="1280">
         </div>
       </div>
       <div class="panel view">
@@ -210,9 +213,13 @@ const DATA = {"nsteps":85,"cols":106,"rows":58,"bricks":[[4,16,0,0,1,0,0,0,3],[4
 const N = DATA.nsteps, COLS = DATA.cols, ROWS = DATA.rows;
 // brick: [i, j, k, o, pillar, step, fromBelow, part]  (part 0 = the main layer of the step)
 // brick[8] is its colour role: 0 band, 2 rim, 3 pillar (see schemes.js)
-const bricks = DATA.bricks.map(b => ({ i: b[0], j: b[1], k: b[2], o: b[3], p: b[4], s: b[5], up: b[6], q: b[7], c: b[8] }));
+const bricks = DATA.bricks.map((b, n) => ({ i: b[0], j: b[1], k: b[2], o: b[3], p: b[4], s: b[5], up: b[6], q: b[7], c: b[8], n }));
 const LS = LEGO_SCHEMES; let SC;
-const cname = c => SC.colors[c][1], chex = c => SC.colors[c][0];
+// a brick's colour in the current scheme (by role, or brick by brick for the artistic schemes)
+const bhex = b => LS.colorOf(SC, b.n, b.c)[0], bname = b => LS.colorOf(SC, b.n, b.c)[1];
+const trueStyle = () => SC.style === "true";
+const fadeOf = h => (LS.light(h) ? "#f4f4f2" : LS.mix(h, "#ffffff", 0.62));
+const fadeEdge = h => (LS.light(h) ? "#b5b5b2" : LS.mix(fadeOf(h), "#000000", 0.22));
 const pages = []; // {s, q, items, layer, up}
 const groups = new Map();
 bricks.forEach(b => { const key = b.s * 100 + b.q; if (!groups.has(key)) groups.set(key, []); groups.get(key).push(b); });
@@ -231,15 +238,16 @@ function rect(b) { // map coords in studs, rotated 180° so the front (camera si
   return { x: COLS - b.i * 2 - w, y: b.j * 2, w, h };
 }
 // map colours: bricks already placed in their own colour, the layer you build against dashed, new bricks yellow / blue
+// (true-colour schemes: new bricks in their own colour, bricks already placed faded, as in their step pictures)
 const STYLE = {
-  ref:  { col: c => ["none", LS.light(chex(c)) ? "#b5b5b2" : LS.mix(chex(c), "#ffffff", 0.55)], dash: true, studs: false },
-  old:  { col: c => [chex(c), LS.edge(chex(c))], dash: false, studs: true },
-  top:  { col: () => ["#f7ce1e", "#5c4a00"], dash: false, studs: true },
-  below:{ col: () => ["#1e8fe6", "#06345a"], dash: false, studs: true },
+  ref:  { col: h => ["none", trueStyle() ? fadeEdge(h) : LS.light(h) ? "#b5b5b2" : LS.mix(h, "#ffffff", 0.55)], dash: true, studs: false },
+  old:  { col: h => (trueStyle() ? [fadeOf(h), fadeEdge(h)] : [h, LS.edge(h)]), dash: false, studs: true },
+  top:  { col: h => (trueStyle() ? [h, LS.edge(h)] : ["#f7ce1e", "#5c4a00"]), dash: false, studs: true },
+  below:{ col: h => (trueStyle() ? [h, LS.edge(h)] : ["#1e8fe6", "#06345a"]), dash: false, studs: true },
 };
 let current = [];
 function brickSVG(b, kind, ring) {
-  const r = rect(b), st = STYLE[kind], [fill, stroke] = st.col(b.c);
+  const r = rect(b), st = STYLE[kind], [fill, stroke] = st.col(bhex(b));
   current.push({ b, kind }); const idx = current.length - 1;
   let s = `<g data-idx="${idx}" style="cursor:pointer">`;
   if (ring) s += `<rect x="${r.x - 0.35}" y="${r.y - 0.35}" width="${r.w + 0.7}" height="${r.h + 0.7}" rx="0.6" fill="none" stroke="${ring}" stroke-width="0.45"/>`;
@@ -262,7 +270,8 @@ function mapSVG(pg) {
   const refLayer = pg.up ? L + 1 : L - 1; // the layer you build against
   bricks.filter(b => b.k === refLayer && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "ref"));
   bricks.filter(b => b.k === L && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "old"));
-  pg.items.forEach(b => s += brickSVG(b, pg.up ? "below" : "top", null));
+  const ring = !trueStyle() || pg.q === 0 ? null : (pg.up ? "#1e6fd6" : "#e0a800");
+  pg.items.forEach(b => s += brickSVG(b, pg.up ? "below" : "top", ring));
   return s + "</svg>";
 }
 function brickIcon(color, n = 4) {
@@ -287,7 +296,7 @@ function show(i) {
   if (location.hash !== h) history.replaceState(null, "", location.pathname + location.search + h);
   if (i < 0) return;
   const pg = pages[i], s = pg.s, n = partsIn(s);
-  const cnt4 = (cl) => pg.items.filter(b => cl.roles.includes(b.c) && b.o !== 2).length, cnt2 = (cl) => pg.items.filter(b => cl.roles.includes(b.c) && b.o === 2).length;
+  const cnt4 = (cl) => pg.items.filter(b => bhex(b) === cl.hex && b.o !== 2).length, cnt2 = (cl) => pg.items.filter(b => bhex(b) === cl.hex && b.o === 2).length;
   $("stepnum").innerHTML = `${s + 1}<small>/ ${N}${n > 1 ? ` · part ${pg.q + 1} of ${n}` : ""}</small>`;
   const chip = (c, n, k) => k ? `<div class="part">${brickIcon(c, n)}× ${k}</div>` : "";
   $("parts").innerHTML = LS.distinct(SC).map(cl => chip(cl.hex, 4, cnt4(cl)) + chip(cl.hex, 2, cnt2(cl))).join("");
@@ -301,7 +310,12 @@ function show(i) {
   $("mapwrap").innerHTML = mapSVG(pg);
   $("info").textContent = "Tap a brick for its position.";
   const ref = pg.up ? `layer ${pg.layer + 2} (above)` : `layer ${pg.layer} (below)`;
-  $("legend").innerHTML =
+  const main = LS.distinct(SC)[0].hex;
+  $("legend").innerHTML = trueStyle() ?
+    (pg.q === 0 ? `<span><span class="sw" style="background:${main};border:1px solid ${LS.edge(main)}"></span>full colour: place now</span>`
+      : `<span><span class="sw" style="background:none;border:3px solid ${pg.up ? "#1e6fd6" : "#e0a800"}"></span>${pg.up ? "press onto the underside" : "place on top"}</span>`) +
+    `<span><span class="sw" style="background:${fadeOf(main)};border:1px solid ${fadeEdge(main)}"></span>faded: already in this layer</span>` +
+    `<span><span class="sw" style="background:none;border:1px dashed #c9a39d"></span>${ref}</span>` :
     `<span><span class="sw" style="background:${pg.up ? "var(--new-below)" : "var(--new-top)"}"></span>${pg.up ? "new: press onto the underside" : "new: place on top"}</span>` +
     `<span>${LS.distinct(SC).filter(cl => !cl.roles.includes(3)).map(cl => `<span class="sw" style="background:${cl.hex};border:1px solid ${LS.edge(cl.hex)}"></span>`).join(" ")} already in this layer</span>` +
     `<span><span class="sw" style="background:none;border:1px dashed #c9a39d"></span>${ref}</span>`;
@@ -326,7 +340,7 @@ $("mapwrap").addEventListener("click", e => {
   const g = e.target.closest("g[data-idx]"); if (!g) return;
   const { b, kind } = current[+g.dataset.idx], r = rect(b);
   const what = kind === "top" ? "new, on top" : kind === "below" ? "new, from below" : kind === "old" ? "already placed" : "neighbouring layer";
-  const nm = cname(b.c);
+  const nm = bname(b);
   $("info").textContent = `${nm[0].toUpperCase() + nm.slice(1)} ${b.o === 2 ? "2×2" : "2×4"} · columns ${r.x + 1}–${r.x + r.w} · rows ${r.y + 1}–${r.y + r.h} · layer ${b.k + 1} (${what})`;
 });
 $("prev").onclick = () => show(page - 1);
@@ -354,9 +368,11 @@ function setScheme(id) {
   $("scheme").innerHTML = LS.MODELS.mobius.map(s => `<option value="${s.id}"${s.id === SC.id ? " selected" : ""}>${s.name}</option>`).join("");
   const cover = $("cover"); if (cover.getAttribute("src") !== "cover.jpg") cover.src = `../img/render-mobius${LS.suffix(SC)}.webp`;
   cover.alt = `Finished model: a brick Möbius strip in ${LS.distinct(SC).map(c => c.name).join(", ")}`;
+  $("note").hidden = !SC.note; $("note").innerHTML = SC.note ? `<em>${SC.note}</em>` : "";
+  document.querySelectorAll("[data-style]").forEach(e => { e.hidden = e.dataset.style !== (trueStyle() ? "true" : "highlight"); });
   const base = $("bom").querySelector("tr:last-child").outerHTML;
   $("bom").innerHTML = LS.distinct(SC).map(cl => {
-    const n4 = bricks.filter(b => cl.roles.includes(b.c) && b.o !== 2).length, n2 = bricks.filter(b => cl.roles.includes(b.c) && b.o === 2).length;
+    const n4 = bricks.filter(b => bhex(b) === cl.hex && b.o !== 2).length, n2 = bricks.filter(b => bhex(b) === cl.hex && b.o === 2).length;
     const sw = w => `<span class="sw" style="background:${cl.hex};border:1px solid ${LS.edge(cl.hex)}${w}"></span>`;
     return `<tr><td>${sw("")}&nbsp; 2×4 brick, ${cl.name}</td><td>${n4.toLocaleString("en-US")}</td></tr>` +
            (n2 ? `<tr><td>${sw(";width:12px")}&nbsp; 2×2 brick, ${cl.name}</td><td>${n2.toLocaleString("en-US")}</td></tr>` : "");

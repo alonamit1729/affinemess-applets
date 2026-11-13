@@ -156,7 +156,8 @@ const COUNTS = { mobius: [[2155, 196], null, [828, 121], [146, 2]], trefoil: [[3
                  boy: [[4929, 197], null, [385, 31], null, [1475, 17]] };
 function partsRows(name, sc) {
   return LEGO_SCHEMES.distinct(sc).map(c => {
-    const n4 = c.roles.reduce((a, r) => a + COUNTS[name][r][0], 0), n2 = c.roles.reduce((a, r) => a + COUNTS[name][r][1], 0);
+    const n4 = c.counts ? c.counts[0] : c.roles.reduce((a, r) => a + COUNTS[name][r][0], 0);
+    const n2 = c.counts ? c.counts[1] : c.roles.reduce((a, r) => a + COUNTS[name][r][1], 0);
     return `<tr><td>${c.name[0].toUpperCase() + c.name.slice(1)} 2×4 / 2×2</td><td>${n4.toLocaleString("en-US")} / ${n2}</td></tr>`;
   }).join("");
 }
@@ -196,7 +197,7 @@ function load(name, id = schemeId) {
   const sc = LEGO_SCHEMES.get(name, id); schemeId = sc.id;
   img.src = `img/render-${name}${LEGO_SCHEMES.suffix(sc)}.webp`; img.alt = cur.alt(sc); img.width = cur.w; img.height = cur.h;
   document.getElementById("about").innerHTML = cur.html.replace("__PARTS__", partsRows(name, sc))
-    .replace(/__C(\d)__/g, (_, r) => sc.colors[+r][1]);
+    .replace(/__C(\d)__/g, (_, r) => sc.colors[+r][1]).replace("</h2>", "</h2>" + (sc.note ? `<p><em>${sc.note}</em></p>` : ""));
   document.getElementById("scheme").parentElement.hidden = LEGO_SCHEMES.MODELS[name].length < 2;
   document.getElementById("scheme").innerHTML = LEGO_SCHEMES.MODELS[name].map(s => `<option value="${s.id}"${s.id === sc.id ? " selected" : ""}>${s.name}</option>`).join("");
   Object.keys(MODELS).forEach(m => document.getElementById("b-" + m).setAttribute("aria-pressed", name === m));
