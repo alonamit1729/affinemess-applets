@@ -108,6 +108,7 @@ a.am-btn { text-decoration:none; display:inline-block; }
       <button class="am-btn" id="b-mobius">Möbius strip</button>
       <button class="am-btn" id="b-trefoil">Trefoil surface</button>
       <button class="am-btn" id="b-boy">Boy's surface</button>
+      <button class="am-btn" id="b-antioloid">Anti-oloid</button>
     </div>
     <label class="am-label colours">Colours <select class="am-input" id="scheme" aria-label="Colour scheme"></select></label>
     <span class="am-spacer"></span>
@@ -153,7 +154,8 @@ a.am-btn { text-decoration:none; display:inline-block; }
 <script>
 // bricks per role (0 side A, 1 side B, 2 rim, 3 pillar) as [2x4, 2x2]
 const COUNTS = { mobius: [[2155, 196], null, [828, 121], [146, 2]], trefoil: [[3013, 84], [2936, 150], [1910, 155], [129, 2]],
-                 boy: [[4929, 197], null, [385, 31], null, [1475, 17]] };
+                 boy: [[4929, 197], null, [385, 31], null, [1475, 17]],
+                 antioloid: [[2504, 97], [2462, 65], [766, 55], [90, 1], null, [820, 46]] };
 function partsRows(name, sc) {
   return LEGO_SCHEMES.distinct(sc).map(c => {
     const n4 = c.counts ? c.counts[0] : c.roles.reduce((a, r) => a + COUNTS[name][r][0], 0);
@@ -172,6 +174,11 @@ const MODELS = {
       <p>One page of the Milnor fibration of <em>z² + w³</em>: a punctured torus whose single edge is the trefoil knot. It is orientable, so its two sides get two colours, __C0__ and __C1__; the __C2__ bricks trace the knot.</p>
       <table class="facts"><tr><td>Bricks</td><td>8,379</td></tr>__PARTS__
       <tr><td>Size</td><td>66 × 82 × 81 cm</td></tr><tr><td>Layers</td><td>84</td></tr><tr><td>Weight</td><td>≈ 19 kg</td></tr></table>` },
+  antioloid: { w: 2800, h: 2240, alt: sc => `Photo-real render of the anti-oloid in ${LEGO_SCHEMES.distinct(sc).map(c => c.name).join(", ")} bricks`,
+    html: `<h2>Anti-oloid</h2>
+      <p>The oloid's two circles, equal and in perpendicular planes with each through the other's centre, joined by a band of straight segments. The circles are linked once, so the band is an annulus with a full twist: a Hopf band. Its sides are __C0__ and __C1__; the upright circle is __C2__ and the level one __C5__.</p>
+      <table class="facts"><tr><td>Bricks</td><td>6,906</td></tr>__PARTS__
+      <tr><td>Size</td><td>96 × 66 × 64 cm</td></tr><tr><td>Layers</td><td>67</td></tr><tr><td>Weight</td><td>≈ 16 kg</td></tr></table>` },
   boy: { w: 2300, h: 1840, alt: sc => `Photo-real render of an open Boy's surface in ${LEGO_SCHEMES.distinct(sc).map(c => c.name).join(", ")} bricks`,
     html: `<h2>Boy's surface, opened</h2>
       <p>The real projective plane immersed in space (Bryant–Kusner), with a disc cut out of the top: what's left is a Möbius band. Its edge is the __C2__ rim; the __C4__ bricks trace the double curve, whose three loops meet at the triple point. One side, so one colour: __C0__.</p>
@@ -225,6 +232,7 @@ document.getElementById("one").onclick = () => zoomAt(1 / s, view.clientWidth / 
 document.getElementById("b-mobius").onclick = () => load("mobius");
 document.getElementById("b-trefoil").onclick = () => load("trefoil");
 document.getElementById("b-boy").onclick = () => load("boy");
+document.getElementById("b-antioloid").onclick = () => load("antioloid");
 document.getElementById("scheme").onchange = e => { const keep = [s, tx, ty]; load(curName, e.target.value); [s, tx, ty] = keep; clamp(); apply(); };
 new ResizeObserver(() => cur && fit()).observe(view);
 load(MODELS[location.hash.slice(1)] ? location.hash.slice(1) : "trefoil");
