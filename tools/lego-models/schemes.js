@@ -76,5 +76,20 @@
   const edge = h => (light(h) ? "#8a8a86" : mix(h, "#000000", 0.6));
   // pickers are hidden (hidden attribute) when a model has a single scheme; keep that winning over display rules
   try { const st = document.createElement("style"); st.textContent = "[hidden]{display:none !important}"; document.head.appendChild(st); } catch (_) {}
+  /* Inside the affinemess.com viewer (an iframe), a link from one of these pages to another would add an entry to
+     the browser's joint session history, and the site's "← Applets" button (history.back()) would then step back
+     through the pages instead of closing the viewer. So when framed, links within the applet replace the current
+     entry instead. Standalone, links behave normally. */
+  let framed = false;
+  try { framed = window.self !== window.top; } catch (_) { framed = true; }
+  if (framed) document.addEventListener("click", e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest && e.target.closest("a[href]");
+    if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+    const u = new URL(a.href, location.href);
+    if (u.origin !== location.origin) return;
+    e.preventDefault();
+    location.replace(u.href);
+  });
   window.LEGO_SCHEMES = { MODELS, get, suffix, url, distinct, colorOf, dots, mix, light, edge };
 })();
