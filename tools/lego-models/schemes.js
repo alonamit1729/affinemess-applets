@@ -34,6 +34,10 @@
       { id: "classic", name: "Orange, azure", colors: [["#fe8a18", "orange"], ["#36aebf", "medium azure"], WHITE, DBG, null, ["#0a3463", "dark blue"]] },
       { id: "red-white", name: "Red, white and black", colors: [RED, WHITE, ["#05131d", "black"], ["#a0a5a9", "light bluish grey"], null, DBG] },
     ],
+    borromean: [   // roles 2, 5 and 6 = the three rings
+      { id: "classic", name: "Black, white, grey rings", colors: [["#fe8a18", "orange"], ["#36aebf", "medium azure"], ["#05131d", "black"], ["#a0a5a9", "light bluish grey"], null, WHITE, DBG] },
+      { id: "primary", name: "Red, blue, yellow rings", colors: [WHITE, DBG, RED, ["#a0a5a9", "light bluish grey"], null, ["#0055bf", "blue"], ["#f2cd37", "yellow"]] },
+    ],
     boy: [   // one-sided: no side B; no pillars; role 4 is the double curve
       { id: "classic", name: "Azure, orange curve", colors: [["#36aebf", "medium azure"], null, WHITE, null, ["#fe8a18", "orange"]] },
       { id: "white-red", name: "White, red rim, black curve", colors: [WHITE, null, RED, null, ["#05131d", "black"]] },
