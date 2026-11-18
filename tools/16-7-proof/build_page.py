@@ -29,7 +29,10 @@ SLUG = "16-7-proof"
 NAME = "(16, 7) proof"
 BUNDLE = "16-7-proof-notebook"
 BUNDLE_FILES = ["README.md", "requirements.txt", "two-shapes.ipynb", "fewdist.py", "figures.py",
-                "data/L10.json", "data/L9.json", "data/levels_summary.json", "data/solutions.json"]
+                "data/L10.json", "data/solutions.json"] + ["certificates/" + name for name in (
+                    "README.md", "check.py", "generate.py", "summary.json", "SHA256SUMS", "level5.jsonl",
+                    "level6_sample.jsonl.gz", "level7_sample.jsonl.gz",
+                    "L5.json", "L6.json", "L7.json", "L8.json", "L9.json", "L10.json")]
 
 # ---------------------------------------------------------------- figures: notebook colours -> site colours
 RECOLOUR = {
@@ -312,6 +315,7 @@ pre.out { padding:8px 14px 2px; color:var(--ink-soft); white-space:pre-wrap; ove
   .page h1 { font-size:34px; }
   .page h2 { font-size:25px; margin-top:42px; }
   pre { font-size:11.5px; }
+  .page code { white-space:normal; overflow-wrap:anywhere; }   /* a long command may break on a phone */
 }
 """
 
@@ -393,18 +397,20 @@ ABOUT = """
       <p>A Jupyter notebook together with its results: the text is the argument, the code cells are the exact
       computations it rests on, and the pictures and numbers are what those computations produced.
       <em>Code</em> in the bar hides or shows the cells, and the menu jumps between sections.</p>
-      <p>The proof is computer-assisted. Its last section lists precisely what it takes from the literature;
-      everything else is computed, in rational numbers and small number fields, with no floating point in any
-      decision.</p>
+      <p>The proof is computer-assisted. Its last section lists precisely what it takes from the literature and
+      what is computed outside the notebook; everything is exact, in integers, rational numbers and small number
+      fields, with no floating point in any decision.</p>
       <h3>Run it yourself</h3>
-      <p><em>Notebook</em> downloads the bundle: the notebook, the Python module behind it and four small data files.
-      It needs Python 3.10 or later and SymPy, nothing else. Unzip, <code>pip install -r requirements.txt</code>,
-      open <code>two-shapes.ipynb</code> in Jupyter and run all cells; that takes about two minutes. One switch at
-      the top recomputes the single saved result, which takes four minutes more.</p>
+      <p><em>Notebook</em> downloads the bundle: the notebook, the Python module behind it, the lists of patterns
+      and the program that checks certificates. It needs Python 3.10 or later and SymPy, nothing else. Unzip,
+      <code>pip install -r requirements.txt</code>, open <code>two-shapes.ipynb</code> in Jupyter and run all
+      cells; that takes between two and three minutes. Section 3.5 says how to run the two longer computations
+      again.</p>
       <h3>Where it comes from</h3>
       <p>The bound of sixteen points is from A. Amit and GPT-6 Astra, <i>The maximum cardinality of a planar
-      seven-distance set</i> (Hexagon 2610.00534). The list of ten-point patterns goes back to F. Szöllősi and
-      P. Östergård, <i>Constructions of maximum few-distance sets in Euclidean spaces</i> (2020). The two sets
+      seven-distance set</i> (Hexagon 2610.00534). The way of listing the ten-point patterns, one point at a time, is
+      due to F. Szöllősi and P. Östergård, <i>Constructions of maximum few-distance sets in Euclidean spaces</i>
+      (2020); here every pattern that is discarded on the way has a certificate that can be checked. The two sets
       themselves were found by P. Erdős and P. Fishburn in 1996, who conjectured that they are the only ones.</p>
       <p>The files are in the site's repository, under
       <a href="https://github.com/alonamit1729/affinemess-applets/tree/main/tools/16-7-proof" target="_blank" rel="noopener">tools/16-7-proof</a>.</p>

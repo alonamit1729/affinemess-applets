@@ -1,12 +1,13 @@
 # Certificates for discarded patterns
 
-The proof in `../two-shapes.ipynb` uses one number from the literature: at most 228 distance patterns
-occur for ten points in the plane with at most six distances (Szöllősi and Östergård, Table 9). That
-number comes out of a generation, level by level from four to ten points, in which candidates are
-*discarded* when a system of polynomial equations has no admissible solution.
+The proof in `../two-shapes.ipynb` needs to know that at most 228 distance patterns occur for ten points
+in the plane with at most six distances. The number first appeared in Table 9 of Szöllősi and Östergård;
+it comes out of a generation, level by level from four to ten points, in which candidates are *discarded*
+when they are shown not to occur.
 
-This folder derives the 228 again, with a certificate for every discarded candidate: a polynomial
-identity that can be checked by multiplying out, and nothing else.
+This folder derives the 228 with a certificate for every discarded candidate: a polynomial identity that
+can be checked by multiplying out, and nothing else. Section 3 of the notebook explains the method and
+rests on these files.
 
 ## Result (18 November 2026)
 
@@ -50,8 +51,8 @@ such points exist. Example, the first five-point certificate:
 where M_b(rows;columns) is the minor of G for the base point b. The "degree of the product" in the table
 is the number of factors on the left; for degree 3 the multipliers are plain integers, as here.
 
-`check.py` checks such identities. It is about seventy lines of pure Python, uses integers only, and
-recomputes the minors from the pattern itself. It is the only code here that has to be trusted for the
+`check.py` checks such identities. Its function `check` is about fifty lines of pure Python, uses
+integers only, and recomputes the minors from the pattern itself; the notebook shows it in full. It is the only code here that has to be trusted for the
 certificates.
 
 ## Checking
@@ -64,7 +65,7 @@ repository (1.2 GB as text) and are attached to the release `certificates-v1`:
 
     python3 check.py --jobs 4 level5.jsonl level6.jsonl.gz level7.jsonl.gz
 
-This takes about 35 core-minutes. `SHA256SUMS` lists the checksums of the three files.
+This takes about 45 core-minutes. `SHA256SUMS` lists the checksums of the three files.
 
 ## The candidates, generated twice
 
@@ -94,8 +95,8 @@ At six points, where 98 % of the discards are, a third enumeration without any p
   show; `generate.py` also checks that every candidate is kept or has a certificate.
 * Together: every planar set of ten points with at most six distances has one of the 228 patterns of
   `L10.json`.
-* The notebook still quotes the number 228 from the literature. Rewriting its Proposition A to rest on
-  this folder instead is the next step.
+* This is Proposition A of the notebook, whose proof (section 3.6) uses these files and nothing from the
+  literature.
 
 How the certificates were found does not matter for their validity. For the record: `fast.py` computes
 the minors, works modulo a prime with the degree-d part of the ideal they generate, tests *all* products
@@ -110,6 +111,8 @@ kept side, `kept_check.py` was run on a sample at six points (see the table of f
 | `level5.jsonl` | 272 certificates: the one-coloured four-point pattern and the 271 discarded five-point candidates |
 | `L5.json`, `L6.json`, `L7.json` | the patterns kept at five, six and seven points (922, 20,229, 4,667) |
 | `L8.json`, `L9.json`, `L10.json` | the candidates at eight, nine and ten points (1,565, 635, 228), all kept |
+| `summary.json` | the numbers of the table above |
+| `level6_sample.jsonl.gz`, `level7_sample.jsonl.gz` | 400 and 200 certificates drawn at random from the two large files; the notebook checks them on every run |
 | `SHA256SUMS` | checksums of `level5.jsonl`, `level6.jsonl.gz`, `level7.jsonl.gz` |
 | `generate.py` | the second generation of the candidates (pure Python), with the check that each is kept or certified |
 | `fast.py`, `find.py` | the search (numpy, python-flint); `find.py` is the first version, used by the pilot |
@@ -117,6 +120,9 @@ kept side, `kept_check.py` was run on a sample at six points (see the table of f
 | `run_level.py`, `finish_level.py` | a whole level in resumable chunks, and collecting it |
 | `pilot6_sample.json`, `pilot6.jsonl.gz`, `pilot6_kept.json`, `run_pilot6.py` | the pilot: 1,060 random six-point candidates |
 | `kept_check.py` | a check on the kept side, not part of any proof: for the 50 kept candidates of the pilot there is, modulo the prime, a solution of the equations at which no forbidden factor vanishes |
+
+The download of the notebook (`16-7-proof-notebook.zip`) contains the files of this table down to
+`generate.py`; the search programs and the pilot are in the repository only.
 
 A certificate is one JSON object per line: `n`, `pattern`, `scale`, `product` (factors `[c]` for x_c or
 `[a, b]` for x_a - x_b, each with its exponent) and `terms` (base point, rows, columns, and the multiplier

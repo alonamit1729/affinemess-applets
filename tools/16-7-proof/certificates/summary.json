@@ -1,0 +1,54 @@
+{
+ "levels": {
+  "4": {
+   "candidates": 25,
+   "certificates": 1,
+   "kept": 24,
+   "degree_of_product": {
+    "3": 1
+   }
+  },
+  "5": {
+   "candidates": 1193,
+   "certificates": 271,
+   "kept": 922,
+   "degree_of_product": {
+    "3": 237,
+    "4": 34
+   }
+  },
+  "6": {
+   "candidates": 537230,
+   "certificates": 517001,
+   "kept": 20229,
+   "degree_of_product": {
+    "3": 380254,
+    "4": 135749,
+    "5": 998
+   }
+  },
+  "7": {
+   "candidates": 14732,
+   "certificates": 10065,
+   "kept": 4667,
+   "degree_of_product": {
+    "3": 10065
+   }
+  },
+  "8": {
+   "candidates": 1565,
+   "certificates": 0,
+   "kept": 1565
+  },
+  "9": {
+   "candidates": 635,
+   "certificates": 0,
+   "kept": 635
+  },
+  "10": {
+   "candidates": 228,
+   "certificates": 0,
+   "kept": 228
+  }
+ }
+}

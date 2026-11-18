@@ -1,28 +1,29 @@
 """The candidates at each level, generated a second time by an independent program.
 
-A pattern on n points with at most six colours is a CANDIDATE if each of its sub-patterns on n-1 points
-is in the list KEPT at the level below.  This program lists all candidates on n points, for n = 5..10,
-and checks that every one of them is accounted for: it is either kept (L5.json ... L10.json) or has a
-certificate (level5.jsonl, level6.jsonl.gz, level7.jsonl.gz).
+A pattern on n points with at most six colours is a CANDIDATE if each of its sub-patterns on
+n-1 points is in the list KEPT at the level below.  This program lists all candidates on n
+points, for n = 5..10, and checks that every one of them is accounted for: it is either kept
+(L5.json ... L10.json) or has a certificate (level5.jsonl, level6.jsonl.gz, level7.jsonl.gz).
 
     python3 generate.py N [--jobs K] [--work DIR] [--certificates FILE]
 
-It shares no code with the generator used first (gen.py, built on nauty).  Pure Python: the only import
-from outside the standard library is fewdist.canonical, the canonical form of the notebook.
+It shares no code with the generator used first (gen.py, built on nauty).  Pure Python: the
+only import from outside the standard library is fewdist.canonical, the canonical form of the
+notebook.
 
-How it works.  Take each kept pattern Q on n-1 points and add a point v.  The n-1 new pairs are coloured
-one at a time, each with one of the colours present so far or with one new colour (at most six in all).
-After the pair (j, v) is coloured, all sub-patterns on v, j and some of the points 0..j-1 are complete,
-and each must itself be kept at its own level, because the kept lists are closed under taking
-sub-patterns.  So a partial colouring is dropped as soon as one of them is not kept; nothing else is
-ever dropped.  For sub-patterns on 4, 5 or 6 points this test is a table lookup: the tables hold every
-colouring of the complete graph on 4, 5, 6 labelled points that is a kept pattern up to renumbering.
-When n - 1 > 6, the n-1 sub-patterns on n-1 points that contain v are tested at the end, by canonical
-form.
+How it works.  Take each kept pattern Q on n-1 points and add a point v.  The n-1 new pairs
+are coloured one at a time, each with one of the colours present so far or with one new colour
+(at most six in all).  After the pair (j, v) is coloured, all sub-patterns on v, j and some of
+the points 0..j-1 are complete, and each must itself be kept at its own level, because the kept
+lists are closed under taking sub-patterns.  So a partial colouring is dropped as soon as one
+of them is not kept; nothing else is ever dropped.  For sub-patterns on 4, 5 or 6 points this
+test is a table lookup: the tables hold every colouring of the complete graph on 4, 5, 6
+labelled points that is a kept pattern up to renumbering.  When n - 1 > 6, the n-1
+sub-patterns on n-1 points that contain v are tested at the end, by canonical form.
 
-Every candidate P arises this way: remove any point v of P; what is left is a kept pattern, hence a
-renumbering of some Q in the list; renumber P accordingly, and rename the colours of the new pairs that
-do not occur in Q in the order in which they first appear.
+Every candidate P arises this way: remove any point v of P; what is left is a kept pattern,
+hence a renumbering of some Q in the list; renumber P accordingly, and rename the colours of
+the new pairs that do not occur in Q in the order in which they first appear.
 """
 import gzip
 import json
@@ -51,11 +52,12 @@ def code(colours):
 
 
 def labelled_table(patterns, m):
-    """Codes of all colourings of the complete graph on m labelled points that are one of `patterns`
-    after renumbering the points; a sorted array."""
+    """Codes of all colourings of the complete graph on m labelled points that are one of
+    `patterns` after renumbering the points; a sorted array."""
     P = pairs(m)
     where = {e: i for i, e in enumerate(P)}
-    renumberings = [[where[tuple(sorted((s[a], s[b])))] for a, b in P] for s in permutations(range(m))]
+    renumberings = [[where[tuple(sorted((s[a], s[b])))] for a, b in P]
+                    for s in permutations(range(m))]
     codes = set()
     for p in patterns:
         for r in renumberings:
@@ -68,47 +70,47 @@ def in_table(table, value):
     return i < len(table) and table[i] == value
 
 
-def extensions(Q, tables, kept_below):
-    """All candidates obtained from the pattern Q on m points by adding the point m.
+def extensions(Q, tables, kept_below=None):
+    """All candidates obtained from the kept pattern Q on m points by adding the point m.
     tables[s]: labelled table of the kept patterns on s points (s = 4, 5, 6);
-    kept_below: canonical forms of the kept patterns on m points, used only if m > 6."""
+    kept_below: canonical forms of the kept patterns on m points (needed only if m > 6)."""
     m = n_points(Q)
-    old = [[None] * m for _ in range(m)]
+    old = [[None] * m for _ in range(m)]                # old[a][b]: colour of the old pair
     for (a, b), c in zip(pairs(m), Q):
         old[a][b] = old[b][a] = c
-    top = min(m, max(TABLE_SIZES))                       # largest sub-pattern size tested by table
-    new = [None] * m
+    new = [None] * m                                    # new[a]: colour of the pair (a, m)
+    top = min(m, max(TABLE_SIZES))                      # largest size tested by table lookup
     found = []
 
-    def sub_code(points):                                # sub-pattern on these old points and the new one
+    def sub_code(points):                 # the sub-pattern on these old points and the new one
         names, value = {}, 0
         for i, a in enumerate(points):
-            row = old[a]
             for b in points[i + 1:]:
-                value = value * MAX_COLOURS + names.setdefault(row[b], len(names))
+                value = value * MAX_COLOURS + names.setdefault(old[a][b], len(names))
             value = value * MAX_COLOURS + names.setdefault(new[a], len(names))
         return value
 
-    def colour_pair(j, used):
-        if j == m:
-            if m > top and not all(canonical(drop(d)) in kept_below for d in range(m)):
-                return
-            found.append(whole())
-            return
-        size = min(j + 2, top)                           # points in the sub-patterns completed now
-        groups = [T + (j,) for T in combinations(range(j), size - 2)] if size >= 4 else []
-        for c in range(min(used + 1, MAX_COLOURS)):
-            new[j] = c
-            if all(in_table(tables[size], sub_code(points)) for points in groups):
-                colour_pair(j + 1, max(used, c + 1))
-        new[j] = None
-
-    def whole():                                         # the pattern on m + 1 points, pairs in order
+    def whole():                                        # the pattern on all m + 1 points
         return tuple(new[a] if b == m else old[a][b] for a, b in pairs(m + 1))
 
-    def drop(d):                                         # the sub-pattern without the old point d
-        rest = [v for v in range(m) if v != d]
-        return tuple(new[a] if b == m else old[a][b] for a, b in combinations(rest + [m], 2))
+    def without(d):                                     # the sub-pattern without old point d
+        rest = [v for v in range(m) if v != d] + [m]
+        return tuple(new[a] if b == m else old[a][b] for a, b in combinations(rest, 2))
+
+    def colour_pair(j, used):             # colour the pair (j, m); `used` colours so far
+        if j == m:
+            if m == top or all(canonical(without(d)) in kept_below for d in range(m)):
+                found.append(whole())
+            return
+        size = min(j + 2, top)            # the sub-patterns completed now have this many points
+        completed = [T + (j,) for T in combinations(range(j), size - 2)]
+        if size < 4:                      # no list below four points: nothing to test yet
+            completed = []
+        for c in range(min(used + 1, MAX_COLOURS)):
+            new[j] = c
+            if all(in_table(tables[size], sub_code(points)) for points in completed):
+                colour_pair(j + 1, max(used, c + 1))
+        new[j] = None
 
     colour_pair(0, max(Q) + 1)
     return found
@@ -121,7 +123,7 @@ def load(name):
 
 def kept(n):
     """The patterns kept on n points."""
-    if n == 4:      # every pattern on four points except the one-coloured one (first line of level5.jsonl)
+    if n == 4:      # every pattern on four points except the one-coloured one
         strings = [()]
         for _ in range(6):
             strings = [s + (c,) for s in strings for c in range(max(s, default=-1) + 2)]
@@ -129,22 +131,8 @@ def kept(n):
     return load(f"L{n}.json")
 
 
-_STATE = {}
-
-
-def _work(chunk):
-    tables, below = _STATE["tables"], _STATE["below"]
-    out = set()
-    for Q in chunk:
-        for P in extensions(Q, tables, below):
-            out.add(canonical(P))
-    return sorted(out)
-
-
-def candidates(n, jobs=1, work=None, log=print):
-    """Canonical forms of all candidates on n points."""
-    parents = kept(n - 1)
-    t0 = time.time()
+def build_tables(n, work=None):
+    """The labelled tables needed for the candidates on n points."""
     tables = {}
     for s in TABLE_SIZES:
         if s <= n - 1:
@@ -158,46 +146,61 @@ def candidates(n, jobs=1, work=None, log=print):
                 if cache:
                     with open(cache, "wb") as fh:
                         tables[s].tofile(fh)
-    _STATE["tables"] = tables
+    return tables
+
+
+_STATE = {}
+
+
+def _work(chunk):
+    out = set()
+    for Q in chunk:
+        for P in extensions(Q, _STATE["tables"], _STATE["below"]):
+            out.add(canonical(P))
+    return sorted(out)
+
+
+def candidates(n, jobs=1, work=None, log=print):
+    """Canonical forms of all candidates on n points."""
+    parents = kept(n - 1)
+    t0 = time.time()
+    _STATE["tables"] = build_tables(n, work)
     _STATE["below"] = {canonical(p) for p in parents} if n - 1 > max(TABLE_SIZES) else None
-    log(f"{n} points: {len(parents)} kept patterns below; tables {[(s, len(t)) for s, t in tables.items()]}"
+    sizes = [(s, len(t)) for s, t in _STATE["tables"].items()]
+    log(f"{n} points: {len(parents)} kept patterns below; tables {sizes}"
         f" ({time.time() - t0:.0f} s)")
     size = max(1, min(200, len(parents) // (8 * jobs) + 1))
     chunks = [parents[i:i + size] for i in range(0, len(parents), size)]
-    result = set()
-
-    def chunk_file(i):
-        return work and os.path.join(work, f"gen{n}_{i:04d}.json")
-
-    todo = []
+    name_of = lambda i: work and os.path.join(work, f"gen{n}_{i:04d}.json")
+    result, todo = set(), []
     for i, chunk in enumerate(chunks):
-        name = chunk_file(i)
-        if name and os.path.exists(name):
-            result.update(tuple(p) for p in json.load(open(name)))
+        if name_of(i) and os.path.exists(name_of(i)):
+            result.update(tuple(p) for p in json.load(open(name_of(i))))
         else:
             todo.append((i, chunk))
-    if todo:
-        if jobs > 1:
-            from multiprocessing import Pool
-            pool = Pool(jobs)
-            stream = pool.imap(_work, [c for _, c in todo])
-        else:
-            stream = map(_work, [c for _, c in todo])
-        for done, ((i, _), found) in enumerate(zip(todo, stream)):
-            result.update(tuple(p) for p in found)
-            if chunk_file(i):
-                with open(chunk_file(i) + ".tmp", "w") as fh:
-                    json.dump(found, fh, separators=(",", ":"))
-                os.replace(chunk_file(i) + ".tmp", chunk_file(i))
-            if (done + 1) % max(1, len(todo) // 10) == 0:
-                log(f"   {done + 1}/{len(todo)} chunks, {len(result)} candidates so far ({time.time() - t0:.0f} s)")
-        if jobs > 1:
-            pool.close()
+    pool = None
+    if jobs > 1 and todo:                 # worker processes inherit the tables (fork)
+        import multiprocessing
+        if "fork" in multiprocessing.get_all_start_methods():
+            pool = multiprocessing.get_context("fork").Pool(jobs)
+    stream = (pool.imap if pool else map)(_work, [chunk for _, chunk in todo])
+    for done, ((i, _), found) in enumerate(zip(todo, stream)):
+        result.update(tuple(p) for p in found)
+        if name_of(i):
+            with open(name_of(i) + ".tmp", "w") as fh:
+                json.dump(found, fh, separators=(",", ":"))
+            os.replace(name_of(i) + ".tmp", name_of(i))
+        if (done + 1) % max(1, len(todo) // 10) == 0:
+            log(f"   {done + 1}/{len(todo)} chunks, {len(result)} candidates so far"
+                f" ({time.time() - t0:.0f} s)")
+    if pool:
+        pool.close()
     return result
 
 
 def certified(name):
-    """The patterns of the certificates in a file, in canonical form."""
+    """The patterns of the certificates in a file, in canonical form, by number of points."""
+    name = str(name)
     opener = gzip.open if name.endswith(".gz") else open
     find = re.compile(r'"n":(\d+),"pattern":\[([0-9,]*)\]')
     out = {}
@@ -218,7 +221,8 @@ if __name__ == "__main__":
     t0 = time.time()
     found = candidates(n, jobs, work)
     kept_here = {canonical(p) for p in kept(n)}
-    print(f"{n} points: {len(found)} candidates; {len(kept_here)} kept ({time.time() - t0:.0f} s)", flush=True)
+    print(f"{n} points: {len(found)} candidates; {len(kept_here)} kept"
+          f" ({time.time() - t0:.0f} s)", flush=True)
     assert kept_here <= found, "a kept pattern is not a candidate"
     rest = found - kept_here
     if n >= 8:
@@ -226,5 +230,6 @@ if __name__ == "__main__":
     else:
         default = {5: "level5.jsonl", 6: "level6.jsonl.gz", 7: "level7.jsonl.gz"}[n]
         have = certified(option("--certificates", os.path.join(HERE, default))).get(n, set())
-        print(f"candidates that are not kept: {len(rest)}; certificates for {n} points: {len(have)};",
-              "every candidate is kept or has a certificate:", rest <= have, "| exactly these:", rest == have)
+        print(f"candidates that are not kept: {len(rest)}; certificates for {n} points:",
+              f"{len(have)}; every candidate is kept or has a certificate: {rest <= have};",
+              f"exactly these: {rest == have}")
