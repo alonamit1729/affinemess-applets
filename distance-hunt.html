@@ -360,7 +360,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <p>One slider and one equality are enough for all but three of the catalog's sets that ordinary construction cannot reach; the remaining three ((5,4) nos. 461, 463 and 466) need three sliders solved together. Pinned points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>.</p>
       <h3>The catalog</h3>
       <p>Every set is compared with the 59,377 rigid sets catalogued in the explorer (the four largest cells, (6,5), (6,6), (7,6) and (8,6), are fetched when a rigid set first appears there; (6,6) alone holds 44,242 sets, about 8 MB). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
-      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number links to that cell of the explorer. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
+      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number opens that card in the Card Viewer, with every length highlighted on hover. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
       <h3>Saving</h3>
       <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
       <h3>Keys</h3>
@@ -732,9 +732,11 @@ function ensureCell(cell) {
   return 'loading';
 }
 /* a link to the catalog applet, open at this cell */
+/* a link to this catalog card in the Card Viewer (inside the site when we are on it), in a new tab */
 function catLink(e) {
-  const [n, d] = e.cell.split(',');
-  return `<a class="dh-catlink" href="fixed-distances.html#n${n}d${d}" target="_blank" rel="noopener" title="Open the (${n},${d}) catalog of n points, d distances in a new tab: this is card no. ${e.num}">no. ${e.num}</a>`;
+  const [n, d] = e.cell.split(','), tail = `n${n}d${d}c${e.num}`;
+  const href = /(^|\.)affinemess\.com$/.test(location.hostname) ? 'https://affinemess.com/#applets/card-viewer/' + tail : 'card-viewer.html#' + tail;
+  return `<a class="dh-catlink" href="${href}" target="_blank" rel="noopener" title="Open card no. ${e.num} of (${n},${d}) in the Card Viewer, in a new tab">no. ${e.num}</a>`;
 }
 /* the catalog's label without its generic prefix */
 const catName = e => e.lab.replace(/^rigid;\s*/, '');
