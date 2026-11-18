@@ -285,7 +285,8 @@ a.am-btn { text-decoration:none; display:inline-block; }
 .page th, .page td { padding:7px 12px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
 .page td code { white-space:normal; }
 .cell { margin:16px 0 20px; }
-pre { margin:0; font-family:var(--mono); font-size:12.5px; line-height:1.55; overflow-x:auto;
+/* code lines are at most 96 characters; the font shrinks a little on narrower windows so that they still fit */
+pre { margin:0; font-family:var(--mono); font-size:clamp(11px, calc((100vw - 100px) / 57.8), 12.4px); line-height:1.55; overflow-x:auto;
   font-variant-ligatures:none; font-feature-settings:"liga" 0, "calt" 0; }
 pre.code { background:var(--paper-card); border:1px solid var(--line-soft); border-left:3px solid var(--line); border-radius:3px;
   padding:11px 14px; color:var(--ink); }

@@ -819,7 +819,8 @@ def candidate_points(conf, budget, exhaustive=False):
     lengths = sorted(old, key=repr)
     pts, n = conf.points, len(conf.points)
     seen, good = set(pts), {}
-    all_triples = [T for T in combinations(range(n), 3) if not conf.collinear(*(pts[i] for i in T))]
+    all_triples = [T for T in combinations(range(n), 3)
+                   if not conf.collinear(*(pts[i] for i in T))]
     anchors = all_triples if exhaustive else anchor_triples(conf, n - 2 * budget)
 
     def consider(y):
@@ -836,9 +837,9 @@ def candidate_points(conf, budget, exhaustive=False):
         good[y] = frozenset(new)
 
     zero = lengths[0] - lengths[0]
-    for T in all_triples:                          # circumcentres
+    for T in all_triples:                      # circumcentres
         consider(_locate(conf, T, zero, zero, zero))
-    for T in anchors:                              # points at old distances from an anchor triple
+    for T in anchors:                          # points at old distances from an anchor triple
         for r, s, t in product(lengths, repeat=3):
             consider(_locate(conf, T, r, s, t))
     return good
