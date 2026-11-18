@@ -222,6 +222,15 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
 }
 .dh-card:hover .del { opacity:1; }
 .dh-card .del:hover { color:var(--accent-deep); }
+.dh-card .lnk {
+  position:absolute; right:3px; bottom:3px; border:0; background:none; cursor:pointer; padding:3px; line-height:0;
+  color:var(--ink-faint); opacity:.55; transition:opacity .2s, color .2s;
+}
+.dh-card .lnk svg { width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.dh-card:hover .lnk, .dh-card .lnk:focus-visible { opacity:1; }
+.dh-card .lnk:hover, .dh-card .lnk:focus-visible { color:var(--accent-deep); outline:none; }
+.dh-card .lnk.ok { color:var(--accent-deep); opacity:1; }
+.dh-card .nm, .dh-card .tag { padding-right:14px; }
 .dh-empty { font-size:14px; color:var(--ink-faint); margin:8px 4px; line-height:1.45; }
 .dh-menu { position:relative; }
 .dh-pop {
@@ -332,7 +341,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <ul>
         <li>You start with two points, a unit apart. Build with the tools on the left; every intersection of two lines or circles becomes a small hollow dot you can use.</li>
         <li><b>Mark</b> the points that belong to your set: hold the mouse on a point for a moment, with any tool, or Shift-click it (free points are marked when you drop them). With <b>Select</b> (Esc) a plain click marks too. Do the same again to unmark. The panel on the right counts them, <em>n</em>, and the distinct distances between them, <em>d</em>, and colours each segment by its length. Lengths are in units of the starting segment. Hover a length in the panel to bring out its segments, or hover a segment to find its length; click a length to keep it highlighted.</li>
-        <li>When you like what you see, press <b>Keep</b>. Similar sets (same shape at any size, rotation or reflection) count once, so the collection only grows when you find something genuinely new.</li>
+        <li>When you like what you see, press <b>Keep</b>. Similar sets (same shape at any size, rotation or reflection) count once, so the collection only grows when you find something genuinely new. The small link button in a card's corner copies a link that opens Distance Hunt with that set on the canvas, to share or to come back to.</li>
         <li>The two <b>Lattice</b> buttons, triangular (G) and square (Q), reveal the lattice built on the two starting points (one at a time). Lattice points work like any other point, and since similar sets count as the same, every lattice piece can be found on these two.</li>
       </ul>
       <h3>The tools</h3>
@@ -1681,11 +1690,12 @@ function renderCollection() {
       const ce = c.ck ? CATK.get(c.ck) : null, vs = ce ? verdictShort(ce.v) : '';
       const tag = (c.snapped ? '<span class="tag snap">snapped</span>' : (!c.ck && !c.flex && ci && !ci.complete ? '<span class="tag new">new?</span>' : '<span class="tag">' + (c.flex ? 'flexible' : 'constructed') + '</span>'))
         + (vs ? `<span class="tag hard">${esc(vs)}</span>` : '');
-      html += `<div class="dh-card" data-card="${c.id}" role="button" tabindex="0" title="Load into the canvas">${thumb(c)}<div class="nm">${catLabel(c)}</div>${tag}<button class="del" data-del="${c.id}" title="Remove from the collection">×</button></div>`;
+      html += `<div class="dh-card" data-card="${c.id}" role="button" tabindex="0" title="Load into the canvas">${thumb(c)}<div class="nm">${catLabel(c)}</div>${tag}<button class="del" data-del="${c.id}" title="Remove from the collection">×</button><button class="lnk" data-lnk="${c.id}" title="Copy a link to this card" aria-label="Copy a link to this card">${LINK_ICON}</button></div>`;
     }
     html += '</div></div>';
   }
   box.innerHTML = html;
+  prepCardLinks();
 }
 function flashCard(id) {
   const el = document.querySelector(`[data-card="${id}"]`); if (!el) return;
@@ -1702,6 +1712,8 @@ function loadCard(id) {
 }
 $('#coll').addEventListener('click', e => {
   if (e.target.closest('.dh-catlink')) return;
+  const lnk = e.target.closest('[data-lnk]');
+  if (lnk) { e.stopPropagation(); copyCardLink(lnk); return; }
   const del = e.target.closest('[data-del]');
   if (del) {
     e.stopPropagation();
@@ -1711,7 +1723,7 @@ $('#coll').addEventListener('click', e => {
   }
   const el = e.target.closest('[data-card]'); if (el) loadCard(el.dataset.card);
 });
-$('#coll').addEventListener('keydown', e => { if (e.key === 'Enter') { const el = e.target.closest('[data-card]'); if (el) loadCard(el.dataset.card); } });
+$('#coll').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.target.closest('button')) { const el = e.target.closest('[data-card]'); if (el) loadCard(el.dataset.card); } });
 
 /* ---------------- persistence ---------------- */
 let persistTimer = null, askedPersist = false;
@@ -1778,8 +1790,68 @@ async function makeLink() {
   const base = (location.origin && location.origin !== 'null' ? location.origin + location.pathname : 'https://affinemess.com/distance-hunt.html');
   return base + '#' + tag + b64u(body);
 }
+/* ---- a link to one card: opens the site with that set loaded in the canvas ---- */
+const LINK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.9 2.9 0 0 0 4.1 0l2.3-2.3a2.9 2.9 0 0 0-4.1-4.1l-1 1"/><path d="M9.4 6.6a2.9 2.9 0 0 0-4.1 0L3 8.9a2.9 2.9 0 0 0 4.1 4.1l1-1"/></svg>';
+const cardLinks = new Map();          // card id -> link (made ahead, so a click can copy at once)
+function linkBase() {
+  // on the site the link opens the applet inside it; anywhere else (a local copy) it opens this page
+  if (/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/distance-hunt/';
+  return (location.origin && location.origin !== 'null' ? location.origin + location.pathname : 'https://affinemess.com/distance-hunt.html') + '#';
+}
+async function makeCardLink(c) {
+  const raw = new TextEncoder().encode(JSON.stringify({ r: c.recipe }));
+  if (window.CompressionStream) { try { return linkBase() + 'k=' + b64u(await pipe(raw, new CompressionStream('deflate-raw'))); } catch (e) {} }
+  return linkBase() + 'j=' + b64u(raw);
+}
+function prepCardLinks() {
+  for (const c of cards) if (!cardLinks.has(c.id)) makeCardLink(c).then(u => cardLinks.set(c.id, u));
+}
+function copyText(t) {
+  const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;'; document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove(); return ok;
+}
+async function copyCardLink(btn) {
+  const c = cards.find(x => x.id === btn.dataset.lnk); if (!c) return;
+  let url = cardLinks.get(c.id);
+  if (!url) { url = await makeCardLink(c); cardLinks.set(c.id, url); }
+  let ok = false;
+  try { await navigator.clipboard.writeText(url); ok = true; } catch (e) { ok = copyText(url); }
+  if (ok) {
+    btn.classList.add('ok'); setTimeout(() => btn.classList.remove('ok'), 1500);
+    toast('Link to this card copied. Opening it shows the set in Distance Hunt.');
+  } else {                            // no clipboard here: show the link to copy by hand
+    const t = $('#t-link'); pop.classList.add('open'); $('#b-save').setAttribute('aria-expanded', 'true');
+    t.hidden = false; t.value = url; t.select(); $('#p-link').hidden = true;
+    toast('Copy the link from the box above.');
+  }
+}
+function validRecipe(r) {
+  return r && Array.isArray(r.nodes) && r.nodes.length >= 2 && r.nodes.every(n => n && Number.isInteger(n.id) && typeof n.t === 'string') &&
+    Array.isArray(r.marked) && r.marked.every(Number.isInteger) && (!r.cons || Array.isArray(r.cons));
+}
+async function readCardHash(h) {
+  try {
+    let bytes = unb64u(h.slice(3));
+    if (h[1] === 'k') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
+    const o = JSON.parse(new TextDecoder().decode(bytes));
+    if (!validRecipe(o.r)) throw new Error('bad recipe');
+    pushUndo();
+    S.nodes = JSON.parse(JSON.stringify(o.r.nodes)); S.marked = o.r.marked.slice();
+    S.cons = Array.isArray(o.r.cons) ? JSON.parse(JSON.stringify(o.r.cons)) : [];
+    S.next = Math.max(...S.nodes.map(n => n.id)) + 1; picks = []; eqPick = null; alts = [];
+    recompute(); renderEqs(); fit(); persist();
+    const st = status;
+    const what = st && st.cat ? `no. ${st.cat.num}, ${catName(st.cat)}` : (st ? `a set with n = ${st.n}, d = ${st.d}` : 'a set');
+    toast(st && st.dup ? `From the link: ${what}. It is already in your collection.` : `From the link: ${what}. Press Keep to add it to your collection; Undo brings back what you had.`, 5000);
+  } catch (e) { toast('Could not read the set in this link.'); }
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+}
 async function readLinkHash() {
-  const h = location.hash; if (!/^#[cz]=/.test(h)) return;
+  const h = location.hash;
+  if (/^#[kj]=/.test(h)) return readCardHash(h);
+  if (!/^#[cz]=/.test(h)) return;
   try {
     let bytes = unb64u(h.slice(3));
     if (h[1] === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
@@ -1792,7 +1864,7 @@ async function readLinkHash() {
 
 /* ---------------- toast ---------------- */
 let toastT = null;
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
+function toast(msg, ms = 2200) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), ms); }
 
 /* ---------------- pointer ---------------- */
 let drag = null, hold = null, holdTimer = null;
