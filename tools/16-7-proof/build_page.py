@@ -29,7 +29,7 @@ SLUG = "16-7-proof"
 NAME = "(16, 7) proof"
 BUNDLE = "16-7-proof-notebook"
 BUNDLE_FILES = ["README.md", "requirements.txt", "two-shapes.ipynb", "fewdist.py", "figures.py",
-                "data/L10.json", "data/solutions.json"] + ["certificates/" + name for name in (
+                "data/L10.json", "data/solutions.json", "paper/seven-distances.pdf"] + ["certificates/" + name for name in (
                     "README.md", "check.py", "generate.py", "summary.json", "SHA256SUMS", "level5.jsonl",
                     "level6_sample.jsonl.gz", "level7_sample.jsonl.gz",
                     "L5.json", "L6.json", "L7.json", "L8.json", "L9.json", "L10.json")]
