@@ -430,13 +430,15 @@
                   .find(t => t.dataset.slug === slug) || null;
     }
 
-    function openViewer(tile, push) {
+    /* deep: anything after the slug in #<tab>/<slug>/<deep>; our own applet pages receive it as
+       their #hash (e.g. a Distance Hunt card link), and the address bar goes back to #<tab>/<slug> */
+    function openViewer(tile, push, deep) {
       const tab = tabOf(tile), key = tab + '/' + tile.dataset.slug;
       if (push) {
         history.pushState({ amViewer: 1 }, '', '#' + key);
         viewerPushed = true;
       }
-      if (currentKey === key && !viewer.hidden) return;
+      if (currentKey === key && !viewer.hidden && !deep) return;
       if (viewer.hidden) savedY = window.pageYOffset;
       const name = tile.dataset.name || (tile.querySelector('.title') || tile).textContent.trim();
       currentKey = key;
@@ -453,7 +455,10 @@
       vNote.classList.remove('open');
       viewer.classList.toggle('is-video', !!tile.querySelector('.media.video'));
       viewer.classList.toggle('is-quora', tab === 'quora');
-      mountFrame(tile.dataset.src || fresh(tile.getAttribute('href')), name);
+      const href = tile.getAttribute('href');
+      const toApplet = deep && !tile.dataset.src && !href.includes('#');
+      mountFrame(tile.dataset.src || fresh(toApplet ? href + '#' + deep : href), name);
+      if (deep) history.replaceState(history.state, '', '#' + key);
       viewer.hidden = false;
       root.classList.add('am-viewing');
       if (overlayMQ.matches) document.documentElement.classList.add('am-lock');
@@ -690,12 +695,12 @@
     function route() {
       let h = (location.hash || '').replace(/^#\/?/, '');
       h = h.replace(/^youtube(?=\/|$)/, 'media');   // old links from when the tab was called YouTube
-      const m = h.match(/^([a-z]+)\/(.+?)\/*$/);
+      const m = h.match(/^([a-z]+)\/([^/]+?)(?:\/(.+?))?\/*$/);   // #<tab>/<slug>[/<deep>]
       if (m) {
         let slug = m[2];
         try { slug = decodeURIComponent(slug); } catch (_) {}
         const tile = tileFor(m[1], slug);
-        if (tile) { activate(m[1], false); openViewer(tile, false); return; }
+        if (tile) { activate(m[1], false); openViewer(tile, false, m[3]); return; }
         closeViewerUI();                     // unknown item: just show its tab
         if (activate(m[1], false)) history.replaceState(null, '', '#' + m[1]);
         else activate('home', false);
