@@ -39,9 +39,8 @@ RECOLOUR = {
     "#52514e": "#5C5142",   # muted text         -> ink-soft
     "#c9c7c0": "#B8AB8A",   # faint marks        -> line
     "#2a78d6": "#35598F", "#eb6834": "#B85820", "#1baf7a": "#2F7F86", "#eda100": "#A8842A",
-    "#e87ba4": "#5B4FA0", "#008300": "#4E7D52", "#e34948": "#A03A2E",
-    "#6250d6": "#5B4FA0",   # the notebook's violet (points with irrational lengths in the gallery) stays violet;
-}                           # no figure uses more than six segment colours, so sharing it with the fifth is safe
+    "#e87ba4": "#5B4FA0", "#008300": "#4E7D52", "#6250d6": "#9A5577", "#e34948": "#A03A2E",
+}
 SVG_FONT_OLD = "font-family=\"system-ui, -apple-system, 'Segoe UI', sans-serif\""
 SVG_FONT_NEW = "font-family=\"'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace\""
 
