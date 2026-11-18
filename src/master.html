@@ -1,5 +1,7 @@
 <!-- =========================================================
-  VERSION 2026-11-18a
+  VERSION 2026-11-18b
+    b: Card Viewer (#applets/card-viewer): no tile; a hidden data-slug entry in the Applets panel so card links open it in the viewer
+  PREVIOUS 2026-11-18a
     a: deep links into an applet: #applets/<slug>/<more> opens the applet with #<more> (Distance Hunt card links); the address then shows #applets/<slug>
   PREVIOUS 2026-11-09b
     b: Water Color Solver card (Applets, last)
@@ -797,7 +799,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-11-18a">
+<div class="am-root" data-version="2026-11-18b">
   <div class="am-container">
 
     <header class="site-head">
@@ -984,6 +986,9 @@
             <div class="open">open <span>&rarr;</span></div>
             </div>
           </a>
+          <!-- Card Viewer: no tile of its own. This hidden entry lets #applets/card-viewer/<n…d…c…> open it in the
+               viewer (card links from Distance Hunt and the catalog land here). Not a .tile, so it is not drawn or counted. -->
+          <a data-slug="card-viewer" data-name="Card Viewer" href="__APPS__card-viewer.html" hidden tabindex="-1" aria-hidden="true"></a>
           <a class="tile" data-slug="brudno-sextic-explorer" href="__APPS__brudno-sextic-explorer.html" target="_blank" rel="noopener">
             <div class="media"><svg class="glyph" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
               <path d="M 10 50 Q 22 10 34 50 T 58 50 T 82 50 Q 92 74 94 60"/>
