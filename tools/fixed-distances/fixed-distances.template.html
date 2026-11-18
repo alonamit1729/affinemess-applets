@@ -408,7 +408,7 @@ const DATA = __DATA__;
       if(!valid(z)){ for(let c=0;c<N;c++) z[c]=z0[c]; dir=w.map(x=>-x); phase+=Math.PI; return; }
       dir=w;
     }
-    const lines=[]; svgEl.querySelectorAll('line').forEach(l=>{ lines[+l.dataset.e]=l; }), dots=Array.from(svgEl.querySelectorAll('circle'));
+    const lines=[]; svgEl.querySelectorAll('line').forEach(l=>{ lines[+l.dataset.e]=l; }); const dots=Array.from(svgEl.querySelectorAll('circle'));
     const orig=lines.map(L=>['x1','y1','x2','y2'].map(a=>L.getAttribute(a))).concat(dots.map(c=>['cx','cy'].map(a=>c.getAttribute(a))));
     function origDots(){ return orig.slice(lines.length).map(a=>[+a[0],+a[1]]); }
     function restore(){ lines.forEach((L,i)=>{ ['x1','y1','x2','y2'].forEach((a,j)=>L.setAttribute(a,orig[i][j])); }); dots.forEach((c,i)=>{ ['cx','cy'].forEach((a,j)=>c.setAttribute(a,orig[lines.length+i][j])); }); }
