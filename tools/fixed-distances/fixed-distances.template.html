@@ -151,7 +151,14 @@ input[type=range] { accent-color:var(--accent); }
 .fd-cathead p{ grid-column:1/3; margin:0; font-size:14.5px; color:var(--ink-soft); max-width:78ch; }
 .fd-cathead p.src{ font-size:12.5px; color:var(--ink-faint); }
 .fd-cards{ max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:12px; align-items:start; }
-.fd-card{ background:var(--paper-card); border:1px solid var(--line-soft); border-radius:3px; padding:9px 9px 8px; display:flex; flex-direction:column; gap:5px; min-width:0; }
+.fd-card{ position:relative; background:var(--paper-card); border:1px solid var(--line-soft); border-radius:3px; padding:9px 9px 8px; display:flex; flex-direction:column; gap:5px; min-width:0; }
+.fd-link{ position:absolute; top:6px; right:6px; width:24px; height:24px; padding:3px; border:0; border-radius:3px; background:var(--paper-card); color:var(--ink-soft); cursor:pointer; opacity:.35; transition:opacity .15s; }
+.fd-link svg{ width:100%; height:100%; display:block; }
+.fd-card:hover .fd-link, .fd-link:focus-visible{ opacity:1; }
+.fd-link:hover{ color:var(--accent-deep); }
+@media (hover:none){ .fd-link{ opacity:.7; } }
+.fd-linkok{ position:absolute; top:8px; right:34px; font-family:var(--mono); font-size:10.5px; color:var(--accent-deep); background:var(--paper-card); padding:2px 5px; border-radius:3px; pointer-events:none; }
+.fd-card.hl{ outline:2px solid var(--accent); outline-offset:1px; }
 .fd-card svg{ width:100%; height:auto; display:block; }
 .fd-card .lab{ font-size:13px; line-height:1.3; color:var(--ink); overflow-wrap:anywhere; }
 .fd-card .lab .num{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-right:5px; }
@@ -292,8 +299,17 @@ const DATA = __DATA__;
   const COL=['var(--series-1)','var(--series-2)','var(--series-3)','var(--series-4)','var(--series-5)','var(--series-6)','var(--series-7)'];
   function svg(it){
     const P=it.draw, n=P.length; let s=`<svg viewBox="-0.68 -0.68 1.36 1.36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(it.label)}"><g transform="scale(1,-1)">`;
-    let k=0;
-    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){ const a=P[i],b=P[j]; s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${COL[it.cls[k]%7]}" stroke-width="${n>9?0.007:0.011}" stroke-linecap="round" stroke-opacity="0.85"/>`; k++; }
+    const segs=[]; let k=0;                                  // [i, j, class, edge index]
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){ segs.push([i,j,it.cls[k],k]); k++; }
+    const len=sg=>Math.hypot(P[sg[0]][0]-P[sg[1]][0],P[sg[0]][1]-P[sg[1]][1]);
+    const w=n>9?0.007:0.011;
+    const line=(sg,col,sw,op)=>`<line data-e="${sg[3]}" x1="${P[sg[0]][0]}" y1="${P[sg[0]][1]}" x2="${P[sg[1]][0]}" y2="${P[sg[1]][1]}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-opacity="${op}"/>`;
+    if(n<=7){ for(const sg of segs) s+=line(sg,COL[sg[2]%7],w,0.85); }
+    else{   // more than 7 points: the shortest distance in ink on top, every other class thin and faint (as in Distance Hunt)
+      const shortest=segs.reduce((a,b)=>len(b)<len(a)?b:a)[2];
+      for(const sg of segs) if(sg[2]!==shortest) s+=line(sg,COL[sg[2]%7],0.5*w,0.3);
+      for(const sg of segs) if(sg[2]===shortest) s+=line(sg,'var(--ink)',1.4*w,0.9);
+    }
     for(const p of P) s+=`<circle cx="${p[0]}" cy="${p[1]}" r="${n>9?0.02:0.026}" fill="var(--ink)"/>`;
     // vertex labels, pushed outward from the centroid (hidden while the configuration flexes)
     const cx=P.reduce((t,p)=>t+p[0],0)/n, cy=P.reduce((t,p)=>t+p[1],0)/n, fs=n>9?0.075:0.095, off=n>9?0.07:0.085;
@@ -392,7 +408,7 @@ const DATA = __DATA__;
       if(!valid(z)){ for(let c=0;c<N;c++) z[c]=z0[c]; dir=w.map(x=>-x); phase+=Math.PI; return; }
       dir=w;
     }
-    const lines=Array.from(svgEl.querySelectorAll('line')), dots=Array.from(svgEl.querySelectorAll('circle'));
+    const lines=[]; svgEl.querySelectorAll('line').forEach(l=>{ lines[+l.dataset.e]=l; }), dots=Array.from(svgEl.querySelectorAll('circle'));
     const orig=lines.map(L=>['x1','y1','x2','y2'].map(a=>L.getAttribute(a))).concat(dots.map(c=>['cx','cy'].map(a=>c.getAttribute(a))));
     function origDots(){ return orig.slice(lines.length).map(a=>[+a[0],+a[1]]); }
     function restore(){ lines.forEach((L,i)=>{ ['x1','y1','x2','y2'].forEach((a,j)=>L.setAttribute(a,orig[i][j])); }); dots.forEach((c,i)=>{ ['cx','cy'].forEach((a,j)=>c.setAttribute(a,orig[lines.length+i][j])); }); }
@@ -412,6 +428,27 @@ const DATA = __DATA__;
       stop(){ fl.running=running=false; ACTIVE.delete(fl); cancelAnimationFrame(raf); reset(); restore(); const card=svgEl.closest('.fd-card'); if(card) card.classList.remove('playing'); } };
     return fl;
   }
+  const LINKSVG='<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 9.4a2.9 2.9 0 0 0 4.1 0l2.3-2.3a2.9 2.9 0 0 0-4.1-4.1l-1 1"/><path d="M9.4 6.6a2.9 2.9 0 0 0-4.1 0L3 8.9a2.9 2.9 0 0 0 4.1 4.1l1-1"/></svg>';
+  // card links open the Card Viewer (the number is the card's index + 1 in the cell's item list: Distance Hunt and the viewer rely on it)
+  function cardLink(n,d,num){
+    const tail=`n${n}d${d}c${num}`;
+    if(/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/card-viewer/'+tail;
+    return new URL('card-viewer.html#'+tail,location.href).href;   // a local copy
+  }
+  async function copyText(t){
+    try{ await navigator.clipboard.writeText(t); return true; }catch(e){}
+    const ta=document.createElement('textarea'); ta.value=t; ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    ta.remove(); return ok;
+  }
+  catEl.addEventListener('click',async e=>{
+    const b=e.target.closest('.fd-link'); if(!b) return;
+    e.stopPropagation(); e.preventDefault();
+    const ok=await copyText(cardLink(+b.dataset.n,+b.dataset.d,+b.dataset.num));
+    const card=b.closest('.fd-card'); let t=card.querySelector('.fd-linkok'); if(t) t.remove();
+    t=document.createElement('span'); t.className='fd-linkok'; t.textContent=ok?'Link copied':'Copy failed'; card.appendChild(t); setTimeout(()=>t.remove(),1500);
+  });
+  let pendingCard=0;
   function setHash(h){ /* best effort: some previewers (sandboxed srcdoc or blob frames, notably on iOS) forbid history edits */
     try{ history.replaceState(null,'',h||(location.pathname+location.search)); }catch(_){}
   }
@@ -435,7 +472,7 @@ const DATA = __DATA__;
     function cardHTML(it,i){
           const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
           const fx=it.kind==='family'&&it.dim>=1;
-          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
+          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${it.kind==='rigid'?`<button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Copy a link to this card" aria-label="Copy a link to this card">${LINKSVG}</button>`:''}${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
     }
     function wireCards(){
     catEl.querySelectorAll('.fd-card.flex').forEach(card=>{
@@ -468,6 +505,11 @@ const DATA = __DATA__;
     }
     catEl.innerHTML=h; catEl.scrollTop=0;
     stopAll(); shown=0; showMore();
+    if(pendingCard){   // #n<n>d<d>c<num>: page far enough to show the card, scroll to it and highlight it briefly
+      const idx=pendingCard-1; pendingCard=0; const pos=order.indexOf(idx);
+      if(pos>=0){ while(shown<=pos) showMore(); const el=catEl.querySelector(`.fd-card[data-card="${idx}"]`);
+        if(el){ el.scrollIntoView({block:'center'}); el.classList.add('hl'); setTimeout(()=>el.classList.remove('hl'),2500); } }
+    }
     tableEl.hidden=true; catEl.hidden=false; backBtn.hidden=false; hintEl.hidden=true;
     whereEl.hidden=false; whereEl.innerHTML=`n = ${esc(nLabel)}, d = ${dLabel}`;
     const hk='n'+String(nLabel).replace('–','-')+'d'+dLabel; if(location.hash!=='#'+hk) setHash('#'+hk);
@@ -475,7 +517,7 @@ const DATA = __DATA__;
   function closeCat(){ catEl.hidden=true; tableEl.hidden=false; backBtn.hidden=true; whereEl.hidden=true; hintEl.hidden=false; if(location.hash&&location.hash!=='#about') setHash(''); }
   backBtn.addEventListener('click',closeCat);
   renderTable();
-  function fromHash(){ const m=/^#n([\d-]+)d(\d)$/.exec(location.hash); if(m&&cells[m[1]+','+m[2]]) open(m[1]+','+m[2]); else if(!location.hash||location.hash==='#about') { if(!catEl.hidden) closeCat(); } }
+  function fromHash(){ const m=/^#n([\d-]+)d(\d)(?:c(\d+))?$/.exec(location.hash); if(m&&cells[m[1]+','+m[2]]){ pendingCard=+(m[3]||0); open(m[1]+','+m[2]); } else if(!location.hash||location.hash==='#about') { if(!catEl.hidden) closeCat(); } }
   addEventListener('hashchange',fromHash); fromHash();
 })();
 </script>
