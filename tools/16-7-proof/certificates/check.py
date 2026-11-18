@@ -86,21 +86,44 @@ def check(cert):
     return True
 
 
-def read(name):
-    """Certificates from a file with one JSON object per line (.jsonl or .jsonl.gz)."""
-    import gzip, json
+def lines(name):
+    """The lines of a file with one certificate (a JSON object) per line: .jsonl or .jsonl.gz."""
+    import gzip
     opener = gzip.open if name.endswith(".gz") else open
     with opener(name, "rt") as fh:
-        return [json.loads(line) for line in fh if line.strip()]
+        for line in fh:
+            if line.strip():
+                yield line
+
+
+def read(name):
+    import json
+    return [json.loads(line) for line in lines(name)]
+
+
+def check_line(line):
+    import json
+    cert = json.loads(line)
+    check(cert)
+    return cert["n"]
 
 
 if __name__ == "__main__":
+    # python3 check.py [--jobs K] FILE...      (one certificate at a time; a large file is never loaded whole)
     import sys
-    total = 0
-    for name in sys.argv[1:]:
-        certs = read(name)
-        for c in certs:
-            check(c)
-        total += len(certs)
-        print(f"{name}: {len(certs)} certificates, every identity holds")
-    print(total, "certificates checked")
+    from collections import Counter
+    args = sys.argv[1:]
+    jobs = 1
+    if args and args[0] == "--jobs":
+        jobs, args = int(args[1]), args[2:]
+    total = Counter()
+    for name in args:
+        if jobs > 1:
+            from multiprocessing import Pool
+            with Pool(jobs) as pool:
+                count = Counter(pool.imap_unordered(check_line, lines(name), chunksize=500))
+        else:
+            count = Counter(map(check_line, lines(name)))
+        total.update(count)
+        print(f"{name}: {sum(count.values())} certificates, every identity holds", flush=True)
+    print(sum(total.values()), "certificates checked; by number of points:", dict(sorted(total.items())))
