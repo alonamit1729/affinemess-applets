@@ -24,7 +24,9 @@ A *candidate* on n points is a pattern with at most six colours all of whose (n-
 kept at the level below. Every number in the table equals the corresponding number in Table 9 of Szöllősi
 and Östergård, and the 228 patterns at ten points are the 228 of `../data/L10.json`.
 
-All 527,338 certificates pass `check.py`. From eight points on nothing needs to be discarded.
+All 527,338 certificates pass `check.py`, both when they were made and again as the final files. From eight
+points on nothing needs to be discarded, and the search finds no certificate (with a product of degree up
+to 5) for any of the 2,428 candidates there.
 
 ## What a certificate is
 
