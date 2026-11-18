@@ -48,9 +48,23 @@ def ranks(values):
     return [order.index(round(v, 9)) for v in values], order
 
 
+def _label_spot(k, pts, segs, reach):
+    """Where to write the label of point k: in the widest gap between the segments that meet there
+    (or away from the middle of the picture, if none do)."""
+    x, y = pts[k]
+    angles = sorted(math.atan2(pts[j][1] - y, pts[j][0] - x) for e in segs if k in e for j in e if j != k)
+    if angles:
+        gap, start = max((b - a, a) for a, b in zip(angles, angles[1:] + [angles[0] + 2 * math.pi]))
+        theta = start + gap / 2
+    else:
+        cx, cy = sum(q[0] for q in pts) / len(pts), sum(q[1] for q in pts) / len(pts)
+        theta = math.atan2(y - cy, x - cx) if (x, y) != (cx, cy) else -math.pi / 4
+    return x + reach * math.cos(theta), y + reach * math.sin(theta)
+
+
 def panel(xy, segments="all", title=None, box=220, margin=26, labels=None, marks=None,
           colour_of=None, radius=4.2, width=2.0, faint_segments=None, extra=None, subtitle=None,
-          title_size=12.5, fill=INK):
+          title_size=12.5, fill=INK, hollow=False):
     """One panel as an SVG fragment.
 
     xy            list of float points
@@ -60,6 +74,7 @@ def panel(xy, segments="all", title=None, box=220, margin=26, labels=None, marks
     marks         {point index: fill colour} to highlight points
     faint_segments  list of (i, j) drawn thin and grey underneath
     extra         list of (x, y, kind) extra markers in the same coordinates; kind "ring" or "dot"
+    hollow        draw the points as empty circles: vertices of a pattern, not (yet) points of the plane
     """
     n = len(xy)
     all_pts = list(xy) + [(e[0], e[1]) for e in (extra or [])]
@@ -95,9 +110,13 @@ def panel(xy, segments="all", title=None, box=220, margin=26, labels=None, marks
             out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{radius}" fill="{ACCENT}" stroke="{SURFACE}" stroke-width="1.5"/>')
     for k, (x, y) in enumerate(pts):
         colour = (marks or {}).get(k, fill)
-        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{radius}" fill="{colour}" stroke="{SURFACE}" stroke-width="{min(1.5, radius / 2.5):.1f}"/>')
+        if hollow:
+            out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{radius + 0.8:.1f}" fill="{SURFACE}" stroke="{colour}" stroke-width="1.5"/>')
+        else:
+            out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{radius}" fill="{colour}" stroke="{SURFACE}" stroke-width="{min(1.5, radius / 2.5):.1f}"/>')
         if labels:
-            out.append(f'<text x="{x + 7:.1f}" y="{y - 6:.1f}" font-size="12" fill="{MUTED}" {FONT}>{escape(str(labels[k]))}</text>')
+            lx, ly = _label_spot(k, pts, segs, radius + 10)
+            out.append(f'<text x="{lx:.1f}" y="{ly + 4.2:.1f}" text-anchor="middle" font-size="12" fill="{MUTED}" {FONT}>{escape(str(labels[k]))}</text>')
     return "".join(out), box
 
 
@@ -141,8 +160,10 @@ def polygon_xy(n, start=None):
 
 
 def abstract_panel(pattern, n, **kw):
-    """A pattern drawn as a coloured complete graph on the corners of a regular n-gon."""
+    """A pattern drawn as a coloured complete graph on the corners of a regular n-gon. The vertices
+    are empty circles: they are not points of the plane, and their positions carry no meaning."""
     idx = {e: c for e, c in zip(combinations(range(n), 2), pattern)}
+    kw.setdefault("hollow", True)
     return panel(polygon_xy(n), segments="all", colour_of=lambda i, j: idx[(i, j)], **kw)
 
 
