@@ -46,7 +46,9 @@ carries a polynomial identity that certifies its impossibility; an exact determi
 realisations of these patterns; a diameter-graph argument showing that every sixteen-point set with at
 most seven distances contains such a ten-point set, including a new elementary proof that thirteen
 points whose diameter graph is a $13$-cycle and which determine at most seven distances form a regular
-$13$-gon; and an exhaustive extension search in exact arithmetic.
+$13$-gon; and an exhaustive extension search in exact arithmetic. The same methods show that there are
+exactly sixteen fifteen-point sets with at most seven distances, one of which is not contained in a
+sixteen-point set.
 \end{abstract}
 
 \maketitle
@@ -88,6 +90,10 @@ similar: the squared distance $4$ occurs $20$ times in $E_1$ and $18$ times in $
   similar to $E_1$ or to $E_2$.
 \end{enumerate}
 \end{theorem}
+
+The same methods also classify the fifteen-point sets with seven distances: there are sixteen of them up to
+similarity, and one is not contained in a sixteen-point set (Theorem~\ref{thm:15} in
+Section~\ref{sec:fifteen}).
 
 \begin{figure}[t]
 \centering
@@ -148,7 +154,7 @@ Three ingredients deserve mention.
 \subsection*{Software and data}
 Everything needed to check the proof is in the folder \texttt{tools/16-7-proof} of the repository
 \repo{}; the version described here is commit \texttt{e10d2f9}. It contains a Jupyter notebook
-\texttt{two-shapes.ipynb} that carries out or checks every step in about two and a half minutes using
+\texttt{two-shapes.ipynb} that carries out or checks every step in about three and a half minutes using
 only Python and SymPy, the programs \texttt{certificates/generate.py} and \texttt{certificates/check.py}
 discussed in Section~\ref{sec:patterns}, and the lists of patterns. The two large certificate files
 ($0.22$ GB compressed) are attached to the release \texttt{certificates-v1} of the same repository. A
@@ -408,16 +414,18 @@ $(h+1)$-gon with one vertex removed when $h\ge8$ is even.
 \end{theorem}
 
 \begin{lemma}\label{lem:hull}
-If $X$ has sixteen points and at most seven distances, then $\conv X$ has at most thirteen vertices; in
-particular $m\le13$.
+Let $X$ be a finite set with at most seven distances whose convex hull has $h\ge14$ vertices. Then $X$
+consists of these vertices, and it is a regular $15$-gon, a regular $14$-gon, or a regular $15$-gon with
+one vertex removed. In particular, if $|X|\ge15$ and $X$ is not a regular $15$-gon, then $\conv X$ has at most
+thirteen vertices and $m\le13$.
 \end{lemma}
 
 \begin{proof}
 Let $h$ be the number of vertices of $\conv X$. By Theorem~\ref{thm:altman}, $\lfloor h/2\rfloor\le7$, so
 $h\le15$. Suppose $h\ge14$. The vertices determine at least seven distances, hence exactly seven, the
 distances of $X$. By Theorem~\ref{thm:altman} they form a regular $15$-gon, a regular $14$-gon, or a regular
-$15$-gon with one vertex $v_0$ removed. Scale so that the circumradius is $1$ and the centre is $0$. As
-$|X|=16>h$, there is a point $q\in X$ that is not a vertex; it lies in the polygon, so $r=|q|<1$.
+$15$-gon with one vertex $v_0$ removed. Scale so that the circumradius is $1$ and the centre is $0$.
+Suppose that $X$ has a point $q$ that is not a vertex; it lies in the polygon, so $r=|q|<1$.
 
 The point $q$ is not the centre: its distance to the vertices would be $1$, and a chord $2\sin(\pi j/n)$ of a
 regular $n$-gon equals $1$ only if $n=6j$, while $n\in\{14,15\}$. So every circle about $q$ meets the
@@ -431,8 +439,9 @@ where $S$ is the sum of the seven squared distances, that is, of the squared cho
 $1\le j\le7$, with $n=14$ or $15$. Using $4\sin^2\theta=2-2\cos2\theta$ one finds $S=16$ for $n=14$ and
 $S=15$ for $n=15$. On the other hand $\sum_v|q-v|^2=14(1+r^2)-2\,q\cdot\sum_v v$. For the regular $14$-gon
 $\sum_v v=0$, so $14(1+r^2)=32$ and $r^2=9/7>1$. For the regular $15$-gon minus $v_0$, $\sum_v v=-v_0$, so
-$7r^2+q\cdot v_0=8$; but $7r^2+q\cdot v_0\le7r^2+r<8$. Both are impossible, so $h\le13$; and $m\le h$ by
-Lemma~\ref{lem:diam}(1).
+$7r^2+q\cdot v_0=8$; but $7r^2+q\cdot v_0\le7r^2+r<8$. Both are impossible, so $X$ has no point
+besides the vertices. For the last sentence, $|X|=h\le15$ would force $X$ to be a regular $15$-gon; so
+$h\le13$, and $m\le h$ by Lemma~\ref{lem:diam}(1).
 \end{proof}
 
 \subsection{Thirteen points with a cyclic diameter graph}
@@ -708,6 +717,139 @@ at such distances from fifteen of the sixteen points: the three points of the la
 $\{a^2+ab+b^2=4\}$ not in the set, each at squared distance $16$ from the opposite corner of the hexagon.
 \end{proof}
 
+\section{Fifteen points}\label{sec:fifteen}
+
+The same methods determine the fifteen-point sets with seven distances. Let
+\[
+  F=\bigl(H\setminus\{(-1,-1),(-2,1)\}\bigr)\cup\{(2,0),(0,2),(-2,2),(2,1)\},
+\]
+in triangular coordinates; its squared distances are again $1,3,4,7,9,12,13$, with multiplicities
+$30,21,18,21,6,3,6$ (Figure~\ref{fig:F}).
+
+\begin{theorem}\label{thm:15}
+Up to similarity there are exactly sixteen sets of fifteen points in the plane with at most seven
+distances: the vertices of a regular $15$-gon; the fourteen sets obtained by deleting one point from
+$E_1$ or from $E_2$ (one of them arises from both); and $F$. In particular $F$ is a fifteen-point
+seven-distance set that is not contained in a sixteen-point one.
+\end{theorem}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.62]
+\def\pts#1{\foreach \a/\b in {#1} {\fill (\a+0.5*\b, 0.8660254*\b) circle (3.2pt);}}
+\def\extra#1{\foreach \a/\b in {#1} {\filldraw[fill=white,line width=1pt] (\a+0.5*\b, 0.8660254*\b) circle (3.8pt);}}
+\def\gone#1{\foreach \a/\b in {#1} {\draw[line width=0.8pt] (\a+0.5*\b-0.13, 0.8660254*\b-0.13) -- (\a+0.5*\b+0.13, 0.8660254*\b+0.13) (\a+0.5*\b-0.13, 0.8660254*\b+0.13) -- (\a+0.5*\b+0.13, 0.8660254*\b-0.13);}}
+  \foreach \a in {-3,...,3} \foreach \b in {-3,...,3} {
+    \pgfmathsetmacro{\x}{\a+0.5*\b}\pgfmathsetmacro{\y}{0.8660254*\b}
+    \pgfmathparse{abs(\x)<3.3 && abs(\y)<2.7 ? 1 : 0}
+    \ifnum\pgfmathresult=1 \fill[gray!45] (\x,\y) circle (1pt);\fi}
+  \pts{0/0,1/0,0/1,-1/1,-1/0,0/-1,1/-1,1/1,-1/2,1/-2,2/-1}
+  \gone{-1/-1,-2/1}
+  \extra{2/0,0/2,-2/2,2/1}
+\end{tikzpicture}
+\caption{The set $F$: eleven points of $H$ (black), the two points of $H$ that are left out (crosses), and
+four further lattice points (hollow).}
+\label{fig:F}
+\end{figure}
+
+\subsection{Nine points suffice}
+\begin{lemma}\label{lem:nine}
+Every set $X$ of fifteen points in the plane with at most seven distances is the vertex set of a regular
+$15$-gon or contains nine points with at most six distances.
+\end{lemma}
+
+\begin{proof}
+Suppose $X$ is not a regular $15$-gon. By Lemma~\ref{lem:hull}, $m\le13$. If the diameter graph restricted
+to $X_D$ is not a single cycle, Lemma~\ref{lem:diam}(3) gives an independent set $I$ with
+$|I|\ge\lceil m/2\rceil$, and $A=I\cup(X\setminus X_D)$ has $15-\lfloor m/2\rfloor\ge9$ points and at most six
+distances. If it is a single cycle and $m\le11$, every other point of the cycle gives
+$|A|=15-\frac{m+1}2\ge9$. If it is a single cycle and $m=13$, then $X_D$ is a regular $13$-gon by
+Lemma~\ref{lem:C13}, and any nine of its vertices have six distances.
+\end{proof}
+
+The regular $15$-gon does need to be excluded: one checks that no nine of its vertices avoid one of its
+seven distances.
+
+\subsection{The nine-point sets}
+By Proposition~\ref{prop:A} (whose induction covers $n=9$), every nine-point set with at most six distances has
+one of the $635$ patterns of $L_9$. They are solved as in Section~\ref{sec:realisations}, with the $56$
+principal minors of $G^0$.
+
+\begin{proposition}[computer-assisted]\label{prop:nine}
+Of the $635$ patterns of $L_9$, $633$ have finitely many solutions, which give $811$ planar point sets. The
+other two have a curve of solutions; they are parametrised by $s\in\R$ (up to finitely many values), with
+squared lengths
+\[
+  1,\ \tfrac{s^2+6s+21}{s^2+3},\ \tfrac{s^2+6s+9}{s^2+3},\ \tfrac{12}{s^2+3},\ \tfrac{s^2+12s+39}{s^2+3}
+  \qquad\text{and}\qquad
+  1,\ \tfrac{(s-1)^2}4,\ \tfrac{(s+1)^2}4,\ \tfrac{s^2+3}4,\ \tfrac{3s^2+1}4,\ s^2,
+\]
+and these parametrisations cover every solution.
+\end{proposition}
+
+For the two flexible patterns, a lexicographic Gröbner basis of the saturated equations consists of linear
+equations and one conic; the parametrisations above are those of the conics, through a rational point,
+and they are checked against the basis. Both families consist of genuine point sets for all but finitely many
+real $s$.
+
+\subsection{Extending nine points}
+\begin{proposition}[computer-assisted]\label{prop:extend15}
+Every set of fifteen points with at most seven distances that contains one of the nine-point sets of
+Proposition~\ref{prop:nine} has squared distances proportional to $1,3,4,7,9,12,13$.
+\end{proposition}
+
+For a nine-point set $K$ with $|\Delta(K)|$ distances the budget is $b=7-|\Delta(K)|\in\{1,2,3\}$, and the
+candidate points are found as in Section~\ref{sec:extensions}: a point $y$ added to $K$ is the circumcentre of
+three points of $K$, or has squared distances in $\Delta(K)$ to at least $9-2b$ points of $K$. Two cases need more
+than Section~\ref{sec:extensions}.
+
+\emph{Collinear triples with budget $3$.} Three nine-point sets have only four distances, and contain three
+collinear points. If the points of $K$ at old distances from $y$ include three non-collinear ones, $y$ is
+determined as before (all non-collinear triples are used). If they are collinear, they are exactly three
+points on a line (no four points of these sets are collinear), so the other six points are at the three new
+distances from $y$, each taken exactly twice; then $y$ lies on the perpendicular bisectors of three disjoint
+pairs, and two of them that meet determine $y$. When the three bisectors are parallel and distinct there is no
+such $y$; when they coincide, $y$ lies on that line and at old distances from the three collinear points, which
+gives at most one point for each choice of the three distances.
+
+\emph{The two families.} Write $K(s)$ for the family and work over the field $\Q(s)$. The candidate points of
+$K(s)$, constructed as in Section~\ref{sec:extensions} with $s$ as an indeterminate, have coordinates in
+$\Q(s)$. None of them has at most $b$ new squared distances to $K(s)$ identically in $s$. A candidate can become
+admissible at a particular value $s_0$ only if, among any $b+1$ of its new squared distances, two coincide or
+one becomes equal to a squared distance of $K(s_0)$ at $s_0$; this makes $s_0$ a root of an explicit
+polynomial. Together with the values of $s$ at which a triple of $K(s)$ becomes collinear, at which a
+candidate exists only for special $s$, or at which the coordinates of $K(s)$ degenerate, this gives finitely
+many irreducible polynomials with real roots: $209$ for the first family and $135$ for the second.
+For each root $s_0$ at which $K(s_0)$ is a genuine point set with the given pattern, $K(s_0)$ is extended exactly
+as a rigid set, in the number field $\Q(s_0)$.
+
+\emph{Result.} The fifteen-point sets found in all cases have squared distances proportional to
+$1,3,4,7,9,12,13$, and fall into fifteen similarity classes. The computation takes about $16$ minutes on two
+cores (program \texttt{fifteen/fifteen.py}).
+
+\begin{proposition}[computer-assisted]\label{prop:palette15}
+Up to congruence, there are exactly fifteen sets of fifteen points in the plane all of whose squared distances
+lie in $\Pi$: the fourteen sets $E_k$ minus a point, and $F$.
+\end{proposition}
+
+The search is that of Proposition~\ref{prop:palette}, now looking for twelve candidate points instead of thirteen.
+
+\begin{proof}[Proof of Theorem~\ref{thm:15}]
+Let $X$ be a set of fifteen points with at most seven distances, other than a regular $15$-gon. By
+Lemma~\ref{lem:nine} it contains nine points with at most six distances, which by Propositions~\ref{prop:A}
+and~\ref{prop:nine} form a set similar to one of the sets of Proposition~\ref{prop:nine}. By
+Proposition~\ref{prop:extend15} the squared distances of $X$ are proportional to those of $\Pi$, and by
+Proposition~\ref{prop:palette15}, $X$ is similar to $F$ or to $E_k$ minus a point. These sixteen sets are
+pairwise non-similar, and $F$ is not similar to a subset of $E_1$ or $E_2$, which by
+Theorem~\ref{thm:main} are the only sixteen-point sets with seven distances.
+\end{proof}
+
+\begin{remark}
+Each of the fifteen sets other than the regular $15$-gon contains a core, so the extension search of
+Section~\ref{sec:extensions}, applied to the $282$ cores with five points added instead of six, also finds them;
+it finds exactly these fifteen. The regular $15$-gon contains no core.
+\end{remark}
+
 \section{A consistency check}\label{sec:check}
 
 The following test uses none of the machinery of Section~\ref{sec:extensions} and could have failed. List the
@@ -739,8 +881,10 @@ Table~9 agrees with our Table~\ref{tab:levels}.
   and the validity of $527{,}338$ certificates (\texttt{check.py}, about $45$ core-minutes).
 \item Proposition~\ref{prop:B}: that the $228$ systems have no solutions besides the $282$ found depends on
   SymPy's Gröbner bases, cross-checked with FLINT; that every solution is realised is checked directly.
+  The same applies to Proposition~\ref{prop:nine} (SymPy only).
 \item Propositions~\ref{prop:extend} and~\ref{prop:palette} and Corollary~\ref{cor:17}: exhaustive searches
-  in exact arithmetic, under a minute together.
+  in exact arithmetic, under a minute together. Propositions~\ref{prop:extend15} and~\ref{prop:palette15}:
+  the same kind of search, about $16$ minutes on two cores.
 \end{enumerate}
 Section~\ref{sec:check} is an independent test of items 2 and 3. The whole classification was also
 obtained earlier by a different computation, using certified real-root isolation with msolve in place of
@@ -750,8 +894,10 @@ $826$ completions, two sets) agree.
 The notebook \texttt{two-shapes.ipynb} runs Propositions~\ref{prop:B}, \ref{prop:extend}, \ref{prop:palette}
 and Corollary~\ref{cor:17} (loading the saved solutions of Proposition~\ref{prop:B} by default and
 re-solving a sample; a switch re-solves all $228$ systems in about four minutes), checks the certificates
-at four and five points and samples of the others, generates the candidates at five points, and carries out
-Section~\ref{sec:check}. It was run with Python~3.13 and SymPy~1.14.
+at four and five points and samples of the others, generates the candidates at five points, carries out
+Section~\ref{sec:check}, and checks Section~\ref{sec:fifteen}: the nine-point solutions, the two families, the
+extension of a sample of the nine-point sets, Proposition~\ref{prop:palette15}, and the remark at the end of the
+section. It was run with Python~3.13 and SymPy~1.14.
 
 \subsection*{Authorship}
 Alon Amit posed the problem and directed the research. Claude, an AI model developed by Anthropic, developed

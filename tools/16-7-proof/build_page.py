@@ -29,7 +29,8 @@ SLUG = "16-7-proof"
 NAME = "(16, 7) proof"
 BUNDLE = "16-7-proof-notebook"
 BUNDLE_FILES = ["README.md", "requirements.txt", "two-shapes.ipynb", "fewdist.py", "figures.py",
-                "data/L10.json", "data/solutions.json", "paper/seven-distances.pdf"] + ["certificates/" + name for name in (
+                "data/L10.json", "data/solutions.json", "paper/seven-distances.pdf",
+                "fifteen/fifteen.py", "fifteen/solutions9.json", "fifteen/result.json"] + ["certificates/" + name for name in (
                     "README.md", "check.py", "generate.py", "summary.json", "SHA256SUMS", "level5.jsonl",
                     "level6_sample.jsonl.gz", "level7_sample.jsonl.gz",
                     "L5.json", "L6.json", "L7.json", "L8.json", "L9.json", "L10.json")]
@@ -404,7 +405,7 @@ ABOUT = """
       <p><em>Notebook</em> downloads the bundle: the notebook, the Python module behind it, the lists of patterns
       and the program that checks certificates. It needs Python 3.10 or later and SymPy, nothing else. Unzip,
       <code>pip install -r requirements.txt</code>, open <code>two-shapes.ipynb</code> in Jupyter and run all
-      cells; that takes between two and three minutes. Section 3.5 says how to run the two longer computations
+      cells; that takes about three and a half minutes. Sections 3.5 and 8.3 say how to run the longer computations
       again.</p>
       <h3>Where it comes from</h3>
       <p>The bound of sixteen points is from A. Amit and GPT-6 Astra, <i>The maximum cardinality of a planar
