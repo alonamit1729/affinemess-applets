@@ -37,11 +37,13 @@
 \begin{document}
 
 \begin{abstract}
-We prove that a set of points in the plane that determines at most seven distinct distances has at most
-sixteen points, and that up to similarity there are exactly two sixteen-point sets with this property.
-Both are pieces of the triangular lattice, as Erdős and Fishburn conjectured. The proof is
-computer-assisted and self-contained. Its main steps are a complete list of the $228$ distance patterns
-of ten-point planar sets with at most six distances, in which every pattern discarded along the way
+Let $g(k)$ be the largest number of points in the plane that determine at most $k$ distinct distances. We
+prove that $g(7)=16$, and that up to similarity there are exactly two sixteen-point sets with at most seven
+distances. Both are pieces of the triangular lattice, which confirms for $k=7$ the conjecture of Erdős and
+Fishburn that maximum $k$-distance sets with $k\ge7$ are pieces of the triangular lattice. The proof is
+computer-assisted and self-contained. The main steps of the proof
+are a complete list of the $228$ distance patterns of ten-point planar sets with at most six distances (a
+number first obtained by Szöllősi and Östergård), in which every pattern discarded along the way
 carries a polynomial identity that certifies its impossibility; an exact determination of all
 realisations of these patterns; a diameter-graph argument showing that every sixteen-point set with at
 most seven distances contains such a ten-point set, including a new elementary proof that thirteen
@@ -91,6 +93,9 @@ similar: the squared distance $4$ occurs $20$ times in $E_1$ and $18$ times in $
 \end{enumerate}
 \end{theorem}
 
+In particular $g(7)=16$, and since $E_1$ and $E_2$ are pieces of the triangular lattice, the conjecture of
+Erdős and Fishburn stated above holds for $k=7$.
+
 The same methods also classify the fifteen-point sets with seven distances: there are sixteen of them up to
 similarity, and one is not contained in a sixteen-point set (Theorem~\ref{thm:15} in
 Section~\ref{sec:fifteen}).
@@ -132,7 +137,8 @@ The proof follows the strategy of Erdős and Fishburn and of Wei: remove points 
 disappears, and study the remaining set, which has fewer distances. Section~\ref{sec:reduction} shows
 that every sixteen-point set with at most seven distances contains ten points with at most six
 distances, a \emph{core}. Sections~\ref{sec:patterns}--\ref{sec:realisations} determine all ten-point sets
-with at most six distances: they have one of $228$ distance patterns, each pattern has finitely many
+with at most six distances: they have one of $228$ distance patterns (a number first stated by Szöllősi and
+Östergård \cite{SO}), each pattern has finitely many
 realisations, and up to similarity there are $257$ such sets. Section~\ref{sec:extensions} finds every way
 of adding six points to a core without exceeding seven distances, and Section~\ref{sec:end} identifies the
 results.
@@ -339,7 +345,7 @@ The second half of Proposition~\ref{prop:B} (every solution is realised) is veri
 independently of how the solutions were found. The first half, that there are no further solutions,
 depends on the correctness of the Gröbner-basis computation, done with SymPy \cite{sympy}. It was
 cross-checked with a different implementation (FLINT), using the equations of all $210$ quadruples of
-points; the solution sets agree for all $228$ patterns.
+points; the solution sets agree for all $228$ patterns (folder \texttt{flint-check}).
 
 Table~\ref{tab:solutions} summarises the result. For $199$ patterns the solution is unique and rational.
 The other $29$ patterns have irrational squared lengths, in $\Q(\sqrt3)$ or $\Q(\sqrt5)$ for $21$ of them

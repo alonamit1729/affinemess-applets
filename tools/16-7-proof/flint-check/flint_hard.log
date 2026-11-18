@@ -1,0 +1,4 @@
+pattern 14 mode x4 equality True solutions 4 vs 4 15.2s
+pattern 25 mode none equality True solutions 6 vs 6 47.3s
+pattern 66 mode none equality True solutions 6 vs 6 50.5s
+pattern 219 mode none equality True solutions 6 vs 6 41.1s
