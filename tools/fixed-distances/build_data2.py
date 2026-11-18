@@ -488,12 +488,17 @@ def main():
       '10,6':('‡','Exactly 238 ten-point six-distance sets, from the 209 six-colour patterns among the 228 candidates (all rigid; 29 patterns have more than one real realization): 184 pieces of the triangular lattice, 37 subsets of regular polygons (R₁₃ minus three vertices, R₁₂ or R₁₂ with centre minus two or three, R₁₁ with centre minus two), three twelvefold configurations found only through the candidate list (six similarity classes, all subsets of R₁₂ + R₁₂), and a pentagonal one. No published classification is known to us.',('SO20','pat')),
       '11,6':('†','Exactly 64 eleven-point six-distance sets: Amit–Astra (2026, Lemma 6) classify the eleven-point sets with at most six distances from the 62 candidate patterns (52 lattice and 10 circular configurations, counting the subsets of one regular polygon together); counted up to similarity, the 58 six-colour patterns give 49 pieces of the triangular lattice and 15 polygon subsets (R₁₃ minus two vertices in six ways, R₁₂ with centre minus two in six ways, R₁₂ minus a vertex, R₁₁ with centre minus a vertex, R₁₀ with centre). Re-verified here: the 62 patterns regenerated, certified rigid, and solved.',('AA26','SO20','pat')),
       '12,6':('‡','Exactly 14 twelve-point six-distance sets, from the 14 six-colour patterns among Szöllősi–Östergård’s 15 candidates at twelve points (all rigid, one real solution each): ten pieces of the triangular lattice (the twelve-point cores of Amit–Astra), R₁₃ minus a vertex, R₁₂, R₁₂ with centre minus a vertex, and R₁₁ with its centre. No published classification is known to us.',('SO20','AA26','pat')),
+      '14,7':('‡','Exactly 84 fourteen-point seven-distance sets: the regular 14-gon, the regular 15-gon minus a vertex, the regular 13-gon with its centre, and 81 pieces of the triangular lattice, which are all the fourteen-point sets with squared distances proportional to 1, 3, 4, 7, 9, 12, 13 (four of them are the exceptional fifteen-point set minus a point). In particular every fourteen-point seven-distance set is rigid. Proof (computer-assisted, Amit–Claude 2026, https://github.com/alonamit1729/affinemess-applets/blob/main/tools/16-7-proof/fourteen/README.md): every such set other than R₁₄ and R₁₅ minus a vertex contains eight points with at most six distances (a diameter-graph argument); the 1565 candidate eight-point patterns were solved (1551 with finitely many realizations, 14 with one-parameter families), and every eight-point set was extended by six points in exact arithmetic (candidate points irrational over the field of the eight-point set by exact square tests and certified interval arithmetic), the families with the parameter kept symbolic.',('AC26b','AC26','EF')),
       '15,7':('‡','Exactly sixteen fifteen-point seven-distance sets: the regular 15-gon, the fourteen sets obtained by deleting a point from one of Erdős–Fishburn’s two sixteen-point sets (one of them arises from both), and one further piece of the triangular lattice that is not contained in any sixteen-point seven-distance set. Proof (Amit–Claude 2026, section 8): every such set other than the regular 15-gon contains nine points with at most six distances (a diameter-graph argument); the 635 candidate nine-point patterns were solved (633 with finitely many realizations, two with one-parameter families), and every nine-point set was extended by six points in exact arithmetic, the two families with the parameter kept symbolic. Every fifteen-point set found has squared distances proportional to 1, 3, 4, 7, 9, 12, 13, and exactly fifteen sets have these squared distances.',('AC26','EF')),
       '16,7':('‡','g(7) = 16 (Amit–Astra 2026), and exactly two sixteen-point seven-distance sets exist: Erdős–Fishburn’s two lattice pieces. Finiteness and the count are our computation (https://github.com/alonamit1729/affinemess-applets/blob/main/tools/fixed-distances/g7count/REPRODUCING.md): every sixteen-point seven-distance set contains a ten-point subset with at most six distances (a diameter-graph argument) or is R₁₄, R₁₅ or R₁₅ minus a vertex plus one or two points; the 257 ten-point sets were each extended by six points with at most two new distance values (circle intersections and circumcentres, then a clique search), the polygon cases checked directly, and the two resulting sixteen-point patterns certified rigid with a unique realization each.',('EF','AA26','SO20','pat')),
     }
     # the fifteen-point seven-distance set that is not part of a sixteen-point one (16-7-proof/fifteen)
     F15=[(a+b/2,b*S3/2) for a,b in [(0,0),(1,0),(0,1),(1,-1),(-1,1),(0,-1),(-1,0),(1,1),(2,-1),(-1,2),(1,-2),(2,0),(0,2),(-2,2),(2,1)]]
     F15_LABEL='piece of the triangular lattice with distances 1, √3, 2, √7, 3, √12, √13, not contained in any sixteen-point seven-distance set'
+    # the four fourteen-point sets of 16-7-proof/fourteen that were not in the earlier list: F15 minus a point
+    F14=[[p for p in F15 if abs(p[0]-(a+b/2))>1e-9 or abs(p[1]-b*S3/2)>1e-9] for a,b in [(0,2),(2,0),(1,1),(0,1)]]
+    F14_LABEL='piece of the triangular lattice with distances 1, √3, 2, √7, 3, √12, √13: the exceptional fifteen-point set (not contained in any sixteen-point seven-distance set) minus a point'
+    R13C=[(math.cos(2*math.pi*k/13),math.sin(2*math.pi*k/13)) for k in range(13)]+[(0.0,0.0)]
     R12_RAD={0:'2',1:'2cos 15°',2:'√3',3:'√2',4:'1',5:'2sin 15°'}
     def r12_label(shells):
         parts=[]
@@ -514,6 +519,7 @@ def main():
                 for P in uniq(json.load(open('lattice_16_7.json'))):
                     rows=sorted(Counter(round(y*2/S3) for x,y in P).values(),reverse=True)
                     pool.add(P,'piece of the triangular lattice with distances 1, √3, 2, √7, 3, √12, √13 (Erdős–Fishburn, Fig. 4): rows of '+', '.join(map(str,rows))+' points','ef')
+            if (n,d)==(14,7): pool.add(R13C,'regular 13-gon with its centre','poly')
             # extension-built rigid sets
             for P in EXT.get(f'{n}{d}',[]): pool.add(P,'built by one-point extension of a smaller set','ext')
             for lab,P,N,S in EX.polygon_examples(n,d,limit=(40 if key in EXACT else 4)): pool.add(P,lab,'poly')
@@ -536,6 +542,8 @@ def main():
             for e in R12.get(key,[]):
                 before=len(pool.rigid)+len(pool.fam)
                 pool.add(e['pts'],r12_label(e['shells']),'r12',exact=e['exact']); n_r12+=len(pool.rigid)+len(pool.fam)-before
+            if (n,d)==(14,7):   # last, so that the card numbers of the earlier sets stay
+                for P in F14: pool.add(P,F14_LABEL,'pat')
             if key in EXACT:
                 for e in EXACT[key]:
                     if e['label'].startswith('distances'): pool.add(e['pts'],e['label'],'pat')
@@ -566,15 +574,20 @@ def main():
                 for P,lab,src in pool.rigid: assert any(B.same(P,e['pts']) for e in EXACT[key]),(key,lab)
             if key=='16,7':
                 assert not pool.fam and len(pool.rigid)==2
+            if key=='14,7':
+                assert not pool.fam and len(pool.rigid)==84,(len(pool.rigid),len(pool.fam))
             if key=='15,7':
                 assert not pool.fam and len(pool.rigid)==16,(len(pool.rigid),len(pool.fam))
             if key in EXACT_INFO:
                 mark,note,srcs=EXACT_INFO[key]
                 items=[item(P,lab,'rigid',0) for P,lab,src in pool.rigid]+[item(G,lab,'family',dim) for G,lab,src,h,dim in pool.fam]
+                if key=='14,7':
+                    for it in items:
+                        if it['label'].startswith('built by one-point extension'): it['label']='piece of the triangular lattice'
                 dims={0:E(len(pool.rigid))}
                 for G,lab,src,h,dim in pool.fam: dims[dim]=E(dims.get(dim,E(0))['lo']+1)
                 cell(n,d,dims,'exact',marks=mark,note=note,finite=not pool.fam)
-                title={'15,7':'The sixteen fifteen-point seven-distance sets','16,7':'The two sixteen-point seven-distance sets'}.get(key,f'The {len(pool.rigid)} {n}-point {d}-distance sets')
+                title={'14,7':'The 84 fourteen-point seven-distance sets','15,7':'The sixteen fifteen-point seven-distance sets','16,7':'The two sixteen-point seven-distance sets'}.get(key,f'The {len(pool.rigid)} {n}-point {d}-distance sets')
                 cat(n,d,items,True,title,listing_note(len(pool.rigid),len(pool.fam),True),sources=srcs)
                 continue
             c=pool.counts()
