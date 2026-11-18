@@ -112,6 +112,10 @@ input[type=range] { accent-color:var(--accent); }
   font-size:13px; line-height:1.4; box-shadow:0 8px 20px -12px rgba(30,24,16,.6);
 }
 .dh-tip b { font-weight:500; }
+.dh-tip-bar { position:fixed; left:0; width:230px; z-index:40; }
+.am-btn.dh-ib { padding:5px 8px; display:inline-flex; align-items:center; }
+.dh-ib svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.dh-ib svg .f { fill:currentColor; stroke:none; }
 .dh-tip kbd { font-family:var(--mono); font-size:10.5px; color:var(--line-soft); margin-left:6px; }
 .dh-opt { display:flex; align-items:center; gap:6px; padding:0 2px 4px 10px; font-family:var(--mono); font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.1em; }
 .dh-opt .am-input { width:54px; padding:4px 6px; font-size:12px; }
@@ -247,14 +251,16 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <button class="am-btn" id="b-redo" title="Redo (Ctrl+Shift+Z)">Redo</button>
     </span>
     <button class="am-btn" id="b-new" title="Start over from two points">New</button>
-    <span class="am-label">Lattices</span>
+    <span class="am-label">Lattice</span>
     <span class="am-seg">
-      <button class="am-btn" id="b-tri" aria-pressed="false" title="Show the triangular lattice on the two starting points (G)">Triangular</button>
-      <button class="am-btn" id="b-sq" aria-pressed="false" title="Show the square lattice on the two starting points (Q)">Square</button>
+      <button class="am-btn dh-ib" id="b-tri" aria-pressed="false" aria-label="Triangular lattice (G)" data-tip="Triangular lattice" data-key="G" data-desc="Reveal the triangular lattice built on the two starting points."><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="8.5" cy="6" r="1.9"/><circle class="f" cx="15.5" cy="6" r="1.9"/><circle class="f" cx="5" cy="12" r="1.9"/><circle class="f" cx="12" cy="12" r="1.9"/><circle class="f" cx="19" cy="12" r="1.9"/><circle class="f" cx="8.5" cy="18" r="1.9"/><circle class="f" cx="15.5" cy="18" r="1.9"/></svg></button>
+      <button class="am-btn dh-ib" id="b-sq" aria-pressed="false" aria-label="Square lattice (Q)" data-tip="Square lattice" data-key="Q" data-desc="Reveal the square lattice built on the two starting points."><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="5" cy="5" r="1.8"/><circle class="f" cx="12" cy="5" r="1.8"/><circle class="f" cx="19" cy="5" r="1.8"/><circle class="f" cx="5" cy="12" r="1.8"/><circle class="f" cx="12" cy="12" r="1.8"/><circle class="f" cx="19" cy="12" r="1.8"/><circle class="f" cx="5" cy="19" r="1.8"/><circle class="f" cx="12" cy="19" r="1.8"/><circle class="f" cx="19" cy="19" r="1.8"/></svg></button>
     </span>
+    <span class="am-label">Show</span>
     <span class="am-seg">
-      <button class="am-btn" id="b-cons" aria-pressed="true" title="Show lines, circles, polygons and unmarked points (H)">Construction</button>
-      <button class="am-btn" id="b-edges" aria-pressed="true" title="Colour the segments between marked points by length (E)">Distances</button>
+      <button class="am-btn dh-ib" id="b-cons" aria-pressed="true" aria-label="Construction (H)" data-tip="Construction" data-key="H" data-desc="Show or hide the lines, circles, polygons and unmarked points."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="13" r="7"/><path d="M3 20.5L21.5 3"/><circle class="f" cx="10" cy="13" r="1.6"/></svg></button>
+      <button class="am-btn dh-ib" id="b-edges" aria-pressed="true" aria-label="All distances (E)" data-tip="All distances" data-key="E" data-desc="Every segment between marked points, coloured by its length (sets of up to 24 points)."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5H19V19H5ZM5 5L19 19M19 5L5 19" stroke-width="1.3"/><circle class="f" cx="5" cy="5" r="2.1"/><circle class="f" cx="19" cy="5" r="2.1"/><circle class="f" cx="19" cy="19" r="2.1"/><circle class="f" cx="5" cy="19" r="2.1"/></svg></button>
+      <button class="am-btn dh-ib" id="b-min" aria-pressed="false" aria-label="Shortest distances (M)" data-tip="Shortest distances" data-key="M" data-desc="Only the segments of the shortest distance in the set: the clearest view of a big set."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5H19V19H5Z" stroke-width="1.3"/><circle class="f" cx="5" cy="5" r="2.1"/><circle class="f" cx="19" cy="5" r="2.1"/><circle class="f" cx="19" cy="19" r="2.1"/><circle class="f" cx="5" cy="19" r="2.1"/></svg></button>
     </span>
     <span class="am-spacer"></span>
     <span class="dh-menu">
@@ -291,6 +297,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <button class="am-btn dh-tool" data-tool="erase" aria-label="Erase (X)" data-tip="Erase" data-key="X" data-desc="Click a point, line, circle or polygon; everything built on it goes too."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20.5L3.5 15 13.5 5l7 7-8.5 8.5z"/><path d="M8.5 10L14.5 16M9 20.5h11"/></svg></button>
     </nav>
     <div class="dh-tip" id="tip" hidden></div>
+    <div class="dh-tip dh-tip-bar" id="tipbar" hidden></div>
     <div class="dh-canvas-wrap">
       <canvas id="dh-canvas"></canvas>
       <div class="dh-corner">
@@ -326,7 +333,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
         <li>You start with two points, a unit apart. Build with the tools on the left; every intersection of two lines or circles becomes a small hollow dot you can use.</li>
         <li><b>Mark</b> the points that belong to your set: hold the mouse on a point for a moment, with any tool, or Shift-click it (free points are marked when you drop them). With <b>Select</b> (Esc) a plain click marks too. Do the same again to unmark. The panel on the right counts them, <em>n</em>, and the distinct distances between them, <em>d</em>, and colours each segment by its length. Lengths are in units of the starting segment. Hover a length in the panel to bring out its segments, or hover a segment to find its length; click a length to keep it highlighted.</li>
         <li>When you like what you see, press <b>Keep</b>. Similar sets (same shape at any size, rotation or reflection) count once, so the collection only grows when you find something genuinely new.</li>
-        <li>The <b>Triangular</b> and <b>Square</b> buttons reveal the lattice built on the two starting points (one at a time). Lattice points work like any other point, and since similar sets count as the same, every lattice piece can be found on these two.</li>
+        <li>The two <b>Lattice</b> buttons, triangular (G) and square (Q), reveal the lattice built on the two starting points (one at a time). Lattice points work like any other point, and since similar sets count as the same, every lattice piece can be found on these two.</li>
       </ul>
       <h3>The tools</h3>
       <ul>
@@ -335,7 +342,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
         <li><b>Polygon</b>: a regular polygon with the chosen number of sides on a segment, together with its centre. It sits to the left of the segment as you pick it; pick the ends the other way round for the other side.</li>
         <li><b>Free point</b>: click on a line or circle for a <em>slider</em>, a point that moves only along it; click anywhere else for a point that moves freely. Both are drawn as diamonds (a slider with a bar along its curve). They are not exact until equalities pin them down; see below.</li>
         <li><b>Equal</b>: click a segment of your set, then another; the game moves the free points and sliders so that the two have the same length, and marks equal segments with matching ticks.</li>
-        <li><b>Construction</b> (H) hides the lines, circles, polygons and unmarked points, leaving the set and its coloured distances; picking a drawing tool brings them back. The corner readout shows coordinates, in units of the starting segment, of the pointer or of the point under it.</li>
+        <li>The <b>Show</b> buttons: <b>Construction</b> (H) hides the lines, circles, polygons and unmarked points, leaving the set and its coloured distances; picking a drawing tool brings them back. <b>All distances</b> (E) colours every segment between marked points (for sets of up to 24 points); <b>Shortest distances</b> (M) draws only the segments of the shortest length, which makes the structure of a big set, a piece of lattice say, easy to see. The corner readout shows coordinates, in units of the starting segment, of the pointer or of the point under it.</li>
       </ul>
       <p>That is enough: every rigid set in the catalog of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> explorer except a couple of hundred, nearly all of them five points with four distances, can be built this way.</p>
       <h3>Sliders and equalities</h3>
@@ -410,6 +417,7 @@ let view = { cx: 0.5, cy: 0.4, s: 90 };
 let tool = 'mark';
 let picks = [];             // points picked so far for the current tool
 let showEdges = true;
+let minEdges = false;        // with showEdges: only the segments of the shortest distance
 let hlHover = null, hlPin = null, hlKey = '';   // highlighted distance class (hover / pinned)
 const hlClass = () => hlHover !== null ? hlHover : hlPin;
 let showCons = true;          // lines, circles, polygons, candidates and unmarked points
@@ -1049,10 +1057,11 @@ $('#s-eqs').addEventListener('mouseout', () => { eqHover = null; draw(); });
    length-2 lattice segment covers two unit edges), so among equally close segments the shortest
    wins; with throughPoint, pointing at a marked point picks a segment passing through it, which
    reaches long segments that shorter ones cover completely. */
-function segPick(sx, sy, throughPoint, reach = 6) {
+function segPick(sx, sy, throughPoint, reach = 6, only = null) {
   if (!status || !status.dc || status.coincide) return null;
   const w = toW(sx, sy), C = [];
   for (const p of status.dc.pairs) {
+    if (only !== null && p.c !== only) continue;
     const d = segDist(w, status.P[p.i], status.P[p.j]) * view.s;
     if (d < reach) C.push({ p, d });
   }
@@ -1377,11 +1386,12 @@ function draw() {
   drawPreview();
   // distance segments between marked points
   const st = status;
-  if (showEdges && st && st.dc && st.n <= 24) {
+  if (showEdges && st && st.dc && !st.coincide && (minEdges || st.n <= 24)) {
     const hk = hlClass();
     const seg = p => { const a = st.P[p.i], b = st.P[p.j]; const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
     for (const p of st.dc.pairs.slice().reverse()) {
       if (p.c === hk) continue;
+      if (minEdges && p.c !== 0) continue;   // shortest distances only (a highlighted class still shows)
       ctx.strokeStyle = clsColor(p.c); ctx.globalAlpha = hk === null ? 0.85 : 0.14; ctx.lineWidth = 2.1; seg(p);
     }
     if (hk !== null) for (const p of st.dc.pairs) {
@@ -1412,7 +1422,9 @@ function draw() {
         }
         placed.push([mx, my]);
         const hot = eqHover === gi;
-        if (!showEdges || hot) { ctx.strokeStyle = hot ? C.accent : C.faint; ctx.lineWidth = hot ? 3 : 1; ctx.setLineDash(hot ? [] : [4, 3]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
+        const d0 = status && status.dc && !status.coincide ? status.dc.cls[0].d : 0;
+        const drawn = showEdges && (!minEdges || Math.abs(Math.hypot(a.x - b.x, a.y - b.y) - d0) < 1e-6 * d0);
+        if (!drawn || hot) { ctx.strokeStyle = hot ? C.accent : C.faint; ctx.lineWidth = hot ? 3 : 1; ctx.setLineDash(hot ? [] : [4, 3]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
         ctx.strokeStyle = hot ? C.accent : C.deep; ctx.lineWidth = 1.8;
         for (let k = 0; k <= gi; k++) {
           const o = (k - gi / 2) * 4;
@@ -1567,7 +1579,8 @@ function renderStatus() {
   const nd = $('#s-nd'), dist = $('#s-dist'), facts = $('#s-facts');
   nd.innerHTML = `<i>n</i> = <b>${st.n}</b> &nbsp;·&nbsp; <i>d</i> = <b>${st.d}</b>`;
   if (st.dc && !st.coincide) {
-    dist.innerHTML = st.dc.cls.length > 12 ? `<span><small>${st.dc.cls.length} lengths</small></span>` :
+    const chip = (c, k) => `<span data-c="${k}" title="hover to highlight, click to pin"><i style="background:${clsColor(k)}"></i>${fmtLen(c.d)}<small>×${c.pairs.length}</small></span>`;
+    dist.innerHTML = st.dc.cls.length > 12 ? chip(st.dc.cls[0], 0) + `<span><small>and ${st.dc.cls.length - 1} longer lengths</small></span>` :
       st.dc.cls.map((c, k) => `<span data-c="${k}" title="hover to highlight, click to pin"><i style="background:${clsColor(k)}"></i>${fmtLen(c.d)}<small>×${c.pairs.length}</small></span>`).join('');
   } else dist.innerHTML = '';
   $('#s-unit').hidden = !(st.dc && !st.coincide);
@@ -1821,8 +1834,8 @@ cv.addEventListener('pointermove', e => {
   const changed = JSON.stringify(h) !== JSON.stringify(hover);
   hover = h;
   let ek = null;
-  if (!h && tool !== 'eq' && tool !== 'par' && tool !== 'perp' && showEdges && status && status.dc && !status.coincide && status.n <= 24) {
-    const pp = segPick(sx, sy, false, 5);
+  if (!h && tool !== 'eq' && tool !== 'par' && tool !== 'perp' && showEdges && status && status.dc && !status.coincide && (minEdges || status.n <= 24)) {
+    const pp = segPick(sx, sy, false, 5, minEdges ? 0 : null);
     if (pp) ek = pp.c;
   }
   if (ek !== hlHover && !legendHover) { hlHover = ek; applyLegendHL(); draw(); }
@@ -1880,7 +1893,27 @@ function toggleLat(k) {
 $('#b-tri').addEventListener('click', () => toggleLat('tri'));
 $('#b-sq').addEventListener('click', () => toggleLat('sq'));
 $('#b-cons').addEventListener('click', () => { if (showCons && tool !== 'mark') setTool('mark'); setCons(!showCons); });
-$('#b-edges').addEventListener('click', () => { showEdges = !showEdges; $('#b-edges').setAttribute('aria-pressed', showEdges); draw(); });
+/* All distances / Shortest distances: at most one of the two */
+function setEdges(all, min) {
+  showEdges = all || min; minEdges = min && !all;
+  if (all && status && status.n > 24) toast('Every segment is drawn for sets of up to 24 points. For this one, try Shortest distances (M).');
+  $('#b-edges').setAttribute('aria-pressed', showEdges && !minEdges); $('#b-min').setAttribute('aria-pressed', minEdges);
+  draw();
+}
+$('#b-edges').addEventListener('click', () => setEdges(!(showEdges && !minEdges), false));
+$('#b-min').addEventListener('click', () => setEdges(false, !minEdges));
+/* hover descriptions for the icon buttons in the top bar */
+document.querySelectorAll('.dh-ib').forEach(b => {
+  b.addEventListener('mouseenter', () => {
+    const t = $('#tipbar'), r = b.getBoundingClientRect();
+    t.innerHTML = `<b>${b.dataset.tip}</b><kbd>${b.dataset.key}</kbd><br>${b.dataset.desc}`;
+    t.hidden = false;
+    t.style.top = (r.bottom + 6) + 'px';
+    t.style.left = Math.max(6, Math.min(innerWidth - t.offsetWidth - 6, r.left + r.width / 2 - t.offsetWidth / 2)) + 'px';
+  });
+  b.addEventListener('mouseleave', () => { $('#tipbar').hidden = true; });
+  b.addEventListener('click', () => { $('#tipbar').hidden = true; });
+});
 $('#b-keep').addEventListener('click', keep);
 $('#b-unmark').addEventListener('click', () => { pushUndo(); S.marked = []; commit(); });
 $('#b-fit').addEventListener('click', fit);
@@ -1919,6 +1952,7 @@ addEventListener('keydown', e => {
   if (k === 'g') { toggleLat('tri'); return; }
   if (k === 'q') { toggleLat('sq'); return; }
   if (k === 'e') { $('#b-edges').click(); return; }
+  if (k === 'm') { $('#b-min').click(); return; }
   if (k === 'h') { $('#b-cons').click(); return; }
   if (k === '0') { fit(); return; }
   if (k === '+' || k === '=') { zoom(1.4); return; }
