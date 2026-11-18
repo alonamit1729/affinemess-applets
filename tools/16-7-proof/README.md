@@ -15,6 +15,13 @@ contains its outputs, so it can also simply be read.
 
 Python 3.10 or later. The only library the mathematics needs is SymPy (tested with 1.14).
 
+## The paper
+
+`paper/seven-distances.tex` (and the compiled `paper/seven-distances.pdf`) writes the proof up as a
+self-contained paper: g(7) = 16, and exactly two 16-point sets with seven distances. It cites this
+folder for the computations and contains an elementary proof of the thirteen-cycle lemma, which the
+notebook still quotes from the literature.
+
 ## What is here
 
 | file | what it is |
