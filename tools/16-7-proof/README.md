@@ -32,6 +32,7 @@ elementary proof of the thirteen-cycle lemma.
 | `data/L10.json` | the 228 patterns of ten points with at most six distances, in the numbering the notebook uses |
 | `data/solutions.json` | all solutions of the length equations of the 228 patterns (output of `fewdist.solve_many`) |
 | `fifteen/` | the classification of fifteen-point sets with seven distances (notebook §8, paper §8): `fifteen.py`, the solutions of the 635 nine-point patterns (`solutions9.json`) and the 15 lattice sets found (`result.json`) |
+| `fourteen/` | the classification of fourteen-point sets with seven distances (84 sets, all rigid; not in the paper or the notebook yet): `fourteen.py`, the solutions of the 1565 eight-point patterns (`solutions8.json`), the 81 lattice sets (`result.json`) and the proof in `fourteen/README.md` |
 | `flint-check/` | the FLINT cross-check of the solutions of the 228 patterns (paper, section 4) |
 | `paper/` | the paper, `seven-distances.tex` and `.pdf` |
 | `certificates/` | how the 228 are derived: the lists of patterns kept at five to ten points, the program that checks certificates (`check.py`), the program that lists all candidates (`generate.py`), the five-point certificates and samples of the six- and seven-point ones; see `certificates/README.md` |
@@ -58,3 +59,7 @@ Three results are loaded instead of computed when the notebook runs.
   the nine-point sets; the full run is
 
       python fifteen/fifteen.py --jobs 2      # 16 minutes; --resolve also re-solves the 635 patterns
+
+The fourteen-point classification (`fourteen/`) is not part of the notebook. Its full run is
+
+    python fourteen/fourteen.py --jobs 2    # about an hour; see fourteen/README.md
