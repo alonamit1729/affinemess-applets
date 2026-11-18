@@ -66,7 +66,7 @@ WORDS = {"displaystyle": "", "left": "", "right": "", "bigl": "", "bigr": "", "q
          "le": "≤", "ge": "≥", "ne": "≠", "times": "×", "cdot": "·", "pm": "±", "approx": "≈", "in": "∈",
          "subseteq": "⊆", "setminus": "∖", "cup": "∪", "lfloor": "⌊", "rfloor": "⌋", "lceil": "⌈",
          "rceil": "⌉", "langle": "⟨", "rangle": "⟩", "lvert": "|", "rvert": "|", "dots": "…",
-         "Delta": "Δ", "theta": "θ", "pi": "π", "sum": "Σ", "blacksquare": "∎", "det": "det",
+         "Delta": "Δ", "theta": "θ", "pi": "π", "omega": "ω", "sum": "Σ", "blacksquare": "∎", "det": "det",
          "sin": "sin", "cos": "cos", "tfrac": "\\tfrac", "frac": "\\frac", "sqrt": "√", "binom": "\\binom",
          "text": "", "mathbb": ""}
 
@@ -79,12 +79,13 @@ def plain(tex):
     s = re.sub(r"\\t?frac\{([^{}]*)\}\{([^{}]*)\}", r"(\1)/(\2)", s)
     s = re.sub(r"\\binom\s*(\w)\s*(\w)", r"C(\1,\2)", s)
     s = re.sub(r"\\text\{([^{}]*)\}", r"\1", s)
-    s = s.replace("\\{", "{").replace("\\}", "}").replace("\\#", "#").replace("\\,", " ").replace("\\;", " ")
+    s = s.replace("\\{", "\x01").replace("\\}", "\x02").replace("\\#", "#").replace("\\,", " ").replace("\\;", " ")
     s = re.sub(r"\\([A-Za-z]+)", lambda m: WORDS.get(m.group(1), m.group(1)), s)
     s = s.replace("\\ ", " ").replace("\\\\", "; ").replace("\\", "")
     s = re.sub(r"\^\{([0-9+\-=()n]+)\}|\^([0-9n])", lambda m: (m.group(1) or m.group(2)).translate(SUP), s)
     s = re.sub(r"_\{([0-9+\-=()ijknmx]+)\}|_([0-9ijknmx])", lambda m: (m.group(1) or m.group(2)).translate(SUB), s)
     s = s.replace("{", "").replace("}", "") if "begin" not in s else s
+    s = s.replace("\x01", "{").replace("\x02", "}")                       # braces that are part of the formula
     return re.sub(r"\s+", " ", s).strip()
 
 
