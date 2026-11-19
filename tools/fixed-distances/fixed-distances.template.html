@@ -444,9 +444,11 @@ const DATA = __DATA__;
   catEl.addEventListener('click',async e=>{
     const b=e.target.closest('.fd-link'); if(!b) return;
     e.stopPropagation(); e.preventDefault();
-    const ok=await copyText(cardLink(+b.dataset.n,+b.dataset.d,+b.dataset.num));
+    const url=cardLink(+b.dataset.n,+b.dataset.d,+b.dataset.num);
+    window.open(url,'_blank','noopener');   // synchronously, so popup blockers allow it; the link is also copied
+    const ok=await copyText(url);
     const card=b.closest('.fd-card'); let t=card.querySelector('.fd-linkok'); if(t) t.remove();
-    t=document.createElement('span'); t.className='fd-linkok'; t.textContent=ok?'Link copied':'Copy failed'; card.appendChild(t); setTimeout(()=>t.remove(),1500);
+    t=document.createElement('span'); t.className='fd-linkok'; t.textContent=ok?'Opened; link copied':'Opened in a new tab'; card.appendChild(t); setTimeout(()=>t.remove(),1500);
   });
   let pendingCard=0;
   function setHash(h){ /* best effort: some previewers (sandboxed srcdoc or blob frames, notably on iOS) forbid history edits */
@@ -472,7 +474,7 @@ const DATA = __DATA__;
     function cardHTML(it,i){
           const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
           const fx=it.kind==='family'&&it.dim>=1;
-          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${it.kind==='rigid'?`<button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Copy a link to this card" aria-label="Copy a link to this card">${LINKSVG}</button>`:''}${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
+          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${it.kind==='rigid'?`<button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Open this card in the Card Viewer (also copies the link)" aria-label="Open this card in the Card Viewer in a new tab">${LINKSVG}</button>`:''}${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
     }
     function wireCards(){
     catEl.querySelectorAll('.fd-card.flex').forEach(card=>{
