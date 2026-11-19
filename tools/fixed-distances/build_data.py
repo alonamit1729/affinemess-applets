@@ -108,6 +108,7 @@ SRC={
  'Wei12':'X. Wei, A proof of Erdős–Fishburn’s conjecture for g(6) = 13, Electron. J. Combin. 19(4) (2012) P38',
  'LW13':'W. Lan, X. Wei, Classification of seven-point four-distance sets in the plane, Math. Notes 93 (2013) 510–522',
  'SO20':'F. Szöllősi, P. R. J. Östergård, Constructions of maximum few-distance sets in Euclidean spaces, Electron. J. Combin. 27(1) (2020) P1.23',
+ 'AC26p':'A. Amit and Claude (Anthropic), The largest planar seven-distance sets (November 2026): the step-by-step proof notebook (https://affinemess.com/#applets/16-7-proof), the paper and the certificates: https://github.com/alonamit1729/affinemess-applets/tree/main/tools/16-7-proof',
  'AC26b':'A. Amit and Claude (Anthropic), Fourteen points, seven distances (November 2026): https://github.com/alonamit1729/affinemess-applets/blob/main/tools/16-7-proof/fourteen/README.md',
  'AC26':'A. Amit and Claude (Anthropic), The largest planar seven-distance sets (November 2026), section 8: https://github.com/alonamit1729/affinemess-applets/blob/main/tools/16-7-proof/paper/seven-distances.pdf',
  'AA26':'A. Amit, GPT-6 Astra, The maximum cardinality of a planar seven-distance set, preprint (24 October 2026), submitted to Hexagon',
