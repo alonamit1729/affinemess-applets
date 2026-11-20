@@ -1,0 +1,96 @@
+{
+ "all_match": true,
+ "cells": {
+  "6,3": {
+   "published": "Shinohara 2004, Theorem 2",
+   "method": "certified L6, 7 patterns with 3 colours, fewdist.solve_lengths",
+   "flexible_patterns": [],
+   "seconds": 0.7,
+   "computed": 9,
+   "catalog": 9,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "7,3": {
+   "published": "Erdős–Fishburn 1996; Shinohara 2004",
+   "method": "certified L7, 2 patterns with 3 colours, fewdist.solve_lengths",
+   "flexible_patterns": [],
+   "seconds": 0.1,
+   "computed": 2,
+   "catalog": 2,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "7,4": {
+   "published": "Lan–Wei 2013, Theorem 8",
+   "method": "certified L7, 34 patterns with 4 colours, fewdist.solve_lengths",
+   "flexible_patterns": [],
+   "seconds": 1.8,
+   "computed": 42,
+   "catalog": 42,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "8,4": {
+   "published": "Shinohara 2008, Theorem 1.2",
+   "method": "certified L8, 14 patterns with 4 colours, fewdist.solve_lengths",
+   "flexible_patterns": [],
+   "seconds": 0.8,
+   "computed": 15,
+   "catalog": 15,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "9,4": {
+   "published": "Erdős–Fishburn 1996",
+   "method": "certified L9, 4 patterns with 4 colours, fewdist.solve_lengths",
+   "flexible_patterns": [],
+   "seconds": 0.3,
+   "computed": 4,
+   "catalog": 4,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "11,5": {
+   "published": "Wei 2011, Theorem 13",
+   "method": "msolve on the complete candidate list L11 (g7count/gram_n.py)",
+   "computed": 4,
+   "catalog": 4,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "12,5": {
+   "published": "Erdős–Fishburn 1996; Shinohara 2008",
+   "method": "msolve on the complete candidate list L12 (g7count/gram_n.py)",
+   "computed": 1,
+   "catalog": 1,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "13,6": {
+   "published": "Wei 2012; Szöllősi–Östergård 2020",
+   "method": "msolve on the complete candidate list L13 (g7count/gram_n.py)",
+   "computed": 3,
+   "catalog": 3,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  },
+  "11,6": {
+   "published": "Amit–Astra 2026, Lemma 6",
+   "method": "msolve on the complete candidate list L11 (g7count/gram_n.py)",
+   "computed": 64,
+   "catalog": 64,
+   "computed_distinct": true,
+   "catalog_distinct": true,
+   "match": true
+  }
+ }
+}

@@ -1,5 +1,7 @@
 # fixed-distances: build pipeline
 
+The write-up of how every cell was computed is `report/table-methods.pdf` (LaTeX source `report/table-methods.tex`; `report/make_tables.py` regenerates its table of cells from `data/applet_data.json`). The walkthrough of the msolve computation of rows 10–16 is `g7count/reproducing.html`, rendered from `g7count/REPRODUCING.md` by `g7count/build_reproducing.py` (pandoc).
+
 Source of `../../fixed-distances.html` (Planar sets with a fixed number of distances).
 Everything is reproducible from this folder; the page is `fixed-distances.template.html` with
 `data/applet_data.json` injected by `build_html.py`. Since 2026-11-07 `applet_data.json` is slim (the big cells' items are only in `data/catalogs/`); scripts that need every item use `datautil.load()`.
@@ -77,7 +79,7 @@ jobs overlapped were discarded and recomputed by `hygiene_run.sh`, which runs ev
 
 ## Marks (provenance of completeness)
 
-Unmarked solid cell: published classification (configurations reconstructed here). `†`: published and independently re-verified by our exact computation. `‡`: our exact computation only (novel). `certify_nd.py n d` is the n-general version of `certify5d.py`; it was run for (4,2..6), (5,2), (5,3) (`data/cert{n}{d}.json`): counts 6 / 9 / 7 / 2 / 1 families-or-rigid, 1, 34 — all agreeing with the literature and the earlier numerics. Note that with the scale fixed by s0 = 1 the variety has the mirror pair x1 = ±1, so component counts per type come in pairs, and rigid roots must be deduplicated up to similarity including rescaling (colour permutations).
+`†`: published and independently re-verified by our exact computation. `‡`: our exact computation only (novel). Only the three-point row is unmarked. Since November 2026 the published cells (6,3), (7,3), (7,4), (8,4), (9,4) are re-verified by `reverify_published.py` (every pattern with d colours of the certified list `../16-7-proof/certificates/L{n}.json` solved exactly with `fewdist.solve_lengths`; about 5 s), which also checks (11,5), (12,5), (13,6), (11,6) against the msolve results of `g7count/`; both are matched one to one with the catalogs (`data/reverify_published.json`). `certify_nd.py n d` is the n-general version of `certify5d.py`; it was run for (4,2..6), (5,2), (5,3) (`data/cert{n}{d}.json`): counts 6 / 9 / 7 / 2 / 1 families-or-rigid, 1, 34 — all agreeing with the literature and the earlier numerics. Note that with the scale fixed by s0 = 1 the variety has the mirror pair x1 = ±1, so component counts per type come in pairs, and rigid roots must be deduplicated up to similarity including rescaling (colour permutations).
 
 ## Stratification of the five-point solution sets (`strat*.py`, `degen*.py`)
 

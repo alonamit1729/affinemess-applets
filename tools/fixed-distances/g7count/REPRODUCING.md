@@ -2,7 +2,9 @@
 
 **Claim.** Up to similarity there are exactly two sets of sixteen points in the plane that determine exactly seven distinct distances: the two triangular-lattice pieces of Erdős and Fishburn (the 12-point block of three rows of four, with a row of two above and a row of two below, the short rows on the same side or on opposite sides).
 
-This note explains, for someone who wants to check the claim rather than take it on trust, what has to be believed, what has to be run, and what the runs must print. All code and data are in the folder `tools/fixed-distances/` of the repository `github.com/alonamit1729/affinemess-applets`; paths below are relative to it. The computation has six steps, of which one (the candidate patterns) takes about half a day on one core and the others minutes. None of the files this note uses was moved out of the tree; the large files of the other cells (`cells/`, `data/strat_*`, …) are listed in [`../DATA.md`](../DATA.md) with a script that restores them.
+> This walkthrough describes the first computation of the classification (October 2026, with msolve and Singular). The classification has since been proved again, self-contained and in exact arithmetic, in [*The largest planar seven-distance sets*](https://affinemess.com/tools/16-7-proof/paper/seven-distances.pdf) (Amit–Claude 2026), which also has a [step-by-step notebook](https://affinemess.com/16-7-proof.html). The computation below remains an independent check. Its step 4, run at eleven, twelve and thirteen points, also gives five cells of the [table](https://affinemess.com/#applets/fixed-distances) (end of §5); how every cell of the table was computed is written up in [this note](https://affinemess.com/tools/fixed-distances/report/table-methods.pdf).
+
+This note explains, for someone who wants to check the claim rather than take it on trust, what has to be believed, what has to be run, and what the runs must print. All code and data are in the folder `tools/fixed-distances/` of the repository `github.com/alonamit1729/affinemess-applets`; paths below are relative to it. The computation has six steps, of which one (the candidate patterns) takes about half a day on one core and the others minutes. None of the files this note uses was moved out of the tree; the large files of the other cells (`cells/`, `data/strat_*`, …) are restored from a pinned commit by `fetch_data.py`.
 
 ## 0. Shape of the argument
 
@@ -21,11 +23,11 @@ Steps 2–4 and 6 are exact (Gröbner bases modulo a prime with confirmation, Si
 
 Notation: D is the diameter of X, X_D the set of diameter endpoints, m = |X_D|, G_D the *diameter graph* (vertices X_D, edges the pairs at distance D), α = α(G_D) its independence number.
 
-**Facts about G_D** (all elementary; proofs in `g7count/REPORT.md` §1). Every diameter endpoint is an extreme point of X; any two diameter segments meet; G_D contains no even cycle and at most one cycle, and every edge meets that cycle. Consequently G_D is a forest or an odd cycle with pendant trees, and α ≥ ⌈m/2⌉ unless G_D is the bare cycle C_m, where α = (m − 1)/2. (This is the diameter-graph lemma of Wei, Electron. J. Combin. 19(4) (2012) P38.)
+**Facts about G_D** (all elementary; see Lemma 8 of [the paper](https://affinemess.com/tools/16-7-proof/paper/seven-distances.pdf)). Every diameter endpoint is an extreme point of X; any two diameter segments meet; G_D contains no even cycle and at most one cycle, and every edge meets that cycle. Consequently G_D is a forest or an odd cycle with pendant trees, and α ≥ ⌈m/2⌉ unless G_D is the bare cycle C_m, where α = (m − 1)/2. (This is the diameter-graph lemma of Wei, Electron. J. Combin. 19(4) (2012) P38.)
 
 **A core.** If I ⊂ X_D is independent in G_D, then A = I ∪ (X ∖ X_D) contains no pair at distance D, so A determines at most six distances, and |A| = 16 − m + α.
 
-| m | α | |A| ≥ | conclusion |
+| m | α | \|A\| ≥ | conclusion |
 |---|---|---|---|
 | ≤ 10 | ≥ (m−1)/2 | 11 | A contains a ten-point set with ≤ 6 distances |
 | 11 | 5 if G_D = C₁₁, else ≥ 6 | 10 | same |
@@ -38,7 +40,7 @@ Notation: D is the diameter of X, X_D the set of diameter endpoints, m = |X_D|, 
 
 So X contains a ten-point subset with at most six distances, or (m ≥ 14) X is R₁₄, R₁₅ − v or R₁₅ plus one or two points all of whose distances to the polygon are chord lengths of it. The second alternative is checked in §7.
 
-Three cited results enter: Altman's bound, the Erdős–Fishburn/Fishburn classification of convex n-gons with ⌊n/2⌋ distances, and Lemma 4 of Amit–Astra (whose proof is itself computer-assisted, with its own certificate). Nothing else from the literature is used: in particular neither the bound g(7) = 16 nor the finiteness argument of `g7fin/FINITENESS.md` is needed for the count.
+Three cited results enter: Altman's bound, the Erdős–Fishburn/Fishburn classification of convex n-gons with ⌊n/2⌋ distances, and Lemma 4 of Amit–Astra (whose proof is itself computer-assisted, with its own certificate). Nothing else from the literature is used: in particular neither the bound g(7) = 16 nor the earlier finiteness argument (`g7fin/`) is needed for the count.
 
 ## 2. Environment
 
@@ -90,6 +92,8 @@ Runtime about 12 h on one core (level 6: 537 230 candidates to test, 2.7 h; leve
     python3 gram_n.py 10                     # -> real10g/pat_<i>.json, 228 files, about 3 min
 
 **Expected output.** Every pattern has `status: real`; the number of solutions per pattern is 1 for 199 patterns, 2 for 20, 3 for 1, 4 for 3, 5 for 2 and 6 for 3 (282 labelled sets); up to similarity these are **257** ten-point sets (214 patterns with one realization, 9 with two, 2 with four, 1 with five, 2 with six). `python3 gram_to_real10.py real10_gram` converts them to the extension's input format and prints `converted 228 patterns`.
+
+**The next levels.** `python3 gram_n.py 11`, `12` and `13` solve the 62, 15 and 3 candidate patterns of L₁₁, L₁₂ and L₁₃ (every one zero-dimensional, every one with real solutions) into `real11g/`, `real12g/`, `real13g/`. Up to similarity (`sets1113_by_d.json`) they give 4 eleven-point sets with five distances and 64 with six, 1 twelve-point set with five and 14 with six, and 3 thirteen-point sets with six: the cells (11,5), (11,6), (12,5), (12,6) and (13,6) of the table. The ten-point sets give (10,5) and (10,6): 19 and 238 (`sets10_by_d.json`).
 
 **Cross-checks that were run** (optional). `realize_all.py` solves the much larger coordinate system of §4 instead (218 of the 228 patterns in 5554 s; ten are too heavy for a 4 GB machine) and gives congruent realizations class by class; `crosscheck.py` verifies that all 210 ten-point sets with ≤ 6 distances inside the twelvefold set R₁₂ + R₁₂ (`r12/r12_subsets_7.json`) and all 236 ten-point subsets of the 68 eleven-point sets of Amit–Astra's Lemma 6 are among the 257.
 

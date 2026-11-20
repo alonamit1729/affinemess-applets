@@ -1,0 +1,397 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amssymb,mathtools}
+\usepackage{booktabs,longtable}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{Planar sets with a fixed number of distances:\\ how the table was computed}
+\author{Alon Amit}
+\author{Claude (Anthropic)}
+\date{November 2026}
+
+\begin{document}
+
+\begin{abstract}
+The applet \emph{Planar sets with a fixed number of distances}
+(\url{https://affinemess.com/#applets/fixed-distances}) tabulates, for $n\le16$ points and $d\le7$
+distances, the planar $n$-point sets that determine exactly $d$ distinct distances, up to similarity, sorted
+by the dimension of the family they belong to. This note records how each cell was obtained: which cells
+come from the literature and how we re-verified them, which cells we computed for the first time and by what
+method, what each computation assumes, and which files reproduce it. The classification of the sets with
+fourteen, fifteen and sixteen points and seven distances is proved in two companion write-ups and only
+summarised here.
+\end{abstract}
+
+\maketitle
+
+\section{The table}\label{sec:table}
+
+A configuration of $n$ labelled points modulo similarity has $2n-4$ degrees of freedom. Its \emph{distance
+pattern} is the colouring of the edges of $K_n$ in which two pairs get the same colour exactly when they are
+at the same distance; patterns are considered up to permutations of the points and of the colours. The
+configurations with a given pattern form a semi-algebraic set; a \emph{family} is a realisable pattern
+together with (a component of) this set, and its dimension is the dimension of the set modulo similarity.
+Rigid configurations are the points of dimension $0$. Requiring exactly $d$ values among the $\binom n2$
+distances imposes $\binom n2-d$ coincidences, so every component has dimension at least
+$e(n,d)=2n-4-\binom n2+d$; symmetric configurations can have larger components, which is why some cells mix
+rigid configurations with families.
+
+A cell $(n,d)$ is \emph{solid} when its list is complete and \emph{dashed} when it shows only the
+configurations we know (Section~\ref{sec:dashed}). Solid cells carry a mark that says where the proof of
+completeness comes from:
+\begin{itemize}
+\item $\dagger$: a published classification, re-verified independently by an exact computation;
+\item $\ddagger$: our exact computation only (we know of no published classification);
+\item no mark: the three-point row, which needs no proof.
+\end{itemize}
+Before November 2026 several published cells were unmarked (the published lists had been reconstructed but
+not recomputed). Section~\ref{sec:published} describes the computation that re-verified them; since then
+every solid cell with at least four points carries $\dagger$ or $\ddagger$.
+
+``Exact computation'' means: every candidate pattern was solved symbolically, so unrealisable patterns are
+proved unrealisable, rigid configurations are isolated as real algebraic numbers, and positive-dimensional
+components were decomposed and tested for real points. Section~\ref{sec:assume} lists what this relies on.
+
+Table~\ref{tab:cells} lists the solid cells. The column ``families'' gives the number of families of each
+dimension, the dimension in parentheses.
+
+\input{cells-table.tex}
+
+\section{Candidate patterns}\label{sec:patterns}
+
+Following Szöllősi and Östergård \cite{SO}, a pattern on $n$ points with at most six colours is a
+\emph{candidate} if it is \emph{complex-realisable with distinct non-zero values}: with the squared
+distances $s_{ij}$ written as one unknown per colour (the colour of one edge set to $1$), the ideal generated
+by the $3\times3$ minors of the Gram matrix $C_{ij}=(s_{0i}+s_{0j}-s_{ij})/2$ together with the Rabinowitsch
+equation $t\prod_{a<b}(s_a-s_b)\prod_c s_c=1$ is proper. The list $L_n$ is built hereditarily: the
+candidates on $n$ points are the colourings of $K_n$ all of whose $(n-1)$-point sub-colourings lie in
+$L_{n-1}$ and which pass the test. The pattern of every real $n$-point set with at most six distances lies in
+$L_n$. Our re-implementation (nauty canonical forms, Gröbner bases modulo a prime) reproduces both rows of
+Table~9 of \cite{SO} at every level:
+
+\begin{center}
+\begin{tabular}{@{}lrrrrrrrrrr@{}}
+\toprule
+$n$ & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13\\
+\midrule
+raw candidates & 25 & 1193 & 537\,230 & 14\,732 & 1565 & 635 & 228 & 62 & 15 & 3\\
+$|L_n|$ & 24 & 922 & 20\,229 & 4667 & 1565 & 635 & 228 & 62 & 15 & 3\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For $n\le10$ the lists are \emph{certified} in \cite[Sections~2--3]{AC}: every pattern discarded along the
+way carries a polynomial identity that proves the ideal is the unit ideal, and a short checker verifies all
+$527\,338$ identities. The lists $L_7,\dots,L_{10}$ used below are identical, pattern for pattern, to the
+certified ones. The lists $L_{11},L_{12},L_{13}$ come from the re-implementation only; their counts agree
+with \cite{SO}.
+
+\section{Four and five points}\label{sec:small}
+
+For four and five points, and for every number of distances, each colouring type of $K_n$ (up to symmetry)
+was solved in coordinates: $p_0=(0,0)$, $p_1=(x_1,0)$, the colour of the edge $p_0p_1$ equal to $1$, one
+unknown per other colour, one equation per edge, and a Rabinowitsch variable for ``all values distinct and
+non-zero''. The systems were handed to msolve \cite{msolve}: an empty Gröbner basis proves a type
+unrealisable, and a zero-dimensional system yields its real solutions with certified isolating intervals.
+Positive-dimensional systems were decomposed into minimal primes with Singular \cite{Singular}; each prime
+was checked for degeneracy and probed for real points by random hyperplane slices.
+
+\begin{itemize}
+\item Four points: $5$ types with two distances give the six quadruples of \cite{ES}; the $9$ types with
+  three distances, the $7$ with four, the $2$ with five and the single generic type are all realisable,
+  each of the expected dimension, so the four-point cells consist of families only.
+\item Five points: $17$ types with two colours give the regular pentagon; $124$ types with three colours
+  give $35$ certified real roots, $34$ configurations up to similarity, Shinohara's list \cite{Sh04} (each
+  matched to his figures 501--534 by its distance ratios; his table gives $2\sin4\pi/9$ for one ratio of
+  figure 524 where the construction in his text gives $2\sin7\pi/18$). With four colours, $237$ of the
+  $371$ types are realisable: $468$ rigid configurations and $25$ one-parameter families. With five, six
+  and seven colours, $407$ of $443$, $244$ of $249$ and $76$ of $76$ types are realisable, and every
+  component has dimension at least $1$, $2$, $3$ respectively.
+\end{itemize}
+
+\paragraph{Counting up to similarity.} The real roots of each type were grouped into orbits of the
+colour-permuting automorphisms of the colouring (with rescaling) by interval arithmetic on the certified
+isolating boxes; the real-root counts were confirmed by Sturm sequences on msolve's rational
+parametrisations. (A first version reported $481$ rigid configurations for $(5,4)$; it compared distances
+without rescaling and counted thirteen configurations twice.)
+
+\paragraph{Hygiene.} Every unrealisability verdict was re-verified with Singular (\texttt{std} $=1$ with the
+Rabinowitsch variable), and with msolve again for five or more colours. For $21$ of the $768$ types with five to seven colours the primary
+decomposition did not finish; there the certificate is the dimension of the saturated ideal, certified
+real points on random slices, and full rank of the Jacobian at those points. Separately, the $21$ components
+on which random slices found no real point were settled one by one: twelve are empty (a generator is a
+positive-definite quadratic), nine have real points on bounded pieces that the slices missed. No family
+count changed.
+
+\paragraph{Hidden rigid configurations.} A real point of a positive-dimensional type can be isolated in the
+real locus without the dimension count seeing it. For five to seven distances we checked: wherever the
+Jacobian of the ten equations has full rank the real locus is a manifold; at the finitely many real
+rank-deficient points each component is smooth (after eliminating the linearly occurring variables, by
+the minors of its Jacobian) or its singular locus has no real points. For four types with five distances
+whose decomposition never finishes, the twenty candidate points were settled by a certified local test: a
+smooth surface through the point contains the curve, and the intrinsic Hessian of a further generator is
+indefinite there, so the point is a node of two real branches. None was found.
+
+\paragraph{Structure of the solution sets.} For four and five points we also traced the one-parameter
+families to their ends: rigid sets with fewer distances, collisions of two points, or infinity. For $(5,4)$
+the families and their endpoints form a connected graph with $35$ vertices (the $34$ three-distance sets and
+the pentagon), $108$ arcs, $77$ ends at a collision and $12$ at infinity; for $(5,5)$, $527$ vertices and
+$5269$ arcs. The catalog cards list the arcs and the boundary strata of each family.
+
+\section{Six to nine points with four to six distances}\label{sec:middle}
+
+The nine cells $(6,4)$, $(6,5)$, $(6,6)$, $(7,5)$, $(7,6)$, $(8,5)$, $(8,6)$, $(9,5)$, $(9,6)$ were
+classified from the candidate lists in the \emph{value space}. The unknowns are the $d-1$ free squared
+distances, the equations the $3\times3$ minors of the Gram matrix (rank at most $2$), and the inequation
+``values distinct and non-zero'' a Rabinowitsch variable. A full distance matrix determines a point set up
+to isometry, so the configurations with a given pattern, modulo similarity, are the real solutions whose
+Gram matrix is positive semidefinite of rank at most $2$ (rank $1$ means collinear).
+
+For each pattern: msolve real root isolation when the system is zero-dimensional, followed by the
+positive-semidefiniteness test (at $60$ digits) and reconstruction of the points; when it is
+positive-dimensional, Singular's minimal primes, each prime tested for degeneracy, for real
+positive-semidefinite points by random slices, and for real points of its singular locus (none occurred, so
+every family is a smooth real curve or surface and no rigid configuration hides on it). Configurations are
+counted up to similarity by an exact congruence test. About a dozen patterns of $(6,6)$ defeat
+\texttt{minAssGTZ}; for them the ideal is split with \texttt{facstd} and each piece decomposed separately,
+with Gröbner bases by \texttt{modStd}.
+
+\begin{center}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+cell & patterns & no real configuration & rigid & families & maximal rigid\\
+\midrule
+$(6,4)$ & 104 & 5 & 149 & 4 & 68\\
+$(6,5)$ & 1509 & 116 & 3062 & 38 + 1 & 2084\\
+$(6,6)$ & 18\,609 & 1351 & 44\,242 & 754 + 3 & 33\,304\\
+$(7,5)$ & 362 & 21 & 508 & 9 & 184\\
+$(7,6)$ & 4269 & 368 & 7161 & 51 & 3365\\
+$(8,5)$ & 143 & 2 & 165 & 2 & 34\\
+$(8,6)$ & 1408 & 73 & 1897 & 12 & 354\\
+$(9,5)$ & 53 & 0 & 57 & 1 & 7\\
+$(9,6)$ & 578 & 10 & 698 & 1 & 145\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent ``Families'' counts one-parameter families, plus two-parameter ones after the plus sign;
+``maximal'' counts the rigid sets contained in no set with one more point and the same number of distances.
+The validation runs on $(5,3)$, $(5,4)$ and $(6,4)$ reproduced the counts of Section~\ref{sec:small} and of
+an earlier coordinate-based computation of $(6,4)$.
+
+\begin{remark}\label{rem:66}
+In $(6,6)$, $19$ one-dimensional primes (of $911$ non-degenerate positive-dimensional ones) showed no real
+positive-semidefinite point on $40$ random slices. Random slices certify real points when they find them,
+but not finding one is not a proof. Unlike the analogous components for five points, these $19$ have not
+been settled. If one of them carried real configurations, the cell $(6,6)$ would have more families than
+the $757$ listed. In the other eight cells every positive-dimensional prime has certified real points.
+\end{remark}
+
+\section{Ten to thirteen points with at most six distances}\label{sec:ten}
+
+For $n=10,\dots,13$ every candidate pattern in $L_n$ has finitely many solutions (msolve; for $n=10$ and
+$n=11$ also certified by Singular, $\dim\operatorname{std}(I)=0$ over $\Q$ for the coordinate system of
+each pattern). The real solutions were computed by msolve on
+Szöllősi--Östergård's own system (the Gram minors in the at most five free values, plus the Rabinowitsch
+equation) with isolating intervals of width $2^{-400}$. For each real solution the Gram matrix was formed at
+$100$ digits: it must be positive semidefinite of rank $2$ (two eigenvalues clearly positive, the others
+about $10^{-100}$; none was indefinite), and the points come from its eigendecomposition; each reconstructed set is checked to have
+exactly the pattern it came from. Up to similarity:
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+$n$ & patterns & five distances & six distances & total\\
+\midrule
+10 & 228 & 19 & 238 & 257\\
+11 & 62 & 4 & 64 & 68\\
+12 & 15 & 1 & 14 & 15\\
+13 & 3 & 0 & 3 & 3\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These are the cells $(10,5)$, $(10,6)$, $(11,5)$, $(11,6)$, $(12,5)$, $(12,6)$, $(13,6)$. The ten-point
+count was cross-checked by solving the much larger coordinate systems for $218$ of the $228$ patterns
+(congruent realisations, class by class), and by checking that all $210$ ten-point sets with at most six
+distances inside the twelvefold set $R_{12}+R_{12}$ (Section~\ref{sec:dashed}) and all ten-point subsets
+of the $68$ eleven-point sets are among the $257$.
+
+The row $n=10$ has since been proved independently in \cite[Corollary~7]{AC}: certified pattern list, exact
+solution by SymPy Gröbner bases over number fields, and a published notebook that runs every step. The cells
+$(11,5)$, $(12,5)$ and $(13,6)$ are published classifications \cite{W11,EF,Sh08,W12}; $(11,6)$ was first
+classified in \cite[Lemma~6]{AA}, from the same $62$ candidate patterns, which is why it carries $\dagger$.
+The cells $(10,5)$, $(10,6)$ and $(12,6)$ carry $\ddagger$.
+
+\section{Fourteen to sixteen points with seven distances}\label{sec:top}
+
+\begin{itemize}
+\item $(16,7)$: $g(7)=16$, and the two Erdős--Fishburn lattice pieces are the only sixteen-point sets with
+  at most seven distances \cite[Theorem~1]{AC}. The proof reduces every such set to one of the $257$
+  ten-point sets above (or a regular polygon), with a new elementary proof that a $13$-cycle of diameters
+  forces a regular $13$-gon, and extends each ten-point set by six points in exact arithmetic. A
+  step-by-step notebook runs every verification \cite{ACnb}. That $g(7)=16$ was first proved in \cite{AA}.
+\item $(15,7)$: exactly sixteen sets \cite[Theorem~16]{AC}, one of which (a lattice piece $F$) is not
+  contained in any sixteen-point set.
+\item $(14,7)$: exactly $84$ sets, all rigid \cite{AC14}.
+\end{itemize}
+
+An earlier, independent computation of the sixteen-point sets is described in the walkthrough
+\cite{repro}: the same $257$ ten-point sets, extended by six points in $100$-digit arithmetic (circle
+intersections and circumcentres as candidates, a depth-first search), give $826$ labelled sixteen-point sets
+from $185$ cores, two up to similarity; the two patterns found are then solved exactly by msolve, each with a
+unique realisation. It relied on the thirteen-cycle lemma of \cite{AA}, which \cite{AC} reproves.
+
+\section{The published cells and their re-verification}\label{sec:published}
+
+\begin{center}
+\begin{tabular}{@{}llp{0.52\textwidth}@{}}
+\toprule
+cell & published & our check\\
+\midrule
+$(4,2)$, $(5,2)$ & \cite{ES} & Section~\ref{sec:small} ($5$ and $17$ types)\\
+$(5,3)$ & \cite[Thm.~1]{Sh04} & Section~\ref{sec:small} ($124$ types)\\
+$(6,3)$ & \cite[Thm.~2]{Sh04} & $7$ patterns of $L_6$ with three colours: $9$ sets\\
+$(7,3)$ & \cite{EF,Sh04} & $2$ patterns of $L_7$: $2$ sets\\
+$(7,4)$ & \cite[Thm.~8]{LW} & $34$ patterns of $L_7$: $42$ sets\\
+$(8,4)$ & \cite[Thm.~1.2]{Sh08} & $14$ patterns of $L_8$: $15$ sets\\
+$(9,4)$ & \cite{EF} & $4$ patterns of $L_9$: $4$ sets\\
+$(11,5)$ & \cite[Thm.~13]{W11} & Section~\ref{sec:ten}: $4$ sets\\
+$(12,5)$ & \cite{EF,Sh08} & Section~\ref{sec:ten}: $1$ set\\
+$(13,6)$ & \cite{W12,SO} & Section~\ref{sec:ten}: $3$ sets\\
+$(11,6)$ & \cite[Lemma~6]{AA} & Section~\ref{sec:ten}: $64$ sets\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The checks for $(6,3)$, $(7,3)$, $(7,4)$, $(8,4)$ and $(9,4)$ were added in November 2026
+(\texttt{reverify\_published.py}). Each pattern of the certified list $L_n$ of \cite{AC} with exactly $d$
+colours was solved with the routine \texttt{solve\_lengths} of \cite{AC} (a SymPy Gröbner basis of the Gram
+minors with the Rabinowitsch equation, real roots in exact number fields); every pattern turned out to have
+finitely many solutions, and the real Euclidean realisations were counted up to similarity. In every one of
+the eleven cells the computed sets were then compared with the catalog: the counts agree, and the computed
+sets match the catalog's sets one to one (compared by the multiset of the points' sorted distance profiles,
+which separates all sets within each of these cells).
+
+The maxima $g(2)=5$, $g(3)=7$, $g(4)=9$, $g(5)=12$ are due to Erdős and Fishburn \cite{EF}, who also
+classified the maximum sets for $d\le4$; the twelve-point five-distance set is unique \cite{Sh08}, and
+$g(6)=13$ \cite{W12}. The proofs of the top cells use the convex-polygon theorem of Altman and Fishburn
+\cite{Al,Fi}.
+
+\section{The dashed cells}\label{sec:dashed}
+
+The dashed cells show the configurations we know; their counts are lower bounds, each configuration checked
+numerically to have exactly the stated number of distances and the stated local dimension. The examples come
+from subsets of regular polygons (with or without centre), pieces of the triangular and square lattices,
+one-point extensions of the complete lists of smaller cells, a systematic search over configurations with a
+cyclic or dihedral symmetry (orbit structures with up to five parameters and up to two extra
+coincidences), and, for $8$--$12$ points with five distances, $9$--$13$ with six and $13$--$16$ with seven,
+an exhaustive sweep of the subsets of the twelvefold set
+$R_{12}+R_{12}=\{\zeta^a+\zeta^b:\zeta^{12}=1\}$ ($73$ points: the centre and points at angles that are
+multiples of $15^\circ$ on six circles). This set contains pieces of the triangular lattice, the $12$-gon
+with its centre, and twelvefold configurations that are neither, among them the three ten-point six-distance
+patterns that no earlier family of examples realised. Configurations are counted up to similarity by an
+exact congruence test (a vertex bijection matching all distances); the sweep contains many homometric pairs,
+non-congruent sets with the same multiset of distances.
+
+No dashed cell has a complete list: they are all open.
+
+\section{What is exact and what is assumed}\label{sec:assume}
+
+\begin{itemize}
+\item \emph{Gröbner bases.} msolve computes over $\Q$ by multi-modular methods with probabilistic
+  verification, like every current Gröbner engine; Singular's \texttt{std} and \texttt{minAssGTZ} work over
+  $\Q$. The pattern lists for $n\le10$ do not depend on either: they are certified by explicit identities
+  \cite{AC}.
+\item \emph{Real roots.} msolve's isolating intervals are certified. The positive-semidefiniteness test is
+  numerical, at $60$ to $100$ digits, with eigenvalues separated from zero by a wide margin in every case.
+\item \emph{Real points on positive-dimensional components.} Found by random slices: a hit is a certified
+  real point, a miss is not a proof. All misses for five points were settled exactly; $19$ curves in
+  $(6,6)$ remain (Remark~\ref{rem:66}).
+\item \emph{Similarity.} Counted by exact congruence tests or by interval arithmetic on certified roots.
+\item \emph{Fourteen to sixteen points.} Exact arithmetic throughout; see \cite{AC,AC14}.
+\item \emph{Cited theorems.} The classifications in Section~\ref{sec:published}, and Szöllősi--Östergård's
+  counts, which our re-implementation reproduces and which serve as a check, not an input.
+\end{itemize}
+
+\section{Files}\label{sec:files}
+
+Everything is in the folder \texttt{tools/fixed-distances} of the repository
+\url{https://github.com/alonamit1729/affinemess-applets}; the companion proofs are in
+\texttt{tools/16-7-proof}. The applet's data is \texttt{data/applet\_data.json}, assembled by
+\texttt{build\_data2.py} and injected into the page by \texttt{build\_html.py}.
+
+\begin{center}
+\begin{tabular}{@{}lp{0.62\textwidth}@{}}
+\toprule
+step & scripts and results\\
+\midrule
+four and five points & \texttt{certify54.py}, \texttt{certify5d.py}, \texttt{certify\_nd.py}, \texttt{stubborn.py};
+  \texttt{data/cert*.json}; hygiene: \texttt{reverify.py}, \texttt{dedup54.py}, \texttt{noreal.py},
+  \texttt{noreal2.py}, \texttt{hidden.py}, \texttt{hidden\_final.py}, \texttt{nodetest.py}\\
+structure & \texttt{strat.py}, \texttt{strat\_analyze.py}, \texttt{degen.py}, \texttt{degen\_analyze2.py}\\
+candidate patterns & \texttt{g7fin/gen/gen.py}, \texttt{g7fin/gen/levels/}; certified lists:
+  \texttt{tools/16-7-proof/certificates/}\\
+six to nine points & \texttt{cells/cellcert.py}, \texttt{cells/summary.py}, \texttt{cells/export\_cells.py}\\
+ten to thirteen points & \texttt{g7fin/pat\_rigid\_d.py}, \texttt{g7count/gram\_n.py},
+  \texttt{g7count/sets10\_by\_d.json}, \texttt{g7count/sets1113\_by\_d.json}, \texttt{exact\_cells.py}\\
+published cells & \texttt{reverify\_published.py}, \texttt{data/reverify\_published.json}\\
+dashed cells & \texttt{symfam.py}, \texttt{extend.py}, \texttt{examples.py}, \texttt{lattice.py},
+  \texttt{r12/sweep.py}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Eleven reproduction-only files over 1\,MB are not in the published tree; \texttt{fetch\_data.py}
+restores them from a pinned commit and checks their SHA-256. The walkthrough \cite{repro} gives the
+commands and expected outputs for the ten- to thirteen-point computation and the earlier sixteen-point
+computation.
+
+\begin{thebibliography}{99}
+\bibitem{AC} A. Amit and Claude (Anthropic), The largest planar seven-distance sets (November 2026),
+  \url{https://affinemess.com/tools/16-7-proof/paper/seven-distances.pdf}.
+\bibitem{ACnb} A. Amit and Claude (Anthropic), The $(16,7)$ proof: a step-by-step notebook,
+  \url{https://affinemess.com/16-7-proof.html}; runnable in the browser at
+  \url{https://alonamit1729.github.io/live-notebooks/16-7-proof.html}.
+\bibitem{AC14} A. Amit and Claude (Anthropic), Fourteen points, seven distances (November 2026),
+  \url{https://affinemess.com/tools/16-7-proof/fourteen/fourteen-points.pdf}.
+\bibitem{repro} Reproducing the classification of ten- to sixteen-point sets (walkthrough),
+  \url{https://affinemess.com/tools/fixed-distances/g7count/reproducing.html}.
+\bibitem{AA} A. Amit and GPT-6 Astra, The maximum cardinality of a planar seven-distance set, preprint,
+  Hexagon 2610.00534 (October 2026).
+\bibitem{Al} E. Altman, On a problem of P. Erdős, \emph{Amer. Math. Monthly} \textbf{70} (1963), 148--157.
+\bibitem{ES} S. J. Einhorn and I. J. Schoenberg, On Euclidean sets having only two distances between points
+  I--II, \emph{Indag. Math.} \textbf{28} (1966).
+\bibitem{EF} P. Erdős and P. Fishburn, Maximum planar sets that determine $k$ distances, \emph{Discrete
+  Math.} \textbf{160} (1996), 115--125.
+\bibitem{Fi} P. Fishburn, Convex polygons with few intervertex distances, \emph{Comput. Geom.} \textbf{5}
+  (1995), 65--93.
+\bibitem{LW} W. Lan and X. Wei, Classification of seven-point four-distance sets in the plane, \emph{Math.
+  Notes} \textbf{93} (2013), 510--522.
+\bibitem{msolve} J. Berthomieu, C. Eder and M. Safey El Din, msolve: a library for solving polynomial
+  systems, \emph{ISSAC} (2021).
+\bibitem{Sh04} M. Shinohara, Classification of three-distance sets in two dimensional Euclidean space,
+  \emph{European J. Combin.} \textbf{25} (2004), 1039--1058.
+\bibitem{Sh08} M. Shinohara, Uniqueness of maximum planar five-distance sets, \emph{Discrete Math.}
+  \textbf{308} (2008), 3048--3055.
+\bibitem{Singular} W. Decker, G.-M. Greuel, G. Pfister and H. Schönemann, \textsc{Singular} 4 --- a computer
+  algebra system for polynomial computations.
+\bibitem{SO} F. Szöllősi and P. R. J. Östergård, Constructions of maximum few-distance sets in Euclidean
+  spaces, \emph{Electron. J. Combin.} \textbf{27}(1) (2020), P1.23.
+\bibitem{W11} X. Wei, Classification of eleven-point five-distance sets in the plane, \emph{Ars Combin.}
+  \textbf{102} (2011), 505--515.
+\bibitem{W12} X. Wei, A proof of Erdős--Fishburn's conjecture for $g(6)=13$, \emph{Electron. J. Combin.}
+  \textbf{19}(4) (2012), P38.
+\end{thebibliography}
+
+\end{document}

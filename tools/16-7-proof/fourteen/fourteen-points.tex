@@ -1,0 +1,180 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\conv}{\operatorname{conv}}
+
+\title{Fourteen points, seven distances}
+\author{Alon Amit}
+\author{Claude (Anthropic)}
+\date{November 2026}
+
+\begin{document}
+
+\begin{abstract}
+Up to similarity there are exactly $84$ sets of fourteen points in the plane that determine at most seven
+distinct distances: the regular $14$-gon, the regular $15$-gon with one vertex removed, the regular
+$13$-gon with its centre, and $81$ pieces of the triangular lattice, which are exactly the fourteen-point
+sets whose squared distances are proportional to $1,3,4,7,9,12,13$. All $84$ are rigid. The proof is
+computer-assisted and follows the method of our paper \cite{AC} on fifteen and sixteen points; lemma
+numbers refer to that paper.
+\end{abstract}
+
+\maketitle
+
+\section{The result}
+
+\begin{theorem}\label{thm:14}
+Up to similarity there are exactly $84$ fourteen-point planar sets with at most seven distances:
+\begin{itemize}
+\item the regular $14$-gon $R_{14}$;
+\item the regular $15$-gon minus a vertex, $R_{15}-v$;
+\item the regular $13$-gon with its centre;
+\item $81$ pieces of the triangular lattice. These are all the fourteen-point sets whose squared distances
+  are proportional to $1,3,4,7,9,12,13$. Four of them are the exceptional fifteen-point set $F$ of
+  \cite[Section~8]{AC} (the one fifteen-point seven-distance set not contained in a sixteen-point one) with
+  a point removed.
+\end{itemize}
+No fourteen-point set with at most seven distances belongs to a continuous family: all $84$ are rigid.
+\end{theorem}
+
+All $84$ have exactly seven distances. The list of the $81$ lattice sets, with exact coordinates, is the
+file \texttt{result.json} next to this note; the sets are also drawn in the catalog of the cell $(14,7)$ of
+the table at \url{https://affinemess.com/#applets/fixed-distances}.
+
+\section{Reduction to eight points}
+
+Let $X$ have fourteen points and at most seven distances. Let $h$ be the number of vertices of $\conv X$,
+$D$ the diameter of $X$, and $G_D$ the diameter graph (pairs at distance $D$), with $m$ vertices.
+
+\begin{lemma}\label{lem:eight}
+If $X$ is not $R_{14}$ or $R_{15}-v$, then $X$ contains eight points with at most six distances.
+\end{lemma}
+
+\begin{proof}
+If $h\ge14$, \cite[Lemma~10]{AC} gives $X=R_{14}$ or $X=R_{15}-v$. Otherwise $m\le h\le 13$
+(\cite[Lemma~8(1)]{AC}). A set $A$ made of an independent set of $G_D$ together with the points outside
+$G_D$ contains no pair at distance $D$, so it has at most six distances, and
+$|A| = 14-m+(\text{size of the independent set})$.
+\begin{itemize}
+\item If $G_D$ is not a single cycle, \cite[Lemma~8(3)]{AC} gives an independent set with at least
+  $\lceil m/2\rceil$ vertices, so $|A|\ge 14-\lfloor m/2\rfloor\ge 8$.
+\item If $G_D$ is a single cycle, $m$ is odd. For $m\le11$, every other vertex of the cycle gives
+  $|A| = 14-(m+1)/2\ge 8$.
+\item If $G_D$ is a $13$-cycle, its vertices form a regular $13$-gon by \cite[Lemma~11]{AC}, which has six
+  distances.\qedhere
+\end{itemize}
+\end{proof}
+
+The distance pattern of an eight-point set with at most six distances (the colouring of the edges of $K_8$
+by distance, up to permutations of points and colours) is one of the $1565$ patterns of the list $L_8$ of
+\cite[Sections~2--3]{AC}, whose completeness is certified there.
+
+\section{Eight points}
+
+\begin{proposition}[computer-assisted]\label{prop:eight}
+Of the $1565$ patterns, $1551$ have finitely many solutions; they give $2171$ real point sets. Each of the
+other $14$ (patterns $137$, $368$, $398$, $556$, $597$, $788$, $858$, $913$, $1081$, $1134$, $1156$, $1235$,
+$1263$, $1562$) has a curve of solutions: its lexicographic Gröbner basis consists of linear equations and
+one conic in two of the squared lengths.
+\end{proposition}
+
+Each conic is parametrised by the lines through a small rational point on it; the Gröbner basis is checked
+against the parametrisation, and the points that the parametrisation misses are treated separately.
+
+\section{Adding six points}
+
+Let $K$ be one of the eight-point sets, with $|\Delta(K)|$ distances. The \emph{budget} for new distances is
+$b=7-|\Delta(K)|\in\{1,2,3\}$. Let $y$ be a point that can be added, $S$ the set of points of $K$ at old
+distances from $y$, and $r=8-|S|$.
+
+\begin{enumerate}
+\item If one value occurs three times among the eight distances from $y$, then $y$ is the circumcentre of
+  three points of $K$.
+\item Otherwise every value occurs at most twice. Then $r\le2b$, and at least $r-b$ of the new values occur
+  exactly twice.
+\item If $S$ contains three non-collinear points, $y$ is fixed by its old distances to an \emph{anchor
+  triple}, one of a short list of triples contained in every set of $8-2b$ non-collinear points of $K$.
+\item Otherwise $S$ is collinear and has at least two points. For each new value taken twice, $y$ lies on
+  the perpendicular bisector of the two points.
+  \begin{itemize}
+  \item Two such bisectors that meet fix $y$.
+  \item If all of them coincide in one line $L$, intersect $L$ with the line
+    $|y-u|^2-|y-v|^2=\rho-\sigma$ for $u,v\in S$. If that line is parallel to $L$, then $y=f\pm h\nu$ with
+    $h^2=\rho-|f-u|^2$, where $\nu$ is a unit normal to $uv$.
+  \item If no new value is taken twice, $S$ has at least $8-b$ collinear points, and $y=f\pm h\nu$ in the
+    same way.
+  \end{itemize}
+\end{enumerate}
+
+The points $f\pm h\nu$ can be irrational over the field of $K$. Whether $h$ lies in that field is decided
+exactly, by factoring $x^2-h^2$ over the number field with SymPy and checking the square root. If it does,
+the points join the ordinary candidates. If not, their distances $a+hb$ are compared exactly as pairs
+$(a,b)$; the few that survive are combined with all other candidates in a search that uses certified
+interval arithmetic (\texttt{mpmath.iv}). A combination is discarded only when the intervals force more
+than $b$ distinct new values. No combination survives.
+
+The exact candidates are combined by a depth-first search, as in \cite[Section~8]{AC}.
+
+\paragraph{The families.} As in \cite[Section~8]{AC}, everything is done over $\Q(s)$, where $s$ is the
+parameter of the conic. Some candidate points work for every $s$; for every six of them, the new values
+they produce are compared with $s$ symbolic. Every other candidate, every degeneration of the construction,
+and every six-point choice among the candidates valid for all $s$ gives a polynomial in $s$. A
+fourteen-point set can contain $K(s_0)$ only if $s_0$ is a root of one of these polynomials. At each real
+root, $K(s_0)$ is extended exactly in the number field $\Q(s_0)$. The families have between $182$ and $358$
+such special values each.
+
+\paragraph{Result.} The extensions give $82$ sets: $81$ with squared distances proportional to
+$1,3,4,7,9,12,13$, which are exactly the fourteen-point sets with that palette (found independently by
+a search over the triangular lattice, \texttt{fewdist.sets\_with\_distances}), and the regular $13$-gon with
+its centre. Together with $R_{14}$ and $R_{15}-v$ these are the $84$ sets of Theorem~\ref{thm:14}. A continuous family of
+fourteen-point sets would contain a continuous family of eight-point sets $K(t)$; since the extensions of a
+rigid $K$ come from finitely many candidates, and a family $K(s)$ extends only at finitely many values
+$s_0$, no fourteen-point set with at most seven distances lies on a continuous family.
+
+\section{Checks}
+
+Extending the $282$ ten-point realisations of \cite[Section~4]{AC} by four points gives the same $81$
+lattice sets and the regular $13$-gon with its centre. That extension does not see the cases that reduce
+only to eight points, so it is a partial check.
+
+\section{Running it}
+
+The program and its data are in the folder \texttt{tools/16-7-proof/fourteen} of the repository
+\url{https://github.com/alonamit1729/affinemess-applets}:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+file & content \\
+\midrule
+\texttt{fourteen.py} & the program \\
+\texttt{solutions8.json} & the solutions of the $1565$ eight-point patterns \\
+\texttt{result.json} & the $81$ lattice sets (Gram basis, exact points, distance census) \\
+\texttt{run.log} & the output of a full run \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent\texttt{python3 fourteen.py --jobs 2} takes $68$ minutes on two cores;
+\texttt{python3 fourteen.py --resolve} also re-solves the $1565$ patterns (about $20$ more minutes). It uses
+\texttt{fewdist.py} and the certified pattern list \texttt{certificates/L8.json} of \cite{AC}.
+
+\begin{thebibliography}{9}
+\bibitem{AC} A. Amit and Claude (Anthropic), The largest planar seven-distance sets (November 2026),
+  \url{https://affinemess.com/tools/16-7-proof/paper/seven-distances.pdf}; a step-by-step notebook of the
+  proof: \url{https://affinemess.com/16-7-proof.html}.
+\end{thebibliography}
+
+\end{document}

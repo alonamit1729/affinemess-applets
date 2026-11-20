@@ -1,5 +1,7 @@
 # Fourteen points, seven distances
 
+Typeset version of this note: [`fourteen-points.pdf`](fourteen-points.pdf) (source `fourteen-points.tex`), linked from the cell (14,7) of the fixed-distances table.
+
 Up to similarity there are exactly **84** sets of 14 points in the plane with at most seven
 distinct distances:
 
