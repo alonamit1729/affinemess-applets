@@ -22,7 +22,9 @@ inside this folder after copying `data/*` here (or symlink).
   `data/cert54_rigid_exact.json` (468 rigid, exact similarity classes via `dedup54.py`), `data/isolated54.json` (empty: no real-isolated points on the curves).
 - `certify5d.py d` — same pipeline for (5,d), d = 5,6,7: `data/cert55.json`, `data/cert56.json`, `data/cert57.json` (complete).
 - `stubborn.py d idx` — fallback for the 21 types whose primary decomposition did not finish: dimension of the saturated
-  ideal, certified real points on random slices, Jacobian rank (`data/stubborn_*.json`).
+  ideal, certified real points on random slices, Jacobian rank (`data/stubborn_*.json`). `certify_stubborn.py` — certifies
+  that rank: msolve isolating box (2^-200) of a real slice point, a 10×10 Jacobian minor nonzero on the whole box by
+  interval Gaussian elimination (mpmath.iv); all 21 types (`data/certify_stubborn.json`).
 - `five.py`, `five_brute.py`, `five_id.py`, `gen5.py` — the 34 five-point and 9 six-point three-distance sets.
 - `symfam.py` — symmetric constructions (cyclic/dihedral orbit structures + extra coincidences): `data/symfam_*.json`.
 - `extend.py`, `examples.py`, `lattice.py` — one-point extensions, regular-polygon subsets, lattice pieces.

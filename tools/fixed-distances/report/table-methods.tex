@@ -128,7 +128,9 @@ without rescaling and counted thirteen configurations twice.)
 \paragraph{Hygiene.} Every unrealisability verdict was re-verified with Singular (\texttt{std} $=1$ with the
 Rabinowitsch variable), and with msolve again for five or more colours. For $21$ of the $768$ types with five to seven colours the primary
 decomposition did not finish; there the certificate is the dimension of the saturated ideal, certified
-real points on random slices, and full rank of the Jacobian at those points. Separately, the $21$ components
+real points on random slices, and full rank of the Jacobian at such a point, certified by interval arithmetic on
+its isolating box (\texttt{certify\_stubborn.py}). Since families are counted per colouring type, this is all
+the count needs. Separately, the $21$ components
 on which random slices found no real point were settled one by one: twelve are empty (a generator is a
 positive-definite quadratic), nine have real points on bounded pieces that the slices missed. No family
 count changed.
@@ -352,7 +354,7 @@ Everything is in the folder \texttt{tools/fixed-distances} of the repository
 \toprule
 step & scripts and results\\
 \midrule
-four and five points & \texttt{certify54.py}, \texttt{certify5d.py}, \texttt{certify\_nd.py}, \texttt{stubborn.py};
+four and five points & \texttt{certify54.py}, \texttt{certify5d.py}, \texttt{certify\_nd.py}, \texttt{stubborn.py}, \texttt{certify\_stubborn.py};
   \texttt{data/cert*.json}; hygiene: \texttt{reverify.py}, \texttt{dedup54.py}, \texttt{noreal.py},
   \texttt{noreal2.py}, \texttt{hidden.py}, \texttt{hidden\_final.py}, \texttt{nodetest.py}\\
 structure & \texttt{strat.py}, \texttt{strat\_analyze.py}, \texttt{degen.py}, \texttt{degen\_analyze2.py}\\
