@@ -190,11 +190,26 @@ The validation runs on $(5,3)$, $(5,4)$ and $(6,4)$ reproduced the counts of Sec
 an earlier coordinate-based computation of $(6,4)$.
 
 \begin{remark}\label{rem:66}
-In $(6,6)$, $19$ one-dimensional primes (of $911$ non-degenerate positive-dimensional ones) showed no real
-positive-semidefinite point on $40$ random slices. Random slices certify real points when they find them,
-but not finding one is not a proof. Unlike the analogous components for five points, these $19$ have not
-been settled. If one of them carried real configurations, the cell $(6,6)$ would have more families than
-the $757$ listed. In the other eight cells every positive-dimensional prime has certified real points.
+In $(6,6)$, $19$ one-dimensional primes $P$ (of $911$ non-degenerate positive-dimensional ones, one in each of
+$19$ patterns) showed no real positive-semidefinite point on $40$ random slices. Random slices certify real
+points when they find them, but a miss is not a proof, so these $19$ were settled separately
+(\texttt{cells/settle66.py}, a few minutes in all). Each pattern was decomposed again; the primes agree with the
+first run, and in every pattern the primes other than these are exactly the families counted.
+
+Let $C$ be the real points of $V(P)$, a closed subset of $\R^5$, and $K\subseteq C$ the points whose Gram
+matrix is positive semidefinite: the real configurations, degenerate ones included. On $C$ the Gram matrix
+has rank at most $2$, with eigenvalues $\lambda_a,\lambda_b,0,0,0$, so $K=\{\lambda_a\ge0,\lambda_b\ge0\}$ is
+closed in $C$. Choose a rational point $A$ and four random rational combinations $g_1,\dots,g_4$ of the
+generators of $P$, and let $W=P+\bigl(\det[\nabla g_1;\dots;\nabla g_4;x-A]\bigr)$; let
+$R_1=P+(2\times2 \text{ minors of the Gram matrix})$. If $K$ meets a connected component $\Gamma$ of $C$, then
+either $K\supseteq\Gamma$, and the point of $\Gamma$ nearest to $A$ (which exists since $\Gamma$ is closed) is a
+critical point of the distance or a singular point of $V(P)$, hence a point of $W$ in $K$; or $K\cap\Gamma$ has a
+boundary point in $\Gamma$, where $\lambda_a$ or $\lambda_b$ changes sign, so the Gram matrix has rank at most $1$
+there: a point of $R_1$ in $K$. In every case $W$ and $R_1$ are zero-dimensional, and msolve isolates all their
+real points. For $16$ of the $19$ primes none of these points is positive semidefinite, so $K=\emptyset$. For
+the other $3$ some of them are, and a sign certificate finishes instead: the prime
+contains $s_4+s_5$, $s_2+s_5$ or $s_3+2s_5$, so two squared distances of a configuration would have opposite
+signs. Hence none of the $19$ curves carries a configuration, and the family count of $(6,6)$ is exact.
 \end{remark}
 
 \section{Ten to thirteen points with at most six distances}\label{sec:ten}
@@ -316,8 +331,9 @@ No dashed cell has a complete list: they are all open.
 \item \emph{Real roots.} msolve's isolating intervals are certified. The positive-semidefiniteness test is
   numerical, at $60$ to $100$ digits, with eigenvalues separated from zero by a wide margin in every case.
 \item \emph{Real points on positive-dimensional components.} Found by random slices: a hit is a certified
-  real point, a miss is not a proof. All misses for five points were settled exactly; $19$ curves in
-  $(6,6)$ remain (Remark~\ref{rem:66}).
+  real point, a miss is not a proof. Every miss was then settled exactly: for five points by a
+  positive-definite generator or a real point found by other means (Section~\ref{sec:small}), for $(6,6)$
+  as in Remark~\ref{rem:66}; in the other cells there were no misses.
 \item \emph{Similarity.} Counted by exact congruence tests or by interval arithmetic on certified roots.
 \item \emph{Fourteen to sixteen points.} Exact arithmetic throughout; see \cite{AC,AC14}.
 \item \emph{Cited theorems.} The classifications in Section~\ref{sec:published}, and Szöllősi--Östergård's
@@ -342,7 +358,8 @@ four and five points & \texttt{certify54.py}, \texttt{certify5d.py}, \texttt{cer
 structure & \texttt{strat.py}, \texttt{strat\_analyze.py}, \texttt{degen.py}, \texttt{degen\_analyze2.py}\\
 candidate patterns & \texttt{g7fin/gen/gen.py}, \texttt{g7fin/gen/levels/}; certified lists:
   \texttt{tools/16-7-proof/certificates/}\\
-six to nine points & \texttt{cells/cellcert.py}, \texttt{cells/summary.py}, \texttt{cells/export\_cells.py}\\
+six to nine points & \texttt{cells/cellcert.py}, \texttt{cells/summary.py}, \texttt{cells/export\_cells.py},
+  \texttt{cells/settle66.py}\\
 ten to thirteen points & \texttt{g7fin/pat\_rigid\_d.py}, \texttt{g7count/gram\_n.py},
   \texttt{g7count/sets10\_by\_d.json}, \texttt{g7count/sets1113\_by\_d.json}, \texttt{exact\_cells.py}\\
 published cells & \texttt{reverify\_published.py}, \texttt{data/reverify\_published.json}\\

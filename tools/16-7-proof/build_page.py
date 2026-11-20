@@ -28,6 +28,7 @@ ROOT = HERE.parent.parent
 SLUG = "16-7-proof"
 NAME = "(16, 7) proof"
 BUNDLE = "16-7-proof-notebook"
+LIVE = "https://alonamit1729.github.io/live-notebooks/16-7-proof.html"   # the JupyterLite build (repo alonamit1729/live-notebooks)
 BUNDLE_FILES = ["README.md", "requirements.txt", "two-shapes.ipynb", "fewdist.py", "figures.py",
                 "data/L10.json", "data/solutions.json", "paper/seven-distances.pdf",
                 "fifteen/fifteen.py", "fifteen/solutions9.json", "fifteen/result.json"] + ["certificates/" + name for name in (
@@ -402,6 +403,10 @@ ABOUT = """
       what is computed outside the notebook; everything is exact, in integers, rational numbers and small number
       fields, with no floating point in any decision.</p>
       <h3>Run it yourself</h3>
+      <p><em>Run live</em> opens the same notebook in <a href="https://alonamit1729.github.io/live-notebooks/16-7-proof.html" target="_blank" rel="noopener">JupyterLite</a>,
+      which runs Python and SymPy inside the browser: nothing to install. <i>Run</i> › <i>Run All Cells</i> executes
+      the whole proof in about five minutes; the first start downloads the Python runtime, which takes a little
+      longer.</p>
       <p><em>Notebook</em> downloads the bundle: the notebook, the Python module behind it, the lists of patterns
       and the program that checks certificates. It needs Python 3.10 or later and SymPy, nothing else. Unzip,
       <code>pip install -r requirements.txt</code>, open <code>two-shapes.ipynb</code> in Jupyter and run all
@@ -440,6 +445,7 @@ def page(body, sections):
     <select class="am-input" id="jump" aria-label="Jump to a section">{options}</select>
     <button class="am-btn" id="codeBtn" aria-pressed="true" title="Show or hide the code cells">Code</button>
     <span class="am-spacer"></span>
+    <a class="am-btn" href="{LIVE}" target="_blank" rel="noopener" title="Open the notebook in your browser and run it (JupyterLite; nothing to install)">Run live</a>
     <a class="am-btn" href="tools/{SLUG}/{BUNDLE}.zip" download title="Download the notebook, its module and data">Notebook</a>
     <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
   </header>

@@ -107,7 +107,9 @@ def struct_label(st):
 
 def listing_note(nrigid,nfam,complete):
     """describe what the catalog list contains, matching its actual content"""
-    if nrigid and nfam:
+    if nrigid and nfam and nrigid+nfam>600:   # the page shows long catalogs 600 cards at a time, families first (PAGE in the template)
+        t=f'One representative of each family first (a family = a realizable pattern of equal pairs; its dimension is measured in the full configuration space), then the {nrigid} rigid configurations, 600 cards at a time. Cards keep their catalog numbers: the rigid configurations are 1–{nrigid}, the families {nrigid+1}–{nrigid+nfam}.'
+    elif nrigid and nfam:
         t='Rigid configurations first, then one representative of each family (a family = a realizable pattern of equal pairs; its dimension is measured in the full configuration space).'
     elif nfam:
         t='One representative of each family (a family = a realizable pattern of equal pairs; its dimension is measured in the full configuration space). Hover or tap a card to flex it.'
@@ -567,6 +569,7 @@ def main():
                       f'by msolve real root isolation when zero-dimensional (a real solution is a configuration exactly when its Gram matrix is positive semidefinite of rank at most 2; configurations are counted up to similarity by an exact congruence test; {st["ncomplex"]} patterns have no real configuration) '
                       f'and, when positive-dimensional, by Singular’s minimal primes, each component tested for real points with a positive semidefinite Gram matrix by random slices and its singular locus computed (no real singular point with distinct values in any component, so every family is a smooth real curve or surface and there are no hidden rigid points). ')
                 if st.get('nmax') is not None: note+=f'{st["nmax"]} of the rigid sets are maximal (contained in no {n+1}-point {d}-distance set); the others are subsets of the classified {n+1}-point sets. '
+                if key=='6,6': note+='On 19 curves of solutions (of 911) the random slices found no real configuration; each was then settled exactly (cells/settle66.py): on 16 of them no real point has a positive semidefinite Gram matrix (the critical points of a distance function on the curve, and the points where the Gram matrix has rank at most 1, were all computed and are not positive semidefinite), and on the other 3 the equations force two squared distances of opposite signs (the prime contains s₄ + s₅, s₂ + s₅ or s₃ + 2s₅). So the count of families is exact. '
                 if old[0] is not None: note+=f'The earlier search had found {old[0]} of the {nr} rigid sets and {old[1]} of the {nf} families.'
                 cell(n,d,dims,'exact',marks='‡',note=note,finite=not nf)
                 cat(n,d,items,True,f'The {nr} {n}-point {d}-distance sets'+((' and the family' if nf==1 else f' and {nf} families') if nf else ''),listing_note(nr,nf,True),sources=('SO20','cells'))
