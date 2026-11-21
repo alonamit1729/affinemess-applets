@@ -16,7 +16,10 @@ fixed-distances page has the same switch, `TOOL_SLUG`). A hidden `distance-hunt`
 
 `recipes/<n>_<d>/<k>.json` holds a construction for every card of the fixed-distances catalog (cards k·1000 to
 k·1000+999 of the cell; the page fetches the file it needs): `{cell, labels, items: {num: [kind, dim, level,
-equations, unknowns, label index, recipe, verdict?]}}`. Levels: 1 a piece of the triangular or square lattice,
+equations, unknowns, label index, recipe, verdict or 0, animation?]}}`. The animation of a family (`animate.js`) is a
+loop through the family: each free point or slider swings, x_j(t) = x_j + a_j (sin(w_j t + p_j) − sin p_j), or, when
+equalities tie them, keyframes of all of them; along the loop the set keeps exactly d distances. The catalog cards
+(fixed-distances) are drawn from these recipes and play the same loop. Levels: 1 a piece of the triangular or square lattice,
 2 straightedge and compass (regular polygons that straightedge and compass can draw count), 3 straightedge,
 compass and another regular polygon, 4 sliders / free points pinned by equalities (the equalizer), 0 none found
 (the recipe then just places the points). A recipe is the tool's own node list, one short array per node
@@ -25,6 +28,7 @@ compass and another regular polygon, 4 sliders / free points pinned by equalitie
     cd pipeline
     python3 export_jobs.py /tmp/jobs                    # every card, coordinates refined onto its pattern (35 s)
     node run.js /tmp/jobs /tmp/out 5_4 6_6 ...          # the search (all 46 cells: about 15 min on 2 cores)
+    node animate.js /tmp/out 5_4 6_6 ...                # families: the loop the card and the tool play (5 s for all)
     node write_recipes.js /tmp/jobs /tmp/out            # -> ../recipes/ (a file is rewritten only if it changed)
 
 `run.js` merges into what `/tmp/out` already holds, so a cell can be done in pieces (`--from= --to=`,

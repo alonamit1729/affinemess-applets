@@ -1,7 +1,8 @@
 'use strict';
 /* node write_recipes.js <jobs dir> <out dir>
    -> ../recipes/<n>_<d>/<k>.json, cards k·1000 … k·1000+999 of the cell:
-      { cell, labels: [...], items: { num: [kind, dim, level, eqs, unknowns, label index, recipe, verdict] } }
+      { cell, labels: [...], items: { num: [kind, dim, level, eqs, unknowns, label index, recipe, verdict or 0, animation?] } }
+   animation (families): <out dir>/anim_<n>_<d>.json from animate.js
    kind 'rigid' | 'family'; level 1 lattice, 2 straightedge and compass, 3 regular polygon, 4 equalizer,
    0 none found (the recipe then just places the points). A file is rewritten only when its content changes. */
 const fs = require('fs'), path = require('path');
@@ -14,6 +15,7 @@ for (const f of fs.readdirSync(jobsDir).filter(f => f.endsWith('.json')).sort())
   const cell = f.replace('.json', '').replace('_', ',');
   const jobs = JSON.parse(fs.readFileSync(path.join(jobsDir, f)));
   const res = fs.existsSync(path.join(outDir, f)) ? JSON.parse(fs.readFileSync(path.join(outDir, f))) : {};
+  const anim = fs.existsSync(path.join(outDir, 'anim_' + f)) ? JSON.parse(fs.readFileSync(path.join(outDir, 'anim_' + f))) : {};
   const chunks = new Map();
   for (const [num, kind, dim, flat, cls, label] of jobs) {
     const k = Math.floor(num / 1000);
@@ -32,7 +34,8 @@ for (const f of fs.readdirSync(jobsDir).filter(f => f.endsWith('.json')).sort())
       for (let q = 0; q < flat.length; q += 2) { m.push(n.length); n.push(['b', +flat[q].toPrecision(13), +flat[q + 1].toPrecision(13)]); }
       item = [kind, dim, 0, 0, 0, li, { n, m, q: [] }];
     }
-    const v = verdicts[cell + '#' + num]; if (v) item.push(v);
+    item.push(verdicts[cell + '#' + num] || 0);
+    if (r && r.ok && anim[num]) item.push(anim[num]);
     C.items[num] = item;
     const t = (kind === 'rigid' ? 'R' : 'F') + item[2]; tally[t] = (tally[t] || 0) + 1;
   }

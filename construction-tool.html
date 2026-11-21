@@ -2201,10 +2201,10 @@ function enterView(cell, num) {
   resize();
 }
 function setupCard(cell, num, it, labels) {
-  const [kind, dim, level, eqs, unk, li, rec, v] = it;
+  const [kind, dim, level, eqs, unk, li, rec, v, anim] = it;
   S = { nodes: decodeRecipe(rec), marked: rec.m.slice(), next: rec.n.length, tri: rec.L === 'tri', sq: rec.L === 'sq', cons: (rec.q || []).map(g => g.map(sg => sg.slice())) };
   const [n, d] = cell.split(',').map(Number);
-  VIEW = { cell, num, n, d, kind, dim, level, eqs, unk, label: labels[li] || '', v: v || null, cons: S.cons, lattice: level === 1, k: 0 };
+  VIEW = { cell, num, n, d, kind, dim, level, eqs, unk, label: labels[li] || '', v: v || null, cons: S.cons, lattice: level === 1, k: 0, anim: anim || null };
   reindex(); settle();
   VIEW.steps = buildSteps();
   VIEW.k = VIEW.steps.length;
@@ -2446,30 +2446,30 @@ function renderViewInfo() {
 }
 $('#v-info').addEventListener('click', e => { const li = e.target.closest('li[data-k]'); if (!li) return; stopPlay(); if (!showCons) { setCons(true); $('#v-cons').setAttribute('aria-pressed', 'true'); $('#v-cons').textContent = 'Hide construction'; fit(); } showStep(+li.dataset.k); });
 
-/* ---- families flex by themselves: the first slider or free point swings to and fro, the rest follows ---- */
+/* ---- families flex by themselves, along the loop the pipeline computed (pipeline/animate.js), the same one the
+   catalog card plays: x_j(t) = x_j + a_j (sin(w_j t + p_j) − sin p_j), or keyframes when equalities tie the unknowns.
+   Dragging a point stops it for good (then the equalities are kept by the solver, as in the tool). ---- */
+const FLEX_PERIOD = 9;   // seconds per loop
+function animAt(A, x0, t) {
+  if (A.k) {
+    const K = A.k.length, f = ((t / (2 * Math.PI)) % 1 + 1) % 1 * K, i = Math.floor(f) % K, j = (i + 1) % K, e = f - Math.floor(f);
+    return A.k[i].map((v, c) => v + (A.k[j][c] - v) * e);
+  }
+  return x0.map((v, c) => v + A.a[c] * (Math.sin(A.w[c] * t + A.p[c]) - Math.sin(A.p[c])));
+}
 function startFlex() {
-  if (!VIEW || VIEW.kind === 'rigid' || REDUCED || flex || !VIEW.steps || VIEW.k < VIEW.steps.length) return;
-  const drv = S.nodes.find(n => n.t === 'free' || n.t === 'glide'); if (!drv) return;
-  const c = drv.t === 'glide' ? V.get(drv.on) : null;
-  flex = { id: drv.id, t0: performance.now(), u0: drv.u, x0: drv.x, y0: drv.y, amp: drv.t === 'glide' ? (c && c.k === 'c' ? 0.16 / Math.max(c.r, 0.3) : 0.16) : 0.13, dir: 1, ph: 0, last: performance.now(), raf: 0 };
+  if (!VIEW || VIEW.kind === 'rigid' || REDUCED || flex || !VIEW.steps || VIEW.k < VIEW.steps.length || !VIEW.anim || VIEW.dragged) return;
+  const U = S.nodes.filter(n => n.t === 'free' || n.t === 'glide');
+  if (!VIEW.x0) VIEW.x0 = U.flatMap(n => n.t === 'free' ? [n.x, n.y] : [n.u]);
+  flex = { t0: performance.now() - (VIEW.flexT || 0), raf: 0 };
   const tick = now => {
     if (!flex) return;
+    if (drag && drag.mode === 'pt') { VIEW.dragged = true; stopFlex(); return; }
     flex.raf = requestAnimationFrame(tick);
-    if (drag && drag.mode === 'pt') { flex.last = now; return; }
-    const dt = Math.min(50, now - flex.last); flex.last = now;
-    flex.ph += flex.dir * dt / 1000 * 1.1;
-    const n = byId.get(flex.id); if (!n) { stopFlex(); return; }
-    const s = Math.sin(flex.ph), keep = snapshot();
-    let w;
-    if (n.t === 'glide') { const cv0 = V.get(n.on); if (!cv0) return; const u = flex.u0 + flex.amp * s; w = cv0.k === 'l' ? { x: cv0.px + u * cv0.dx, y: cv0.py + u * cv0.dy } : { x: cv0.cx + cv0.r * Math.cos(u), y: cv0.cy + cv0.r * Math.sin(u) }; }
-    else w = { x: flex.x0 + flex.amp * s, y: flex.y0 + flex.amp * 0.6 * Math.sin(2 * flex.ph) };
-    dragUnknown(flex.id, w);
-    const st = status;
-    if (!st || st.coincide || st.d !== VIEW.d || st.n !== VIEW.n) {   // left the family's open part: back up and turn round
-      const o = JSON.parse(keep); S.nodes = o.nodes; reindex(); recompute();
-      flex.dir = -flex.dir; flex.ph += flex.dir * 0.05;
-    }
-    draw();
+    VIEW.flexT = now - flex.t0;
+    const x = animAt(VIEW.anim, VIEW.x0, VIEW.flexT / 1000 / FLEX_PERIOD * 2 * Math.PI);
+    let k = 0; for (const n of U) { if (n.t === 'free') { n.x = x[k]; n.y = x[k + 1]; k += 2; } else { n.u = x[k]; k += 1; } }
+    recompute(); draw();
   };
   flex.raf = requestAnimationFrame(tick);
 }

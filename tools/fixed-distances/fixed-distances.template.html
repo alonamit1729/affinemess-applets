@@ -89,6 +89,7 @@ input[type=range] { accent-color:var(--accent); }
 /* am-kit v1 END */
 /* ---- this applet ---- */
 :root{
+  --c0:#B85820; --c1:#35598F; --c2:#5E7D3A; --c3:#8C4A7A; --c4:#2F7F7A; --c5:#B8962E; --c6:#5C6B7A; --c7:#B65A80;   /* the Construction Tool's length colours */
   --series-1:#35598F; --series-2:#B85820; --series-3:#3C7A4A; --series-4:#7A4D8A; --series-5:#8A6A1E; --series-6:#A33B3B; --series-7:#2F7F86;
   --dim0:#F3DCCB; --dim1:#DCE3EC; --dim2:#DCE8DB; --dim3:#E6DDE8; --dim4:#D9E6E6;
 }
@@ -142,6 +143,11 @@ input[type=range] { accent-color:var(--accent); }
 .fd-card.playing svg .vlabels{ display:none; }
 .fd-card .fam{ flex-wrap:wrap; }
 .fd-card .fam .play{ text-align:right; }
+.fd-card svg.pending{ opacity:0; }
+.fd-card svg{ transition:opacity .25s; }
+.fd-card .lv{ font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+.fd-card .lv b{ font-weight:500; }
+.fd-card .lv.l1 b{ color:var(--c2); } .fd-card .lv.l2 b{ color:var(--c1); } .fd-card .lv.l3 b{ color:var(--c3); } .fd-card .lv.l4 b{ color:var(--accent-deep); }
 
 #fd-catalog{ padding:16px 18px 30px; }
 .fd-cathead{ max-width:1100px; margin:0 auto 14px; display:grid; grid-template-columns:1fr auto; gap:4px 18px; align-items:baseline; }
@@ -211,6 +217,8 @@ input[type=range] { accent-color:var(--accent); }
       <h3>Reading a cell</h3>
       <p>Each line of a cell is one dimension of the solution set. <code>0d: 34</code> means 34 rigid configurations; <code>1d: 27</code> means 27 one-parameter families; <code>2d: [3, 20]</code> means between 3 and 20 two-parameter families; <code>≥ 3</code> means no upper bound is known. A <em>family</em> is a realizable pattern of which pairs of points are at equal distance (an edge colouring of K<sub>n</sub> up to symmetry), and its dimension is that of its solution set modulo similarity, measured in the full configuration space. Solid cells are known exactly; dashed cells carry bounds from constructed examples, each verified numerically to be isolated or to lie on a family of the stated dimension; a dimension that is not listed simply has no known example (and is excluded where a cell is marked finite). Blank cells are impossible.</p>
       <p>Marks on the solid cells say where the proof of completeness comes from. <em>†</em>: a published classification that we re-verified independently by exact computation (where the paper lists sets rather than a count — Shinohara’s six-point sets, Lan–Wei’s seven-point and Shinohara’s eight-point lists — the number shown is ours). <em>‡</em>: our exact computation only; we found nothing published, so these cells are the novel ones. The three-point row is unmarked. “Exact computation” means: every candidate distance pattern was solved symbolically, so unrealizable patterns are proved unrealizable, rigid configurations are isolated as real algebraic numbers, and each positive-dimensional component was decomposed and tested for real points. Dashed cells carry numerical bounds only.</p>
+      <h3>The cards</h3>
+      <p>Each card is drawn from a construction of its set, exactly as the <a href="https://affinemess.com/#applets/construction-tool" target="_top">Construction Tool</a> shows it: segments coloured by length (shortest first), and the line under the ratios says which tools build it: a piece of a <em>lattice</em>, <em>straightedge &amp; compass</em>, a <em>regular polygon</em> that straightedge and compass cannot draw, or the <em>equalizer</em> (sliders pinned by equalities). A family is built with free points: a ring is free in the plane, a diamond slides on a line or circle, and the card moves along its family. The link button in a card’s corner opens it in the Construction Tool, where you can play the construction step by step, drag the free points, or edit it.</p>
       <h3>Why the dimensions</h3>
       <p>Modulo similarity, <em>n</em> points have 2<em>n</em> − 4 degrees of freedom and C(<em>n</em>,2) distances. Asking for exactly <em>d</em> values imposes C(<em>n</em>,2) − <em>d</em> coincidences, so one expects a solution set of dimension 2<em>n</em> − 4 − C(<em>n</em>,2) + <em>d</em>. No component can be smaller than that, but symmetric configurations give bigger ones, which is why some cells mix rigid configurations with families (three and four points are the only cases where that never happens).</p>
       <h3>What is known</h3>
@@ -249,6 +257,10 @@ input[type=range] { accent-color:var(--accent); }
   if (location.hash === '#about') set(true);
 })();
 /* am-kit v1 END */
+</script>
+<script>
+/* the Construction Tool's geometry (evaluate, decodeRecipe, animAt, ...), cut from tools/construction-tool/construction-tool.template.html by build_html.py */
+const CT = (function(){ /*CT-CORE*/ })();
 </script>
 <script>
 const DATA = __DATA__;
@@ -296,26 +308,31 @@ const DATA = __DATA__;
       el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(el.dataset.key);} });
     });
   }
-  const COL=['var(--series-1)','var(--series-2)','var(--series-3)','var(--series-4)','var(--series-5)','var(--series-6)','var(--series-7)'];
-  function svg(it){
+  const COL=['var(--c0)','var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];   // as in the Construction Tool
+  // mk: optional Map point index -> 'free' | 'glide', the family's free points (ring) and sliders (diamond), as in the tool
+  function svg(it,mk){
     const P=it.draw, n=P.length; let s=`<svg viewBox="-0.68 -0.68 1.36 1.36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(it.label)}"><g transform="scale(1,-1)">`;
     const segs=[]; let k=0;                                  // [i, j, class, edge index]
     for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){ segs.push([i,j,it.cls[k],k]); k++; }
     const len=sg=>Math.hypot(P[sg[0]][0]-P[sg[1]][0],P[sg[0]][1]-P[sg[1]][1]);
     const w=n>9?0.007:0.011;
     const line=(sg,col,sw,op)=>`<line data-e="${sg[3]}" x1="${P[sg[0]][0]}" y1="${P[sg[0]][1]}" x2="${P[sg[1]][0]}" y2="${P[sg[1]][1]}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-opacity="${op}"/>`;
-    if(n<=7){ for(const sg of segs) s+=line(sg,COL[sg[2]%7],w,0.85); }
+    if(n<=7){ for(const sg of segs) s+=line(sg,COL[sg[2]%COL.length],w,0.85); }
     else{   // more than 7 points: the shortest distance in ink on top, every other class thin and faint (as in the Construction Tool)
       const shortest=segs.reduce((a,b)=>len(b)<len(a)?b:a)[2];
-      for(const sg of segs) if(sg[2]!==shortest) s+=line(sg,COL[sg[2]%7],0.5*w,0.3);
+      for(const sg of segs) if(sg[2]!==shortest) s+=line(sg,COL[sg[2]%COL.length],0.5*w,0.3);
       for(const sg of segs) if(sg[2]===shortest) s+=line(sg,'var(--ink)',1.4*w,0.9);
     }
-    for(const p of P) s+=`<circle cx="${p[0]}" cy="${p[1]}" r="${n>9?0.02:0.026}" fill="var(--ink)"/>`;
+    const r0=n>9?0.02:0.026;
+    P.forEach((p,i)=>{ const m=mk&&mk.get(i);
+      if(m==='glide') s+=`<path data-p="${i}" data-m="g" d="${diamond(p,1.9*r0)}" fill="var(--paper-card)" stroke="var(--c1)" stroke-width="${0.55*r0}"/>`;
+      else if(m==='free') s+=`<circle data-p="${i}" cx="${p[0]}" cy="${p[1]}" r="${1.45*r0}" fill="var(--paper-card)" stroke="var(--c1)" stroke-width="${0.6*r0}"/>`;
+      else s+=`<circle data-p="${i}" cx="${p[0]}" cy="${p[1]}" r="${r0}" fill="var(--ink)"/>`; });
     // vertex labels, pushed outward from the centroid (hidden while the configuration flexes)
     const cx=P.reduce((t,p)=>t+p[0],0)/n, cy=P.reduce((t,p)=>t+p[1],0)/n, fs=n>9?0.075:0.095, off=n>9?0.07:0.085;
     s+='<g class="vlabels">';
     P.forEach((p,i)=>{ let dx=p[0]-cx, dy=p[1]-cy, L=Math.hypot(dx,dy); if(L<1e-6){dx=0;dy=1;L=1;} const lx=p[0]+off*dx/L, ly=p[1]+off*dy/L;
-      s+=`<text x="${lx}" y="${-ly}" transform="scale(1,-1)" font-size="${fs}" font-family="JetBrains Mono, ui-monospace, monospace" fill="var(--ink-soft)" text-anchor="middle" dominant-baseline="central">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i]}</text>`; });
+      s+=`<text data-p="${i}" x="${lx}" y="${-ly}" transform="scale(1,-1)" font-size="${fs}" font-family="JetBrains Mono, ui-monospace, monospace" fill="var(--ink-soft)" text-anchor="middle" dominant-baseline="central">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i]}</text>`; });
     s+='</g>';
     return s+'</g></svg>';
   }
@@ -428,6 +445,76 @@ const DATA = __DATA__;
       stop(){ fl.running=running=false; ACTIVE.delete(fl); cancelAnimationFrame(raf); reset(); restore(); const card=svgEl.closest('.fd-card'); if(card) card.classList.remove('playing'); } };
     return fl;
   }
+  /* ---- cards drawn from their constructions (tools/construction-tool/recipes/, the Construction Tool's view of
+     the card): the same frame, colours and points; a family's free points are rings (free) or diamonds (on a line or
+     circle), and the family moves along the loop the tool plays (only cards on screen; not with reduced motion) ---- */
+  const REC='tools/construction-tool/recipes/', recChunks=new Map();
+  function recChunk(key,num){
+    const k=key.replace(',','_')+'/'+Math.floor(num/1000);
+    if(!recChunks.has(k)) recChunks.set(k,fetch(REC+k+'.json').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).catch(()=>null));
+    return recChunks.get(k);
+  }
+  const LEVEL=['','lattice','straightedge & compass','regular polygon','equalizer'];
+  const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function diamond(p,r){ return `M${p[0]} ${p[1]-r}L${p[0]+r} ${p[1]}L${p[0]} ${p[1]+r}L${p[0]-r} ${p[1]}Z`; }
+  function recipeModel(it,item){
+    const [kind,dim,level,eqs,unk,li,rec,v,anim]=item;
+    let nodes; try{ nodes=CT.decodeRecipe(rec); }catch(e){ return null; }
+    const U=nodes.filter(q=>q.t==='free'||q.t==='glide'), x0=U.flatMap(q=>q.t==='free'?[q.x,q.y]:[q.u]);
+    const pts=x=>{ const ov=new Map(); let k=0; for(const q of U){ if(q.t==='free'){ ov.set(q.id,{x:x[k],y:x[k+1]}); k+=2; } else { ov.set(q.id,{u:x[k]}); k+=1; } }
+      const V=CT.evaluate(nodes,ov), P=rec.m.map(id=>V.get(id)); return P.every(q=>q&&q.x!==undefined&&isFinite(q.x)&&isFinite(q.y))?P:null; };
+    const P0=pts(x0); if(!P0||P0.length!==it.n) return null;
+    const moving=kind!=='rigid'&&anim&&!REDUCED;
+    // the frame: fit the set, over its whole loop for a moving family, into the card (within ±0.5)
+    const all=[P0]; if(moving) for(let i=1;i<24;i++){ const P=pts(CT.animAt(anim,x0,2*Math.PI*i/24)); if(P) all.push(P); }
+    let x1=Infinity,x2=-Infinity,y1=Infinity,y2=-Infinity;
+    for(const P of all) for(const q of P){ x1=Math.min(x1,q.x); x2=Math.max(x2,q.x); y1=Math.min(y1,q.y); y2=Math.max(y2,q.y); }
+    const sc=1/Math.max(x2-x1,y2-y1,1e-9), cx=(x1+x2)/2, cy=(y1+y2)/2;   // the set within ±0.5, like the catalog's own drawings
+    const map=P=>P.map(q=>[+((q.x-cx)*sc).toFixed(5),+((q.y-cy)*sc).toFixed(5)]);
+    const mk=new Map(); if(kind!=='rigid') U.forEach(q=>{ const i=rec.m.indexOf(q.id); if(i>=0) mk.set(i,q.t); });
+    return {kind,level,anim,x0,pts,map,mk,moving,draw:map(P0)};
+  }
+  /* move an existing card drawing to new points (the same geometry as svg()) */
+  function moveSvg(el,it,D){
+    const n=D.length, cx=D.reduce((t,p)=>t+p[0],0)/n, cy=D.reduce((t,p)=>t+p[1],0)/n, off=n>9?0.07:0.085, r0=n>9?0.02:0.026;
+    if(!el._pairs){ el._pairs=[]; for(let i=0;i<n;i++) for(let j=i+1;j<n;j++) el._pairs.push([i,j]); el._lines=[...el.querySelectorAll('line[data-e]')]; el._pts=[...el.querySelectorAll('[data-p]')]; }
+    for(const L of el._lines){ const [i,j]=el._pairs[+L.dataset.e]; L.setAttribute('x1',D[i][0]); L.setAttribute('y1',D[i][1]); L.setAttribute('x2',D[j][0]); L.setAttribute('y2',D[j][1]); }
+    for(const e of el._pts){ const i=+e.dataset.p, p=D[i];
+      if(e.tagName==='circle'){ e.setAttribute('cx',p[0]); e.setAttribute('cy',p[1]); }
+      else if(e.tagName==='path') e.setAttribute('d',diamond(p,1.9*r0));
+      else { let dx=p[0]-cx, dy=p[1]-cy, L=Math.hypot(dx,dy); if(L<1e-6){dx=0;dy=1;L=1;} e.setAttribute('x',p[0]+off*dx/L); e.setAttribute('y',-(p[1]+off*dy/L)); } }
+  }
+  const LIVE=new Map(); let animRaf=0, lastT=0; const T0=performance.now();
+  const io='IntersectionObserver' in window ? new IntersectionObserver(es=>{ for(const e of es){ if(e.isIntersecting&&e.target._model) LIVE.set(e.target,e.target._model); else LIVE.delete(e.target); } if(LIVE.size&&!animRaf) animRaf=requestAnimationFrame(tick); },{rootMargin:'60px'}) : null;
+  function tick(now){
+    animRaf=0; if(!LIVE.size) return;
+    animRaf=requestAnimationFrame(tick);
+    if(now-lastT<33) return; lastT=now;
+    const t=(now-T0)/1000/9*2*Math.PI;          // one loop in 9 s, as in the tool
+    for(const [card,m] of LIVE){
+      if(!card.isConnected){ LIVE.delete(card); continue; }
+      const P=m.pts(CT.animAt(m.anim,m.x0,t)); if(P) moveSvg(card.querySelector('svg[role="img"]'),m.it,m.map(P));
+    }
+  }
+  async function drawFromRecipes(key,cat){
+    const cards=[...catEl.querySelectorAll('.fd-card')].filter(c=>!c._drawn);
+    cards.forEach(c=>{ c._drawn=true; });
+    const nums=[...new Set(cards.map(c=>Math.floor((+c.dataset.card+1)/1000)))];
+    const files=await Promise.all(nums.map(k=>recChunk(key,k*1000)));
+    const F=new Map(nums.map((k,i)=>[k,files[i]]));
+    for(const card of cards){
+      const i=+card.dataset.card, it=cat.items[i], f=F.get(Math.floor((i+1)/1000)), item=f&&f.items[i+1];
+      const old=card.querySelector('svg[role="img"]');   // the drawing (not the link button's icon)
+      const m=item&&typeof CT!=='undefined'?recipeModel(it,item):null;
+      if(m){
+        m.it=it; card._model=m;
+        const tmp=document.createElement('div'); tmp.innerHTML=svg({...it,draw:m.draw},m.mk); old.replaceWith(tmp.firstChild);
+        const lv=card.querySelector('.lv'); if(lv&&m.level){ lv.hidden=false; lv.className='lv l'+m.level; lv.innerHTML=`built with <b>${LEVEL[m.level]}</b>`; }
+        const play=card.querySelector('.fam .play'); if(play) play.textContent=m.moving?'moves along its family':'';
+        if(m.moving&&io) io.observe(card);
+      } else old.classList.remove('pending');
+    }
+  }
   const LINKSVG='<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 9.4a2.9 2.9 0 0 0 4.1 0l2.3-2.3a2.9 2.9 0 0 0-4.1-4.1l-1 1"/><path d="M9.4 6.6a2.9 2.9 0 0 0-4.1 0L3 8.9a2.9 2.9 0 0 0 4.1 4.1l1-1"/></svg>';
   // card links open the card in the Construction Tool's view mode, as a construction to watch, step through and edit
   // (the number is the card's index + 1 in the cell's item list: the tool and its recipes rely on it).
@@ -475,17 +562,18 @@ const DATA = __DATA__;
     const PAGE=600; let shown=0;
     const order=cat.items.map((_,i)=>i); if(order.length>PAGE) order.sort((a,b)=>(cat.items[a].kind==='family'?0:1)-(cat.items[b].kind==='family'?0:1)||a-b);   // long catalogs: families first
     function cardHTML(it,i){
-          const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
+          const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%COL.length]}">${v}</span>`).join(' : ');
           const fx=it.kind==='family'&&it.dim>=1;
-          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}"><button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Open this card as a construction in the Construction Tool (also copies the link)" aria-label="Open this card in the Construction Tool in a new tab">${LINKSVG}</button>${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
+          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}"><button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Open this card as a construction in the Construction Tool (also copies the link)" aria-label="Open this card in the Construction Tool in a new tab">${LINKSVG}</button>${svg(it).replace('<svg ','<svg class="pending" ')}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div><div class="lv" hidden></div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
     }
     function wireCards(){
     catEl.querySelectorAll('.fd-card.flex').forEach(card=>{
       if(card._flexer) return;
-      const it=cat.items[+card.dataset.card]; const svgEl=card.querySelector('svg');
+      const it=cat.items[+card.dataset.card]; const svgEl=card.querySelector('svg[role="img"]');
       const fl=makeFlexer(it,svgEl); card._flexer=fl;
-      if(HOVER){ card.addEventListener('pointerenter',()=>fl.start()); card.addEventListener('pointerleave',()=>fl.stop()); }
-      card.addEventListener('click',e=>{ if(e.target.closest('button,pre')) return; if(HOVER) return; fl.start(); });
+      // the old flexer only for cards whose construction could not be loaded (cards with one move by themselves)
+      if(HOVER){ card.addEventListener('pointerenter',()=>{ if(!card._model) fl.start(); }); card.addEventListener('pointerleave',()=>{ if(!card._model) fl.stop(); }); }
+      card.addEventListener('click',e=>{ if(e.target.closest('button,pre')) return; if(HOVER||card._model) return; fl.start(); });
     });
     catEl.querySelectorAll('button[data-i]').forEach(b=>{ if(b._w) return; b._w=1; b.addEventListener('click',()=>{
       const pre=catEl.querySelector(`pre[data-i="${b.dataset.i}"]`); const show=pre.hidden; pre.hidden=!show; b.setAttribute('aria-expanded',show?'true':'false'); b.textContent=show?'Hide coordinates':'Coordinates';
@@ -501,7 +589,7 @@ const DATA = __DATA__;
       const box=catEl.querySelector('.fd-cards'); if(!box) return;
       const from=shown, to=Math.min(cat.items.length,from+PAGE); let hh='';
       for(let k=from;k<to;k++){ const i=order[k]; hh+=cardHTML(cat.items[i],i); }   // cards keep their catalog numbers (i+1); only the order of paging differs
-      box.insertAdjacentHTML('beforeend',hh); shown=to; wireCards();
+      box.insertAdjacentHTML('beforeend',hh); shown=to; wireCards(); drawFromRecipes(key,cat);
       const more=catEl.querySelector('.fd-more');
       if(shown<cat.items.length){
         more.innerHTML=`<p>Showing ${shown} of ${cat.items.length}. </p><button class="am-btn" type="button">Show ${Math.min(PAGE,cat.items.length-shown)} more</button>`;

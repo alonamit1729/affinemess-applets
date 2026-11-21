@@ -9,7 +9,9 @@ Everything is reproducible from this folder; the page is `fixed-distances.templa
 ## Rebuild
     cd tools/fixed-distances
     python3 build_data2.py      # assembles data/applet_data.json from the results below (~10 min)
-    python3 build_html.py       # writes fixed-distances.html next to this README; copy it to the repo root
+    python3 build_html.py       # writes ../../fixed-distances.html (the applet), from any folder; it also pastes in the
+                                # Construction Tool's geometry (cut from its template), which draws the cards from
+                                # tools/construction-tool/recipes/
 Eleven large reproduction-only files (`data/exact_cells2.json`, `data/strat_4.json`, `data/strat_5.json`, three `degen`/`sat` files, and the (6,6) and (7,6) `cells/cert_*`, `cells/rigid_*`) are not in the published tree; `build_data2.py` needs `data/exact_cells2.json`. Restore them with `python3 fetch_data.py` (pinned commit, SHA-256 checked); the list, sizes and what each file is for are in [`DATA.md`](DATA.md).
 Requires Python 3 with numpy, scipy, sympy, networkx. Scripts read/write files in the current directory, so run them
 inside this folder after copying `data/*` here (or symlink).
