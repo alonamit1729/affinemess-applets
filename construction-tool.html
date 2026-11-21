@@ -314,7 +314,7 @@ html.ct-view .dh-hint { display:none; }
 <body>
 <div class="am-app">
   <header class="am-bar">
-    <a class="am-home" href="https://affinemess.com/#applets/distance-hunt" target="_top">affine<span class="sep">·</span>mess</a>
+    <a class="am-home" href="https://affinemess.com/#applets/construction-tool" target="_top">affine<span class="sep">·</span>mess</a>
     <span class="dh-title">Construction Tool</span>
     <span class="ct-view-only ct-cardnav">
       <select class="am-input ct-cell" id="v-cell" aria-label="Cell"></select>
@@ -486,9 +486,8 @@ const CAT = /*CATALOG*/{"cells":{"3,1":[1,1,0],"3,2":[0,1,1],"3,3":[0,1,1],"4,2"
 const EPS = 1e-9;            // geometric coincidence (relative to unit scale)
 const DTOL = 1e-9;           // relative tolerance for equal distances
 const LS_KEY = 'affinemess.distance-hunt.v1';   // kept from the Distance Hunt days, so collections carry over
-/* the homepage tile that opens this page: still the old Distance Hunt tile (distance-hunt.html forwards here)
-   until the Website Project adds a construction-tool tile; then change this to 'construction-tool' */
-const SITE_SLUG = 'distance-hunt';
+/* the homepage tile that opens this page (the old #applets/distance-hunt links still open it through a hidden entry) */
+const SITE_SLUG = 'construction-tool';
 const SAVE_V = 1;
 
 const $ = s => document.querySelector(s);

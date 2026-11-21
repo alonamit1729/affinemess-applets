@@ -8,9 +8,9 @@ The Construction Tool (formerly Distance Hunt; this folder was `tools/distance-h
 `../../distance-hunt.html` and `../../card-viewer.html` only forward to it (keeping the hash), so old links,
 collection links and the homepage tile keep working. The Card Viewer became the tool's *view mode*:
 `construction-tool.html#n<n>d<d>c<card>` opens a catalog card as a construction (Show construction, Play,
-step, Edit). `SITE_SLUG` in the template names the homepage tile used for links on the site (`distance-hunt`
-until the Website Project adds a `construction-tool` tile; the fixed-distances page has the same switch,
-`TOOL_SLUG`).
+step, Edit). `SITE_SLUG` in the template names the homepage tile used for links on the site (`construction-tool`; the
+fixed-distances page has the same switch, `TOOL_SLUG`). A hidden `distance-hunt` entry on the homepage keeps old
+`#applets/distance-hunt/…` links working.
 
 ## Catalog constructions (`recipes/`, `pipeline/`)
 
