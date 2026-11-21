@@ -393,6 +393,8 @@ function decodeRecipe(r) {
       case 'pv': return { id, t: 'pv', poly: a[1], k: a[2] };
       case 'pc': return { id, t: 'pc', poly: a[1] };
       case 'x': return { id, t: 'x', c1: a[1], c2: a[2], k: a[3] };
+      case 'par': return { id, t: 'par', a: a[1], b: a[2], p: a[3] };
+      case 'perp': return { id, t: 'perp', a: a[1], b: a[2], p: a[3] };
     }
     throw new Error('unknown node ' + t);
   });

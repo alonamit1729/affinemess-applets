@@ -41,15 +41,16 @@ the code the browser replays it with. A construction is kept only if replaying i
 canonical form) with exactly d distances. The search: starts (a pair of the set's points, a partial lattice,
 the catalog's own polygon frame, regular polygons through three or more of the set's points), then points of
 the set where two available lines or circles meet (lines through two points, perpendicular bisectors, circles
-about a point through another, compass circles of an existing radius); when stuck, a slider on a line or circle
+about a point through another, compass circles of an existing radius, parallels and perpendiculars through a
+point along a segment); when stuck, a slider on a line or circle
 through a missing point (a free point if there is none), and at the end the fewest equalities that pin the
 sliders, or leave exactly the family's freedom. Only points of the set and of the start are stepping stones,
 so it misses constructions that need helper points.
 
-Results of 2026-11-20 (61,172 cards): rigid sets 4,306 lattice, 18,874 straightedge and compass, 3,716 regular
-polygon, 32,483 equalizer, 3 none; families 1,435 straightedge and compass (with free points), 3 polygon, 351
-equalizer, 1 none. Against the Galois verdicts (2,298 sets): no set is claimed constructible with tools its
-verdict rules out; 66 sets with verdict "straightedge and compass" fall back to the equalizer.
+Results of 2026-11-21 (61,172 cards; the better of two runs per card): rigid sets 4,306 lattice, 18,923
+straightedge and compass, 3,716 regular polygon, 32,433 equalizer, 4 none; families 1,556 straightedge and compass
+(with free points), 3 polygon, 230 equalizer, 1 none; 1,765 families animated. Against the Galois verdicts (2,298
+sets): no set is claimed constructible with tools its verdict rules out.
 
 ## Fingerprints and verdicts
 

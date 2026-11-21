@@ -96,6 +96,19 @@ function curvesThrough(B, p, D) {
   };
   for (const id of B.curves) { const v = B.val.get(id); if (onCurve(v, p)) put(null, v, 0, id); }
   const P = B.pts, Q = P.map(id => B.P(id));
+  // parallels and perpendiculars through an available point, along a segment between two available points
+  const dirs = new Map(), SC = 1e6, KMAX = Math.round(Math.PI * SC);
+  const dkey = (dx, dy) => { let t = Math.atan2(dy, dx); if (t < 0) t += Math.PI; if (t >= Math.PI) t -= Math.PI; return Math.round(t * SC) % KMAX; };
+  for (let a = 0; a < P.length; a++) for (let b = a + 1; b < P.length; b++) {
+    const dx = Q[b].x - Q[a].x, dy = Q[b].y - Q[a].y; if (Math.hypot(dx, dy) < 1e-9) continue;
+    const k = dkey(dx, dy); if (!dirs.has(k)) dirs.set(k, [a, b]);
+  }
+  const findDir = (dx, dy) => { const k = dkey(dx, dy); for (const kk of [k, k - 1, k + 1, (k + KMAX - 1) % KMAX, (k + 1) % KMAX]) if (dirs.has(kk)) return dirs.get(kk); return null; };
+  for (let a = 0; a < P.length; a++) {
+    const A = Q[a], dx = p.x - A.x, dy = p.y - A.y; if (Math.hypot(dx, dy) < 1e-9) continue;
+    const par = findDir(dx, dy); if (par) put({ t: 'par', a: P[par[0]], b: P[par[1]], p: P[a] }, null, 1.05, null);
+    const per = findDir(-dy, dx); if (per) put({ t: 'perp', a: P[per[0]], b: P[per[1]], p: P[a] }, null, 1.05, null);
+  }
   for (let a = 0; a < P.length; a++) {
     const A = Q[a], r = dist(p, A); if (r < 1e-9) continue;
     // circle about A through another available point at the same distance
@@ -438,6 +451,8 @@ function encode(B, cons) {
       case 'pv': return ['pv', n.poly, n.k];
       case 'pc': return ['pc', n.poly];
       case 'x': return ['x', n.c1, n.c2, n.k];
+      case 'par': return ['par', n.a, n.b, n.p];
+      case 'perp': return ['perp', n.a, n.b, n.p];
     }
     throw new Error('encode ' + n.t);
   };
