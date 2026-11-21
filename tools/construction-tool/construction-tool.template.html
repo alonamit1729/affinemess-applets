@@ -180,6 +180,7 @@ input[type=range] { accent-color:var(--accent); }
 .dh-unit { font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; color:var(--ink-faint); text-transform:uppercase; margin-top:6px; }
 .dh-dist i { display:inline-block; width:16px; height:4px; border-radius:2px; }
 .dh-dist small { color:var(--ink-faint); font-size:10.5px; }
+.dh-dist span.v { display:inline-block; padding:0; margin:0; }
 .dh-facts { font-size:14px; color:var(--ink-soft); line-height:1.4; margin:4px 0 10px; }
 .dh-facts em { color:var(--accent-deep); }
 .dh-actions { display:flex; flex-wrap:wrap; gap:6px; }
@@ -1721,9 +1722,12 @@ function renderStatus() {
   const nd = $('#s-nd'), dist = $('#s-dist'), facts = $('#s-facts');
   nd.innerHTML = `<i>n</i> = <b>${st.n}</b> &nbsp;·&nbsp; <i>d</i> = <b>${st.d}</b>`;
   if (st.dc && !st.coincide) {
-    const chip = (c, k) => `<span data-c="${k}" title="hover to highlight, click to pin"><i style="background:${clsColor(k)}"></i>${fmtLen(c.d)}<small>×${c.pairs.length}</small></span>`;
+    /* A decimal length is trimmed of trailing zeros, so while a family flexes it changes width (1.1596 / 1.15457) and the
+       chips re-wrap, making the panel below jump. Reserve the full width (digits + 5 decimals; the font is monospaced). */
+    const val = r => { const s = fmtLen(r), m = /^(\d+)\.\d+$/.exec(s); return m ? `<span class="v" style="min-width:${m[1].length + 6}ch">${s}</span>` : s; };
+    const chip = (c, k) => `<span data-c="${k}" title="hover to highlight, click to pin"><i style="background:${clsColor(k)}"></i>${val(c.d)}<small>×${c.pairs.length}</small></span>`;
     dist.innerHTML = st.dc.cls.length > 12 ? chip(st.dc.cls[0], 0) + `<span><small>and ${st.dc.cls.length - 1} longer lengths</small></span>` :
-      st.dc.cls.map((c, k) => `<span data-c="${k}" title="hover to highlight, click to pin"><i style="background:${clsColor(k)}"></i>${fmtLen(c.d)}<small>×${c.pairs.length}</small></span>`).join('');
+      st.dc.cls.map(chip).join('');
   } else dist.innerHTML = '';
   $('#s-unit').hidden = !(st.dc && !st.coincide);
   applyLegendHL();
