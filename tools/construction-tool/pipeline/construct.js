@@ -373,6 +373,125 @@ function levelOf(B, eqs) {
 function score(c) { return [c.level, c.eqs, c.unk, c.B.nodes.length]; }
 const better = (a, b) => { const A = score(a), Bs = score(b); for (let i = 0; i < A.length; i++) if (A[i] !== Bs[i]) return A[i] < Bs[i]; return false; };
 
+/* ---------- helper points ----------
+   When closure is stuck, a point of the set may still be reachable through a helper: a crossing of two lines or
+   circles drawn from available points that is not itself a point of the set. One step adds a helper h and then
+   the target p on two curves, at least one of which uses h: the line ah, the circle about a through h, the circle
+   about h through a, or the bisector of ah (a available). The helper and its curves become available for later
+   steps, so helpers can build on helpers across steps. */
+const HELPER_MAX_A = 14;
+function stepCurves(B, A) {          // the curves through two available points: [{v, spec|id, cost}]
+  const out = new Map();
+  const put = (spec, cost, id) => {
+    const v = id !== undefined ? B.val.get(id) : curveVal(spec, q => B.P(q), B.val); if (!v) return;
+    const k = curveKey(v), o = out.get(k); if (!o || cost < o.cost) out.set(k, { v, spec, id, cost });
+  };
+  for (const id of B.curves) put(null, 0, id);
+  for (let i = 0; i < A.length; i++) for (let j = 0; j < A.length; j++) {
+    if (i === j) continue;
+    put({ t: 'circ', c: A[i], p: A[j] }, 1);
+    if (i < j) { put({ t: 'line', a: A[i], b: A[j] }, 1); put({ t: 'bis', a: A[i], b: A[j] }, 1.05); }
+  }
+  return [...out.values()];
+}
+function helperPool(B, A, R0) {
+  const C = stepCurves(B, A), H = new Map(), avail = A.map(id => B.P(id));
+  const ctr = B.T.reduce((s, t) => cx(s.x + t.x / B.T.length, s.y + t.y / B.T.length), cx(0, 0));
+  for (let i = 0; i < C.length; i++) for (let j = i + 1; j < C.length; j++) {
+    const m = meet(C[i].v, C[j].v);
+    m.forEach((q, k) => {
+      if (!Number.isFinite(q.x) || dist(q, ctr) > 4 * R0) return;
+      if (crossing(C[i].v, C[j].v, q) < 0.05) return;
+      if (avail.some(a => dist(a, q) < 1e-7)) return;
+      const key = q.x.toFixed(7) + ',' + q.y.toFixed(7), cost = C[i].cost + C[j].cost + 0.5;
+      const o = H.get(key); if (!o || cost < o.cost) H.set(key, { q, a: C[i], b: C[j], k, cost });
+    });
+  }
+  return [...H.values()];
+}
+function helperStep(B) {
+  const A = B.pts.filter(id => { const n = B.nodes[id]; return n.t === 'base' || n.t === 'x' || n.t === 'lat' || B.tn.includes(id); }).slice(0, HELPER_MAX_A);
+  const R0 = Math.max(...B.T.map(t => Math.max(...B.T.map(u => dist(t, u)))));
+  const H = helperPool(B, A, R0); if (!H.length) return false;
+  const D = distIndex(B), Q = A.map(id => B.P(id));
+  let best = null;
+  B.T.forEach((p, k) => {
+    if (B.tn[k] >= 0) return;
+    const r = R0, tol = 1e-8 * Math.max(1, r);
+    const plain = curvesThrough(B, p, D).map(c => ({ ...c, h: null }));
+    const viaH = [];
+    for (const h of H) {
+      const q = h.q;
+      Q.forEach((a, ai) => {
+        const ida = A[ai];
+        if (Math.abs((p.x - a.x) * (q.y - a.y) - (p.y - a.y) * (q.x - a.x)) < tol * dist(q, a)) viaH.push({ h, mk: hid => ({ t: 'line', a: ida, b: hid }), cost: 1 });
+        if (Math.abs(dist(p, a) - dist(q, a)) < tol) viaH.push({ h, mk: hid => ({ t: 'circ', c: ida, p: hid }), cost: 1 });
+        if (Math.abs(dist(p, q) - dist(a, q)) < tol) viaH.push({ h, mk: hid => ({ t: 'circ', c: hid, p: ida }), cost: 1 });
+        if (Math.abs(dist(p, a) - dist(p, q)) < tol) viaH.push({ h, mk: hid => ({ t: 'bis', a: ida, b: hid }), cost: 1.05 });
+      });
+    }
+    if (!viaH.length) return;
+    // curve values for the helper curves (the helper's own position stands in for its node)
+    const val = c => {
+      const tmp = new Map(B.val); tmp.set(-1, c.h.q);
+      return curveVal(c.mk(-1), id => id === -1 ? c.h.q : B.P(id), tmp);
+    };
+    const cand = [...plain.map(c => ({ c, v: c.v, cost: c.cost, h: null })), ...viaH.map(c => ({ c, v: val(c), cost: c.cost, h: c.h }))].filter(x => x.v);
+    for (let i = 0; i < cand.length; i++) for (let j = i + 1; j < cand.length; j++) {
+      const a = cand[i], b = cand[j]; if (!a.h && !b.h) continue;
+      const hc = (a.h ? a.h.cost : 0) + (b.h && b.h !== a.h ? b.h.cost : 0);
+      const cost = a.cost + b.cost + hc; if (best && cost >= best.cost) continue;
+      if (crossing(a.v, b.v, p) < 0.05) continue;
+      const m = meet(a.v, b.v); if (!m.some(q => near(q, p))) continue;
+      best = { k, a, b, cost };
+    }
+  });
+  if (!best) return false;
+  // build: helper(s), the two curves, the point
+  const hid = new Map();
+  const addHelper = h => {
+    if (hid.has(h)) return hid.get(h);
+    const i1 = curveId(B, h.a.id !== undefined ? { id: h.a.id } : { spec: h.a.spec }), i2 = curveId(B, h.b.id !== undefined ? { id: h.b.id } : { spec: h.b.spec });
+    const m = meet(B.val.get(i1), B.val.get(i2)), kk = m.findIndex(q => near(q, h.q));
+    if (kk < 0) return null;
+    const id = B.add({ t: 'x', c1: i1, c2: i2, k: kk }); hid.set(h, id); return id;
+  };
+  const curveOf = x => {
+    if (!x.h) return curveId(B, x.c);
+    const h = addHelper(x.h); if (h === null) return null;
+    return B.add(x.c.mk(h));
+  };
+  const ia = curveOf(best.a), ib = curveOf(best.b); if (ia === null || ib === null) return false;
+  const m = meet(B.val.get(ia), B.val.get(ib)), kk = m.findIndex(q => near(q, B.T[best.k]));
+  if (kk < 0) return false;
+  B.add({ t: 'x', c1: ia, c2: ib, k: kk });
+  return B.tn[best.k] >= 0;
+}
+/* two helpers in a row: a first helper h1 (cheapest first), then a step that may use a helper built on h1 */
+function helperStep2(B, tries) {
+  const A = B.pts.filter(id => { const n = B.nodes[id]; return n.t === 'base' || n.t === 'x' || n.t === 'lat' || B.tn.includes(id); }).slice(0, HELPER_MAX_A);
+  const R0 = Math.max(...B.T.map(t => Math.max(...B.T.map(u => dist(t, u)))));
+  const H = helperPool(B, A, R0).sort((a, b) => a.cost - b.cost).slice(0, tries);
+  for (const h of H) {
+    const C = B.clone();
+    const i1 = curveId(C, h.a.id !== undefined ? { id: h.a.id } : { spec: h.a.spec }), i2 = curveId(C, h.b.id !== undefined ? { id: h.b.id } : { spec: h.b.spec });
+    const m = meet(C.val.get(i1), C.val.get(i2)), kk = m.findIndex(q => near(q, h.q)); if (kk < 0) continue;
+    C.add({ t: 'x', c1: i1, c2: i2, k: kk });
+    if (helperStep(C)) return C;
+  }
+  return null;
+}
+function helperClosure(B, maxSteps = 8) {
+  closure(B);
+  for (let s = 0; s < maxSteps && !B.done(); s++) {
+    if (helperStep(B)) { closure(B); continue; }
+    const depth2 = +(process.env.HELPERS_DEPTH2 || 0); if (!depth2) break;
+    const C = helperStep2(B, depth2); if (!C) break;
+    B = C; closure(B);
+  }
+  return B;
+}
+
 function construct(job) {
   const T = []; for (let k = 0; k < job.flat.length; k += 2) T.push(cx(job.flat[k], job.flat[k + 1]));
   const n = T.length; job.n = n;
@@ -408,6 +527,21 @@ function construct(job) {
       if (best) break;
       const P = polygonStarts(T, MS.filter(m => GAUSS.has(m) === gauss)).filter(s => minHits === 3 ? s.hits >= 3 : s.hits === 2).sort((a, b) => b.hits - a.hits || a.m - b.m);
       for (const s of P) { consider(polyBuild(T, s)); if (best) break; }
+    }
+    // helper points (HELPERS=1): from the starts that got furthest, when nothing or only a polygon tool was found
+    if (process.env.HELPERS && (!best || best.level === 3)) {
+      const order = tried.slice().sort((a, b) => b.reached() - a.reached() || a.nodes.length - b.nodes.length);
+      const seen = new Set(); let tries = 0;
+      for (const B0 of order) {
+        const key = B0.tn.map(i => i >= 0 ? 1 : 0).join('') + (B0.m || '') + (B0.lat || '');
+        if (seen.has(key)) continue; seen.add(key);
+        if (++tries > +(process.env.HELPERS_STARTS || 4)) break;
+        const B = helperClosure(B0.clone());
+        if (B.done()) {
+          const c = { B, level: levelOf(B, 0), eqs: 0, unk: 0 };
+          if ((!best || better(c, best)) && !verify(encode(B, []), job)) best = c;
+        }
+      }
     }
     if (best) return finish(best.B, job, best.level);
   } else {

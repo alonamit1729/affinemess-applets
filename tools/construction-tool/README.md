@@ -45,12 +45,19 @@ about a point through another, compass circles of an existing radius, parallels 
 point along a segment); when stuck, a slider on a line or circle
 through a missing point (a free point if there is none), and at the end the fewest equalities that pin the
 sliders, or leave exactly the family's freedom. Only points of the set and of the start are stepping stones,
-so it misses constructions that need helper points.
+so it misses constructions that need helper points. With `HELPERS=1` (rigid sets only), when that gets stuck a
+step may first add a helper point, a crossing of two lines or circles through available points that is not a point
+of the set, and reach a point of the set on a curve through it (the line or circle through the helper and an
+available point, or their bisector); `HELPERS_DEPTH2=k` lets a step chain two helpers (the k cheapest first),
+`HELPERS_STARTS` is how many of the best starts get this treatment. Helpers persist, so later steps build on them.
 
-Results of 2026-11-21 (61,172 cards; the better of two runs per card): rigid sets 4,306 lattice, 18,923
-straightedge and compass, 3,716 regular polygon, 32,433 equalizer, 4 none; families 1,556 straightedge and compass
-(with free points), 3 polygon, 230 equalizer, 1 none; 1,765 families animated. Against the Galois verdicts (2,298
-sets): no set is claimed constructible with tools its verdict rules out.
+Results of 2026-11-21 (61,172 cards; the best of three runs per card, the last with helper points on the
+equalizer cards: `HELPERS=1 HELPERS_DEPTH2=150 HELPERS_STARTS=4 node run.js ... --redo=l4`, 600 and 10 for the
+small cells): rigid sets 4,306 lattice, 20,671 straightedge and compass, 3,730 regular polygon, 30,672 equalizer,
+3 none; families 1,556 straightedge and compass (with free points), 3 polygon, 230 equalizer, 1 none; 1,765
+families animated. Against the Galois verdicts (2,298 sets): no set is claimed constructible with tools its verdict
+rules out; of the 77 equalizer sets whose verdict says straightedge and compass would do, 34 now have such a
+construction.
 
 ## Fingerprints and verdicts
 
