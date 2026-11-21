@@ -272,8 +272,8 @@ function eqRows(B, pairs, cls) {
   pairs.forEach((p, e) => { const c = cls[e]; if (!ref.has(c)) ref.set(c, e); else rows.push([ref.get(c), e]); });
   return rows;
 }
-function jacobian(B, U, x, rows, pairs) {
-  const h = 1e-6, cols = x.length;
+function jacobian(B, U, x, rows, pairs, h = 1e-6) {
+  const cols = x.length;
   const d2 = (val, e) => { const a = val.get(B.tn[pairs[e][0]]), b = val.get(B.tn[pairs[e][1]]); return (a.x - b.x) ** 2 + (a.y - b.y) ** 2; };
   const J = rows.map(() => new Float64Array(cols));
   for (let c = 0; c < cols; c++) {
@@ -317,7 +317,8 @@ function chooseEqualities(B, job) {
   if (!m) return { cons: [], eqs: 0, unk: 0, free: 0 };
   const rows = eqRows(B, pairs, job.cls);
   const J = jacobian(B, U, x, rows, pairs);
-  const okRows = rows.map((r, i) => i).filter(i => J[i].every(Number.isFinite));
+  // an equation whose gradient is numerical noise holds whatever the unknowns do: it pins nothing
+  const okRows = rows.map((r, i) => i).filter(i => J[i].every(Number.isFinite) && Math.max(...J[i].map(Math.abs)) > 1e-5);
   const full = rankOf(okRows.map(i => J[i]), m);
   const want = m - job.dim;
   const chosen = []; let rk = 0;
@@ -330,6 +331,11 @@ function chooseEqualities(B, job) {
     if (rk >= want) break;
     const r2 = rankOf([...chosen.map(c => J[c]), J[i]], m);
     if (r2 > rk) { chosen.push(i); rk = r2; }
+  }
+  // check: the chosen equations, differentiated again with the page's step (1e-7), have full rank
+  if (chosen.length) {
+    const J2 = jacobian(B, U, x, chosen.map(i => rows[i]), pairs, 1e-7);
+    if (rankOf(J2, m) < chosen.length || J2.some(r => Math.max(...r.map(Math.abs)) <= 1e-5)) return { cons: [], eqs: chosen.length, unk: m, free: -1 };
   }
   // groups by class: [ref, e1, e2, ...] as node-id segments
   const groups = new Map();
