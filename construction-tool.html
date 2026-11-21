@@ -838,9 +838,10 @@ function ensureCell(cell) {
   if (!isRemote(cell)) return 'ok';
   const st = catLoad.get(cell); if (st) return st;
   catLoad.set(cell, 'loading');
-  fetch('tools/construction-tool/catalogs/' + cell.replace(',', '_') + '.json')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(o => { o.items.forEach(([lab, flat, num, v]) => addCat(cell, o.labels[lab], flat, num, v)); catLoad.set(cell, 'ok'); rematchCards(); recompute(); renderCollection(); draw(); })
+  const base = 'tools/construction-tool/catalogs/' + cell.replace(',', '_');
+  Promise.all([fetch(base + '.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+               fetch(base + '.verdicts.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))])   // verdicts newer than the fingerprints
+    .then(([o, ver]) => { o.items.forEach(([lab, flat, num, v]) => addCat(cell, o.labels[lab], flat, num, ver[num] || v)); catLoad.set(cell, 'ok'); rematchCards(); recompute(); renderCollection(); draw(); })
     .catch(() => { catLoad.set(cell, 'failed'); recompute(); });
   return 'loading';
 }
@@ -857,6 +858,9 @@ const SUB = { S5: 'S₅', S6: 'S₆', S7: 'S₇' };
 /* constructibility verdicts (tools/construction-tool/verdicts.json, from the Galois analysis) */
 function verdictShort(v) {
   if (!v || v === 'rc') return '';   // no verdict yet (sets added to the catalog after the analysis), or plain straightedge and compass
+  if (v === 'p') return 'needs a regular polygon';
+  if (v === 'nrc') return 'beyond straightedge and compass';
+  if (v === '?') return '';
   if (v[0] === 'p') return 'needs a ' + v.slice(1) + '-gon';
   if (v === 'tri') return 'needs trisection';
   if (v === 's4') return 'beyond square roots';
@@ -866,6 +870,9 @@ function verdictShort(v) {
 function verdictLong(v) {
   if (!v) return '';
   if (v === 'rc') return 'Constructible with straightedge and compass.';
+  if (v === 'p') return 'Needs a regular polygon that straightedge and compass cannot draw (its distances lie in a cyclotomic field).';
+  if (v === 'nrc') return 'Beyond straightedge and compass (the Galois analysis shows it); whether a regular polygon or angle trisection would do is not decided.';
+  if (v === '?') return 'The Galois analysis could not decide what it takes to construct it.';
   if (v[0] === 'p') return `Needs a regular ${v.slice(1)}-gon: straightedge and compass alone cannot build it.`;
   if (v === 'tri') return 'Needs angle trisection: straightedge and compass alone cannot build it, and no regular polygon helps.';
   if (v === 's4') return 'Beyond straightedge and compass: a quartic with Galois group S₄ and two real roots. Solvable by radicals; it is not settled here whether an angle trisector would do.';
@@ -2429,7 +2436,7 @@ function levelLong() {
     case 2: return 'Built with straightedge and compass' + (polys.length ? ` from a regular ${polys[0]}-gon (which straightedge and compass can draw)` : '') + '.';
     case 3: return `Built with straightedge, compass and a regular ${polys[0]}-gon.`;
     case 4: return `Built with straightedge and compass${from} and ${unk}, pinned by ${V0.eqs} equalit${V0.eqs > 1 ? 'ies' : 'y'}.` +
-      (V0.v === 'rc' ? ' The Galois analysis says straightedge and compass alone would do, but such a construction has not been found yet.' : '');
+      (V0.v === 'rc' ? ' This configuration can be built with straightedge and compass, but the construction is unwieldy; we offer a simpler one with equalizers.' : '');
   }
   return 'No construction stored for this card yet; the points are placed by their coordinates.';
 }

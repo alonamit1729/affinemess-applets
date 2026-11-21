@@ -178,6 +178,30 @@ input[type=range] { accent-color:var(--accent); }
 .fd-coords .ok{ color:var(--accent-deep); display:block; margin-top:4px; }
 .fd-coords[hidden]{ display:none; }
 .fd-more{ max-width:1100px; margin:18px auto 30px; text-align:center; color:var(--ink-soft); font-size:14px; }
+/* filters: each chip cycles any -> only -> hide; within a row, "only" chips are alternatives; rows combine */
+.fd-filter{ max-width:1100px; margin:0 auto 16px; border:1px solid var(--line-soft); border-radius:3px; background:var(--paper-card); padding:8px 12px 10px; }
+.fd-frow{ display:grid; grid-template-columns:92px 1fr; align-items:baseline; gap:6px; padding:3px 0; }
+.fd-chips{ display:flex; flex-wrap:wrap; gap:5px 6px; }
+.fd-flab{ font-family:var(--mono); font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint); }
+.fd-chip{ font-family:var(--mono); font-size:11px; line-height:1; letter-spacing:.02em; color:var(--ink-soft); background:transparent;
+  border:1px solid var(--line); border-radius:999px; padding:5px 9px; cursor:pointer; white-space:nowrap; }
+.fd-chip:hover{ background:var(--paper-hover); color:var(--ink); }
+.fd-chip .c{ color:var(--ink-faint); margin-left:5px; }
+.fd-chip.on{ background:var(--ink); border-color:var(--ink); color:var(--paper-card); }
+.fd-chip.on .c{ color:var(--line-soft); }
+.fd-chip.on::before{ content:'✓ '; }
+.fd-chip.off{ color:var(--ink-faint); border-style:dashed; text-decoration:line-through; }
+.fd-chip.off::before{ content:'✕ '; text-decoration:none; display:inline-block; }
+.fd-chip:disabled{ opacity:.35; cursor:default; }
+.fd-fsel{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:999px; padding:3px 6px; }
+.fd-fsum{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-top:6px; padding-top:7px; border-top:1px solid var(--line-soft);
+  font-family:var(--mono); font-size:11px; color:var(--ink-soft); }
+.fd-fsum b{ color:var(--ink); font-weight:500; }
+.fd-fsum .sp{ flex:1; }
+.fd-fsum button{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; background:none; border:0; color:var(--accent-deep); cursor:pointer; padding:2px 0; }
+.fd-fsum button[aria-pressed="true"]{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+.fd-fsum button:disabled{ color:var(--ink-faint); cursor:default; }
+@media (max-width:640px){ .fd-frow{ grid-template-columns:1fr; gap:3px; } .fd-filter{ padding:6px 8px 8px; } }
 .fd-more p{ margin:0 0 8px; }
 .fd-empty{ max-width:1100px; margin:0 auto; font-size:15px; color:var(--ink-soft); }
 #fd-back[hidden]{ display:none; }
@@ -219,6 +243,8 @@ input[type=range] { accent-color:var(--accent); }
       <p>Marks on the solid cells say where the proof of completeness comes from. <em>†</em>: a published classification that we re-verified independently by exact computation (where the paper lists sets rather than a count — Shinohara’s six-point sets, Lan–Wei’s seven-point and Shinohara’s eight-point lists — the number shown is ours). <em>‡</em>: our exact computation only; we found nothing published, so these cells are the novel ones. The three-point row is unmarked. “Exact computation” means: every candidate distance pattern was solved symbolically, so unrealizable patterns are proved unrealizable, rigid configurations are isolated as real algebraic numbers, and each positive-dimensional component was decomposed and tested for real points. Dashed cells carry numerical bounds only.</p>
       <h3>The cards</h3>
       <p>Each card is drawn from a construction of its set, exactly as the <a href="https://affinemess.com/#applets/construction-tool" target="_top">Construction Tool</a> shows it: segments coloured by length (shortest first), and the line under the ratios says which tools build it: a piece of a <em>lattice</em>, <em>straightedge &amp; compass</em>, a <em>regular polygon</em> that straightedge and compass cannot draw, or the <em>equalizer</em> (sliders pinned by equalities). A family is built with free points: a ring is free in the plane, a diamond slides on a line or circle, and the card moves along its family. The link button in a card’s corner opens it in the Construction Tool, where you can play the construction step by step, drag the free points, or edit it.</p>
+      <h3>Filters</h3>
+      <p>The bar above each catalog narrows its cards down. Click a chip once to show only those cards, again to hide them, a third time to let them be. Within a row the chips you pick are alternatives (5-gon or 7-gon); the rows combine (rigid, and built with the equalizer, and symmetric under a mirror). The numbers on the chips count the cards that the other rows let through. <b>Shape</b>: rigid, or a family with one, two or three free parameters. <b>Built with</b>: the simplest tools the construction search found. <b>Polygon</b>: the regular polygon the construction starts from. <b>Uses</b>: a start from lattice points; helper points (crossings that are not points of the set). <b>Needs</b>: what the set itself requires, from the Galois analysis of its distances (a set built with straightedge and compass needs nothing more); so “built with the equalizer” and “needs: not solvable” together are the sets for which the equalizer is unavoidable. <b>Symmetry</b>: none, a single mirror, or the rotation group C<sub>n</sub> or dihedral group D<sub>n</sub> of the set. Fewest steps first sorts by the length of the construction. The address keeps the filter, so a filtered view can be shared.</p>
       <h3>Why the dimensions</h3>
       <p>Modulo similarity, <em>n</em> points have 2<em>n</em> − 4 degrees of freedom and C(<em>n</em>,2) distances. Asking for exactly <em>d</em> values imposes C(<em>n</em>,2) − <em>d</em> coincidences, so one expects a solution set of dimension 2<em>n</em> − 4 − C(<em>n</em>,2) + <em>d</em>. No component can be smaller than that, but symmetric configurations give bigger ones, which is why some cells mix rigid configurations with families (three and four points are the only cases where that never happens).</p>
       <h3>What is known</h3>
@@ -515,6 +541,78 @@ const DATA = __DATA__;
       } else old.classList.remove('pending');
     }
   }
+  /* ---- filters: the cell's index (recipes/<n>_<d>/index.json, written by the construction pipeline), one
+     10-character code per card: kind/dimension, construction level, polygon, lattice, helper points, verdict,
+     rotation order, mirror, steps. Each chip cycles any -> only -> hide. Within a row the "only" chips are
+     alternatives; rows combine. The state rides in the address: #n<n>d<d>;f=<chips> ---- */
+  const indexes=new Map();
+  function loadIndex(key){
+    if(!indexes.has(key)) indexes.set(key,fetch(REC+key.replace(',','_')+'/index.json').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(j=>{
+      const N=j.n, s=j.s, C=[];
+      for(let k=0;k<N;k++){ const c=s.substr(10*k,10);
+        const kind=c[0], level=c[1], m=c.charCodeAt(2)-48, lat=c[3], help=c[4]==='1', v=c[5], rot=c.charCodeAt(6)-48, mir=c[7]==='1', steps=+c.substr(8,2);
+        // what the set needs: a lattice or straightedge-and-compass construction settles it; otherwise the Galois verdict
+        const need= kind!=='0' ? null : (level==='1'||level==='2') ? 'r' : v==='-' ? 'z' : v==='?' ? 'x' : v;
+        C.push({kind,level,m,lat,help,need,sym:(mir?'D':'C')+rot,steps}); }
+      return C; }).catch(()=>null));
+    return indexes.get(key);
+  }
+  const NEED={r:'straightedge & compass',p:'a regular polygon',t:'angle trisection',q:'S₄ quartic',b:'beyond straightedge & compass',c:'a cube root',u:'not solvable',x:'undecided',z:'not analysed'};
+  const NEED_T={r:'Constructible with straightedge and compass (built so here, or shown by the Galois analysis)',p:'Needs a regular polygon that straightedge and compass cannot draw',t:'Needs angle trisection',q:'A quartic with Galois group S₄ and two real roots: beyond straightedge and compass',c:'Needs the real cube root of a cubic with one real root: none of the tools does that',u:'Its distances solve an equation whose Galois group is not solvable: no construction with these tools',b:'Not constructible with straightedge and compass (the Galois group is not a 2-group); whether a regular polygon or angle trisection would do is not decided',x:'The Galois analysis could not decide',z:'Built with a regular polygon or the equalizer, and not analysed yet'};
+  const symLabel=v=>v==='C1'?'none':v==='D1'?'mirror':v.replace(/\d+/,d=>[...d].map(x=>'₀₁₂₃₄₅₆₇₈₉'[+x]).join(''));
+  const symTitle=v=>{ const r=+v.slice(1); return v==='C1'?'No symmetry':v==='D1'?'A single mirror line':v[0]==='C'?`Rotations by multiples of 360°/${r}, no mirror`:`${r} mirror lines and rotations by multiples of 360°/${r}`; };
+  function setupFilter(el,C,cat,base,fstate,apply,key){
+    const rows=[
+      {id:'k',label:'Shape',get:c=>c.kind,vals:[['0','rigid'],['1','1-parameter'],['2','2-parameter'],['3','3-parameter'],['4','4-parameter']]},
+      {id:'b',label:'Built with',get:c=>c.level,vals:[['1','lattice'],['2','straightedge & compass'],['3','regular polygon'],['4','equalizer'],['0','no construction']],
+        title:{'1':'A piece of the triangular or square lattice','2':'Straightedge and compass (a polygon they can draw counts)','3':'A regular polygon that straightedge and compass cannot draw','4':'Sliders or free points pinned by equalities'}},
+      {id:'m',label:'Polygon',get:c=>c.m?String(c.m):null,vals:[...new Set(C.map(c=>c.m).filter(Boolean))].sort((a,b)=>a-b).map(m=>[String(m),m+'-gon'])},
+      {id:'u',label:'Uses',pred:true,vals:[['l','lattice points',c=>c.lat!=='0'],['h','helper points',c=>c.help]],
+        title:{l:'Starts from points of the triangular or square lattice',h:'Steps through points that are not points of the set'}},
+      {id:'v',label:'Needs',get:c=>c.need,vals:Object.keys(NEED).map(k=>[k,NEED[k]]),title:NEED_T},
+      {id:'s',label:'Symmetry',get:c=>c.sym,vals:[...new Set(C.map(c=>c.sym))].sort((a,b)=>(+a.slice(1))-(+b.slice(1))||(a[0]<b[0]?-1:1)).map(v=>[v,symLabel(v)]),title:Object.fromEntries([...new Set(C.map(c=>c.sym))].map(v=>[v,symTitle(v)]))},
+    ];
+    const st={}; rows.forEach(r=>{ st[r.id]={}; });
+    let sort='n';
+    for(const t of (fstate||'').split('.')){ const m=/^([kbmuvs])(\w+)([+~])$/.exec(t); if(m&&st[m[1]]) st[m[1]][m[2]]=m[3]==='+'?1:-1; else if(t==='Os') sort='s'; }
+    const test=(r,c,v)=>r.pred?!!r.vals.find(x=>x[0]===v)[2](c):r.get(c)===v;
+    function passRow(r,c){
+      const S=st[r.id], on=Object.keys(S).filter(v=>S[v]>0), off=Object.keys(S).filter(v=>S[v]<0);
+      if(on.length&&!on.some(v=>test(r,c,v))) return false;
+      return !off.some(v=>test(r,c,v));
+    }
+    function render(){
+      // counts per chip among the cards that pass every other row
+      const passOthers=rows.map(r=>C.map(c=>rows.every(q=>q===r||passRow(q,c))));
+      let h='';
+      rows.forEach((r,ri)=>{
+        const chips=r.vals.map(([v,lab])=>{ let n=0; C.forEach((c,i)=>{ if(passOthers[ri][i]&&test(r,c,v)) n++; });
+          const tot=C.filter(c=>test(r,c,v)).length; if(!tot) return '';
+          const s=st[r.id][v]||0;
+          return `<button type="button" class="fd-chip${s>0?' on':s<0?' off':''}" data-r="${r.id}" data-v="${v}" title="${esc((r.title&&r.title[v])||'')}${r.title&&r.title[v]?' · ':''}click: only these · again: hide them · again: either">${esc(lab)}<span class="c">${n.toLocaleString('en-US')}</span></button>`; }).join('');
+        if(chips) h+=`<div class="fd-frow"><span class="fd-flab">${r.label}</span><span class="fd-chips">${chips}</span></div>`;
+      });
+      const idx=base.filter(i=>C[i]&&rows.every(r=>passRow(r,C[i])));
+      if(sort==='s') idx.sort((a,b)=>C[a].steps-C[b].steps||a-b);
+      const any=rows.some(r=>Object.keys(st[r.id]).length);
+      h+=`<div class="fd-fsum"><span>Showing <b>${idx.length.toLocaleString('en-US')}</b> of ${C.length.toLocaleString('en-US')}</span><span class="sp"></span>
+        <span>Sort:</span><button type="button" data-sort="n" aria-pressed="${sort==='n'}">catalog order</button><button type="button" data-sort="s" aria-pressed="${sort==='s'}">fewest steps first</button>
+        <button type="button" data-reset ${any?'':'disabled'}>clear filters</button></div>`;
+      el.innerHTML=h; el.hidden=false;
+      const tok=[]; rows.forEach(r=>Object.entries(st[r.id]).forEach(([v,s])=>tok.push(r.id+v+(s>0?'+':'~')))); if(sort==='s') tok.push('Os');
+      const [n0,d0]=key.split(','); const hk='#n'+n0+'d'+d0+(tok.length?';f='+tok.join('.'):'');
+      if(location.hash!==hk) setHash(hk);
+      apply(idx);
+    }
+    el.onclick=e=>{
+      const b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.r){ const S=st[b.dataset.r], v=b.dataset.v, s=S[v]||0; if(s===0) S[v]=1; else if(s>0) S[v]=-1; else delete S[v]; }
+      else if(b.dataset.sort) sort=b.dataset.sort;
+      else if(b.hasAttribute('data-reset')){ rows.forEach(r=>{ st[r.id]={}; }); }
+      render();
+    };
+    render();
+  }
   const LINKSVG='<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 9.4a2.9 2.9 0 0 0 4.1 0l2.3-2.3a2.9 2.9 0 0 0-4.1-4.1l-1 1"/><path d="M9.4 6.6a2.9 2.9 0 0 0-4.1 0L3 8.9a2.9 2.9 0 0 0 4.1 4.1l1-1"/></svg>';
   // card links open the card in the Construction Tool's view mode, as a construction to watch, step through and edit
   // (the number is the card's index + 1 in the cell's item list: the tool and its recipes rely on it).
@@ -540,7 +638,7 @@ const DATA = __DATA__;
     const card=b.closest('.fd-card'); let t=card.querySelector('.fd-linkok'); if(t) t.remove();
     t=document.createElement('span'); t.className='fd-linkok'; t.textContent=ok?'Opened; link copied':'Opened in a new tab'; card.appendChild(t); setTimeout(()=>t.remove(),1500);
   });
-  let pendingCard=0;
+  let pendingCard=0, pendingFilter='';
   function setHash(h){ /* best effort: some previewers (sandboxed srcdoc or blob frames, notably on iOS) forbid history edits */
     try{ history.replaceState(null,'',h||(location.pathname+location.search)); }catch(_){}
   }
@@ -554,13 +652,15 @@ const DATA = __DATA__;
     }
     const nLabel=c.n, dLabel=c.d;
     let st= cat.complete?'<span class="st complete">complete list</span>':'<span class="st">known configurations · lower bounds</span>';
-    let h=`<div class="fd-cathead"><h2>${esc(cat.title)}</h2>${st}<p>${linky(c.note||'')} ${linky(cat.note||'')}</p>${cat.sources.length?`<p class="src">${cat.sources.map(linky).join(' · ')}</p>`:''}</div>`;
+    // title, then the filter bar (filled once the cell's index loads), then the notes, then the cards
+    let h=`<div class="fd-cathead"><h2>${esc(cat.title)}</h2>${st}</div>${cat.items.length?'<div class="fd-filter" hidden></div>':''}<div class="fd-cathead"><p>${linky(c.note||'')} ${linky(cat.note||'')}</p>${cat.sources.length?`<p class="src">${cat.sources.map(linky).join(' · ')}</p>`:''}</div>`;
     if(!cat.items.length){ h+=`<div class="fd-empty">No configuration is known in this range.</div>`; }
     else{
       h+='<div class="fd-cards"></div><div class="fd-more"></div>';
     }
     const PAGE=600; let shown=0;
-    const order=cat.items.map((_,i)=>i); if(order.length>PAGE) order.sort((a,b)=>(cat.items[a].kind==='family'?0:1)-(cat.items[b].kind==='family'?0:1)||a-b);   // long catalogs: families first
+    const base=cat.items.map((_,i)=>i); if(base.length>PAGE) base.sort((a,b)=>(cat.items[a].kind==='family'?0:1)-(cat.items[b].kind==='family'?0:1)||a-b);   // long catalogs: families first
+    let order=base;      // the cards to page through: base, filtered and sorted by the filter bar
     function cardHTML(it,i){
           const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%COL.length]}">${v}</span>`).join(' : ');
           const fx=it.kind==='family'&&it.dim>=1;
@@ -587,17 +687,25 @@ const DATA = __DATA__;
     }
     function showMore(){
       const box=catEl.querySelector('.fd-cards'); if(!box) return;
-      const from=shown, to=Math.min(cat.items.length,from+PAGE); let hh='';
+      const from=shown, to=Math.min(order.length,from+PAGE); let hh='';
       for(let k=from;k<to;k++){ const i=order[k]; hh+=cardHTML(cat.items[i],i); }   // cards keep their catalog numbers (i+1); only the order of paging differs
       box.insertAdjacentHTML('beforeend',hh); shown=to; wireCards(); drawFromRecipes(key,cat);
       const more=catEl.querySelector('.fd-more');
-      if(shown<cat.items.length){
-        more.innerHTML=`<p>Showing ${shown} of ${cat.items.length}. </p><button class="am-btn" type="button">Show ${Math.min(PAGE,cat.items.length-shown)} more</button>`;
+      if(shown<order.length){
+        more.innerHTML=`<p>Showing ${shown} of ${order.length}${order.length<cat.items.length?' matching cards':''}. </p><button class="am-btn" type="button">Show ${Math.min(PAGE,order.length-shown)} more</button>`;
         more.querySelector('button').addEventListener('click',showMore);
       } else more.innerHTML='';
     }
     catEl.innerHTML=h; catEl.scrollTop=0;
-    stopAll(); shown=0; showMore();
+    stopAll(); shown=0;
+    const fstate=pendingFilter; pendingFilter='';
+    if(fstate){ pendingCard=0; catEl.querySelector('.fd-cards')&&(catEl.querySelector('.fd-cards').dataset.wait='1'); } else showMore();
+    // the filter bar, once the cell's index has loaded (tools/construction-tool/recipes/<n>_<d>/index.json)
+    if(cat.items.length) loadIndex(key).then(ix=>{
+      const wait=catEl.querySelector('.fd-cards[data-wait]');
+      if(!ix||cats[key]!==cat||!catEl.querySelector('.fd-filter')){ if(wait){ delete wait.dataset.wait; showMore(); } return; }
+      setupFilter(catEl.querySelector('.fd-filter'),ix,cat,base,fstate,(o)=>{ order=o; const box=catEl.querySelector('.fd-cards'); box.innerHTML=''; delete box.dataset.wait; LIVE.clear(); shown=0; showMore(); },key);
+    });
     if(pendingCard){   // #n<n>d<d>c<num>: page far enough to show the card, scroll to it and highlight it briefly
       const idx=pendingCard-1; pendingCard=0; const pos=order.indexOf(idx);
       if(pos>=0){ while(shown<=pos) showMore(); const el=catEl.querySelector(`.fd-card[data-card="${idx}"]`);
@@ -605,12 +713,12 @@ const DATA = __DATA__;
     }
     tableEl.hidden=true; catEl.hidden=false; backBtn.hidden=false; hintEl.hidden=true;
     whereEl.hidden=false; whereEl.innerHTML=`n = ${esc(nLabel)}, d = ${dLabel}`;
-    const hk='n'+String(nLabel).replace('–','-')+'d'+dLabel; if(location.hash!=='#'+hk) setHash('#'+hk);
+    const hk='n'+String(nLabel).replace('–','-')+'d'+dLabel; if(location.hash!=='#'+hk&&!location.hash.startsWith('#'+hk+';f=')) setHash('#'+hk);
   }
   function closeCat(){ catEl.hidden=true; tableEl.hidden=false; backBtn.hidden=true; whereEl.hidden=true; hintEl.hidden=false; if(location.hash&&location.hash!=='#about') setHash(''); }
   backBtn.addEventListener('click',closeCat);
   renderTable();
-  function fromHash(){ const m=/^#n([\d-]+)d(\d)(?:c(\d+))?$/.exec(location.hash); if(m&&cells[m[1]+','+m[2]]){ pendingCard=+(m[3]||0); open(m[1]+','+m[2]); } else if(!location.hash||location.hash==='#about') { if(!catEl.hidden) closeCat(); } }
+  function fromHash(){ const m=/^#n([\d-]+)d(\d)(?:c(\d+))?(?:;f=([\w.+~-]*))?$/.exec(location.hash); if(m&&cells[m[1]+','+m[2]]){ pendingCard=+(m[3]||0); pendingFilter=m[4]||''; open(m[1]+','+m[2]); } else if(!location.hash||location.hash==='#about') { if(!catEl.hidden) closeCat(); } }
   addEventListener('hashchange',fromHash); fromHash();
 })();
 </script>
