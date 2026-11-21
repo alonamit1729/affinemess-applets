@@ -66,7 +66,7 @@ Results of 2026-11-21 (61,172 cards; the best of three runs per card, the last w
 equalizer cards: `HELPERS=1 HELPERS_DEPTH2=150 HELPERS_STARTS=4 node run.js ... --redo=l4`, 600 and 10 for the
 small cells): rigid sets 4,306 lattice, 20,669 straightedge and compass, 3,728 regular polygon, 30,677 equalizer,
 2 none; families 1,553 straightedge and compass (with free points), 3 polygon, 233 equalizer, 1 none; 1,767
-families animated. Of the 30,677 equalizer sets, the Galois analysis says 2,880 could be built with straightedge and
+families animated. Of the 30,677 equalizer sets, the Galois analysis says 2,928 could be built with straightedge and
 compass (the search did not find a construction; the card says so), 34 need a regular polygon, and the rest need
 more: trisection, an S4 quartic, a cube root, a non-solvable equation, or simply more than straightedge and compass.
 
