@@ -431,7 +431,7 @@
     }
 
     /* deep: anything after the slug in #<tab>/<slug>/<deep>; our own applet pages receive it as
-       their #hash (e.g. a Distance Hunt card link), and the address bar goes back to #<tab>/<slug> */
+       their #hash (e.g. a Construction Tool card link), and the address bar goes back to #<tab>/<slug> */
     function openViewer(tile, push, deep) {
       const tab = tabOf(tile), key = tab + '/' + tile.dataset.slug;
       if (push) {
