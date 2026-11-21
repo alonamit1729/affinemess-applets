@@ -105,7 +105,8 @@ def build(master=MASTER):
                '<meta name="viewport" content="width=device-width,initial-scale=1">'
                '<title>Affine Mess</title><style>body{margin:0}</style></head>\n<body>\n'
                + loader + '</body></html>\n')
-    GOATCOUNTER = ('<script data-goatcounter="https://affinemess.goatcounter.com/count" async '
+    GOATCOUNTER = ('<script data-goatcounter="https://affinemess.goatcounter.com/count" '
+                   'data-goatcounter-settings=\'{"no_onload":true}\' async '
                    'src="//gc.zgo.at/count.js"></script>\n')
     index = HEAD + markup(html, '') + '<script>\n' + js + '</script>\n' + GOATCOUNTER + '</body>\n</html>\n'
     files = {

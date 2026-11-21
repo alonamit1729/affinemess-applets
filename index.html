@@ -14,7 +14,9 @@
 </head>
 <body>
 <!-- =========================================================
-  VERSION 2026-11-20b
+  VERSION 2026-11-20c
+    c: GoatCounter counts each tab and each opened item (applet, video, Quora answer) as its own page: /applets/<slug> etc.
+  PREVIOUS 2026-11-20b
     b: GoatCounter page-view counter (cookieless; added to index.html by build_site.py, affinemess.goatcounter.com)
   PREVIOUS 2026-11-20a
     a: Construction Tool card replaces the Distance Hunt card (same place and glyph); a hidden distance-hunt entry keeps
@@ -821,7 +823,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-11-20b">
+<div class="am-root" data-version="2026-11-20c">
   <div class="am-container">
 
     <header class="site-head">
@@ -2242,9 +2244,31 @@
       activate('home', true);
       toTop();
     });
-    window.addEventListener('popstate', route);
-    window.addEventListener('hashchange', route);
-    route();
+    /* ---------- GoatCounter: one page view per tab or item opened (the site is a single URL).
+       index.html loads count.js with no_onload, so this is the only reporter; /home, /applets,
+       /applets/<slug>, /quora/<slug> ... Without count.js (legacy loader pages, blocked) it does nothing. ---------- */
+    let lastTracked = null;
+    const trackQueue = [];
+    function flushTrack(tries) {
+      const gc = window.goatcounter;
+      if (gc && typeof gc.count === 'function') {
+        while (trackQueue.length) gc.count(trackQueue.shift());
+      } else if (tries < 20) {
+        setTimeout(() => flushTrack(tries + 1), 500);   // count.js loads async; give up quietly if it never does
+      }
+    }
+    function track() {
+      const sel = Array.from(tabs).find(b => b.getAttribute('aria-selected') === 'true');
+      const view = currentKey || (sel ? sel.dataset.tab : 'home');
+      if (view === lastTracked) return;      // popstate + hashchange both fire; deep-link tweaks keep the same key
+      lastTracked = view;
+      trackQueue.push({ path: '/' + view, title: document.title });
+      flushTrack(0);
+    }
+    function routeAndTrack() { route(); track(); }
+    window.addEventListener('popstate', routeAndTrack);
+    window.addEventListener('hashchange', routeAndTrack);
+    routeAndTrack();
     booted = true;
 
     // Keep this LAST: proves the whole script arrived and ran.
@@ -2252,6 +2276,6 @@
     if (ver) { ver.textContent = 'v' + root.dataset.version; ver.classList.remove('am-ver-bad'); }
   })();
 </script>
-<script data-goatcounter="https://affinemess.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://affinemess.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

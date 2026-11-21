@@ -720,9 +720,31 @@
       activate('home', true);
       toTop();
     });
-    window.addEventListener('popstate', route);
-    window.addEventListener('hashchange', route);
-    route();
+    /* ---------- GoatCounter: one page view per tab or item opened (the site is a single URL).
+       index.html loads count.js with no_onload, so this is the only reporter; /home, /applets,
+       /applets/<slug>, /quora/<slug> ... Without count.js (legacy loader pages, blocked) it does nothing. ---------- */
+    let lastTracked = null;
+    const trackQueue = [];
+    function flushTrack(tries) {
+      const gc = window.goatcounter;
+      if (gc && typeof gc.count === 'function') {
+        while (trackQueue.length) gc.count(trackQueue.shift());
+      } else if (tries < 20) {
+        setTimeout(() => flushTrack(tries + 1), 500);   // count.js loads async; give up quietly if it never does
+      }
+    }
+    function track() {
+      const sel = Array.from(tabs).find(b => b.getAttribute('aria-selected') === 'true');
+      const view = currentKey || (sel ? sel.dataset.tab : 'home');
+      if (view === lastTracked) return;      // popstate + hashchange both fire; deep-link tweaks keep the same key
+      lastTracked = view;
+      trackQueue.push({ path: '/' + view, title: document.title });
+      flushTrack(0);
+    }
+    function routeAndTrack() { route(); track(); }
+    window.addEventListener('popstate', routeAndTrack);
+    window.addEventListener('hashchange', routeAndTrack);
+    routeAndTrack();
     booted = true;
 
     // Keep this LAST: proves the whole script arrived and ran.
