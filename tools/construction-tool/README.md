@@ -30,6 +30,17 @@ compass and another regular polygon, 4 sliders / free points pinned by equalitie
     node run.js /tmp/jobs /tmp/out 5_4 6_6 ...          # the search (all 46 cells: about 15 min on 2 cores)
     node animate.js /tmp/out 5_4 6_6 ...                # families: the loop the card and the tool play (5 s for all)
     node write_recipes.js /tmp/jobs /tmp/out            # -> ../recipes/ (a file is rewritten only if it changed)
+    python3 galois_probe.py /tmp/jobs /tmp/galois ../recipes   # Galois probe of unanalysed polygon/equalizer sets (needs python-flint;
+                                                                #   34,086 sets took 89 min on 2 cores; resumable)
+    python3 classify.py /tmp/galois ../recipes --write    # verdicts into ../verdicts.json (where null), then write_recipes.js again
+    python3 apply_verdicts.py                           # verdicts for edit mode: catalog.json, catalogs/<cell>.verdicts.json
+    python3 hp_verify.py ../recipes                     # replay every construction without equalities at 50 digits
+
+The search compares in doubles; `construct.js` rejects a construction whose equal distances differ by more than 1e-12
+(relative) or whose different ones differ by less than 1e-7, and `hp_verify.py` replays every construction without
+equalities at 50 digits. (Before that check, 7 of 30,266 constructions were near misses, landing within 1e-9 of the
+set; they now use the equalizer.) When nothing else works, the last resort is two points of the set, every other
+point free, and the equalities that leave the right freedom.
 
 `run.js` merges into what `/tmp/out` already holds, so a cell can be done in pieces (`--from= --to=`,
 `--seconds=` for a time budget, `--redo=l4` to search again where only the equalizer was found; `DEEP=1` adds
@@ -53,11 +64,11 @@ available point, or their bisector); `HELPERS_DEPTH2=k` lets a step chain two he
 
 Results of 2026-11-21 (61,172 cards; the best of three runs per card, the last with helper points on the
 equalizer cards: `HELPERS=1 HELPERS_DEPTH2=150 HELPERS_STARTS=4 node run.js ... --redo=l4`, 600 and 10 for the
-small cells): rigid sets 4,306 lattice, 20,671 straightedge and compass, 3,730 regular polygon, 30,672 equalizer,
-3 none; families 1,556 straightedge and compass (with free points), 3 polygon, 230 equalizer, 1 none; 1,765
-families animated. Against the Galois verdicts (2,298 sets): no set is claimed constructible with tools its verdict
-rules out; of the 77 equalizer sets whose verdict says straightedge and compass would do, 34 now have such a
-construction.
+small cells): rigid sets 4,306 lattice, 20,669 straightedge and compass, 3,728 regular polygon, 30,677 equalizer,
+2 none; families 1,553 straightedge and compass (with free points), 3 polygon, 233 equalizer, 1 none; 1,767
+families animated. Of the 30,677 equalizer sets, the Galois analysis says 2,880 could be built with straightedge and
+compass (the search did not find a construction; the card says so), 34 need a regular polygon, and the rest need
+more: trisection, an S4 quartic, a cube root, a non-solvable equation, or simply more than straightedge and compass.
 
 ## Fingerprints and verdicts
 
@@ -80,7 +91,10 @@ The game computes the same form in JavaScript (`canon()` in the template) and ma
 tolerance 1e-5.
 
 `verdicts.json` lists, for every catalog card (cell, card number), what it takes to construct
-it (null: not analysed; the analysis covers the 2,298 sets of 2026-11-03): `rc` straightedge and compass, `p<m>` a regular m-gon, `tri` angle trisection, `s4` a
+it (null: not analysed; the analysis of 2026-11-03 covers 2,298 sets, and that of 2026-11-21 every other rigid set built
+with a regular polygon or the equalizer, 34,091 more; sets built with a lattice or straightedge and compass need nothing
+more): `rc` straightedge and compass, `p<m>` a regular m-gon (`p` alone: a polygon, m not determined), `nrc` beyond
+straightedge and compass (the Galois group is not a 2-group) without a finer verdict, `?` undecided, `tri` angle trisection, `s4` a
 quartic with Galois group S4 and two real roots, `S5`/`S6`/`S7` not constructible (non-solvable
 Galois group), `cbrt` not constructible (real root of a cubic with one real root). It was made
 by the scripts in `analysis/` (run from a folder holding `rigid.json`, the rigid catalog sets

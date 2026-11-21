@@ -49,7 +49,15 @@ def rkind(q, res):
 
 RANK = {'rc': 0, 'p': 1, 'tri': 2, 's4': 3, 'nrc': 4, '?': 5, 'cbrt': 6, 'S5': 7, 'S6': 7, 'S7': 7}
 
-def verdict(r, poly_m):
+def verdict(r, poly_m, level=None):
+    v = verdict0(r, poly_m)
+    # a set built with a regular polygon that straightedge and compass cannot draw is constructible with it; when the
+    # analysis rules out straightedge and compass, the polygon is what it needs (square-root extensions of a cyclotomic
+    # field are not abelian, so the cycle-type test alone calls them 'nrc')
+    if level == 3 and poly_m and poly_m not in GAUSS and v != 'rc': return 'p%d' % poly_m
+    return v
+
+def verdict0(r, poly_m):
     if 'ratios' not in r: return '?'
     ks = [rkind(q, r.get('res', 0)) for q in r['ratios']]
     if not ks: return 'rc'
@@ -62,13 +70,13 @@ if __name__ == '__main__':
     V = {}
     for f in sorted(glob.glob(os.path.join(probe_dir, '*.json'))):
         cell = os.path.basename(f)[:-5]
-        polys = {}
+        polys, levels = {}, {}
         for g in glob.glob(os.path.join(rec_dir, cell, '[0-9]*.json')):
             for num, it in json.load(open(g))['items'].items():
                 m = [a[3] for a in it[6]['n'] if a[0] == 'poly']
-                polys[int(num)] = m[0] if m else 0
+                polys[int(num)] = m[0] if m else 0; levels[int(num)] = it[2]
         for num, r in json.load(open(f)).items():
-            V[(cell.replace('_', ','), int(num))] = verdict(r, polys.get(int(num), 0))
+            V[(cell.replace('_', ','), int(num))] = verdict(r, polys.get(int(num), 0), levels.get(int(num)))
     tally = collections.Counter(V.values())
     print(len(V), 'sets:', dict(tally.most_common()))
     if '--write' in sys.argv:

@@ -564,6 +564,13 @@ function construct(job) {
     const c = { B, level: E.eqs ? 4 : levelOf(B, 0), eqs: E.eqs, unk: E.unk, E };
     if ((!best || better(c, best)) && !verify(encode(B, E.cons), job)) best = c;
   }
+  // last resort: two points of the set, every other point free, and the equalities that leave the right freedom
+  if (!best) {
+    const [i, j] = pairs[0], B = pairStart(T, i, j);
+    T.forEach((p, k) => { if (B.tn[k] < 0) B.add({ t: 'free', x: B.T[k].x, y: B.T[k].y }); });
+    const E = chooseEqualities(B, job);
+    if (E.free === job.dim && !verify(encode(B, E.cons), job)) best = { B, level: 4, eqs: E.eqs, unk: E.unk, E };
+  }
   if (best) return finish(best.B, job, best.level, best.E);
   return { ok: false, why: 'no construction found' };
 }
@@ -602,6 +609,12 @@ function verify(rec, job) {
   if (!sameCanon(canon(P), canon(T))) return 'the replayed set differs from the catalog set';
   const dc = distClasses(P);
   if (dc.cls.length !== job.d) return 'distance count ' + dc.cls.length + ' instead of ' + job.d;
+  // stricter than the page: equal distances must agree to 1e-12 and different ones differ by 1e-7 (relative),
+  // so that a near miss (a construction landing within 1e-9 of the set without being exact) is not taken.
+  // hp_verify.py replays the constructions at 50 digits to make sure.
+  const D = []; for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) D.push(Math.hypot(P[i].x - P[j].x, P[i].y - P[j].y));
+  D.sort((a, b) => a - b);
+  for (let k = 1; k < D.length; k++) { const rel = (D[k] - D[k - 1]) / D[k]; if (rel > 1e-12 && rel < 1e-7) return 'a near miss: two distances differ by ' + rel.toExponential(1); }
   return null;
 }
 function finish(B, job, level, E) {

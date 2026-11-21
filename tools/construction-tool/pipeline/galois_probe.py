@@ -26,7 +26,7 @@ if __name__ == '__main__':
     for f in sorted(glob.glob(os.path.join(jobs_dir, '*.json'))):
         cell = os.path.basename(f)[:-5]
         lev = {}
-        for g in glob.glob(os.path.join(rec_dir, cell, '*.json')):
+        for g in glob.glob(os.path.join(rec_dir, cell, '[0-9]*.json')):
             for num, it in json.load(open(g))['items'].items(): lev[int(num)] = it[2]
         done = json.load(open(os.path.join(out_dir, cell + '.json'))) if os.path.exists(os.path.join(out_dir, cell + '.json')) else {}
         for num, kind, dim, flat, cls, label, frame in json.load(open(f)):
