@@ -305,7 +305,7 @@ const DATA = __DATA__;
     const w=n>9?0.007:0.011;
     const line=(sg,col,sw,op)=>`<line data-e="${sg[3]}" x1="${P[sg[0]][0]}" y1="${P[sg[0]][1]}" x2="${P[sg[1]][0]}" y2="${P[sg[1]][1]}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-opacity="${op}"/>`;
     if(n<=7){ for(const sg of segs) s+=line(sg,COL[sg[2]%7],w,0.85); }
-    else{   // more than 7 points: the shortest distance in ink on top, every other class thin and faint (as in Distance Hunt)
+    else{   // more than 7 points: the shortest distance in ink on top, every other class thin and faint (as in the Construction Tool)
       const shortest=segs.reduce((a,b)=>len(b)<len(a)?b:a)[2];
       for(const sg of segs) if(sg[2]!==shortest) s+=line(sg,COL[sg[2]%7],0.5*w,0.3);
       for(const sg of segs) if(sg[2]===shortest) s+=line(sg,'var(--ink)',1.4*w,0.9);
@@ -429,11 +429,14 @@ const DATA = __DATA__;
     return fl;
   }
   const LINKSVG='<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 9.4a2.9 2.9 0 0 0 4.1 0l2.3-2.3a2.9 2.9 0 0 0-4.1-4.1l-1 1"/><path d="M9.4 6.6a2.9 2.9 0 0 0-4.1 0L3 8.9a2.9 2.9 0 0 0 4.1 4.1l1-1"/></svg>';
-  // card links open the Card Viewer (the number is the card's index + 1 in the cell's item list: Distance Hunt and the viewer rely on it)
+  // card links open the card in the Construction Tool's view mode, as a construction to watch, step through and edit
+  // (the number is the card's index + 1 in the cell's item list: the tool and its recipes rely on it).
+  // On the site it opens through the tool's homepage tile (still distance-hunt, which forwards, until the Website Project renames it).
+  const TOOL_SLUG='distance-hunt';
   function cardLink(n,d,num){
     const tail=`n${n}d${d}c${num}`;
-    if(/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/card-viewer/'+tail;
-    return new URL('card-viewer.html#'+tail,location.href).href;   // a local copy
+    if(/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/'+TOOL_SLUG+'/'+tail;
+    return new URL('construction-tool.html#'+tail,location.href).href;   // a local copy
   }
   async function copyText(t){
     try{ await navigator.clipboard.writeText(t); return true; }catch(e){}
@@ -474,7 +477,7 @@ const DATA = __DATA__;
     function cardHTML(it,i){
           const r=it.ratios.map((v,k)=>`<span style="color:${COL[k%7]}">${v}</span>`).join(' : ');
           const fx=it.kind==='family'&&it.dim>=1;
-          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}">${it.kind==='rigid'?`<button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Open this card in the Card Viewer (also copies the link)" aria-label="Open this card in the Card Viewer in a new tab">${LINKSVG}</button>`:''}${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
+          return `<div class="fd-card${fx?' flex dim-'+Math.min(it.dim,4):''}" data-card="${i}"><button class="fd-link" type="button" data-n="${it.n}" data-d="${it.d}" data-num="${i+1}" title="Open this card as a construction in the Construction Tool (also copies the link)" aria-label="Open this card in the Construction Tool in a new tab">${LINKSVG}</button>${svg(it)}<div class="lab"><span class="num">${i+1}</span>${esc(it.label)}</div>${fx?`<div class="fam"><span>${it.dim}-parameter family</span><span class="play">${HOVER?'hover to flex':'tap to flex, again to restart'}</span></div>`:''}<div class="rat">${r}</div>${it.strat?`<div class="strat">${esc(it.strat)}</div>`:''}<button class="am-btn" data-i="${i}" aria-expanded="false">Coordinates</button><pre class="fd-coords" hidden data-i="${i}" title="click to copy as JSON">${coordsHTML(it)}</pre></div>`;
     }
     function wireCards(){
     catEl.querySelectorAll('.fd-card.flex').forEach(card=>{

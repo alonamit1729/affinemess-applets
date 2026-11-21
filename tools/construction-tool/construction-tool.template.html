@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Distance Hunt · affine·mess</title>
+<title>Construction Tool · affine·mess</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -88,7 +88,7 @@ input[type=range] { accent-color:var(--accent); }
 }
 /* am-kit v1 END */
 
-/* ---- Distance Hunt ---- */
+/* ---- Construction Tool ---- */
 :root{
   --c0:#B85820; --c1:#35598F; --c2:#5E7D3A; --c3:#8C4A7A;
   --c4:#2F7F7A; --c5:#B8962E; --c6:#5C6B7A; --c7:#B65A80;
@@ -249,19 +249,88 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
 @media (max-width:900px) {
   .dh-side { width:260px; }
 }
+/* ---- view mode: a catalog card as a playable construction ---- */
+.ct-view-only { display:none !important; }
+html.ct-view .ct-view-only { display:revert !important; }
+html.ct-view .ct-player.ct-view-only { display:flex !important; }
+html.ct-view .ct-cardnav.ct-view-only { display:inline-flex !important; }
+html.ct-view .ct-view-only[hidden] { display:none !important; }
+html.ct-view .ct-edit-only, html.ct-view .dh-tools { display:none !important; }
+.ct-cardnav { align-items:center; gap:8px; }
+.ct-cell { padding:6px 6px; font-size:12px; }
+.am-btn.ct-no { min-width:74px; color:var(--ink); opacity:1; cursor:default; }
+.am-btn.ct-no:disabled { opacity:1; color:var(--ink); }
+.am-btn.is-primary-bar { color:var(--paper-card); background:var(--accent); border-color:var(--accent); }
+.am-btn.is-primary-bar:hover { background:var(--accent-deep); border-color:var(--accent-deep); color:var(--paper-card); }
+.ct-player {
+  position:absolute; left:50%; bottom:12px; transform:translateX(-50%); z-index:4;
+  align-items:center; gap:8px; padding:6px 8px; border-radius:4px;
+  background:var(--paper-card); border:1px solid var(--line); box-shadow:0 8px 22px -16px rgba(30,24,16,.55);
+  white-space:nowrap;
+}
+.ct-player .am-btn { padding:6px 10px; }
+.ct-player #v-play { min-width:74px; }
+.ct-stepno { font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--ink-faint); min-width:76px; }
+.ct-caption {
+  position:absolute; left:50%; bottom:62px; transform:translateX(-50%); z-index:4; pointer-events:none;
+  width:max-content; max-width:calc(100% - 40px); text-align:center;
+  font-family:var(--mono); font-size:12px; letter-spacing:.03em; color:var(--ink); line-height:1.45;
+  background:color-mix(in srgb, var(--paper-card) 88%, transparent); padding:5px 10px; border-radius:3px;
+}
+.ct-caption b { color:var(--accent-deep); font-weight:500; }
+.ct-info { flex:1 1 auto; min-height:0; overflow-y:auto; padding:12px 16px 18px; }
+.ct-info .ct-name { font-size:15px; line-height:1.35; color:var(--ink); margin:0 0 10px; }
+.ct-info .ct-level { display:inline-block; font-family:var(--mono); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--paper-card); background:var(--ink-soft); border-radius:2px; padding:3px 7px; margin:0 0 8px; }
+.ct-info .ct-level.l1 { background:var(--c2); } .ct-info .ct-level.l2 { background:var(--c1); }
+.ct-info .ct-level.l3 { background:var(--c3); } .ct-info .ct-level.l4 { background:var(--accent-deep); }
+.ct-info p { font-size:14px; line-height:1.45; color:var(--ink-soft); margin:0 0 10px; }
+.ct-info p em { color:var(--accent-deep); }
+.ct-info h4 { font-family:var(--mono); font-weight:400; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:14px 0 6px; }
+.ct-steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+.ct-steps li { counter-increment:st; display:flex; gap:8px; padding:4px 6px; margin:0 -6px; border-radius:3px; cursor:pointer;
+  font-family:var(--mono); font-size:11.5px; line-height:1.4; color:var(--ink-soft); }
+.ct-steps li::before { content:counter(st); min-width:18px; text-align:right; color:var(--ink-faint); }
+.ct-steps li:hover { background:var(--paper-hover); color:var(--ink); }
+.ct-steps li.is-done { color:var(--ink); }
+.ct-steps li.is-cur { background:var(--paper-hover); box-shadow:0 0 0 1px var(--accent); color:var(--accent-deep); }
+.ct-links { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.ct-links .am-btn { text-decoration:none; padding:6px 9px; }
+html.ct-view #dh-canvas { cursor:default; }
+html.ct-view #s-facts { display:none; }
+html.ct-view:not(.ct-cons) #s-eqs { display:none; }
+html.ct-view .dh-hint { display:none; }
+@media (max-width:700px) {
+  html.ct-view .dh-main { flex-direction:column; }
+  html.ct-view .dh-canvas-wrap { flex:1 1 60%; min-height:260px; }
+  html.ct-view .dh-side { width:auto; flex:0 1 40%; border-left:0; border-top:1px solid var(--line); }
+  .ct-player { bottom:8px; gap:5px; padding:4px 5px; }
+  .ct-player .am-btn { padding:6px 7px; }
+  .ct-stepno { display:none; }
+  .ct-caption { bottom:52px; font-size:11px; }
+  html.ct-view .dh-title { display:none; }
+}
 </style></head>
 <body>
 <div class="am-app">
   <header class="am-bar">
     <a class="am-home" href="https://affinemess.com/#applets/distance-hunt" target="_top">affine<span class="sep">·</span>mess</a>
-    <span class="dh-title">Distance Hunt</span>
-    <span class="am-seg">
+    <span class="dh-title">Construction Tool</span>
+    <span class="ct-view-only ct-cardnav">
+      <select class="am-input ct-cell" id="v-cell" aria-label="Cell"></select>
+      <span class="am-seg">
+        <button class="am-btn" id="v-prev" title="Previous card (←)">‹</button>
+        <button class="am-btn ct-no" id="v-no" disabled></button>
+        <button class="am-btn" id="v-next" title="Next card (→)">›</button>
+      </span>
+    </span>
+    <span class="am-seg ct-edit-only">
       <button class="am-btn" id="b-undo" title="Undo (Ctrl+Z)">Undo</button>
       <button class="am-btn" id="b-redo" title="Redo (Ctrl+Shift+Z)">Redo</button>
     </span>
-    <button class="am-btn" id="b-new" title="Start over from two points">New</button>
-    <span class="am-label">Lattice</span>
-    <span class="am-seg">
+    <button class="am-btn ct-edit-only" id="b-new" title="Start over from two points">New</button>
+    <span class="am-label ct-edit-only">Lattice</span>
+    <span class="am-seg ct-edit-only">
       <button class="am-btn dh-ib" id="b-tri" aria-pressed="false" aria-label="Triangular lattice (G)" data-tip="Triangular lattice" data-key="G" data-desc="Reveal the triangular lattice built on the two starting points."><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="8.5" cy="6" r="1.9"/><circle class="f" cx="15.5" cy="6" r="1.9"/><circle class="f" cx="5" cy="12" r="1.9"/><circle class="f" cx="12" cy="12" r="1.9"/><circle class="f" cx="19" cy="12" r="1.9"/><circle class="f" cx="8.5" cy="18" r="1.9"/><circle class="f" cx="15.5" cy="18" r="1.9"/></svg></button>
       <button class="am-btn dh-ib" id="b-sq" aria-pressed="false" aria-label="Square lattice (Q)" data-tip="Square lattice" data-key="Q" data-desc="Reveal the square lattice built on the two starting points."><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="5" cy="5" r="1.8"/><circle class="f" cx="12" cy="5" r="1.8"/><circle class="f" cx="19" cy="5" r="1.8"/><circle class="f" cx="5" cy="12" r="1.8"/><circle class="f" cx="12" cy="12" r="1.8"/><circle class="f" cx="19" cy="12" r="1.8"/><circle class="f" cx="5" cy="19" r="1.8"/><circle class="f" cx="12" cy="19" r="1.8"/><circle class="f" cx="19" cy="19" r="1.8"/></svg></button>
     </span>
@@ -272,7 +341,8 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <button class="am-btn dh-ib" id="b-min" aria-pressed="false" aria-label="Shortest distances (M)" data-tip="Shortest distances" data-key="M" data-desc="Only the segments of the shortest distance in the set: the clearest view of a big set."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5H19V19H5Z" stroke-width="1.3"/><circle class="f" cx="5" cy="5" r="2.1"/><circle class="f" cx="19" cy="5" r="2.1"/><circle class="f" cx="19" cy="19" r="2.1"/><circle class="f" cx="5" cy="19" r="2.1"/></svg></button>
     </span>
     <span class="am-spacer"></span>
-    <span class="dh-menu">
+    <button class="am-btn ct-view-only is-primary-bar" id="v-edit" title="Open this construction in the tool, to change it or build on it">Edit</button>
+    <span class="dh-menu ct-edit-only">
       <button class="am-btn" id="b-save" aria-expanded="false">Save &amp; share</button>
       <div class="dh-pop" id="pop-save">
         <p>Your collection is kept in this browser. Browsers may clear it (Safari does after about a week away), so back it up now and then.</p>
@@ -301,7 +371,7 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
       <button class="am-btn dh-tool" data-tool="circ" aria-label="Circle (C)" data-tip="Circle" data-key="C" data-desc="Pick the centre, then a point on the circle."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle class="f" cx="12" cy="12" r="1.8"/><circle class="f" cx="19.9" cy="12" r="2"/></svg></button>
       <button class="am-btn dh-tool" data-tool="comp" aria-label="Compass (K)" data-tip="Compass" data-key="K" data-desc="Pick two points for the radius, then the centre."><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="1.6"/><path d="M11.2 6L6 19.5M12.8 6L18 19.5"/><path d="M4 16.5a9.5 9.5 0 0 0 16 0" stroke-dasharray="2.2 2"/></svg></button>
       <button class="am-btn dh-tool" data-tool="poly" aria-label="Regular polygon (P)" data-tip="Regular polygon" data-key="P" data-desc="Pick the two ends of a side; the polygon goes on the left, with its centre. Number of sides below (keys 3–9)."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l8.4 6.1-3.2 9.9H6.8L3.6 9.3z"/></svg></button>
-      <input class="am-input dh-sides" id="i-m" type="number" min="3" max="30" value="5" aria-label="Number of sides" title="Number of sides of the regular polygon">
+      <input class="am-input dh-sides" id="i-m" type="number" min="3" max="36" value="5" aria-label="Number of sides" title="Number of sides of the regular polygon">
       <span class="dh-sep"></span>
       <button class="am-btn dh-tool" data-tool="erase" aria-label="Erase (X)" data-tip="Erase" data-key="X" data-desc="Click a point, line, circle or polygon; everything built on it goes too."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20.5L3.5 15 13.5 5l7 7-8.5 8.5z"/><path d="M8.5 10L14.5 16M9 20.5h11"/></svg></button>
     </nav>
@@ -315,6 +385,16 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
         <button class="am-btn" id="b-zout" title="Zoom out (−)">−</button>
       </div>
       <div class="dh-coord" id="coord" hidden></div>
+      <div class="ct-player ct-view-only" id="player">
+        <button class="am-btn" id="v-cons" aria-pressed="false" title="Show the construction (H)">Show construction</button>
+        <span class="am-seg">
+          <button class="am-btn" id="v-back" title="Step back (←, with the construction shown)" aria-label="Step back">‹</button>
+          <button class="am-btn" id="v-play" title="Play the construction (Space)">▶ Play</button>
+          <button class="am-btn" id="v-fwd" title="Step forward (→, with the construction shown)" aria-label="Step forward">›</button>
+        </span>
+        <span class="ct-stepno" id="v-stepno"></span>
+      </div>
+      <div class="ct-caption ct-view-only" id="v-caption" hidden></div>
       <div class="dh-hint" id="hint"></div>
       <div class="dh-banner" id="banner" hidden></div>
       <div class="dh-toast" id="toast"></div>
@@ -326,18 +406,23 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
         <div class="dh-dist" id="s-dist"></div>
         <div class="dh-facts" id="s-facts"></div>
         <div class="dh-eqs" id="s-eqs" hidden></div>
-        <div class="dh-actions">
+        <div class="dh-actions ct-edit-only">
           <button class="am-btn is-primary" id="b-keep" title="Add to the collection (Enter)">Keep</button>
           <button class="am-btn" id="b-unmark" title="Unmark every point">Clear marks</button>
         </div>
       </section>
-      <section class="dh-coll" id="coll"></section>
+      <section class="dh-coll ct-edit-only" id="coll"></section>
+      <section class="ct-info ct-view-only" id="v-info"></section>
     </aside>
     <aside class="am-about" id="am-about" aria-hidden="true">
       <button class="am-btn am-close">Close</button>
-      <h2>Distance Hunt</h2>
-      <p>How many points can you put in the plane so that only <em>d</em> different distances occur between them? Five points can have just two distances (the regular pentagon), seven points need three, and sixteen points need seven. This game lets you hunt for such sets with straightedge, compass and a few friends, and keeps the ones you find.</p>
-      <h3>How to play</h3>
+      <h2>Construction Tool</h2>
+      <p>How many points can you put in the plane so that only <em>d</em> different distances occur between them? Five points can have just two distances (the regular pentagon), seven points need three, and sixteen points need seven. This tool lets you build such sets with straightedge, compass and a few friends, keeps the ones you find, and shows how every set in the catalog can be built. (It used to be called Distance Hunt; a game of that name may come back later.)</p>
+      <h3>Catalog cards</h3>
+      <p>Every card of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> catalog opens here as a construction. The card shows the set; <b>Show construction</b> draws the lines and circles, <b>Play</b> builds it step by step (or step with ‹ ›, or click a step in the list), and <b>Edit</b> makes it your own construction, with every tool, so you can change it or build on it (Undo brings back what you had). ‹ › in the top bar move through the cell's cards.</p>
+      <p>Each construction uses the simplest tools that the search found, in this order: a piece of the triangular or square lattice (nothing to construct); straightedge and compass (a regular polygon counts when straightedge and compass can draw it, as for 3, 4, 5, 6, 8, 10, 12, 15, 17, 20, 24 or 30 sides); straightedge, compass and a regular polygon of another kind (7, 9, 11, 13, 14, 18 or 36 sides); and, when nothing else was found, sliders and free points pinned by equalities. A construction found shows that a set needs <em>at most</em> those tools; where the Galois analysis is known, the card also says what is actually needed. The search uses only points of the set (and of its starting lattice or polygon) as stepping stones, so for some sets that straightedge and compass could build, it settles for an equality.</p>
+      <p>Sets that flex (families) are built with free points: a <em>diamond</em> is a slider, locked to its line or circle; a <em>ring</em> is a point free in the whole plane. They swing by themselves to show the family, and you can drag them: the distances that are equal stay equal.</p>
+      <h3>Building your own</h3>
       <ul>
         <li>You start with two points, a unit apart. Build with the tools on the left; every intersection of two lines or circles becomes a small hollow dot you can use.</li>
         <li><b>Mark</b> the points that belong to your set: hold the mouse on a point for a moment, with any tool, or Shift-click it (free points are marked when you drop them). With <b>Select</b> (Esc) a plain click marks too. Do the same again to unmark. The panel on the right counts them, <em>n</em>, and the distinct distances between them, <em>d</em>, and colours each segment by its length. Lengths are in units of the starting segment. Hover a length in the panel to bring out its segments, or hover a segment to find its length; click a length to keep it highlighted.</li>
@@ -349,18 +434,18 @@ a.dh-catlink:hover { color:var(--accent-deep); text-decoration-color:var(--accen
         <li><b>Line</b> through two points; <b>Parallel</b> and <b>Perpendicular</b>: pick a line (or a segment between two marked points) and a point; <b>Bisector</b>, the perpendicular bisector of two points. Hover a tool to see what it does.</li>
         <li><b>Circle</b>: a centre, then a point on the circle. <b>Compass</b>: two points for the radius, then the centre.</li>
         <li><b>Polygon</b>: a regular polygon with the chosen number of sides on a segment, together with its centre. It sits to the left of the segment as you pick it; pick the ends the other way round for the other side.</li>
-        <li><b>Free point</b>: click on a line or circle for a <em>slider</em>, a point that moves only along it; click anywhere else for a point that moves freely. Both are drawn as diamonds (a slider with a bar along its curve). They are not exact until equalities pin them down; see below.</li>
-        <li><b>Equal</b>: click a segment of your set, then another; the game moves the free points and sliders so that the two have the same length, and marks equal segments with matching ticks.</li>
+        <li><b>Free point</b>: click on a line or circle for a <em>slider</em>, a point that moves only along it, drawn as a diamond; click anywhere else for a point that moves freely in the plane, drawn as a ring. They are not exact until equalities pin them down (then they fill in); see below.</li>
+        <li><b>Equal</b>: click a segment of your set, then another; the tool moves the free points and sliders so that the two have the same length, and marks equal segments with matching ticks.</li>
         <li>The <b>Show</b> buttons: <b>Construction</b> (H) hides the lines, circles, polygons and unmarked points, leaving the set and its coloured distances; picking a drawing tool brings them back. <b>All distances</b> (E) colours every segment between marked points (for sets of up to 24 points); <b>Shortest distances</b> (M) draws only the segments of the shortest length, which makes the structure of a big set, a piece of lattice say, easy to see. The corner readout shows coordinates, in units of the starting segment, of the pointer or of the point under it.</li>
       </ul>
-      <p>That is enough: every rigid set in the catalog of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> explorer except a couple of hundred, nearly all of them five points with four distances, can be built this way.</p>
+      <p>With sliders and equalities (below), every set in the catalog of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> explorer can be built; each catalog card shows one way.</p>
       <h3>Sliders and equalities</h3>
       <p>Some sets cannot be constructed at all. For 75 of the 468 rigid five-point four-distance sets, the distances solve equations whose Galois groups (S₅, S₆, S₇) are not solvable, so no straightedge, compass, angle divider or regular polygon will ever reach them.</p>
-      <p>For those, say what you want and let the game solve it. Put a <b>slider</b> on a line or circle, build the rest of the set from it (circles and intersections follow the slider as it moves), then use <b>Equal</b> to ask for two segments to have the same length. A slider has one unknown and an equality is one equation, so the slider is pinned: the game finds every position along its line or circle where the two lengths agree, moves there, and shows the others as blue rings you can click. A free point has two unknowns and needs two equalities; several sliders and free points can be solved together. Until everything is pinned, dragging keeps the equalities you asked for. The panel counts equations and unknowns, and lists the equalities (hover one to see its segments, × to remove it).</p>
+      <p>For those, say what you want and let the tool solve it. Put a <b>slider</b> on a line or circle, build the rest of the set from it (circles and intersections follow the slider as it moves), then use <b>Equal</b> to ask for two segments to have the same length. A slider has one unknown and an equality is one equation, so the slider is pinned: the game finds every position along its line or circle where the two lengths agree, moves there, and shows the others as blue rings you can click. A free point has two unknowns and needs two equalities; several sliders and free points can be solved together. Until everything is pinned, dragging keeps the equalities you asked for. The panel counts equations and unknowns, and lists the equalities (hover one to see its segments, × to remove it).</p>
       <p>One slider and one equality are enough for all but three of the catalog's sets that ordinary construction cannot reach; the remaining three ((5,4) nos. 461, 463 and 466) need three sliders solved together. Pinned points are exact to machine precision rather than by construction, and their cards say <em>snapped</em>.</p>
       <h3>The catalog</h3>
-      <p>Every set is compared with the 59,377 rigid sets catalogued in the explorer (the four largest cells, (6,5), (6,6), (7,6) and (8,6), are fetched when a rigid set first appears there; (6,6) alone holds 44,242 sets, about 8 MB). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
-      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number opens that card in the Card Viewer, with every length highlighted on hover. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
+      <p>Every set is compared with the 59,382 rigid sets catalogued in the explorer (the four largest cells, (6,5), (6,6), (7,6) and (8,6), are fetched when a rigid set first appears there; (6,6) alone holds 44,242 sets, about 8 MB). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
+      <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number opens that card, with its construction, in a new tab. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
       <h3>Saving</h3>
       <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
       <h3>Keys</h3>
@@ -395,12 +480,15 @@ const CAT = /*CATALOG*/null/*END-CATALOG*/;
 <script>
 'use strict';
 /* =====================================================================
-   Distance Hunt. Construction model: a list of nodes, each defined from
+   Construction Tool (formerly Distance Hunt). Construction model: a list of nodes, each defined from
    earlier ones (a recipe); positions are re-evaluated from scratch.
    ===================================================================== */
 const EPS = 1e-9;            // geometric coincidence (relative to unit scale)
 const DTOL = 1e-9;           // relative tolerance for equal distances
-const LS_KEY = 'affinemess.distance-hunt.v1';
+const LS_KEY = 'affinemess.distance-hunt.v1';   // kept from the Distance Hunt days, so collections carry over
+/* the homepage tile that opens this page: still the old Distance Hunt tile (distance-hunt.html forwards here)
+   until the Website Project adds a construction-tool tile; then change this to 'construction-tool' */
+const SITE_SLUG = 'distance-hunt';
 const SAVE_V = 1;
 
 const $ = s => document.querySelector(s);
@@ -446,6 +534,8 @@ let eqPick = null;          // first segment picked with the Equal tool: [idA, i
 let alts = [];              // other solutions of the last solve along a slider: {x, d, tx, ty}
 let anim = null;            // running solve animation
 let storageOK = true;
+/* view mode (a catalog card): VIEW holds the card; VIS the node ids shown so far (null: all); HOT the current step's; VOV overrides for sliders/free points while a construction plays */
+let VIEW = null, VIS = null, HOT = null, VOV = null;
 
 const PT = new Set(['base', 'free', 'glide', 'lat', 'pv', 'pc', 'x']);
 const CURVE = new Set(['line', 'bis', 'par', 'perp', 'circ', 'comp']);
@@ -582,12 +672,34 @@ function evaluate(nodes, override) {
   }
   return val;
 }
+/* catalog constructions are stored compactly (tools/construction-tool/recipes/, made by pipeline/construct.js):
+   one array per node, its index being its id; the pipeline checks each one by replaying it with evaluate() */
+function decodeRecipe(r) {
+  return r.n.map((a, id) => {
+    const t = a[0];
+    switch (t) {
+      case 'b': return { id, t: 'base', x: a[1], y: a[2] };
+      case 'f': return { id, t: 'free', x: a[1], y: a[2] };
+      case 'g': return { id, t: 'glide', on: a[1], u: a[2] };
+      case 't': case 's': return { id, t: 'lat', kind: t === 't' ? 'tri' : 'sq', a: a[1], b: a[2], i: a[3], j: a[4] };
+      case 'l': return { id, t: 'line', a: a[1], b: a[2] };
+      case 'bis': return { id, t: 'bis', a: a[1], b: a[2] };
+      case 'c': return { id, t: 'circ', c: a[1], p: a[2] };
+      case 'k': return { id, t: 'comp', p: a[1], q: a[2], c: a[3] };
+      case 'poly': return { id, t: 'poly', a: a[1], b: a[2], m: a[3] };
+      case 'pv': return { id, t: 'pv', poly: a[1], k: a[2] };
+      case 'pc': return { id, t: 'pc', poly: a[1] };
+      case 'x': return { id, t: 'x', c1: a[1], c2: a[2], k: a[3] };
+    }
+    throw new Error('unknown node ' + t);
+  });
+}
 function reindex() { byId = new Map(S.nodes.map(n => [n.id, n])); }
 function recompute() {
   reindex();
-  V = evaluate(S.nodes);
+  V = evaluate(S.nodes, VOV || undefined);
   // candidate intersections
-  const curves = S.nodes.filter(n => CURVE.has(n.t) && V.get(n.id));
+  const curves = VIEW ? [] : S.nodes.filter(n => CURVE.has(n.t) && V.get(n.id));
   cand = [];
   const pts = pointList();
   for (let i = 0; i < curves.length; i++) for (let j = i + 1; j < curves.length; j++) {
@@ -603,7 +715,7 @@ function recompute() {
 const near = (p, q, e = 1e-9) => Math.abs(p.x - q.x) < e * Math.max(1, Math.abs(p.x)) && Math.abs(p.y - q.y) < e * Math.max(1, Math.abs(p.y));
 function pointList() {
   const out = [];
-  for (const n of S.nodes) if (isPt(n)) { const v = V.get(n.id); if (v) out.push({ id: n.id, x: v.x, y: v.y, n }); }
+  for (const n of S.nodes) if (isPt(n) && (!VIS || VIS.has(n.id))) { const v = V.get(n.id); if (v) out.push({ id: n.id, x: v.x, y: v.y, n }); }
   return out;
 }
 function pointAt(q) { return pointList().find(p => near(p, q)); }
@@ -684,7 +796,7 @@ function rank(rows, m) {
   }
   return rk;
 }
-/* canonical form under similarity incl. reflection (same algorithm as tools/distance-hunt/canon.py) */
+/* canonical form under similarity incl. reflection (same algorithm as tools/construction-tool/canon.py) */
 const CT = 1e-7;
 const cmpc = (a, b) => Math.abs(a[0] - b[0]) > CT ? (a[0] < b[0] ? -1 : 1) : Math.abs(a[1] - b[1]) > CT ? (a[1] < b[1] ? -1 : 1) : 0;
 function canon(P) {
@@ -720,12 +832,12 @@ function addCat(cell, lab, flat, num, v) {
 }
 if (CAT) CAT.items.forEach(([cell, lab, flat, num, v]) => addCat(cell, CAT.labels[lab], flat, num, v));
 const isRemote = cell => !!(CAT && CAT.cells[cell] && CAT.cells[cell][3] === 1);
-/* the three largest cells (thousands of sets) come from tools/distance-hunt/catalogs/ when first needed */
+/* the largest cells (thousands of sets) come from tools/construction-tool/catalogs/ when first needed */
 function ensureCell(cell) {
   if (!isRemote(cell)) return 'ok';
   const st = catLoad.get(cell); if (st) return st;
   catLoad.set(cell, 'loading');
-  fetch('tools/distance-hunt/catalogs/' + cell.replace(',', '_') + '.json')
+  fetch('tools/construction-tool/catalogs/' + cell.replace(',', '_') + '.json')
     .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(o => { o.items.forEach(([lab, flat, num, v]) => addCat(cell, o.labels[lab], flat, num, v)); catLoad.set(cell, 'ok'); rematchCards(); recompute(); renderCollection(); draw(); })
     .catch(() => { catLoad.set(cell, 'failed'); recompute(); });
@@ -735,13 +847,13 @@ function ensureCell(cell) {
 /* a link to this catalog card in the Card Viewer (inside the site when we are on it), in a new tab */
 function catLink(e) {
   const [n, d] = e.cell.split(','), tail = `n${n}d${d}c${e.num}`;
-  const href = /(^|\.)affinemess\.com$/.test(location.hostname) ? 'https://affinemess.com/#applets/card-viewer/' + tail : 'card-viewer.html#' + tail;
-  return `<a class="dh-catlink" href="${href}" target="_blank" rel="noopener" title="Open card no. ${e.num} of (${n},${d}) in the Card Viewer, in a new tab">no. ${e.num}</a>`;
+  const href = linkBase() + tail;
+  return `<a class="dh-catlink" href="${href}" target="_blank" rel="noopener" title="Open card no. ${e.num} of (${n},${d}) with its construction, in a new tab">no. ${e.num}</a>`;
 }
 /* the catalog's label without its generic prefix */
 const catName = e => e.lab.replace(/^rigid;\s*/, '');
 const SUB = { S5: 'S₅', S6: 'S₆', S7: 'S₇' };
-/* constructibility verdicts (tools/distance-hunt/verdicts.json, from the Galois analysis) */
+/* constructibility verdicts (tools/construction-tool/verdicts.json, from the Galois analysis) */
 function verdictShort(v) {
   if (!v || v === 'rc') return '';   // no verdict yet (sets added to the catalog after the analysis), or plain straightedge and compass
   if (v[0] === 'p') return 'needs a ' + v.slice(1) + '-gon';
@@ -778,7 +890,7 @@ function cellInfo(n, d) { return CAT && CAT.cells[n + ',' + d] ? { rigid: CAT.ce
 
 function markedPoints() {
   const P = [], ids = [];
-  for (const id of S.marked) { const v = V.get(id); if (v && v.x !== undefined) { P.push({ x: v.x, y: v.y }); ids.push(id); } }
+  for (const id of S.marked) { if (VIS && !VIS.has(id)) continue; const v = V.get(id); if (v && v.x !== undefined) { P.push({ x: v.x, y: v.y }); ids.push(id); } }
   return { P, ids };
 }
 function analyse() {
@@ -1250,7 +1362,7 @@ const TOOLS = {
   perp: { need: 0, hint: () => parLine === null ? '<b>Perpendicular</b>: pick a line or a segment of your set' + (parPt === null ? ', and a point, in either order.' : ' to be perpendicular to.') : '<b>Perpendicular</b>: now pick the point it goes through.' },
   erase: { need: 1, hint: () => '<b>Erase</b>: click a point, line, circle or polygon; everything built on it goes too.' },
 };
-function setCons(on) { showCons = on; $('#b-cons').setAttribute('aria-pressed', on); hover = null; draw(); }
+function setCons(on) { showCons = on; document.documentElement.classList.toggle('ct-cons', on); $('#b-cons').setAttribute('aria-pressed', on); hover = null; draw(); }
 function setTool(t) {
   if (t !== 'mark' && t !== 'eq' && !showCons) setCons(true);   // building needs the construction in view
   tool = t; picks = []; eqPick = null; parLine = null; parPt = null;
@@ -1262,9 +1374,10 @@ function updateHint() {
   const T = TOOLS[tool];
   $('#hint').innerHTML = T.hint(picks.length);
 }
-const polyM = () => Math.max(3, Math.min(30, parseInt($('#i-m').value, 10) || 5));
+const polyM = () => Math.max(3, Math.min(36, parseInt($('#i-m').value, 10) || 5));
 
 function clickTool(sx, sy) {
+  if (VIEW) return;               // a card on view: drag its free points, nothing else
   const pk = pickAt(sx, sy, tool === 'erase' || tool === 'par' || tool === 'perp');
   if (tool === 'mark') { toggleMark(pk); return; }
   if (tool === 'free') {
@@ -1339,7 +1452,7 @@ function clickTool(sx, sy) {
   commit();
 }
 function toggleMark(pk) {
-  if (!pk || pk.kind === 'obj') return;
+  if (VIEW || !pk || pk.kind === 'obj') return;
   pushUndo();
   const id = materialize(pk);
   const i = S.marked.indexOf(id);
@@ -1365,6 +1478,7 @@ function draw() {
   const w0 = toW(0, 0), w1 = toW(W, H);
   // lattices
   for (const L of activeLattices()) {
+    if (VIEW && !showCons && !VIEW.lattice) continue;
     const sp = latSpacingPx(L); if (sp < 4) continue;
     const corners = [[w0.x, w0.y], [w1.x, w0.y], [w0.x, w1.y], [w1.x, w1.y]].map(([x, y]) => latCoords(L, x, y));
     const smin = Math.floor(Math.min(...corners.map(c => c[0]))) - 1, smax = Math.ceil(Math.max(...corners.map(c => c[0]))) + 1;
@@ -1381,8 +1495,9 @@ function draw() {
   // curves and polygons
   ctx.lineWidth = 1;
   if (showCons) for (const n of S.nodes) {
+    if (VIS && !VIS.has(n.id)) continue;
     const v = V.get(n.id); if (!v) continue;
-    const hot = hover && hover.kind === 'obj' && hover.id === n.id;
+    const hot = (hover && hover.kind === 'obj' && hover.id === n.id) || (HOT && HOT.has(n.id));
     ctx.strokeStyle = hot ? C.accent : C.line;
     ctx.lineWidth = hot ? 2 : 1;
     if (v.k === 'l') drawLine(v);
@@ -1416,7 +1531,7 @@ function draw() {
   ctx.strokeStyle = C.faint; ctx.lineWidth = 1;
   if (showCons) for (const c of cand) { const [x, y] = toS(c.x, c.y); ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.stroke(); }
   // equalities: congruence ticks on the constrained segments
-  if (S.cons.length) {
+  if (S.cons.length && !(VIEW && !showCons)) {
     const placed = [];   // tick centres already drawn, so crossing segments don't stack their ticks
     S.cons.forEach((g, gi) => {
       for (const sg of g) {
@@ -1475,12 +1590,19 @@ function draw() {
     const isM = marked.has(p.id), n = p.n;
     if (!showCons && !isM) continue;
     const picked = picks.includes(p.id);
-    if (n.t === 'free' || n.t === 'glide') {
-      ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4);
-      const s = isM ? 5.2 : 4;
+    const plain = VIEW && !showCons && n.snap;     // a card's pinned slider, in the clean view: just a point of the set
+    if ((n.t === 'free' || n.t === 'glide') && !plain) {
+      // a slider (locked to its line or circle) is a diamond; a point free in the plane is a ring
+      const hotU = VIEW && HOT && HOT.has(p.id);
       ctx.fillStyle = n.snap ? (isM ? C.cls[1] : C.soft) : C.paper;
-      ctx.strokeStyle = isM ? C.cls[1] : C.soft; ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.rect(-s, -s, 2 * s, 2 * s); ctx.fill(); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = hotU ? C.accent : (isM ? C.cls[1] : C.soft); ctx.lineWidth = isM ? 2 : 1.6;
+      if (n.t === 'glide') {
+        ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4);
+        const s = isM ? 5.2 : 4;
+        ctx.beginPath(); ctx.rect(-s, -s, 2 * s, 2 * s); ctx.fill(); ctx.stroke(); ctx.restore();
+      } else {
+        ctx.beginPath(); ctx.arc(x, y, isM ? 6 : 4.6, 0, 7); ctx.fill(); ctx.stroke();
+      }
     } else if (isM) {
       ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fill();
       ctx.strokeStyle = C.paper; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.stroke();
@@ -1489,6 +1611,7 @@ function draw() {
     }
     if (picked) { ctx.strokeStyle = C.accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); }
   }
+  if (VIEW) drawViewMarks();
   // long-press progress ring
   if (hold) {
     const p = Math.min(1, (performance.now() - hold.t0) / HOLD_MS), [x, y] = toS(hold.pk.x, hold.pk.y);
@@ -1735,6 +1858,7 @@ $('#coll').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.target
 let persistTimer = null, askedPersist = false;
 function persist(now) {
   clearTimeout(persistTimer);
+  if (VIEW) return;              // a card on view is not the user's construction
   const go = () => {
     try { localStorage.setItem(LS_KEY, JSON.stringify({ v: SAVE_V, cards, work: { nodes: S.nodes, marked: S.marked, next: S.next, tri: S.tri, sq: S.sq, cons: S.cons } })); if (!storageOK) { storageOK = true; renderCollection(); } }
     catch (e) { if (storageOK) { storageOK = false; renderCollection(); } }
@@ -1772,15 +1896,15 @@ function mergeCards(list) {
   return added;
 }
 function exportFile() {
-  const blob = new Blob([JSON.stringify({ app: 'distance-hunt', v: SAVE_V, saved: new Date().toISOString(), cards }, null, 1)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ app: 'construction-tool', v: SAVE_V, saved: new Date().toISOString(), cards }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'distance-hunt-' + new Date().toISOString().slice(0, 10) + '.json';
+  a.href = URL.createObjectURL(blob); a.download = 'construction-tool-' + new Date().toISOString().slice(0, 10) + '.json';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
 function importText(txt) {
-  let o; try { o = JSON.parse(txt); } catch (e) { toast('That file is not a Distance Hunt collection.'); return; }
+  let o; try { o = JSON.parse(txt); } catch (e) { toast('That file is not a Construction Tool (or Distance Hunt) collection.'); return; }
   const list = Array.isArray(o) ? o : o.cards;
-  if (!Array.isArray(list)) { toast('That file is not a Distance Hunt collection.'); return; }
+  if (!Array.isArray(list)) { toast('That file is not a Construction Tool (or Distance Hunt) collection.'); return; }
   const k = mergeCards(list);
   persist(true); recompute(); renderCollection(); draw();
   toast(k ? `Added ${k} new card${k > 1 ? 's' : ''}.` : 'Nothing new in there.');
@@ -1793,16 +1917,16 @@ async function makeLink() {
   const raw = new TextEncoder().encode(JSON.stringify(slim));
   let tag = 'c=', body = raw;
   if (window.CompressionStream) { try { body = await pipe(raw, new CompressionStream('deflate-raw')); tag = 'z='; } catch (e) {} }
-  const base = (location.origin && location.origin !== 'null' ? location.origin + location.pathname : 'https://affinemess.com/distance-hunt.html');
+  const base = (location.origin && location.origin !== 'null' ? location.origin + location.pathname : 'https://affinemess.com/construction-tool.html');
   return base + '#' + tag + b64u(body);
 }
 /* ---- a link to one card: opens the site with that set loaded in the canvas ---- */
 const LINK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.9 2.9 0 0 0 4.1 0l2.3-2.3a2.9 2.9 0 0 0-4.1-4.1l-1 1"/><path d="M9.4 6.6a2.9 2.9 0 0 0-4.1 0L3 8.9a2.9 2.9 0 0 0 4.1 4.1l1-1"/></svg>';
 const cardLinks = new Map();          // card id -> link (made ahead, so a click can copy at once)
 function linkBase() {
-  // on the site the link opens the applet inside it; anywhere else (a local copy) it opens this page
-  if (/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/distance-hunt/';
-  return (location.origin && location.origin !== 'null' ? location.origin + location.pathname : 'https://affinemess.com/distance-hunt.html') + '#';
+  // on the site the link opens the applet inside it (SITE_SLUG: the homepage tile that opens this page); anywhere else (a local copy) this page
+  if (/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/' + SITE_SLUG + '/';
+  return (location.origin && location.origin !== 'null' ? location.origin + location.pathname : 'https://affinemess.com/construction-tool.html') + '#';
 }
 async function makeCardLink(c) {
   const raw = new TextEncoder().encode(JSON.stringify({ r: c.recipe }));
@@ -1826,7 +1950,7 @@ async function copyCardLink(btn) {
   try { await navigator.clipboard.writeText(url); ok = true; } catch (e) { ok = copyText(url); }
   if (ok) {
     btn.classList.add('ok'); setTimeout(() => btn.classList.remove('ok'), 1500);
-    toast('Link to this card copied. Opening it shows the set in Distance Hunt.');
+    toast('Link to this card copied. Opening it shows the set in the Construction Tool.');
   } else {                            // no clipboard here: show the link to copy by hand
     const t = $('#t-link'); pop.classList.add('open'); $('#b-save').setAttribute('aria-expanded', 'true');
     t.hidden = false; t.value = url; t.select(); $('#p-link').hidden = true;
@@ -2012,8 +2136,9 @@ $('#b-link').addEventListener('click', async () => {
 });
 const KEYS = { v: 'mark', f: 'free', l: 'line', i: 'par', t: 'perp', b: 'bis', c: 'circ', k: 'comp', p: 'poly', x: 'erase', '=': 'eq' };
 addEventListener('keydown', e => {
-  if (e.target.closest('input, textarea')) return;
+  if (e.target.closest('input, textarea, select')) return;
   const k = e.key.toLowerCase();
+  if (VIEW && !e.ctrlKey && !e.metaKey && !e.altKey && viewKey(e, k)) return;
   if ((e.ctrlKey || e.metaKey) && k === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); redo(); return; }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -2038,6 +2163,338 @@ addEventListener('keydown', e => {
   if (k >= '3' && k <= '9' && tool === 'poly') { $('#i-m').value = k; return; }
 });
 
+/* =====================================================================
+   View mode: a catalog card as a construction you can watch, step through and
+   (for families) flex. #n<n>d<d>c<num> opens it; Edit makes it your construction.
+   ===================================================================== */
+const REC_BASE = 'tools/construction-tool/recipes/';
+const recFiles = new Map();
+function recipeFile(cell, num) {
+  const key = cell.replace(',', '_') + '/' + Math.floor(num / 1000);
+  if (!recFiles.has(key)) recFiles.set(key, fetch(REC_BASE + key + '.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }));
+  return recFiles.get(key);
+}
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LEVEL_NAME = { 0: 'not built yet', 1: 'lattice', 2: 'straightedge & compass', 3: 'regular polygon', 4: 'equalizer' };
+let stash = null, playT = null, flex = null, viewReq = 0;
+const cellTotal = cell => { const c = CAT && CAT.cells[cell]; return c ? c[0] + c[2] : 0; };
+const cellKeys = () => CAT ? Object.keys(CAT.cells).sort((a, b) => { const [n1, d1] = a.split(',').map(Number), [n2, d2] = b.split(',').map(Number); return n1 - n2 || d1 - d2; }) : [];
+function viewHash(cell, num) { const [n, d] = cell.split(','); return '#n' + n + 'd' + d + 'c' + num; }
+function parseViewHash(h) { const m = /^#n(\d+)d(\d+)c(\d+)$/.exec(h || ''); return m ? { cell: m[1] + ',' + m[2], num: +m[3] } : null; }
+
+function enterView(cell, num) {
+  if (!cellTotal(cell)) { toast('No card ' + cell + ' no. ' + num + ' in the catalog.'); return; }
+  num = Math.max(1, Math.min(cellTotal(cell), num));
+  if (!VIEW) stash = { nodes: S.nodes, marked: S.marked, next: S.next, cons: S.cons, tri: S.tri, sq: S.sq };
+  stopPlay(); stopFlex();
+  document.documentElement.classList.add('ct-view');
+  VIEW = { cell, num, loading: true };
+  try { history.replaceState(null, '', location.pathname + location.search + viewHash(cell, num)); } catch (e) {}
+  renderCellNav();
+  $('#v-info').innerHTML = '<p>Loading the card…</p>';
+  const req = ++viewReq;
+  recipeFile(cell, num).then(f => {
+    if (req !== viewReq) return;
+    const it = f.items[num];
+    if (!it) throw new Error('missing');
+    setupCard(cell, num, it, f.labels);
+  }).catch(() => { if (req === viewReq) { $('#v-info').innerHTML = '<p>This card’s construction could not be loaded here.</p>'; } });
+  resize();
+}
+function setupCard(cell, num, it, labels) {
+  const [kind, dim, level, eqs, unk, li, rec, v] = it;
+  S = { nodes: decodeRecipe(rec), marked: rec.m.slice(), next: rec.n.length, tri: rec.L === 'tri', sq: rec.L === 'sq', cons: (rec.q || []).map(g => g.map(sg => sg.slice())) };
+  const [n, d] = cell.split(',').map(Number);
+  VIEW = { cell, num, n, d, kind, dim, level, eqs, unk, label: labels[li] || '', v: v || null, cons: S.cons, lattice: level === 1, k: 0 };
+  reindex(); settle();
+  VIEW.steps = buildSteps();
+  VIEW.k = VIEW.steps.length;
+  VIEW.names = pointNames();
+  VIEW.pert = perturbation();
+  picks = []; eqPick = null; alts = []; undoStack = []; redoStack = []; updateUndo();
+  VIS = null; HOT = null; VOV = null;
+  setCons(false); $('#v-cons').setAttribute('aria-pressed', 'false');
+  recompute(); renderEqs(); fitView(); renderViewInfo(); updatePlayer();
+  startFlex();
+}
+function leaveView() {
+  if (!VIEW) return;
+  stopPlay(); stopFlex();
+  const ready = !VIEW.loading && VIEW.steps;
+  const card = ready ? { nodes: JSON.parse(JSON.stringify(S.nodes)), marked: S.marked.slice(), cons: JSON.parse(JSON.stringify(VIEW.cons)), tri: S.tri, sq: S.sq } : null;
+  VIEW = null; VIS = null; HOT = null; VOV = null;
+  document.documentElement.classList.remove('ct-view');
+  $('#v-caption').hidden = true;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (stash) { S = { nodes: stash.nodes, marked: stash.marked, next: stash.next, cons: stash.cons, tri: stash.tri, sq: stash.sq }; }
+  if (card) {
+    undoStack.push(snapshot()); redoStack = [];
+    S.nodes = card.nodes; S.marked = card.marked; S.cons = card.cons; S.tri = card.tri; S.sq = card.sq;
+    S.next = Math.max(...S.nodes.map(n => n.id)) + 1;
+  }
+  $('#b-tri').setAttribute('aria-pressed', S.tri); $('#b-sq').setAttribute('aria-pressed', S.sq);
+  stash = null;
+  reindex(); settle(); setCons(true); setTool('mark');
+  recompute(); renderEqs(); renderCollection(); updateUndo(); resize(); fit(); persist();
+  if (card) toast('The card is now your construction. Undo brings back what you had.', 4000);
+}
+
+/* ---- steps: one per point reached (with the lines and circles drawn for it), polygon, lattice or equality ---- */
+function buildSteps() {
+  const steps = [], N = S.nodes;
+  let cur = [];
+  const lat = N.filter(n => n.t === 'lat').map(n => n.id);
+  if (lat.length || VIEW.lattice) steps.push({ kind: 'lat', ids: lat });
+  for (const n of N) {
+    if (n.t === 'base' || n.t === 'lat' || n.t === 'pv' || n.t === 'pc') continue;
+    if (n.t === 'poly') { steps.push({ kind: 'poly', node: n, ids: [n.id, ...N.filter(q => (q.t === 'pv' || q.t === 'pc') && q.poly === n.id).map(q => q.id)] }); continue; }
+    if (CURVE.has(n.t)) { cur.push(n.id); continue; }
+    steps.push({ kind: n.t, node: n, curves: cur, ids: [...cur, n.id] }); cur = [];
+  }
+  if (cur.length) steps.push({ kind: 'curves', curves: cur, ids: cur });
+  S.cons.forEach((g, gi) => steps.push({ kind: 'eq', g: gi, ids: [] }));
+  return steps;
+}
+/* names: the set's points A, B, C, … in catalog order; other points that the construction uses: a, b, c, … */
+function pointNames() {
+  const names = new Map(), L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', l = 'abcdefghijklmnopqrstuvwxyz';
+  S.marked.forEach((id, k) => names.set(id, L[k] || 'P' + k));
+  const used = new Set(); for (const n of S.nodes) deps(n).forEach(d => used.add(d));
+  let h = 0;
+  for (const n of S.nodes) if (isPt(n) && !names.has(n.id) && used.has(n.id) && n.t !== 'lat') names.set(n.id, l[h++] || 'q' + h);
+  return names;
+}
+const nm = id => VIEW.names.get(id) || '·';
+function curveText(id) {
+  const n = byId.get(id); if (!n) return '';
+  switch (n.t) {
+    case 'line': return 'line ' + nm(n.a) + nm(n.b);
+    case 'bis': return 'bisector of ' + nm(n.a) + nm(n.b);
+    case 'circ': return 'circle about ' + nm(n.c) + ' through ' + nm(n.p);
+    case 'comp': return 'compass ' + nm(n.p) + nm(n.q) + ' about ' + nm(n.c);
+    case 'par': return 'parallel through ' + nm(n.p);
+    case 'perp': return 'perpendicular through ' + nm(n.p);
+  }
+  return n.t;
+}
+function stepText(st) {
+  const b = id => '<b>' + esc(nm(id)) + '</b>';
+  switch (st.kind) {
+    case 'lat': return (VIEW.lattice ? 'the set’s points on the ' : 'points on the ') + (S.tri ? 'triangular' : 'square') + ' lattice' + (st.ids.length ? ': ' + st.ids.map(b).join('') : '');
+    case 'poly': return 'regular ' + st.node.m + '-gon on ' + nm(st.node.a) + nm(st.node.b) + ', with its centre';
+    case 'x': {
+      const n = st.node;
+      return b(n.id) + ' where the ' + curveText(n.c1) + ' meets the ' + curveText(n.c2);
+    }
+    case 'glide': return 'slider ' + b(st.node.id) + ' on the ' + curveText(st.node.on);
+    case 'free': return 'free point ' + b(st.node.id);
+    case 'eq': return 'equal: ' + VIEW.cons[st.g].map(sg => nm(sg[0]) + nm(sg[1])).join(' = ');
+    case 'curves': return st.curves.map(curveText).join(', ');
+  }
+  return '';
+}
+/* sliders start a little off their place, so the equalities can be seen pulling them in */
+function perturbation() {
+  if (VIEW.kind !== 'rigid' || !S.cons.length) return null;
+  const U = S.nodes.filter(n => n.t === 'free' || n.t === 'glide');
+  for (const a of [0.14, 0.07, 0.035]) {
+    const ov = new Map();
+    U.forEach((n, k) => { const s = k % 2 ? -1 : 1; ov.set(n.id, n.t === 'free' ? { x: n.x + s * a, y: n.y + a * 0.6 } : { u: n.u + s * a / Math.max(1, (V.get(n.on) || { r: 1 }).r || 1) }); });
+    const val = evaluate(S.nodes, ov);
+    if (S.marked.every(id => { const q = val.get(id); return q && q.x !== undefined; })) return ov;
+  }
+  return null;
+}
+function eqShown(k) { return VIEW.steps.slice(0, k).filter(s => s.kind === 'eq').length; }
+function showStep(k, quiet) {
+  if (!VIEW || !VIEW.steps) return;
+  const N = VIEW.steps.length;
+  k = Math.max(0, Math.min(N, k)); const prevEq = eqShown(VIEW.k); VIEW.k = k;
+  VIS = k >= N ? null : new Set([0, 1, ...VIEW.steps.slice(0, k).flatMap(s => s.ids)]);
+  HOT = k > 0 && (k < N || playT) ? new Set(VIEW.steps[k - 1].ids) : null;
+  const ne = eqShown(k);
+  S.cons = VIEW.cons.slice(0, ne);
+  if (VIEW.pert) {
+    if (ne < VIEW.cons.length) { cancelVovAnim(); VOV = VIEW.pert; }
+    else if (prevEq < VIEW.cons.length && VOV) animateVov();   // the last equality: the sliders settle into place
+    else { cancelVovAnim(); VOV = null; }
+  }
+  if (k < N || playT) stopFlex(); else startFlex();
+  recompute(); renderEqs(); draw(); updatePlayer();
+}
+let vovAnim = null;
+function cancelVovAnim() { if (vovAnim) { cancelAnimationFrame(vovAnim); vovAnim = null; } }
+function animateVov() {
+  cancelVovAnim();
+  const from = VIEW.pert, t0 = performance.now(), T = REDUCED ? 1 : 800;
+  const tick = () => {
+    if (!VIEW) return;
+    const u = Math.min(1, (performance.now() - t0) / T), e = u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2;
+    if (u >= 1) { VOV = null; vovAnim = null; recompute(); draw(); if (VIEW.k >= VIEW.steps.length && !playT) startFlex(); return; }
+    const ov = new Map();
+    for (const [id, o] of from) { const n = byId.get(id); ov.set(id, n.t === 'free' ? { x: o.x + (n.x - o.x) * e, y: o.y + (n.y - o.y) * e } : { u: o.u + (n.u - o.u) * e }); }
+    VOV = ov; recompute(); draw(); vovAnim = requestAnimationFrame(tick);
+  };
+  vovAnim = requestAnimationFrame(tick);
+}
+function setViewCons(on) {
+  if (!VIEW || !VIEW.steps) return;
+  stopPlay();
+  setCons(on); $('#v-cons').setAttribute('aria-pressed', on); $('#v-cons').textContent = on ? 'Hide construction' : 'Show construction';
+  showStep(VIEW.steps.length);
+  if (on) fit(); else fitView();
+}
+function play() {
+  if (!VIEW || !VIEW.steps) return;
+  if (playT) { stopPlay(); return; }
+  if (!showCons) { setCons(true); $('#v-cons').setAttribute('aria-pressed', 'true'); $('#v-cons').textContent = 'Hide construction'; fit(); }
+  let k = VIEW.k >= VIEW.steps.length ? 0 : VIEW.k;
+  const next = () => {
+    if (!VIEW) return;
+    if (k > VIEW.steps.length) { stopPlay(); showStep(VIEW.steps.length); return; }
+    showStep(k);
+    const st = VIEW.steps[k - 1];
+    playT = setTimeout(() => { k++; next(); }, k === 0 ? 700 : st && st.kind === 'eq' && eqShown(k) === VIEW.cons.length ? 1500 : 1000);
+  };
+  playT = -1; next(); updatePlayer();
+}
+function stopPlay() { if (playT) { if (playT > 0) clearTimeout(playT); playT = null; if (VIEW && VIEW.steps) { HOT = null; draw(); } updatePlayer(); } }
+function stepBy(dk) {
+  if (!VIEW || !VIEW.steps) return;
+  stopPlay();
+  if (!showCons) { setCons(true); $('#v-cons').setAttribute('aria-pressed', 'true'); $('#v-cons').textContent = 'Hide construction'; fit(); if (dk > 0) { showStep(0); return; } }
+  showStep(VIEW.k + dk);
+}
+function updatePlayer() {
+  if (!VIEW || !VIEW.steps) return;
+  const N = VIEW.steps.length, k = VIEW.k;
+  $('#v-play').textContent = playT ? '❚❚ Pause' : '▶ Play';
+  $('#v-back').disabled = !N || (showCons && k === 0);
+  $('#v-fwd').disabled = !N || (showCons && k >= N);
+  $('#v-play').disabled = !N;
+  $('#v-stepno').textContent = !N ? 'no steps' : showCons ? (k >= N ? (N > 1 ? 'all ' + N + ' steps' : '1 step') : 'step ' + k + ' of ' + N) : N + ' step' + (N > 1 ? 's' : '');
+  const cap = $('#v-caption');
+  if (showCons && k > 0 && k <= N && (k < N || playT)) { cap.innerHTML = k + '. ' + stepText(VIEW.steps[k - 1]); cap.hidden = false; }
+  else cap.hidden = true;
+  document.querySelectorAll('#v-steps li').forEach((li, i) => {
+    li.classList.toggle('is-done', showCons && i < k);
+    li.classList.toggle('is-cur', showCons && i === k - 1 && (k < N || !!playT));
+  });
+}
+/* fit the set itself (the clean view) */
+function fitView() {
+  const { P } = markedPoints(); if (!P.length) { fit(); return; }
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const p of P) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  const w = Math.max(x1 - x0, 1e-3), h = Math.max(y1 - y0, 1e-3);
+  view.cx = (x0 + x1) / 2; view.cy = (y0 + y1) / 2;
+  view.s = Math.max(3, Math.min(4000, Math.min((W - 80) / w, (H - 150) / h) * 0.88));
+  draw();
+}
+/* letters next to the points a step refers to, and a ring on the newest point */
+function drawViewMarks() {
+  if (!showCons || !VIEW.names) return;
+  ctx.font = '500 11px ' + css.getPropertyValue('--mono'); ctx.textBaseline = 'bottom';
+  for (const p of pointList()) {
+    const name = VIEW.names.get(p.id); if (!name) continue;
+    const [x, y] = toS(p.x, p.y), hot = HOT && HOT.has(p.id);
+    ctx.fillStyle = hot ? C.deep : (name === name.toUpperCase() ? C.ink : C.faint);
+    ctx.fillText(name, x + 7, y - 4);
+    if (hot) { ctx.strokeStyle = C.accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 10, 0, 7); ctx.stroke(); }
+  }
+}
+function renderCellNav() {
+  const sel = $('#v-cell');
+  if (!sel.options.length) sel.innerHTML = cellKeys().map(c => { const [n, d] = c.split(','); return `<option value="${c}">n = ${n} · d = ${d}</option>`; }).join('');
+  sel.value = VIEW.cell;
+  $('#v-no').textContent = 'no. ' + VIEW.num + ' / ' + cellTotal(VIEW.cell);
+  $('#v-prev').disabled = VIEW.num <= 1; $('#v-next').disabled = VIEW.num >= cellTotal(VIEW.cell);
+}
+function siteLink(slug, tail) {
+  if (/(^|\.)affinemess\.com$/.test(location.hostname)) return 'https://affinemess.com/#applets/' + slug + '/' + tail;
+  return slug + '.html#' + tail;
+}
+function levelLong() {
+  const V0 = VIEW, polys = S.nodes.filter(n => n.t === 'poly').map(n => n.m);
+  const U = S.nodes.filter(n => n.t === 'free' || n.t === 'glide'), nf = U.filter(n => n.t === 'free').length, ng = U.length - nf;
+  const unk = [ng ? ng + ' slider' + (ng > 1 ? 's' : '') : '', nf ? nf + ' free point' + (nf > 1 ? 's' : '') : ''].filter(Boolean).join(' and ');
+  const from = polys.length ? ` starting from a regular ${polys[0]}-gon` : '';
+  if (V0.kind !== 'rigid') {
+    const how = V0.eqs ? `${unk}, held to the family by ${V0.eqs} equalit${V0.eqs > 1 ? 'ies' : 'y'}` : `${unk} and straightedge and compass${from}`;
+    return `<em>Flexible</em>: a ${V0.dim}-parameter family. Built from ${how}. Drag the ${nf ? 'ring' : 'diamond'}${U.length > 1 ? 's' : ''} to move along the family: the equal distances stay equal.`;
+  }
+  switch (V0.level) {
+    case 1: return `A piece of the ${S.tri ? 'triangular' : 'square'} lattice: nothing to construct, just pick the points.`;
+    case 2: return 'Built with straightedge and compass' + (polys.length ? ` from a regular ${polys[0]}-gon (which straightedge and compass can draw)` : '') + '.';
+    case 3: return `Built with straightedge, compass and a regular ${polys[0]}-gon.`;
+    case 4: return `Built with straightedge and compass${from} and ${unk}, pinned by ${V0.eqs} equalit${V0.eqs > 1 ? 'ies' : 'y'}.` +
+      (V0.v === 'rc' ? ' The Galois analysis says straightedge and compass alone would do, but such a construction has not been found yet.' : '');
+  }
+  return 'No construction stored for this card yet; the points are placed by their coordinates.';
+}
+function renderViewInfo() {
+  const V0 = VIEW, N = V0.steps.length;
+  const lv = V0.kind === 'rigid' ? LEVEL_NAME[V0.level] : 'flexible · ' + LEVEL_NAME[V0.level];
+  let h = `<span class="ct-level l${V0.level}">${esc(lv)}</span>`;
+  h += `<p class="ct-name">${esc((V0.label || '').replace(/^rigid;\s*/, '').replace(/^\d+-parameter family;\s*/, ''))}</p>`;
+  h += `<p>${levelLong()}</p>`;
+  if (V0.kind === 'rigid' && V0.v && V0.v !== 'rc') h += `<p>${verdictLong(V0.v)}</p>`;
+  if (N) h += `<h4>Construction · ${N} step${N > 1 ? 's' : ''}</h4><ol class="ct-steps" id="v-steps">` + V0.steps.map((s, i) => `<li data-k="${i + 1}"><span>${stepText(s)}</span></li>`).join('') + '</ol>';
+  const [n, d] = V0.cell.split(',');
+  h += `<div class="ct-links"><a class="am-btn" href="${siteLink('fixed-distances', 'n' + n + 'd' + d + 'c' + V0.num)}" target="_top">Open in the catalog</a></div>`;
+  $('#v-info').innerHTML = h;
+  renderCellNav();
+}
+$('#v-info').addEventListener('click', e => { const li = e.target.closest('li[data-k]'); if (!li) return; stopPlay(); if (!showCons) { setCons(true); $('#v-cons').setAttribute('aria-pressed', 'true'); $('#v-cons').textContent = 'Hide construction'; fit(); } showStep(+li.dataset.k); });
+
+/* ---- families flex by themselves: the first slider or free point swings to and fro, the rest follows ---- */
+function startFlex() {
+  if (!VIEW || VIEW.kind === 'rigid' || REDUCED || flex || !VIEW.steps || VIEW.k < VIEW.steps.length) return;
+  const drv = S.nodes.find(n => n.t === 'free' || n.t === 'glide'); if (!drv) return;
+  const c = drv.t === 'glide' ? V.get(drv.on) : null;
+  flex = { id: drv.id, t0: performance.now(), u0: drv.u, x0: drv.x, y0: drv.y, amp: drv.t === 'glide' ? (c && c.k === 'c' ? 0.16 / Math.max(c.r, 0.3) : 0.16) : 0.13, dir: 1, ph: 0, last: performance.now(), raf: 0 };
+  const tick = now => {
+    if (!flex) return;
+    flex.raf = requestAnimationFrame(tick);
+    if (drag && drag.mode === 'pt') { flex.last = now; return; }
+    const dt = Math.min(50, now - flex.last); flex.last = now;
+    flex.ph += flex.dir * dt / 1000 * 1.1;
+    const n = byId.get(flex.id); if (!n) { stopFlex(); return; }
+    const s = Math.sin(flex.ph), keep = snapshot();
+    let w;
+    if (n.t === 'glide') { const cv0 = V.get(n.on); if (!cv0) return; const u = flex.u0 + flex.amp * s; w = cv0.k === 'l' ? { x: cv0.px + u * cv0.dx, y: cv0.py + u * cv0.dy } : { x: cv0.cx + cv0.r * Math.cos(u), y: cv0.cy + cv0.r * Math.sin(u) }; }
+    else w = { x: flex.x0 + flex.amp * s, y: flex.y0 + flex.amp * 0.6 * Math.sin(2 * flex.ph) };
+    dragUnknown(flex.id, w);
+    const st = status;
+    if (!st || st.coincide || st.d !== VIEW.d || st.n !== VIEW.n) {   // left the family's open part: back up and turn round
+      const o = JSON.parse(keep); S.nodes = o.nodes; reindex(); recompute();
+      flex.dir = -flex.dir; flex.ph += flex.dir * 0.05;
+    }
+    draw();
+  };
+  flex.raf = requestAnimationFrame(tick);
+}
+function stopFlex() { if (flex) { cancelAnimationFrame(flex.raf); flex = null; } }
+
+$('#v-cons').addEventListener('click', () => setViewCons(!showCons));
+$('#v-play').addEventListener('click', play);
+$('#v-back').addEventListener('click', () => { if (!showCons) { setViewCons(true); return; } stepBy(-1); });
+$('#v-fwd').addEventListener('click', () => stepBy(1));
+$('#v-edit').addEventListener('click', leaveView);
+$('#v-prev').addEventListener('click', () => VIEW && enterView(VIEW.cell, VIEW.num - 1));
+$('#v-next').addEventListener('click', () => VIEW && enterView(VIEW.cell, VIEW.num + 1));
+$('#v-cell').addEventListener('change', e => enterView(e.target.value, 1));
+addEventListener('hashchange', () => { const v = parseViewHash(location.hash); if (v) enterView(v.cell, v.num); });
+/* keys in view mode (the tool keys are off) */
+function viewKey(e, k) {
+  if (k === ' ' || k === 'spacebar') { e.preventDefault(); play(); return true; }
+  if (k === 'arrowright') { e.preventDefault(); if (showCons) stepBy(1); else if (VIEW.num < cellTotal(VIEW.cell)) enterView(VIEW.cell, VIEW.num + 1); return true; }
+  if (k === 'arrowleft') { e.preventDefault(); if (showCons) stepBy(-1); else if (VIEW.num > 1) enterView(VIEW.cell, VIEW.num - 1); return true; }
+  if (k === 'h') { setViewCons(!showCons); return true; }
+  if (k === 'e' || k === 'm' || k === '0' || k === '+' || k === '-' || k === '=') return false;
+  return true;   // swallow tool keys
+}
+
 /* ---------------- start ---------------- */
 loadSaved();
 if (S.tri && S.sq) S.sq = false;
@@ -2048,6 +2505,7 @@ rematchCards();
 recompute(); renderEqs(); renderCollection(); updateUndo(); setTool('mark');
 resize(); fit();
 readLinkHash();
+{ const vh = parseViewHash(location.hash); if (vh) enterView(vh.cell, vh.num); }
 window.DH = { get S() { return S; }, get status() { return status; }, get cards() { return cards; }, get alts() { return alts; }, V: () => V, keep, recompute, addEquality, solveCons, consUnknowns, freedom: () => { const L = varLayout(consUnknowns()); return L.length ? freedom(L, getX(L)) : 0; }, loadCard, makeLink, importText, canon, setTool, clickWorld: (x, y) => { const [sx, sy] = toS(x, y); clickTool(sx, sy); }, view };
 </script>
 </body></html>
