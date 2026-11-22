@@ -256,6 +256,9 @@ html.ct-view .ct-view-only { display:revert !important; }
 html.ct-view .ct-player.ct-view-only { display:flex !important; }
 html.ct-view .ct-cardnav.ct-view-only { display:inline-flex !important; }
 html.ct-view .ct-view-only[hidden] { display:none !important; }
+html.ct-user .ct-cardnav.ct-view-only { display:none !important; }
+html.ct-noan .dh-side, html.ct-noan #b-edges, html.ct-noan #b-min { display:none !important; }
+html.ct-noan .dh-main .am-about { top:0; }
 html.ct-view .ct-edit-only, html.ct-view .dh-tools { display:none !important; }
 .ct-cardnav { align-items:center; gap:8px; }
 .ct-cell { padding:6px 6px; font-size:12px; }
@@ -317,6 +320,10 @@ html.ct-view .dh-hint { display:none; }
   <header class="am-bar">
     <a class="am-home" href="https://affinemess.com/#applets/construction-tool" target="_top">affine<span class="sep">·</span>mess</a>
     <span class="dh-title">Construction Tool</span>
+    <span class="am-seg" role="group" aria-label="Mode">
+      <button class="am-btn" id="m-play" aria-pressed="false" title="Play: watch the construction, step through it, drag its sliders">Play</button>
+      <button class="am-btn" id="m-edit" aria-pressed="true" title="Edit: build and change the construction">Edit</button>
+    </span>
     <span class="ct-view-only ct-cardnav">
       <select class="am-input ct-cell" id="v-cell" aria-label="Cell"></select>
       <span class="am-seg">
@@ -341,8 +348,8 @@ html.ct-view .dh-hint { display:none; }
       <button class="am-btn dh-ib" id="b-edges" aria-pressed="true" aria-label="All distances (E)" data-tip="All distances" data-key="E" data-desc="Every segment between marked points, coloured by its length (sets of up to 24 points)."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5H19V19H5ZM5 5L19 19M19 5L5 19" stroke-width="1.3"/><circle class="f" cx="5" cy="5" r="2.1"/><circle class="f" cx="19" cy="5" r="2.1"/><circle class="f" cx="19" cy="19" r="2.1"/><circle class="f" cx="5" cy="19" r="2.1"/></svg></button>
       <button class="am-btn dh-ib" id="b-min" aria-pressed="false" aria-label="Shortest distances (M)" data-tip="Shortest distances" data-key="M" data-desc="Only the segments of the shortest distance in the set: the clearest view of a big set."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5H19V19H5Z" stroke-width="1.3"/><circle class="f" cx="5" cy="5" r="2.1"/><circle class="f" cx="19" cy="5" r="2.1"/><circle class="f" cx="19" cy="19" r="2.1"/><circle class="f" cx="5" cy="19" r="2.1"/></svg></button>
     </span>
+    <button class="am-btn" id="b-an" aria-pressed="false" title="Distances: colour and count the distinct distances of the marked points (D)">Distances</button>
     <span class="am-spacer"></span>
-    <button class="am-btn ct-view-only is-primary-bar" id="v-edit" title="Open this construction in the tool, to change it or build on it">Edit</button>
     <span class="dh-menu ct-edit-only">
       <button class="am-btn" id="b-save" aria-expanded="false">Save &amp; share</button>
       <div class="dh-pop" id="pop-save">
@@ -514,6 +521,8 @@ let view = { cx: 0.5, cy: 0.4, s: 90 };
 let tool = 'mark';
 let picks = [];             // points picked so far for the current tool
 let showEdges = true;
+let ANALYSIS = false;          // the distance analysis (colours, census, side panel) is optional
+const edgesOn = () => showEdges && ANALYSIS;
 let minEdges = false;        // with showEdges: only the segments of the shortest distance
 let hlHover = null, hlPin = null, hlKey = '';   // highlighted distance class (hover / pinned)
 const hlClass = () => hlHover !== null ? hlHover : hlPin;
@@ -1598,7 +1607,7 @@ function draw() {
   drawPreview();
   // distance segments between marked points
   const st = status;
-  if (showEdges && st && st.dc && !st.coincide && (minEdges || st.n <= 24)) {
+  if (edgesOn() && st && st.dc && !st.coincide && (minEdges || st.n <= 24)) {
     const hk = hlClass();
     const seg = p => { const a = st.P[p.i], b = st.P[p.j]; const [x1, y1] = toS(a.x, a.y), [x2, y2] = toS(b.x, b.y); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
     for (const p of st.dc.pairs.slice().reverse()) {
@@ -1635,7 +1644,7 @@ function draw() {
         placed.push([mx, my]);
         const hot = eqHover === gi;
         const d0 = status && status.dc && !status.coincide ? status.dc.cls[0].d : 0;
-        const drawn = showEdges && (!minEdges || Math.abs(Math.hypot(a.x - b.x, a.y - b.y) - d0) < 1e-6 * d0);
+        const drawn = edgesOn() && (!minEdges || Math.abs(Math.hypot(a.x - b.x, a.y - b.y) - d0) < 1e-6 * d0);
         if (!drawn || hot) { ctx.strokeStyle = hot ? C.accent : C.faint; ctx.lineWidth = hot ? 3 : 1; ctx.setLineDash(hot ? [] : [4, 3]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
         ctx.strokeStyle = hot ? C.accent : C.deep; ctx.lineWidth = 1.8;
         for (let k = 0; k <= gi; k++) {
@@ -2125,7 +2134,7 @@ cv.addEventListener('pointermove', e => {
   const changed = JSON.stringify(h) !== JSON.stringify(hover);
   hover = h;
   let ek = null;
-  if (!h && tool !== 'eq' && tool !== 'par' && tool !== 'perp' && showEdges && status && status.dc && !status.coincide && (minEdges || status.n <= 24)) {
+  if (!h && tool !== 'eq' && tool !== 'par' && tool !== 'perp' && edgesOn() && status && status.dc && !status.coincide && (minEdges || status.n <= 24)) {
     const pp = segPick(sx, sy, false, 5, minEdges ? 0 : null);
     if (pp) ek = pp.c;
   }
@@ -2243,8 +2252,9 @@ addEventListener('keydown', e => {
   if (k === 'enter') { if (!$('#b-keep').disabled) keep(); return; }
   if (k === 'g') { toggleLat('tri'); return; }
   if (k === 'q') { toggleLat('sq'); return; }
-  if (k === 'e') { $('#b-edges').click(); return; }
-  if (k === 'm') { $('#b-min').click(); return; }
+  if (k === 'd') { setAnalysis(!ANALYSIS, true); return; }
+  if (k === 'e') { if (ANALYSIS) $('#b-edges').click(); return; }
+  if (k === 'm') { if (ANALYSIS) $('#b-min').click(); return; }
   if (k === 'h') { $('#b-cons').click(); return; }
   if (k === '0') { fit(); return; }
   if (k === '+' || k === '=') { zoom(1.4); return; }
@@ -2271,15 +2281,48 @@ const cellKeys = () => CAT ? Object.keys(CAT.cells).sort((a, b) => { const [n1, 
 function viewHash(cell, num) { const [n, d] = cell.split(','); return '#n' + n + 'd' + d + 'c' + num; }
 function parseViewHash(h) { const m = /^#n(\d+)d(\d+)c(\d+)$/.exec(h || ''); return m ? { cell: m[1] + ',' + m[2], num: +m[3] } : null; }
 
+/* ---- the distance analysis is optional; modes: Play (VIEW) and Edit ---- */
+function setAnalysis(on, remember) {
+  ANALYSIS = !!on;
+  document.documentElement.classList.toggle('ct-noan', !ANALYSIS);
+  $('#b-an').setAttribute('aria-pressed', ANALYSIS);
+  if (remember) { try { localStorage.setItem('ct-analysis', ANALYSIS ? '1' : '0'); } catch (e) {} }
+  if (typeof resize === 'function' && status) { resize(); draw(); }
+}
+$('#b-an').addEventListener('click', () => setAnalysis(!ANALYSIS, true));
+function syncMode() {
+  $('#m-play').setAttribute('aria-pressed', !!VIEW);
+  $('#m-edit').setAttribute('aria-pressed', !VIEW);
+}
+$('#m-edit').addEventListener('click', () => { if (VIEW) leaveView(); });
+$('#m-play').addEventListener('click', () => { if (!VIEW) enterPlay(); });
+/* Play on whatever is in the editor: the same player the catalog cards use, on your own construction */
+function enterPlay() {
+  if (VIEW) return;
+  stopPlay(); stopFlex();
+  const st = status;
+  stash = null;
+  document.documentElement.classList.add('ct-view', 'ct-user');
+  VIEW = { user: true, cell: null, num: 0, n: st ? st.n : 0, d: st && st.dc && !st.coincide ? st.d : null, kind: 'user', dim: 0, level: 0, eqs: S.cons.length, unk: 0, label: '', v: null, cons: S.cons, lattice: false, k: 0, anim: null };
+  VIEW.steps = buildSteps();
+  VIEW.k = VIEW.steps.length;
+  VIEW.names = pointNames();
+  VIEW.pert = null;
+  picks = []; eqPick = null;
+  VIS = null; HOT = null; VOV = null;
+  setCons(false); $('#v-cons').setAttribute('aria-pressed', 'false');
+  recompute(); renderEqs(); resize(); fitView(); renderViewInfo(); updatePlayer(); syncMode();
+}
 function enterView(cell, num) {
   if (!cellTotal(cell)) { toast('No card ' + cell + ' no. ' + num + ' in the catalog.'); return; }
   num = Math.max(1, Math.min(cellTotal(cell), num));
-  if (!VIEW) stash = { nodes: S.nodes, marked: S.marked, next: S.next, cons: S.cons, tri: S.tri, sq: S.sq };
+  if (!VIEW) { stash = { nodes: S.nodes, marked: S.marked, next: S.next, cons: S.cons, tri: S.tri, sq: S.sq }; setAnalysis(true); }
+  else if (VIEW.user) { document.documentElement.classList.remove('ct-user'); stash = { nodes: S.nodes, marked: S.marked, next: S.next, cons: VIEW.cons, tri: S.tri, sq: S.sq }; }
   stopPlay(); stopFlex();
   document.documentElement.classList.add('ct-view');
   VIEW = { cell, num, loading: true };
   try { history.replaceState(null, '', location.pathname + location.search + viewHash(cell, num)); } catch (e) {}
-  renderCellNav();
+  renderCellNav(); syncMode();
   $('#v-info').innerHTML = '<p>Loading the card…</p>';
   const req = ++viewReq;
   recipeFile(cell, num).then(f => {
@@ -2309,10 +2352,11 @@ function setupCard(cell, num, it, labels) {
 function leaveView() {
   if (!VIEW) return;
   stopPlay(); stopFlex();
-  const ready = !VIEW.loading && VIEW.steps;
-  const card = ready ? { nodes: JSON.parse(JSON.stringify(S.nodes)), marked: S.marked.slice(), cons: JSON.parse(JSON.stringify(VIEW.cons)), tri: S.tri, sq: S.sq } : null;
+  const user = !!VIEW.user, ready = !VIEW.loading && VIEW.steps;
+  const card = ready && !user ? { nodes: JSON.parse(JSON.stringify(S.nodes)), marked: S.marked.slice(), cons: JSON.parse(JSON.stringify(VIEW.cons)), tri: S.tri, sq: S.sq } : null;
+  const userCons = user ? VIEW.cons : null;
   VIEW = null; VIS = null; HOT = null; VOV = null;
-  document.documentElement.classList.remove('ct-view');
+  document.documentElement.classList.remove('ct-view', 'ct-user');
   $('#v-caption').hidden = true;
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   if (stash) { S = { nodes: stash.nodes, marked: stash.marked, next: stash.next, cons: stash.cons, tri: stash.tri, sq: stash.sq }; }
@@ -2323,7 +2367,8 @@ function leaveView() {
   }
   $('#b-tri').setAttribute('aria-pressed', S.tri); $('#b-sq').setAttribute('aria-pressed', S.sq);
   stash = null;
-  reindex(); settle(); setCons(true); setTool('mark');
+  if (userCons) S.cons = userCons;
+  reindex(); settle(); setCons(true); setTool('mark'); syncMode();
   recompute(); renderEqs(); renderCollection(); updateUndo(); resize(); fit(); persist();
   if (card) toast('The card is now your construction. Undo brings back what you had.', 4000);
 }
@@ -2509,6 +2554,7 @@ function drawViewMarks() {
   }
 }
 function renderCellNav() {
+  if (!VIEW.cell) return;
   const sel = $('#v-cell');
   if (!sel.options.length) sel.innerHTML = cellKeys().map(c => { const [n, d] = c.split(','); return `<option value="${c}">n = ${n} · d = ${d}</option>`; }).join('');
   sel.value = VIEW.cell;
@@ -2539,6 +2585,7 @@ function levelLong() {
 }
 function renderViewInfo() {
   const V0 = VIEW, N = V0.steps.length;
+  if (V0.user) { $('#v-info').innerHTML = N ? `<h4>Construction · ${N} step${N > 1 ? 's' : ''}</h4><ol class="ct-steps" id="v-steps">` + V0.steps.map((s, i) => `<li data-k="${i + 1}"><span>${stepText(s)}</span></li>`).join('') + '</ol>' : '<p>Nothing to play yet: build something in Edit.</p>'; return; }
   const lv = V0.kind === 'rigid' ? LEVEL_NAME[V0.level] : 'flexible · ' + LEVEL_NAME[V0.level];
   let h = `<span class="ct-level l${V0.level}">${esc(lv)}</span>`;
   h += `<p class="ct-name">${esc((V0.label || '').replace(/^rigid;\s*/, '').replace(/^\d+-parameter family;\s*/, ''))}</p>`;
@@ -2588,7 +2635,6 @@ $('#v-cons').addEventListener('click', () => setViewCons(!showCons));
 $('#v-play').addEventListener('click', play);
 $('#v-back').addEventListener('click', () => { if (!showCons) { setViewCons(true); return; } stepBy(-1); });
 $('#v-fwd').addEventListener('click', () => stepBy(1));
-$('#v-edit').addEventListener('click', leaveView);
 $('#v-prev').addEventListener('click', () => VIEW && enterView(VIEW.cell, VIEW.num - 1));
 $('#v-next').addEventListener('click', () => VIEW && enterView(VIEW.cell, VIEW.num + 1));
 $('#v-cell').addEventListener('change', e => enterView(e.target.value, 1));
@@ -2609,6 +2655,7 @@ if (S.tri && S.sq) S.sq = false;
 $('#b-tri').setAttribute('aria-pressed', S.tri);
 $('#b-sq').setAttribute('aria-pressed', S.sq);
 if (!Array.isArray(S.cons)) S.cons = [];
+try { setAnalysis(localStorage.getItem('ct-analysis') === '1'); } catch (e) { setAnalysis(false); }
 rematchCards();
 recompute(); renderEqs(); renderCollection(); updateUndo(); setTool('mark');
 resize(); fit();
