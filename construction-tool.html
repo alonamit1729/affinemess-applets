@@ -1859,6 +1859,21 @@ function applyLegendHL() {
   });
 }
 function setHover(k) { if (k === hlHover) return; hlHover = k; applyLegendHL(); draw(); }
+/* the editor's wording for a set that still has free points or sliders: the same words as a flexible catalog card */
+function freeFamilyText(st) {
+  const seen = new Set(), U = [];
+  const walk = id => { if (seen.has(id)) return; seen.add(id); const n = byId.get(id); if (!n) return; if (n.t === 'free' || n.t === 'glide') U.push(n); deps(n).forEach(walk); };
+  st.ids.forEach(walk);
+  const nf = U.filter(n => n.t === 'free').length, ng = U.length - nf;
+  const L = varLayout(consUnknowns()), pinned = L.length ? L.length - freedom(L, getX(L)) : 0;   // independent equations
+  const k = Math.max(1, 2 * nf + ng - pinned);
+  const unk = [ng ? ng + ' slider' + (ng > 1 ? 's' : '') : '', nf ? nf + ' free point' + (nf > 1 ? 's' : '') : ''].filter(Boolean).join(' and ');
+  const eq = eqCount();
+  const how = eq ? `${unk}, held to the family by ${eq} equalit${eq > 1 ? 'ies' : 'y'}` : `${unk} and straightedge and compass`;
+  return `<em>Flexible</em>: a ${k}-parameter family. Built from ${how}. Drag the ${nf ? 'ring' : 'diamond'}${U.length > 1 ? 's' : ''} to move along it. ` +
+    (eq ? 'The segments you made equal stay equal.' : 'The distances shown are those of this position; use <b>Equal</b> to say which ones must stay equal along the family.') +
+    ' Pin it down (more equalities) to count and identify the set.';
+}
 function renderStatus() {
   const st = status;
   const nd = $('#s-nd'), dist = $('#s-dist'), facts = $('#s-facts');
@@ -1878,7 +1893,7 @@ function renderStatus() {
   if (st.n < 3) f.push('Mark at least three points.');
   else if (st.coincide) f.push('Two marked points coincide.');
   else if (st.prov === 2) {
-    f.push(S.cons.length ? 'Approximate: the equalities leave some freedom. Add another with <b>Equal</b>, or drag a free point (the equalities hold).' : 'Approximate: the set includes free points or sliders. Use <b>Equal</b> to say which distances should coincide.');
+    f.push(freeFamilyText(st));
   } else {
     canKeep = true;
     f.push(st.flex === 0 ? 'Rigid' + (st.prov === 1 ? ', with snapped points.' : ', and constructed exactly.') :
