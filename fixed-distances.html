@@ -164,7 +164,9 @@ input[type=range] { accent-color:var(--accent); }
 .fd-link:hover{ color:var(--accent-deep); }
 @media (hover:none){ .fd-link{ opacity:.7; } }
 .fd-linkok{ position:absolute; top:8px; right:34px; font-family:var(--mono); font-size:10.5px; color:var(--accent-deep); background:var(--paper-card); padding:2px 5px; border-radius:3px; pointer-events:none; }
-.fd-card.hl{ outline:2px solid var(--accent); outline-offset:1px; }
+.fd-card.hl{ outline:3px solid var(--accent); outline-offset:2px; animation:fd-hl 1.1s ease-in-out 3; }
+@keyframes fd-hl{ 50%{ outline-offset:6px; } }
+@media (prefers-reduced-motion:reduce){ .fd-card.hl{ animation:none; } }
 .fd-card svg{ width:100%; height:auto; display:block; }
 .fd-card .lab{ font-size:13px; line-height:1.3; color:var(--ink); overflow-wrap:anywhere; }
 .fd-card .lab .num{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-right:5px; }
@@ -785,6 +787,10 @@ const DATA = {"cells":{"3,1":{"n":3,"d":1,"status":"exact","dims":{"0":{"lo":1,"
     t=document.createElement('span'); t.className='fd-linkok'; t.textContent=ok?'Opened; link copied':'Opened in a new tab'; card.appendChild(t); setTimeout(()=>t.remove(),1500);
   });
   let pendingCard=0, pendingFilter='';
+  /* a card named in the address (#n<n>d<d>c<num>) is scrolled to and outlined until the reader clicks or types. It is
+     re-applied after the filter bar rebuilds the list (the cell's index loads a moment after the first render and
+     replaces every card, which used to wipe the outline before anyone saw it). */
+  let hlIdx=-1, hlOn=false;
   function setHash(h){ /* best effort: some previewers (sandboxed srcdoc or blob frames, notably on iOS) forbid history edits */
     try{ history.replaceState(null,'',h||(location.pathname+location.search)); }catch(_){}
   }
@@ -831,6 +837,18 @@ const DATA = {"cells":{"3,1":{"n":3,"d":1,"status":"exact","dims":{"0":{"lo":1,"
       else { const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(pre); sel.removeAllRanges(); sel.addRange(rg); }
     }); });
     }
+    function markCard(){
+      if(hlIdx<0) return; const pos=order.indexOf(hlIdx); if(pos<0) return;
+      while(shown<=pos) showMore();
+      const el=catEl.querySelector(`.fd-card[data-card="${hlIdx}"]`); if(!el) return;
+      catEl.querySelectorAll('.fd-card.hl').forEach(x=>{ if(x!==el) x.classList.remove('hl'); });
+      el.classList.add('hl'); el.scrollIntoView({block:'center'});
+      if(hlOn) return; hlOn=true;
+      const off=()=>{ hlIdx=-1; hlOn=false; catEl.querySelectorAll('.fd-card.hl').forEach(x=>x.classList.remove('hl')); removeEventListener('pointerdown',off,true); removeEventListener('keydown',off,true); };
+      setTimeout(()=>{ if(hlOn){ addEventListener('pointerdown',off,true); addEventListener('keydown',off,true); } },900);
+      setTimeout(()=>{ if(hlOn) off(); },20000);
+    }
+
     function showMore(){
       const box=catEl.querySelector('.fd-cards'); if(!box) return;
       const from=shown, to=Math.min(order.length,from+PAGE); let hh='';
@@ -849,13 +867,11 @@ const DATA = {"cells":{"3,1":{"n":3,"d":1,"status":"exact","dims":{"0":{"lo":1,"
     // the filter bar, once the cell's index has loaded (tools/construction-tool/recipes/<n>_<d>/index.json)
     if(cat.items.length) loadIndex(key).then(ix=>{
       const wait=catEl.querySelector('.fd-cards[data-wait]');
-      if(!ix||cats[key]!==cat||!catEl.querySelector('.fd-filter')){ if(wait){ delete wait.dataset.wait; showMore(); } return; }
-      setupFilter(catEl.querySelector('.fd-filter'),ix,cat,base,fstate,(o)=>{ order=o; const box=catEl.querySelector('.fd-cards'); box.innerHTML=''; delete box.dataset.wait; LIVE.clear(); shown=0; showMore(); },key);
+      if(!ix||cats[key]!==cat||!catEl.querySelector('.fd-filter')){ if(wait){ delete wait.dataset.wait; showMore(); markCard(); } return; }
+      setupFilter(catEl.querySelector('.fd-filter'),ix,cat,base,fstate,(o)=>{ order=o; const box=catEl.querySelector('.fd-cards'); box.innerHTML=''; delete box.dataset.wait; LIVE.clear(); shown=0; showMore(); markCard(); },key);
     });
     if(pendingCard){   // #n<n>d<d>c<num>: page far enough to show the card, scroll to it and highlight it briefly
-      const idx=pendingCard-1; pendingCard=0; const pos=order.indexOf(idx);
-      if(pos>=0){ while(shown<=pos) showMore(); const el=catEl.querySelector(`.fd-card[data-card="${idx}"]`);
-        if(el){ el.scrollIntoView({block:'center'}); el.classList.add('hl'); setTimeout(()=>el.classList.remove('hl'),2500); } }
+      hlIdx=pendingCard-1; pendingCard=0; markCard();
     }
     tableEl.hidden=true; catEl.hidden=false; backBtn.hidden=false; hintEl.hidden=true;
     whereEl.hidden=false; whereEl.innerHTML=`n = ${esc(nLabel)}, d = ${dLabel}`;
