@@ -257,10 +257,12 @@ html.ct-view .ct-player.ct-view-only { display:flex !important; }
 html.ct-view .ct-cardnav.ct-view-only { display:inline-flex !important; }
 html.ct-view .ct-view-only[hidden] { display:none !important; }
 html.ct-user .ct-cardnav.ct-view-only { display:none !important; }
-html.ct-noan .dh-side, html.ct-noan #b-edges, html.ct-noan #b-min { display:none !important; }
+html.ct-noan .dh-side, html.ct-noan #b-edges, html.ct-noan #b-min, html.ct-noan .dh-menu { display:none !important; }
 html.ct-noan .dh-main .am-about { top:0; }
 html.ct-view .ct-edit-only, html.ct-view .dh-tools { display:none !important; }
 .ct-cardnav { align-items:center; gap:8px; }
+.dh-doc { font-family:var(--mono); font-size:11px; color:var(--ink-soft); max-width:22ch; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dh-doc:empty { display:none; }
 .ct-cell { padding:6px 6px; font-size:12px; }
 .am-btn.ct-no { min-width:74px; color:var(--ink); opacity:1; cursor:default; }
 .am-btn.ct-no:disabled { opacity:1; color:var(--ink); }
@@ -320,6 +322,10 @@ html.ct-view .dh-hint { display:none; }
   <header class="am-bar">
     <a class="am-home" href="https://affinemess.com/#applets/construction-tool" target="_top">affine<span class="sep">·</span>mess</a>
     <span class="dh-title">Construction Tool</span>
+    <button class="am-btn" id="b-open" title="Open a construction file (Ctrl+O)">Open…</button>
+    <button class="am-btn" id="b-saveas" title="Save this construction as a file (Ctrl+S)">Save as…</button>
+    <input type="file" id="f-open" accept=".json,application/json" hidden>
+    <span class="dh-doc" id="doc-name"></span>
     <span class="am-seg" role="group" aria-label="Mode">
       <button class="am-btn" id="m-play" aria-pressed="false" title="Play: watch the construction, step through it, drag its sliders">Play</button>
       <button class="am-btn" id="m-edit" aria-pressed="true" title="Edit: build and change the construction">Edit</button>
@@ -2648,6 +2654,84 @@ function viewKey(e, k) {
   if (k === 'e' || k === 'm' || k === '0' || k === '+' || k === '-' || k === '=') return false;
   return true;   // swallow tool keys
 }
+
+/* ---------------- Save as / Open: a construction is a plain .json file, on the user's own computer ---------------- */
+const FILE_FORMAT = 'affinemess-construction';
+const DOC = { name: '' };
+function setDocName(n) { DOC.name = (n || '').replace(/\.json$/i, ''); $('#doc-name').textContent = DOC.name; $('#doc-name').title = DOC.name ? DOC.name + '.json' : ''; }
+function fileText() {
+  const cons = VIEW ? VIEW.cons : S.cons;
+  const o = { format: FILE_FORMAT, version: 1, saved: new Date().toISOString(), nodes: S.nodes, marked: S.marked, equalities: cons, lattice: S.tri ? 'tri' : S.sq ? 'sq' : null, analysis: ANALYSIS, view: { cx: +view.cx.toFixed(4), cy: +view.cy.toFixed(4), scale: +view.s.toFixed(2) } };
+  const row = (k, v) => '  ' + JSON.stringify(k) + ': ' + v;
+  return '{\n' + [
+    row('format', JSON.stringify(o.format)), row('version', o.version), row('saved', JSON.stringify(o.saved)),
+    row('nodes', '[\n' + o.nodes.map(n => '    ' + JSON.stringify(n)).join(',\n') + '\n  ]'),
+    row('marked', JSON.stringify(o.marked)), row('equalities', JSON.stringify(o.equalities)), row('lattice', JSON.stringify(o.lattice)),
+    row('analysis', o.analysis), row('view', JSON.stringify(o.view)),
+  ].join(',\n') + '\n}\n';
+}
+async function saveAs() {
+  const text = fileText(), name = (DOC.name || 'construction') + '.json';
+  if (window.showSaveFilePicker) {
+    try {
+      const h = await window.showSaveFilePicker({ suggestedName: name, types: [{ description: 'Construction', accept: { 'application/json': ['.json'] } }] });
+      const w = await h.createWritable(); await w.write(text); await w.close();
+      setDocName(h.name); toast('Saved ' + h.name); return;
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast('Saved as ' + name + ' in your downloads');
+}
+const REFS = ['on', 'a', 'b', 'c', 'p', 'q', 'c1', 'c2', 'poly'];
+const NODE_TYPES = new Set(['base', 'free', 'glide', 'lat', 'line', 'bis', 'par', 'perp', 'circ', 'comp', 'poly', 'pv', 'pc', 'x']);
+function validateDoc(o) {
+  if (!o || o.format !== FILE_FORMAT) throw new Error('This is not a construction file.');
+  if (o.version > 1) throw new Error('This file was saved by a newer version of the tool.');
+  if (!Array.isArray(o.nodes) || o.nodes.length < 2 || o.nodes.length > 5000) throw new Error('The file has no construction in it.');
+  const ids = new Set();
+  for (const n of o.nodes) {
+    if (!n || !Number.isInteger(n.id) || ids.has(n.id) || !NODE_TYPES.has(n.t)) throw new Error('The construction in this file is damaged.');
+    ids.add(n.id);
+  }
+  for (const n of o.nodes) for (const k of REFS) if (k in n && !ids.has(n[k])) throw new Error('The construction in this file is damaged.');
+  const okIds = a => Array.isArray(a) && a.every(i => ids.has(i));
+  if (!okIds(o.marked || [])) throw new Error('The construction in this file is damaged.');
+  const eq = o.equalities || [];
+  if (!Array.isArray(eq) || !eq.every(g => Array.isArray(g) && g.every(sg => okIds(sg) && sg.length === 2))) throw new Error('The construction in this file is damaged.');
+}
+function loadDoc(o, name) {
+  validateDoc(o);
+  if (VIEW) leaveView();
+  pushUndo();
+  S.nodes = o.nodes; S.marked = (o.marked || []).slice(); S.cons = (o.equalities || []).map(g => g.map(sg => sg.slice()));
+  S.next = Math.max(...S.nodes.map(n => n.id)) + 1;
+  S.tri = o.lattice === 'tri'; S.sq = o.lattice === 'sq';
+  picks = []; eqPick = null; alts = [];
+  try { reindex(); settle(); recompute(); if (!status) throw new Error('x'); }
+  catch (e) { restore(undoStack.pop()); updateUndo(); throw new Error('The construction in this file could not be evaluated.'); }
+  $('#b-tri').setAttribute('aria-pressed', S.tri); $('#b-sq').setAttribute('aria-pressed', S.sq);
+  setCons(true); setTool('mark'); setAnalysis(o.analysis === true);
+  renderEqs(); renderCollection(); updateUndo(); resize();
+  const v = o.view; if (v && isFinite(v.cx) && isFinite(v.cy) && v.scale > 0) { view.cx = v.cx; view.cy = v.cy; view.s = v.scale; draw(); } else fit();
+  setDocName(name); persist(); syncMode();
+}
+function openText(txt, name) {
+  let o; try { o = JSON.parse(txt); } catch (e) { toast('That file is not a construction.', 3500); return; }
+  if (o && o.app === 'construction-tool' && Array.isArray(o.cards)) { importText(txt); return; }   // a collection file from Save & share
+  try { loadDoc(o, name); toast('Opened ' + name); } catch (e) { toast(e.message, 4000); }
+}
+$('#b-saveas').addEventListener('click', saveAs);
+$('#b-open').addEventListener('click', () => $('#f-open').click());
+$('#f-open').addEventListener('change', e => { const f = e.target.files[0]; if (f) f.text().then(t => openText(t, f.name)); e.target.value = ''; });
+addEventListener('dragover', e => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
+addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return; e.preventDefault(); f.text().then(t => openText(t, f.name)); });
+addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 's') { e.preventDefault(); saveAs(); } else if (k === 'o') { e.preventDefault(); $('#f-open').click(); }
+});
 
 /* ---------------- start ---------------- */
 loadSaved();
