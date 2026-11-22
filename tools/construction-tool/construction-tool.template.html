@@ -1282,6 +1282,7 @@ const toS = (x, y) => [W / 2 + (x - view.cx) * view.s, H / 2 - (y - view.cy) * v
 const toW = (sx, sy) => ({ x: view.cx + (sx - W / 2) / view.s, y: view.cy - (sy - H / 2) / view.s });
 function fit() {
   const pts = pointList(); if (!pts.length) return;
+  for (const q of flexSamples(false)) pts.push(q);
   let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
   for (const p of pts) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const w = Math.max(x1 - x0, 1), h = Math.max(y1 - y0, 1);
@@ -2393,9 +2394,25 @@ function updatePlayer() {
     li.classList.toggle('is-cur', showCons && i === k - 1 && (k < N || !!playT));
   });
 }
+/* Where the points go while a family flexes: positions over the whole stored loop, so the view can be fitted once to
+   all of them and nothing leaves the canvas mid-animation. markedOnly: just the set; otherwise every point. */
+function flexSamples(markedOnly) {
+  if (!VIEW || !VIEW.anim || VIEW.kind === 'rigid' || !VIEW.steps || VIEW.k < VIEW.steps.length || VIEW.dragged) return [];
+  const U = S.nodes.filter(n => n.t === 'free' || n.t === 'glide');
+  if (!VIEW.x0) VIEW.x0 = U.flatMap(n => n.t === 'free' ? [n.x, n.y] : [n.u]);
+  const ids = markedOnly ? S.marked : S.nodes.filter(isPt).map(n => n.id), out = [], M = 96;
+  for (let i = 0; i < M; i++) {
+    const x = animAt(VIEW.anim, VIEW.x0, i / M * 2 * Math.PI), ov = new Map(); let k = 0;
+    for (const n of U) { if (n.t === 'free') { ov.set(n.id, { x: x[k], y: x[k + 1] }); k += 2; } else { ov.set(n.id, { u: x[k] }); k += 1; } }
+    const val = evaluate(S.nodes, ov);
+    for (const id of ids) { const v = val.get(id); if (v && v.x !== undefined && isFinite(v.x) && isFinite(v.y)) out.push({ x: v.x, y: v.y }); }
+  }
+  return out;
+}
 /* fit the set itself (the clean view) */
 function fitView() {
-  const { P } = markedPoints(); if (!P.length) { fit(); return; }
+  const P0 = markedPoints().P; if (!P0.length) { fit(); return; }
+  const P = P0.concat(flexSamples(true));
   let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
   for (const p of P) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const w = Math.max(x1 - x0, 1e-3), h = Math.max(y1 - y0, 1e-3);
