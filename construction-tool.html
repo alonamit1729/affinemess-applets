@@ -2482,6 +2482,9 @@ function startFlex() {
     VIEW.flexT = now - flex.t0;
     const x = animAt(VIEW.anim, VIEW.x0, VIEW.flexT / 1000 / FLEX_PERIOD * 2 * Math.PI);
     let k = 0; for (const n of U) { if (n.t === 'free') { n.x = x[k]; n.y = x[k + 1]; k += 2; } else { n.u = x[k]; k += 1; } }
+    /* the stored loop satisfies the equalities only to about 1e-6, which the distance classes (tolerance 1e-9) read as
+       two different lengths (a card of (5,6) showed d = 7). Project each frame back onto them, moving as little as possible. */
+    if (S.cons.length) { const L = varLayout(consUnknowns()), r = L.length ? project(L, getX(L), L.map((_, i) => i)) : null; if (r) setX(L, r.x); }
     recompute(); draw();
   };
   flex.raf = requestAnimationFrame(tick);
