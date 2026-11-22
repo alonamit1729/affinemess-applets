@@ -637,6 +637,52 @@ function meet(A, B) {
   const h = Math.sqrt(h2);
   return [{ x: bx - h * ey, y: by + h * ex }, { x: bx + h * ey, y: by - h * ex }];   // left of c1->c2 first
 }
+/* While a point is dragged, the root number k of an intersection (which of its two points) can stop being the right one:
+   the labels swap when a slider passes through a point or two roots touch, and the construction then vanishes or
+   collapses (points on top of each other). A card is defined by what it IS: n distinct points with d distinct
+   distances. So after each drag step, if that no longer holds, try the other root choices and take one that restores it
+   (the one nearest to where the points should be by now), and keep it from then on. In the editor only breakage is
+   repaired (a point vanishing or two collapsing), not a change of d. ROOTMEM: each intersection's last position and
+   displacement; DRAGT: the n (and d) to preserve. */
+let DRAGT = null, ROOTSTEP = null;
+const ROOTMEM = new Map();    // id -> { p: last position, v: its last displacement, s: the drag step that caused it }
+function rootPred(id) {
+  const m = ROOTMEM.get(id); if (!m) return null;
+  if (!m.v || !m.s || !ROOTSTEP) return m.p;
+  const ss = m.s[0] * m.s[0] + m.s[1] * m.s[1]; if (ss < 1e-18) return m.p;
+  const r = Math.max(-4, Math.min(4, (ROOTSTEP[0] * m.s[0] + ROOTSTEP[1] * m.s[1]) / ss));
+  return { x: m.p.x + m.v.x * r, y: m.p.y + m.v.y * r };
+}
+function dragTarget() {
+  if (VIEW && VIEW.n && VIEW.d) return { n: VIEW.n, d: VIEW.d };
+  const P = S.marked.map(id => V.get(id)).filter(q => q && q.x !== undefined);
+  if (P.length < 3 || hasCoincident(P)) return null;
+  return { n: P.length, d: null };          // own constructions: only repair real breakage (vanishing / collapsing points)
+}
+function hasCoincident(P) {
+  for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) if (Math.hypot(P[i].x - P[j].x, P[i].y - P[j].y) < 1e-6) return true;
+  return false;
+}
+function holdsTarget(val) {
+  const P = S.marked.map(id => val.get(id)).filter(q => q && q.x !== undefined);
+  return P.length === DRAGT.n && !hasCoincident(P) && (DRAGT.d === null || distClasses(P).cls.length === DRAGT.d);
+}
+function fixRoots() {
+  const xs = S.nodes.filter(n => n.t === 'x');
+  if (!DRAGT || !xs.length || xs.length > 6 || holdsTarget(V)) return;
+  const k0 = xs.map(n => n.k); let best = null, bs = Infinity;
+  for (let mask = 0; mask < (1 << xs.length); mask++) {
+    xs.forEach((n, i) => { n.k = (mask >> i) & 1; });
+    const val = evaluate(S.nodes, VOV || undefined);
+    if (!holdsTarget(val)) continue;
+    let sc = 0;
+    xs.forEach(n => { const q = rootPred(n.id), v = val.get(n.id); if (q && v) sc += Math.hypot(v.x - q.x, v.y - q.y); });
+    if (sc < bs) { bs = sc; best = mask; }
+  }
+  if (best === null) { xs.forEach((n, i) => { n.k = k0[i]; }); return; }
+  xs.forEach((n, i) => { n.k = (best >> i) & 1; });
+  recompute();
+}
 /* evaluate a node list; override: optional Map id -> {x,y} for free points */
 function evaluate(nodes, override) {
   const val = new Map();
@@ -1217,6 +1263,36 @@ function segAt(sx, sy) {
 function dragUnknown(id, w) {
   const n = byId.get(id);
   const raw = n.t === 'free' ? { x: w.x, y: w.y } : { u: glideParam(n, w) };
+  /* move in small steps, so that every intersection can follow its own branch continuously */
+  let N = 1, at = () => raw, vec = (a, b) => [0, 0];
+  if (n.t === 'glide') {
+    const c = V.get(n.on), u0 = n.u; let du = raw.u - u0;
+    if (c && c.k === 'c') du = Math.atan2(Math.sin(du), Math.cos(du));
+    N = Math.max(1, Math.min(24, Math.ceil(Math.abs(du) / 0.06)));
+    at = i => ({ u: i === N ? raw.u : u0 + du * i / N }); vec = () => [du / N, 0];
+  } else {
+    const x0 = n.x, y0 = n.y;
+    N = Math.max(1, Math.min(24, Math.ceil(Math.hypot(raw.x - x0, raw.y - y0) / 0.06)));
+    at = i => ({ x: x0 + (raw.x - x0) * i / N, y: y0 + (raw.y - y0) * i / N }); vec = () => [(raw.x - x0) / N, (raw.y - y0) / N];
+  }
+  for (const m of S.nodes) if (m.t === 'x' && !ROOTMEM.has(m.id)) { const v = V.get(m.id); if (v && v.x !== undefined) ROOTMEM.set(m.id, { p: { x: v.x, y: v.y }, v: null, s: null }); }
+  ROOTSTEP = vec();
+  try {
+    for (let i = 1; i <= N; i++) {
+      dragStep(n, at(i));
+      fixRoots();
+      for (const m of S.nodes) if (m.t === 'x') {
+        const v = V.get(m.id), mem = ROOTMEM.get(m.id);
+        if (v && v.x !== undefined) {
+          if (mem) { mem.v = mem.gone ? null : { x: v.x - mem.p.x, y: v.y - mem.p.y }; mem.s = ROOTSTEP; mem.p = { x: v.x, y: v.y }; mem.gone = false; }
+          else ROOTMEM.set(m.id, { p: { x: v.x, y: v.y }, v: null, s: null });
+        } else if (mem) mem.gone = true;
+      }
+    }
+  } finally { ROOTSTEP = null; }
+}
+function dragStep(n, raw) {
+  const id = n.id;
   const U = consUnknowns(), L = varLayout(U);
   const mine = L.map((v, k) => v.id === id ? k : -1).filter(k => k >= 0);
   if (!mine.length) { Object.assign(n, raw); n.snap = false; recompute(); return; }
@@ -2020,7 +2096,7 @@ cv.addEventListener('pointerdown', e => {
   const r = cv.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
   const pk = pickAt(sx, sy, false);
   const n = pk && pk.kind === 'pt' ? byId.get(pk.id) : null;
-  if (e.button === 0 && n && (n.t === 'free' || n.t === 'glide') && (tool === 'mark' || tool === 'free' || tool === 'eq')) drag = { mode: 'pt', id: n.id, sx, sy, moved: false };
+  if (e.button === 0 && n && (n.t === 'free' || n.t === 'glide') && (tool === 'mark' || tool === 'free' || tool === 'eq')) { ROOTMEM.clear(); DRAGT = dragTarget(); drag = { mode: 'pt', id: n.id, sx, sy, moved: false }; }
   else drag = { mode: 'pan', sx, sy, cx: view.cx, cy: view.cy, moved: false, button: e.button };
   if (e.button === 0 && pk && pk.kind !== 'obj' && !e.shiftKey && tool !== 'erase' && tool !== 'eq' && !(n && (n.t === 'free' || n.t === 'glide'))) {
     hold = { pk, t0: performance.now() };
