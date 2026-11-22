@@ -316,6 +316,45 @@ html.ct-view .dh-hint { display:none; }
   .ct-caption { bottom:52px; font-size:11px; }
   html.ct-view .dh-title { display:none; }
 }
+/* ---- the Open dialog: Mine / Examples / Catalog ---- */
+.ct-dlg { position:fixed; inset:0; z-index:60; display:flex; align-items:flex-start; justify-content:center; padding:4vh 12px; background:rgba(30,24,16,.38); }
+.ct-dlg[hidden] { display:none; }
+.ct-dlg-card { width:min(780px,100%); max-height:92vh; display:flex; flex-direction:column; background:var(--paper-card); border:1px solid var(--line); border-radius:6px; box-shadow:0 30px 60px -30px rgba(30,24,16,.6); }
+.ct-dlg-head { display:flex; align-items:baseline; gap:12px; padding:16px 22px 10px; }
+.ct-dlg-head h2 { margin:0; flex:1 1 auto; font-style:italic; font-weight:400; font-size:28px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; }
+.ct-dlg-tabs { padding:0 22px 12px; }
+.ct-dlg-body { flex:1 1 auto; min-height:0; overflow:auto; padding:2px 22px 18px; border-top:1px solid var(--line-soft); }
+.ct-dlg-body p.ct-lede { margin:14px 0 12px; font-size:14px; line-height:1.5; color:var(--ink-soft); }
+.ct-dlg-body p.ct-lede em { color:var(--accent-deep); }
+.ct-drop { border:1.5px dashed var(--line); border-radius:6px; background:var(--paper-hover); padding:56px 24px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+.ct-drop span { font-style:italic; font-size:18px; color:var(--ink-soft); }
+.ct-ex { display:flex; flex-direction:column; gap:8px; }
+.ct-ex button { text-align:left; display:flex; flex-direction:column; gap:3px; font-family:var(--serif); color:var(--ink); background:var(--paper-card); border:1px solid var(--line-soft); border-radius:3px; padding:11px 12px; cursor:pointer; }
+.ct-ex button:hover, .ct-ex button:focus-visible { border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.ct-ex b { font-size:16px; font-weight:500; }
+.ct-ex span { font-size:14px; color:var(--ink-soft); line-height:1.4; }
+.ct-chips { display:flex; flex-wrap:wrap; gap:6px; }
+.ct-chips .am-btn { padding:6px 9px; font-size:11px; letter-spacing:.04em; text-transform:none; }
+.ct-cellbar { margin:18px 0 8px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.ct-cellbar .am-label { flex:1 1 auto; }
+.ct-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(84px, 1fr)); gap:8px; }
+.ct-tile { position:relative; padding:4px 4px 16px; background:var(--paper-hover); border:1px solid var(--line-soft); border-radius:3px; cursor:pointer; content-visibility:auto; contain-intrinsic-size:84px 70px; }
+.ct-tile:hover { border-color:var(--accent); }
+.ct-tile.is-sel { border:2px solid var(--ink); padding:3px 3px 15px; }
+.ct-tile svg { display:block; width:100%; height:auto; }
+.ct-tile .no { position:absolute; left:6px; bottom:2px; font-family:var(--mono); font-size:10px; color:var(--ink-soft); }
+.ct-tile .fx { position:absolute; right:6px; bottom:4px; width:7px; height:7px; transform:rotate(45deg); border:1.5px solid var(--accent); }
+.ct-legend { margin-top:8px; font-family:var(--mono); font-size:10px; color:var(--ink-faint); display:flex; align-items:center; gap:6px; }
+.ct-legend i { width:7px; height:7px; transform:rotate(45deg); border:1.5px solid var(--accent); display:inline-block; }
+.ct-detail { position:sticky; bottom:0; margin-top:16px; box-shadow:0 -10px 14px -8px var(--paper-card); border:1px solid var(--line); background:var(--paper-hover); border-radius:3px; padding:14px 16px; display:flex; gap:18px; align-items:center; }
+.ct-detail .tx { flex:1 1 auto; min-width:0; }
+.ct-detail .ti { font-style:italic; font-size:22px; line-height:1.1; }
+.ct-detail .bd { font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--paper-card); background:var(--accent-deep); border-radius:2px; padding:3px 7px; margin-left:10px; vertical-align:middle; }
+.ct-detail p { margin:8px 0 0; font-size:14.5px; line-height:1.5; color:var(--ink-soft); }
+.ct-detail .go { display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+.ct-detail .go small { font-family:var(--mono); font-size:10px; color:var(--ink-faint); }
+.ct-dlg .am-btn.is-ink { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+@media (max-width:600px) { .ct-dlg { padding:0; } .ct-dlg-card { max-height:100vh; height:100%; border-radius:0; } .ct-detail { flex-direction:column; align-items:flex-start; } }
 </style></head>
 <body>
 <div class="am-app">
@@ -436,6 +475,9 @@ html.ct-view .dh-hint { display:none; }
       <p>Every card of the <a href="https://affinemess.com/#applets/fixed-distances" target="_top">n points, d distances</a> catalog opens here as a construction. The card shows the set; <b>Show construction</b> draws the lines and circles, <b>Play</b> builds it step by step (or step with ‹ ›, or click a step in the list), and <b>Edit</b> makes it your own construction, with every tool, so you can change it or build on it (Undo brings back what you had). ‹ › in the top bar move through the cell's cards.</p>
       <p>Each construction uses the simplest tools that the search found, in this order: a piece of the triangular or square lattice (nothing to construct); straightedge and compass (a regular polygon counts when straightedge and compass can draw it, as for 3, 4, 5, 6, 8, 10, 12, 15, 17, 20, 24 or 30 sides); straightedge, compass and a regular polygon of another kind (7, 9, 11, 13, 14, 18 or 36 sides); and, when nothing else was found, sliders and free points pinned by equalities. A construction found shows that a set needs <em>at most</em> those tools; where the Galois analysis is known, the card also says what is actually needed. The search uses only points of the set (and of its starting lattice or polygon) as stepping stones, so for some sets that straightedge and compass could build, it settles for an equality.</p>
       <p>Sets that flex (families) are built with free points: a <em>diamond</em> is a slider, locked to its line or circle; a <em>ring</em> is a point free in the whole plane. They swing by themselves to show the family, and you can drag them: the distances that are equal stay equal.</p>
+      <h3>Play and Edit</h3>
+      <p>Everything opens in one of two modes, and you can switch freely. <b>Edit</b> is for building: the tools, undo, the lattices. <b>Play</b> is for watching: <b>Show construction</b> draws the lines and circles, and the arrows step through them one point at a time. Catalog cards and examples open in Play; your own files open in Edit. Play works on any construction, yours included.</p>
+      <p>The <b>Distances</b> button turns the analysis on or off: the side panel with the number of points and distinct distances, the coloured and counted segments, and the catalog lookup. It is on for catalog cards and off otherwise, since the tool is useful for any construction, not only for sets with few distances.</p>
       <h3>Building your own</h3>
       <ul>
         <li>You start with two points, a unit apart. Build with the tools on the left; every intersection of two lines or circles becomes a small hollow dot you can use.</li>
@@ -460,11 +502,19 @@ html.ct-view .dh-hint { display:none; }
       <h3>The catalog</h3>
       <p>Every set is compared with the 59,382 rigid sets catalogued in the explorer (the four largest cells, (6,5), (6,6), (7,6) and (8,6), are fetched when a rigid set first appears there; (6,6) alone holds 44,242 sets, about 8 MB). A matching card shows the catalog's number and name (the numbers are the explorer's card numbers in that cell), and each (<em>n</em>, <em>d</em>) heading shows how many of that cell's rigid sets you have found; "+" marks cells whose list is not known to be complete.</p>
       <p>The panel also says what it takes to build a catalog set. Most need only straightedge and compass. Some need a regular 7-, 9-, 11-, 13-, 14- or 18-gon (the Polygon tool supplies it), 58 need angle trisection, 32 lead to quartics with Galois group S₄ that straightedge and compass cannot solve, and 75 cannot be constructed by any of these means: their distances solve equations with Galois group S₅, S₆ or S₇, or need the real root of a cubic with one real root. The verdicts come from the minimal polynomials of the squared distance ratios, computed to 1,300 digits, and their Galois groups. They cover the 2,298 sets the catalog held on 3 November 2026; sets added since then show no verdict yet. A catalog number opens that card, with its construction, in a new tab. Sets that can still flex are kept too, marked <em>flexible</em>; they belong to families rather than to the list of rigid sets.</p>
-      <h3>Saving</h3>
-      <p>No account needed: your collection and your current construction live in this browser. Browsers can clear that storage (Safari after about seven days without a visit, and private windows forget on closing), so use <b>Save &amp; share</b> to download a file or make a link that carries the whole collection. Loading a file or a link merges it with what you have.</p>
+      <h3>Saving and opening</h3>
+      <p>No account needed. <b>Save as…</b> (Ctrl+S) writes your construction to a plain .json file, where you choose (in Safari and Firefox it goes to your downloads). <b>Open…</b> (Ctrl+O) brings up <b>Mine</b> (a file from any folder, or drop one on the page), <b>Examples</b> and the <b>Catalog</b> of every n-points, d-distances card. Opening is undoable. Your current construction is also kept in this browser between visits, but browsers can clear that (Safari after about seven days away), so a saved file is the real copy.</p>
+      <p>The collection of kept sets, which belongs to the Distances panel, is kept in this browser as well; its <b>Save &amp; share</b> menu, shown with the panel, downloads it as a file or makes a link.</p>
       <h3>Keys</h3>
-      <p class="kb">hold or Shift-click mark · Esc / V select · F free point or slider · = equal · N next solution · L line · I parallel · T perpendicular · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · E distances · H construction · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
+      <p class="kb">hold or Shift-click mark · Esc / V select · F free point or slider · = equal · N next solution · L line · I parallel · T perpendicular · B bisector · C circle · K compass · P polygon · X erase · G / Q lattices · D distances panel · E / M edges · H construction · Ctrl+S save · Ctrl+O open · Enter keep · Esc cancel · Ctrl+Z undo · 0 fit · drag empty space to pan, wheel to zoom</p>
     </aside>
+  </div>
+</div>
+<div class="ct-dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-h" hidden>
+  <div class="ct-dlg-card">
+    <div class="ct-dlg-head"><h2 id="dlg-h">Open</h2><button class="am-btn" id="dlg-x">Close</button></div>
+    <div class="ct-dlg-tabs"><span class="am-seg" id="dlg-tabs"></span></div>
+    <div class="ct-dlg-body" id="dlg-body"></div>
   </div>
 </div>
 <script>
@@ -2720,18 +2770,117 @@ function loadDoc(o, name) {
 function openText(txt, name) {
   let o; try { o = JSON.parse(txt); } catch (e) { toast('That file is not a construction.', 3500); return; }
   if (o && o.app === 'construction-tool' && Array.isArray(o.cards)) { importText(txt); return; }   // a collection file from Save & share
-  try { loadDoc(o, name); toast('Opened ' + name); } catch (e) { toast(e.message, 4000); }
+  try { loadDoc(o, name); closeDlg(); toast('Opened ' + name); } catch (e) { toast(e.message, 4000); }
 }
 $('#b-saveas').addEventListener('click', saveAs);
-$('#b-open').addEventListener('click', () => $('#f-open').click());
 $('#f-open').addEventListener('change', e => { const f = e.target.files[0]; if (f) f.text().then(t => openText(t, f.name)); e.target.value = ''; });
 addEventListener('dragover', e => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
 addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return; e.preventDefault(); f.text().then(t => openText(t, f.name)); });
 addEventListener('keydown', e => {
   if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
   const k = e.key.toLowerCase();
-  if (k === 's') { e.preventDefault(); saveAs(); } else if (k === 'o') { e.preventDefault(); $('#f-open').click(); }
+  if (k === 's') { e.preventDefault(); saveAs(); } else if (k === 'o') { e.preventDefault(); openDlg('mine'); }
 });
+
+/* ---------------- the Open dialog: Mine (a file), Examples, Catalog ---------------- */
+const EXAMPLES = [
+  { name: 'Perpendicular bisector', desc: 'Two circles and a line, built step by step.', doc: { format: FILE_FORMAT, version: 1, nodes: [
+    { id: 0, t: 'base', x: 0, y: 0 }, { id: 1, t: 'base', x: 1, y: 0 }, { id: 2, t: 'circ', c: 0, p: 1 }, { id: 3, t: 'circ', c: 1, p: 0 },
+    { id: 4, t: 'x', c1: 2, c2: 3, k: 0 }, { id: 5, t: 'x', c1: 2, c2: 3, k: 1 }, { id: 6, t: 'line', a: 4, b: 5 }], marked: [0, 1, 4, 5], equalities: [], lattice: null } },
+  { name: 'A slider on a circle', desc: 'One free parameter, and what follows from it.', doc: { format: FILE_FORMAT, version: 1, nodes: [
+    { id: 0, t: 'base', x: 0, y: 0 }, { id: 1, t: 'base', x: 1, y: 0 }, { id: 2, t: 'circ', c: 0, p: 1 }, { id: 3, t: 'glide', on: 2, u: 1.2 }], marked: [0, 1, 3], equalities: [], lattice: null } },
+  { name: 'Equalizer: make two segments equal', desc: 'Drag the free points; the equality keeps holding.', doc: { format: FILE_FORMAT, version: 1, nodes: [
+    { id: 0, t: 'base', x: 0, y: 0 }, { id: 1, t: 'base', x: 1, y: 0 }, { id: 2, t: 'free', x: 0.35, y: 0.9 }, { id: 3, t: 'free', x: 1.45, y: 0.75 }], marked: [0, 1, 2, 3], equalities: [[[0, 2], [1, 3]]], lattice: null } },
+  { name: 'The regular pentagon', desc: 'From the catalog: five points, two distances.', cat: ['5,2', 1] },
+  { name: 'A flexible five-point family', desc: 'From the catalog: n = 5, d = 6, no. 194. Drag it.', cat: ['5,6', 194] },
+  { name: 'A flexible six-point set', desc: 'From the catalog: n = 6, d = 4, no. 150.', cat: ['6,4', 150] },
+];
+let dlgTab = 'catalog', dlgCell = '5,4', dlgFilter = 'all', dlgSel = null;
+const tileCache = new Map();
+function openDlg(tab) {
+  if (tab) dlgTab = tab;
+  if (VIEW && VIEW.cell) dlgCell = VIEW.cell;
+  $('#dlg').hidden = false; renderDlg();
+}
+function closeDlg() { $('#dlg').hidden = true; }
+$('#dlg-x').addEventListener('click', closeDlg);
+$('#dlg').addEventListener('mousedown', e => { if (e.target === $('#dlg')) closeDlg(); });
+$('#b-open').addEventListener('click', () => openDlg());
+function cleanLabel(l) { return (l || '').replace(/^rigid;\s*/, '').replace(/^\d+-parameter family;\s*/, ''); }
+/* every card of a cell, drawn: the recipe files hold all of them, rigid or flexible */
+function cellTiles(cell) {
+  if (tileCache.has(cell)) return tileCache.get(cell);
+  const total = cellTotal(cell), chunks = [...new Set(Array.from({ length: total }, (_, i) => Math.floor((i + 1) / 1000)))];
+  const p = Promise.all(chunks.map(ch => recipeFile(cell, ch * 1000))).then(files => {
+    const out = [];
+    for (const f of files) for (const k of Object.keys(f.items)) {
+      const it = f.items[k], [kind, dim, level, eqs, unk, li, rec] = it;
+      let svg = '';
+      try {
+        const nodes = decodeRecipe(rec), val = evaluate(nodes, null), P = rec.m.map(id => val.get(id)).filter(q => q && q.x !== undefined).map(q => [q.x, q.y]);
+        if (P.length >= 2) svg = thumb({ canon: P });
+      } catch (e) {}
+      out.push({ num: +k, kind, dim, level, eqs, label: cleanLabel(f.labels[li]), svg });
+    }
+    return out.sort((a, b) => a.num - b.num);
+  });
+  tileCache.set(cell, p); p.catch(() => tileCache.delete(cell));
+  return p;
+}
+function renderDlg() {
+  const tabs = [['mine', 'Mine'], ['examples', 'Examples'], ['catalog', 'Catalog']];
+  $('#dlg-tabs').innerHTML = tabs.map(([id, l]) => `<button class="am-btn" data-tab="${id}" aria-pressed="${dlgTab === id}">${l}</button>`).join('');
+  const body = $('#dlg-body');
+  if (dlgTab === 'mine') {
+    body.innerHTML = `<p class="ct-lede">Your own constructions are plain files on your computer, written by <em>Save as…</em> and read back from whichever folder you keep them in. Nothing is stored in the browser. Mine opens in Edit.</p>
+      <div class="ct-drop"><button class="am-btn is-ink" id="dlg-file">Open file…</button><span>or drop a .json file here</span></div>`;
+  } else if (dlgTab === 'examples') {
+    body.innerHTML = `<p class="ct-lede">A short, curated shelf. Examples open in Play, and Edit turns them into your own copy.</p><div class="ct-ex">` +
+      EXAMPLES.map((e, i) => `<button data-ex="${i}"><b>${esc(e.name)}</b><span>${esc(e.desc)}</span></button>`).join('') + '</div>';
+  } else {
+    const cells = cellKeys();
+    body.innerHTML = `<div class="am-label" style="margin:14px 0 8px">n points · d distances</div><div class="ct-chips">` +
+      cells.map(c => { const [n, d] = c.split(','); return `<button class="am-btn" data-cell="${c}" aria-pressed="${c === dlgCell}">n${n} · d${d}</button>`; }).join('') +
+      `</div><div id="dlg-cat"><p class="ct-lede">Loading…</p></div>`;
+    renderCatalog();
+  }
+}
+function renderCatalog() {
+  const cell = dlgCell, box = $('#dlg-cat'), [n, d] = cell.split(',');
+  cellTiles(cell).then(tiles => {
+    if (cell !== dlgCell || dlgTab !== 'catalog') return;
+    const list = tiles.filter(t => dlgFilter === 'all' || (dlgFilter === 'flex') === (t.kind !== 'rigid'));
+    if (!list.some(t => t.num === dlgSel)) dlgSel = list.length ? list[0].num : null;
+    const sel = tiles.find(t => t.num === dlgSel);
+    const detail = sel ? `<div class="ct-detail"><div class="tx"><span class="ti">n = ${n} · d = ${d} · no. ${sel.num}</span><span class="bd">${sel.kind === 'rigid' ? 'Rigid' : 'Flexible'}</span>
+        <p>${esc(sel.label) ? esc(sel.label) + '.' : (sel.kind === 'rigid' ? 'A rigid configuration.' : '')}${sel.kind === 'rigid' ? '' : ' A ' + sel.dim + '-parameter family you can drag.'}</p></div>
+        <div class="go"><button class="am-btn is-ink" id="dlg-go">Open</button><small>opens in Play</small></div></div>` : '';
+    box.innerHTML = `<div class="ct-cellbar"><span class="am-label">n = ${n} · d = ${d} · ${tiles.length} cards</span><span class="am-seg">` +
+      [['all', 'All'], ['flex', 'Flexible'], ['rigid', 'Rigid']].map(([id, l]) => `<button class="am-btn" data-filter="${id}" aria-pressed="${dlgFilter === id}">${l}</button>`).join('') +
+      `</span></div><div class="ct-grid">` + list.map(t => `<div class="ct-tile${t.num === dlgSel ? ' is-sel' : ''}" data-num="${t.num}" role="button" tabindex="0" aria-label="Card ${t.num}">${t.svg}<span class="no">${t.num}</span>${t.kind !== 'rigid' ? '<span class="fx"></span>' : ''}</div>`).join('') +
+      `</div><div class="ct-legend"><i></i> flexible: you can drag it</div>` + detail;
+  }).catch(() => { if (cell === dlgCell) box.innerHTML = '<p class="ct-lede">This cell could not be loaded here.</p>'; });
+}
+function openCatalogCard(cell, num) { closeDlg(); if (VIEW && VIEW.user) leaveView(); enterView(cell, num); }
+function openExample(i) {
+  const e = EXAMPLES[i]; if (!e) return;
+  if (e.cat) { openCatalogCard(e.cat[0], e.cat[1]); return; }
+  try { loadDoc(JSON.parse(JSON.stringify(e.doc)), e.name); } catch (err) { toast(err.message, 4000); return; }
+  closeDlg(); enterPlay(); setDocName('');
+}
+$('#dlg').addEventListener('click', e => {
+  const t = e.target.closest('[data-tab],[data-ex],[data-cell],[data-filter],[data-num],#dlg-go,#dlg-file'); if (!t) return;
+  if (t.dataset.tab) { dlgTab = t.dataset.tab; renderDlg(); }
+  else if (t.dataset.ex !== undefined) openExample(+t.dataset.ex);
+  else if (t.dataset.cell) { dlgCell = t.dataset.cell; dlgSel = null; renderDlg(); }
+  else if (t.dataset.filter) { dlgFilter = t.dataset.filter; renderCatalog(); }
+  else if (t.dataset.num) { dlgSel = +t.dataset.num; renderCatalog(); }
+  else if (t.id === 'dlg-go') openCatalogCard(dlgCell, dlgSel);
+  else if (t.id === 'dlg-file') $('#f-open').click();
+});
+$('#dlg').addEventListener('dblclick', e => { const t = e.target.closest('[data-num]'); if (t) openCatalogCard(dlgCell, +t.dataset.num); });
+$('#dlg').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('[data-num]')) openCatalogCard(dlgCell, +e.target.dataset.num); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#dlg').hidden) { e.preventDefault(); closeDlg(); } }, true);
 
 /* ---------------- start ---------------- */
 loadSaved();
