@@ -26,10 +26,15 @@ Claude Projects push here; these rules keep them from overwriting each other.
 - Quora rows in the site are generated from `quora/index.json`; never
   hand-edit between `<!--QUORA-ROWS BEGIN/END-->`. `src/build_quora.py`
   rebuilds `quora/` from Alon's private Quora export (not in the repo).
-- **Homepage changes are made by the "Affine Mess Website" Project.** Any
-  other session that wants a card for its applet pushes the applet only and
-  hands the card details (slug, title, label, one-line description, SVG
-  glyph) to Alon to pass to that Project.
+- **Any session may change the website** (`src/master.html`: homepage cards,
+  header, head tags) when Alon asks, provided it (a) keeps the site's look and
+  feel: the `affinemess-applet-style` tokens, fonts and components, no new
+  colours or fonts; and (b) follows the concurrency rules below, so it never
+  overrides a session working at the same time.
+- Keep website commits small and focused: one change per commit, touching
+  only the lines it needs, so concurrent sessions rarely edit the same lines.
+- A homepage card needs: slug, card title, label, one-line description, and a
+  small SVG glyph (64x64 viewBox, stroke-only, site colours).
 
 ## Applets
 
@@ -54,13 +59,30 @@ clone. So:
 ## Before every push
 
 1. `git fetch origin main` and rebase onto it; never force-push.
-2. `git diff --stat origin/main` must list only your own paths. If it shows
-   `index.html`, `site/`, `src/` or another applet and you are not the Website Project, stop.
+2. `git diff --stat origin/main` must list only the paths your change
+   touched (for a website change: `src/`, `index.html`, `site/`, plus any new
+   assets). Anything else means you picked up stray changes: stop.
 3. Website changes: edit `src/master.html`, bump the version in both places
    (the `VERSION` header comment and `data-version` on `.am-root`; the footer
    shows it), run `build_site.py`, run `test_site.py`, then read every removed
    line in `git diff origin/main -- site/ src/` and make sure each removal is
    intended. Commit `src/`, `index.html` and `site/` together.
-4. Site versions (`v2026-MM-DDx` in the footer) are assigned only by the
-   Website Project: take the latest version on `origin/main` and bump the
-   letter, so no two deploys share a number.
+4. Site versions (`v2026-MM-DDx` in the footer) are assigned at push time by
+   whichever session pushes a website change: after your final rebase, take
+   the latest version on `origin/main` and bump the letter (a new date starts
+   at `a`), so no two deploys share a number.
+
+## Concurrency: other sessions may be pushing at the same moment
+
+- Fetch and rebase onto `origin/main` right before committing, not only at
+  the start of the session.
+- Generated files (`index.html`, `site/`) are never hand-merged: on a
+  conflict, take `origin/main`'s version, rerun `python3 src/build_site.py`,
+  and commit the result.
+- A rebase conflict in `src/` or any hand-written file, where another session
+  changed the same lines: stop and ask Alon. Never discard another session's
+  lines to make your change apply.
+- If the push is rejected (non-fast-forward), someone pushed meanwhile:
+  fetch, rebase, rebuild, re-test, re-bump the version, retry. Never force-push.
+- After pushing, confirm both GitHub checks (`site matches master`,
+  `size-check`) went green.
