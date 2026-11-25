@@ -37,6 +37,10 @@ HEAD = '''<!doctype html>
 <meta property="og:url" content="https://affinemess.com/">
 <meta property="og:title" content="affine·mess">
 <meta property="og:description" content="Alon Amit's math arcade: interactive applets, Desmos sketches, talks, papers and Quora answers.">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<meta property="og:image" content="https://affinemess.com/brand/affinemess-og.png">
 <style>html,body{margin:0;background:#F2EBD9}</style>
 </head>
 <body>
