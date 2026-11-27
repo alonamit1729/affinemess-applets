@@ -174,9 +174,13 @@ ul.oc-orbits { list-style:none; margin:0; padding:0; }
 .oc-opt .am-input { width:110px; }
 .oc-opt[hidden] { display:none; }
 
-@media (max-width:760px) {
+@media (max-width:760px) and (max-aspect-ratio:5/4) {
   .oc-main { flex-direction:column; }
   .oc-panel { flex:0 0 44%; border-left:0; border-top:1px solid var(--line); padding:8px 14px 20px; }
+}
+/* landscape-shaped but narrow (tablet on its side, small window): keep the panel beside the picture, slimmer */
+@media (max-width:760px) and (min-aspect-ratio:5/4) {
+  .oc-panel { flex:0 0 min(300px,42%); padding:8px 12px 20px; }
 }
 @media (max-width:600px) {
   .oc-f { flex:1 1 100%; }
