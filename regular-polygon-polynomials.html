@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regular polygon polynomials · affine·mess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="quora/katex/katex.min.css" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..500,0..100&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* am-kit v1 BEGIN */
+:root{
+  --paper:#F2EBD9; --paper-card:#FBF6E8; --paper-hover:#FFFAEC;
+  --ink:#1E1810; --ink-soft:#5C5142; --ink-faint:#8A7D66;
+  --accent:#B85820; --accent-deep:#8A3F12;
+  --grid:#D8CCAE; --line:#B8AB8A; --line-soft:#D4C9AC;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin:0; height:100%; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-weight:380; line-height:1.5;
+  font-variation-settings:"opsz" 14, "SOFT" 50;
+  -webkit-font-smoothing:antialiased;
+}
+*, *::before, *::after { box-sizing:border-box; }
+.am-app { height:100%; display:flex; flex-direction:column; overflow:hidden; }
+.am-bar {
+  display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; flex-shrink:0;
+  padding:10px 14px; background:var(--paper-card); border-bottom:1px solid var(--line);
+}
+.am-spacer { flex:1 1 auto; }
+.am-hint { font-size:14px; color:var(--ink-soft); line-height:1.3; }
+.am-hint b { font-weight:500; font-style:italic; color:var(--ink); }
+.am-label { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.am-stage { position:relative; flex:1 1 auto; min-height:0; }
+.am-dots {
+  background-color:var(--paper-card);
+  background-image:radial-gradient(circle, var(--grid) 1px, transparent 1.4px);
+  background-size:32px 32px;
+}
+.am-home {
+  display:none; white-space:nowrap; text-decoration:none; color:var(--ink);
+  font-family:var(--serif); font-weight:500; font-size:17px;
+  font-variation-settings:"opsz" 144, "SOFT" 30;
+  padding-right:12px; border-right:1px solid var(--line-soft);
+}
+.am-home .sep { color:var(--accent); font-style:italic; font-weight:400; margin:0 .12em; }
+.am-home:hover { color:var(--accent-deep); }
+html.am-standalone .am-home { display:inline-block; }
+.am-btn {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:transparent; border:1px solid var(--line); border-radius:3px;
+  padding:8px 11px; cursor:pointer; white-space:nowrap; touch-action:manipulation;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.am-btn:hover, .am-btn:focus-visible { color:var(--accent); border-color:var(--accent); background:var(--paper-hover); outline:none; }
+.am-btn:disabled { opacity:.4; cursor:default; color:var(--ink-soft); border-color:var(--line); background:transparent; }
+.am-btn[aria-pressed="true"], .am-btn.is-on { color:var(--paper-card); background:var(--ink); border-color:var(--ink); }
+.am-seg { display:inline-flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+.am-seg .am-btn { border:0; border-radius:0; border-right:1px solid var(--line); }
+.am-seg .am-btn:last-child { border-right:0; }
+.am-input { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:7px 9px; }
+.am-input:focus { outline:none; border-color:var(--accent); }
+input[type=range] { accent-color:var(--accent); }
+.am-about {
+  position:absolute; top:0; right:0; bottom:0; z-index:20;
+  width:min(440px, 100%); overflow-y:auto;
+  background:var(--paper-card); border-left:1px solid var(--line);
+  box-shadow:-14px 0 30px -20px rgba(30,24,16,.45);
+  padding:20px 24px 28px;
+  transform:translateX(104%); visibility:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), visibility 0s linear .35s;
+}
+.am-about.open { transform:none; visibility:visible; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.am-about h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:26px; line-height:1.1; font-variation-settings:"opsz" 144, "SOFT" 80; letter-spacing:-.01em; margin:4px 0 14px; }
+.am-about h3 { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin:22px 0 8px; }
+.am-about p, .am-about li { font-size:15.5px; line-height:1.6; }
+.am-about p { margin:0 0 12px; }
+.am-about em { color:var(--accent-deep); }
+.am-about a { color:var(--accent-deep); }
+.am-about .am-close { float:right; margin:0 0 8px 12px; }
+@media (max-width:600px) {
+  .am-bar { padding:8px 10px; }
+  .am-hint { font-size:12.5px; flex:1 1 100%; order:5; }
+  .am-about { width:100%; border-left:0; padding:16px 18px 24px; }
+}
+/* am-kit v1 END */
+/* ---- this applet ---- */
+:root { --curve:#1E1810; }
+.ctl { display:inline-flex; align-items:center; gap:8px; }
+.ctl input[type=range] { width:150px; }
+.nval { font-family:var(--mono); font-size:13px; color:var(--ink); min-width:2ch; }
+.chk { display:inline-flex; align-items:center; gap:7px; cursor:pointer; user-select:none;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); }
+.chk input { accent-color:var(--accent); width:15px; height:15px; margin:0; cursor:pointer; }
+.chk:hover { color:var(--accent); }
+.intro { flex-shrink:0; padding:9px 16px 10px; background:var(--paper-card); border-bottom:1px solid var(--line-soft);
+  font-size:15px; line-height:1.5; color:var(--ink-soft); }
+.intro p { margin:0; max-width:1040px; }
+.intro em { color:var(--ink); }
+.intro .katex { font-size:1.02em; color:var(--ink); }
+.layout { position:absolute; inset:0; display:flex; }
+.fpanel { flex:0 0 min(400px, 40%); overflow:auto; padding:14px 18px 18px; background:var(--paper-card);
+  border-right:1px solid var(--line); }
+.fblock { margin:0 0 14px; }
+.fblock .am-label { display:block; margin-bottom:4px; }
+.fblock .tex-block { display:block; overflow-x:auto; overflow-y:hidden; padding:2px 0 4px; font-size:15px; color:var(--ink); }
+.fblock .tex-block .katex-display { margin:0; text-align:left; }
+.fblock .tex-block .katex-display > .katex { text-align:left; }
+.fblock .note { font-size:13.5px; color:var(--ink-soft); margin-top:2px; }
+.fblock .num { font-family:var(--mono); font-size:12px; color:var(--ink-faint); }
+.facts { font-family:var(--mono); font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line-soft); padding-top:10px; line-height:1.9; }
+.facts b { font-weight:500; color:var(--ink); }
+.plot { position:relative; flex:1 1 auto; min-width:0; }
+.plot canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; }
+.caption { position:absolute; left:12px; bottom:10px; font-family:var(--mono); font-size:11px; color:var(--ink-faint);
+  background:rgba(251,246,232,.85); padding:3px 7px; border-radius:3px; pointer-events:none; }
+.am-about { width:min(560px,100%); }
+.am-about .katex { font-size:1.05em; }
+.am-about .tex-block { display:block; margin:6px 0 14px; overflow-x:auto; overflow-y:hidden; }
+.am-about .tex-block .katex-display { margin:0; }
+.am-about ol { padding-left:20px; margin:0 0 12px; }
+.am-about li { margin-bottom:8px; }
+@media (max-width:820px) {
+  .layout { flex-direction:column; }
+  .fpanel { flex:0 0 auto; max-height:46%; border-right:0; border-bottom:1px solid var(--line); padding:10px 14px 12px; }
+  .fblock { margin-bottom:10px; }
+  .intro { font-size:13.5px; padding:7px 12px 8px; }
+}
+@media (max-width:600px) { .ctl input[type=range] { width:120px; } }
+</style></head>
+<body>
+<div class="am-app">
+  <header class="am-bar">
+    <a class="am-home" href="https://affinemess.com/#applets/regular-polygon-polynomials" target="_top">affine<span class="sep">·</span>mess</a>
+    <label class="ctl"><span class="am-label">degree n</span>
+      <input type="range" id="n" min="4" max="12" step="1" value="6" aria-label="degree n">
+      <span class="nval" id="nval">6</span></label>
+    <label class="chk"><input type="checkbox" id="unit"> unit circle</label>
+    <span class="am-spacer"></span>
+    <button class="am-btn" data-am-about aria-expanded="false" aria-controls="am-about">About</button>
+  </header>
+  <div class="intro"><p>A polynomial of degree <em>n</em> has at most <em>n</em>&minus;1 local extrema. When they sit exactly at the corners of a regular (<em>n</em>&minus;1)-gon, the derivative is forced to be a rescaled Chebyshev polynomial, <span class="tex" data-tex="P'(x)=c\,T_{n-1}(x/R)">P′(x) = c·T<sub>n−1</sub>(x/R)</span>, and that polynomial is unique up to translation and reflection. Pick the degree, and choose a polygon with unit sides or one inscribed in the unit circle; the formulas are exact.</p></div>
+  <div class="am-stage">
+    <div class="layout">
+      <aside class="fpanel" id="fpanel">
+        <div class="fblock"><span class="am-label">the derivative</span><span class="tex-block" id="fd"></span></div>
+        <div class="fblock"><span class="am-label">the polynomial</span><span class="tex-block" id="fp"></span></div>
+        <div class="fblock"><span class="am-label">expanded</span><span class="tex-block" id="fe"></span>
+          <div class="note" id="fs"></div></div>
+        <div class="fblock"><span class="am-label">leading coefficient</span><span class="tex-block" id="fa"></span></div>
+        <div class="facts" id="facts"></div>
+      </aside>
+      <div class="plot" id="plot"><canvas id="cv"></canvas><div class="caption" id="cap"></div></div>
+    </div>
+    <aside class="am-about" id="am-about" aria-hidden="true">
+      <button class="am-btn am-close">Close</button>
+      <h2>Regular polygon polynomials</h2>
+      <p>A problem: <em>a real polynomial P of degree n &ge; 4 has n&minus;1 local extrema, and they are the vertices of a regular (n&minus;1)-gon with unit side. Find the leading coefficient of P.</em> It turns out such a polynomial exists in every degree, it is essentially unique, and it is a Chebyshev polynomial in disguise.</p>
+      <h3>The answer</h3>
+      <p>Write <span class="tex" data-tex="k=n-1">k = n−1</span> and let <span class="tex" data-tex="R">R</span> be the circumradius of the polygon. Up to translation and the reflection <span class="tex" data-tex="y\mapsto -y">y ↦ −y</span>, the only such polynomial is</p>
+      <span class="tex tex-block" data-tex="\begin{aligned}P'(x)&=\frac{n(n-2)}{n-1}\,T_{n-1}\!\left(\frac{x}{R}\right),\\ P(x)&=\frac{R}{2(n-1)}\Big[(n-2)\,T_n\!\left(\tfrac{x}{R}\right)-n\,T_{n-2}\!\left(\tfrac{x}{R}\right)\Big].\end{aligned}">P′(x) = n(n−2)/(n−1) · T_{n−1}(x/R)</span>
+      <p>For unit sides <span class="tex" data-tex="R=1/(2\sin\frac{\pi}{n-1})">R = 1/(2 sin(π/(n−1)))</span>, so the leading coefficient is</p>
+      <span class="tex tex-block" data-tex="a=\pm\,\frac{n-2}{n-1}\,2^{2n-3}\,\sin^{n-1}\!\frac{\pi}{n-1}.">a = ±(n−2)/(n−1) · 2^(2n−3) · sin^(n−1)(π/(n−1))</span>
+      <p>That is <span class="tex" data-tex="8\sqrt3">8√3</span> for quartics, 24 for quintics, and it eventually decays super-exponentially. On the unit circle (<span class="tex" data-tex="R=1">R = 1</span>) it is simply <span class="tex" data-tex="\frac{(n-2)\,2^{n-2}}{n-1}">(n−2)2^(n−2)/(n−1)</span>.</p>
+      <h3>Why</h3>
+      <p>Translate and scale (both axes together) so the polygon is centred at the origin with circumradius 1. Its vertices are <span class="tex" data-tex="(\cos\theta_j,\sin\theta_j)">(cos θ_j, sin θ_j)</span> with <span class="tex" data-tex="\theta_j=\varphi+2\pi j/k">θ_j = φ + 2πj/k</span>.</p>
+      <ol>
+        <li><b>The derivative.</b> The roots of <span class="tex" data-tex="P'">P′</span> are the <span class="tex" data-tex="x">x</span>-coordinates <span class="tex" data-tex="\cos\theta_j">cos θ_j</span>, which are distinct because they lie on a graph. Since <span class="tex" data-tex="T_k(\cos\theta_j)=\cos k\theta_j=\cos k\varphi">T_k(cos θ_j) = cos kθ_j = cos kφ</span>, they are all <span class="tex" data-tex="k">k</span> roots of <span class="tex" data-tex="T_k(x)-\cos k\varphi">T_k(x) − cos kφ</span>. Hence <span class="tex" data-tex="P'=c\,(T_k-\cos k\varphi)">P′ = c(T_k − cos kφ)</span>.</li>
+        <li><b>Integrate on the circle.</b> By the chain rule, <span class="tex" data-tex="\frac{d}{d\theta}P(\cos\theta)=-c\sin\theta\,(\cos k\theta-\cos k\varphi)">d/dθ P(cos θ) = −c sin θ (cos kθ − cos kφ)</span>, and product-to-sum gives
+          <span class="tex tex-block" data-tex="P(\cos\theta)=\tfrac{c}{2}\Big[\tfrac{\cos(k+1)\theta}{k+1}-\tfrac{\cos(k-1)\theta}{k-1}\Big]-c\cos k\varphi\,\cos\theta+\text{const}."></span></li>
+        <li><b>Evaluate at the vertices.</b> Since <span class="tex" data-tex="k\theta_j\equiv k\varphi">kθ_j ≡ kφ</span>, <span class="tex" data-tex="\cos(k\pm1)\theta_j=\cos(k\varphi\pm\theta_j)">cos(k±1)θ_j = cos(kφ ± θ_j)</span>, so
+          <span class="tex tex-block" data-tex="P(\cos\theta_j)=\alpha+\beta\cos\theta_j+\gamma\sin\theta_j,\quad \beta=-\tfrac{ck^2\cos k\varphi}{k^2-1},\ \gamma=-\tfrac{ck\sin k\varphi}{k^2-1}."></span></li>
+        <li><b>Match.</b> We need <span class="tex" data-tex="P(\cos\theta_j)=\sin\theta_j">P(cos θ_j) = sin θ_j</span>. For <span class="tex" data-tex="k\ge3">k ≥ 3</span> the vectors <span class="tex" data-tex="(1),(\cos\theta_j),(\sin\theta_j)">(1), (cos θ_j), (sin θ_j)</span> in <span class="tex" data-tex="\mathbb R^k">ℝ^k</span> are nonzero and mutually orthogonal, so <span class="tex" data-tex="\alpha=\beta=0">α = β = 0</span> and <span class="tex" data-tex="\gamma=1">γ = 1</span>. That forces <span class="tex" data-tex="\cos k\varphi=0">cos kφ = 0</span>, i.e. <span class="tex" data-tex="P'=c\,T_k">P′ = cT_k</span>, with <span class="tex" data-tex="c=\mp\frac{k^2-1}{k}">c = ∓(k²−1)/k</span>.</li>
+      </ol>
+      <p>Reading the steps backwards gives the converse.</p>
+      <h3>A bonus</h3>
+      <p>Step 3 holds for every <span class="tex" data-tex="\varphi">φ</span>: if <span class="tex" data-tex="P'\propto T_k-t">P′ ∝ T_k − t</span> with <span class="tex" data-tex="|t|<1">|t| &lt; 1</span>, the extrema always form an <em>affinely</em> regular polygon, the image of a regular one under a vertical shear and stretch. The Chebyshev case <span class="tex" data-tex="t=0">t = 0</span> is exactly the one with no shear.</p>
+      <h3>Things to notice</h3>
+      <p>The <span class="tex" data-tex="x">x</span>-coordinates of the vertices are the Chebyshev nodes, the shadows of equally spaced points on the circle (the dotted lines). The orientation is forced: for odd <span class="tex" data-tex="k">k</span> the polygon has a vertical mirror axis, for even <span class="tex" data-tex="k">k</span> it is tilted by <span class="tex" data-tex="\pi/(2k)">π/(2k)</span>, so no two vertices are stacked vertically. For <span class="tex" data-tex="n=7">n = 7</span> the hexagon's side equals its circumradius, so the two settings give the same polynomial.</p>
+    </aside>
+  </div>
+</div>
+<script>
+/* am-kit v1 BEGIN */
+(function () {
+  try { if (window.top === window) document.documentElement.classList.add('am-standalone'); }
+  catch (_) { /* cross-origin parent: we are framed */ }
+  var btn = document.querySelector('[data-am-about]');
+  var pane = document.getElementById('am-about');
+  if (!btn || !pane) return;
+  function set(open) {
+    pane.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    pane.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function () { set(!pane.classList.contains('open')); });
+  var close = pane.querySelector('.am-close');
+  if (close) close.addEventListener('click', function () { set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  if (location.hash === '#about') set(true);
+})();
+/* am-kit v1 END */
+</script>
+<script>
+/* KaTeX: the site's own copy (as on the Quora pages), else the same version from cdnjs */
+(function () {
+  function renderAll() {
+    document.querySelectorAll('.tex').forEach(function (e) {
+      try { katex.render(e.getAttribute('data-tex'), e, { throwOnError: false, displayMode: e.classList.contains('tex-block') }); } catch (_) {}
+    });
+    window.dispatchEvent(new Event('katex-ready'));
+  }
+  function load(src, fallback) {
+    var sc = document.createElement('script');
+    sc.src = src; sc.onload = renderAll;
+    if (fallback) sc.onerror = function () { load(fallback, null); };
+    document.head.appendChild(sc);
+  }
+  load('quora/katex/katex.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js');
+})();
+</script>
+<script>
+(function () {
+'use strict';
+/* Exact formulas, generated with SymPy (key: n + 'u' unit circle / 's' unit side) */
+var DATA = {"4u":{"d":"P'(x)=\\tfrac{8}{3}\\,T_{3}(x)","p":"P(x)=\\frac{1}{3}\\Big[ T_{4}(x) - 2 T_{2}(x)\\Big]","e":"P(x)=\\tfrac{8}{3}\\,x^{4} -4\\,x^{2} +1","a":"\\tfrac{8}{3}","aval":2.6666666666666665,"s":null,"R":1.0,"side":1.7320508075688772},"4s":{"d":"P'(x)=\\tfrac{8}{3}\\,T_{3}(\\sqrt{3}\\,x)","p":"P(x)=\\frac{1}{3\\sqrt{3}}\\Big[ T_{4}(\\sqrt{3}\\,x) - 2 T_{2}(\\sqrt{3}\\,x)\\Big]","e":"P(x)=8\\sqrt{3}\\,x^{4} -4\\sqrt{3}\\,x^{2} +\\tfrac{\\sqrt{3}}{3}","a":"8 \\sqrt{3}","aval":13.856406460551018,"s":null,"R":0.5773502691896258,"side":1.0},"5u":{"d":"P'(x)=\\tfrac{15}{4}\\,T_{4}(x)","p":"P(x)=\\frac{1}{8}\\Big[3 T_{5}(x) - 5 T_{3}(x)\\Big]","e":"P(x)=6\\,x^{5} -10\\,x^{3} +\\tfrac{15}{4}\\,x","a":"6","aval":6.0,"s":null,"R":1.0,"side":1.414213562373095},"5s":{"d":"P'(x)=\\tfrac{15}{4}\\,T_{4}(\\sqrt{2}\\,x)","p":"P(x)=\\frac{1}{8\\sqrt{2}}\\Big[3 T_{5}(\\sqrt{2}\\,x) - 5 T_{3}(\\sqrt{2}\\,x)\\Big]","e":"P(x)=24\\,x^{5} -20\\,x^{3} +\\tfrac{15}{4}\\,x","a":"24","aval":24.0,"s":null,"R":0.7071067811865476,"side":1.0},"6u":{"d":"P'(x)=\\tfrac{24}{5}\\,T_{5}(x)","p":"P(x)=\\frac{1}{5}\\Big[2 T_{6}(x) - 3 T_{4}(x)\\Big]","e":"P(x)=\\tfrac{64}{5}\\,x^{6} -24\\,x^{4} +12\\,x^{2} -1","a":"\\tfrac{64}{5}","aval":12.8,"s":null,"R":1.0,"side":1.1755705045849463},"6s":{"d":"P'(x)=\\tfrac{24}{5}\\,T_{5}(s x)","p":"P(x)=\\frac{1}{5\\,s}\\Big[2 T_{6}(s x) - 3 T_{4}(s x)\\Big]","e":"P(x)=\\tfrac{64}{5}\\,s^{5}\\,x^{6} -24\\,s^{3}\\,x^{4} +12\\,s\\,x^{2} -\\frac{1}{s}","a":"32(3-\\sqrt5)\\sqrt{\\tfrac{5-\\sqrt5}{2}}","aval":28.737790501093464,"s":"s=2\\sin\\tfrac{\\pi}{5}=\\sqrt{\\tfrac{5-\\sqrt5}{2}}\\approx 1.175571","R":0.8506508083520399,"side":1.0},"7u":{"d":"P'(x)=\\tfrac{35}{6}\\,T_{6}(x)","p":"P(x)=\\frac{1}{12}\\Big[5 T_{7}(x) - 7 T_{5}(x)\\Big]","e":"P(x)=\\tfrac{80}{3}\\,x^{7} -56\\,x^{5} +35\\,x^{3} -\\tfrac{35}{6}\\,x","a":"\\tfrac{80}{3}","aval":26.666666666666668,"s":null,"R":1.0,"side":0.9999999999999999},"7s":{"d":"P'(x)=\\tfrac{35}{6}\\,T_{6}(x)","p":"P(x)=\\frac{1}{12}\\Big[5 T_{7}(x) - 7 T_{5}(x)\\Big]","e":"P(x)=\\tfrac{80}{3}\\,x^{7} -56\\,x^{5} +35\\,x^{3} -\\tfrac{35}{6}\\,x","a":"\\tfrac{80}{3}","aval":26.666666666666668,"s":null,"R":1.0000000000000002,"side":1.0},"8u":{"d":"P'(x)=\\tfrac{48}{7}\\,T_{7}(x)","p":"P(x)=\\frac{1}{7}\\Big[3 T_{8}(x) - 4 T_{6}(x)\\Big]","e":"P(x)=\\tfrac{384}{7}\\,x^{8} -128\\,x^{6} +96\\,x^{4} -24\\,x^{2} +1","a":"\\tfrac{384}{7}","aval":54.857142857142854,"s":null,"R":1.0,"side":0.8677674782351162},"8s":{"d":"P'(x)=\\tfrac{48}{7}\\,T_{7}(s x)","p":"P(x)=\\frac{1}{7\\,s}\\Big[3 T_{8}(s x) - 4 T_{6}(s x)\\Big]","e":"P(x)=\\tfrac{384}{7}\\,s^{7}\\,x^{8} -128\\,s^{5}\\,x^{6} +96\\,s^{3}\\,x^{4} -24\\,s\\,x^{2} +\\frac{1}{s}","a":"\\tfrac{384}{7}\\,s^{7}","aval":20.326227079948485,"s":"s=2\\sin\\tfrac{\\pi}{7}\\approx 0.867767","R":1.1523824354812433,"side":1.0},"9u":{"d":"P'(x)=\\tfrac{63}{8}\\,T_{8}(x)","p":"P(x)=\\frac{1}{16}\\Big[7 T_{9}(x) - 9 T_{7}(x)\\Big]","e":"P(x)=112\\,x^{9} -288\\,x^{7} +252\\,x^{5} -84\\,x^{3} +\\tfrac{63}{8}\\,x","a":"112","aval":112.0,"s":null,"R":1.0,"side":0.7653668647301796},"9s":{"d":"P'(x)=\\tfrac{63}{8}\\,T_{8}(s x)","p":"P(x)=\\frac{1}{16\\,s}\\Big[7 T_{9}(s x) - 9 T_{7}(s x)\\Big]","e":"P(x)=112\\,s^{8}\\,x^{9} -288\\,s^{6}\\,x^{7} +252\\,s^{4}\\,x^{5} -84\\,s^{2}\\,x^{3} +\\tfrac{63}{8}\\,x","a":"448\\,(17-12\\sqrt2)","aval":13.187888682241018,"s":"s=2\\sin\\tfrac{\\pi}{8}=\\sqrt{2-\\sqrt2}\\approx 0.765367","R":1.3065629648763766,"side":1.0},"10u":{"d":"P'(x)=\\tfrac{80}{9}\\,T_{9}(x)","p":"P(x)=\\frac{1}{9}\\Big[4 T_{10}(x) - 5 T_{8}(x)\\Big]","e":"P(x)=\\tfrac{2048}{9}\\,x^{10} -640\\,x^{8} +640\\,x^{6} -\\tfrac{800}{3}\\,x^{4} +40\\,x^{2} -1","a":"\\tfrac{2048}{9}","aval":227.55555555555554,"s":null,"R":1.0,"side":0.6840402866513374},"10s":{"d":"P'(x)=\\tfrac{80}{9}\\,T_{9}(s x)","p":"P(x)=\\frac{1}{9\\,s}\\Big[4 T_{10}(s x) - 5 T_{8}(s x)\\Big]","e":"P(x)=\\tfrac{2048}{9}\\,s^{9}\\,x^{10} -640\\,s^{7}\\,x^{8} +640\\,s^{5}\\,x^{6} -\\tfrac{800}{3}\\,s^{3}\\,x^{4} +40\\,s\\,x^{2} -\\frac{1}{s}","a":"\\tfrac{2048}{9}\\,s^{9}","aval":7.461438533199752,"s":"s=2\\sin\\tfrac{\\pi}{9}\\approx 0.684040","R":1.4619022000815438,"side":1.0},"11u":{"d":"P'(x)=\\tfrac{99}{10}\\,T_{10}(x)","p":"P(x)=\\frac{1}{20}\\Big[9 T_{11}(x) - 11 T_{9}(x)\\Big]","e":"P(x)=\\tfrac{2304}{5}\\,x^{11} -1408\\,x^{9} +1584\\,x^{7} -792\\,x^{5} +165\\,x^{3} -\\tfrac{99}{10}\\,x","a":"\\tfrac{2304}{5}","aval":460.8,"s":null,"R":1.0,"side":0.6180339887498948},"11s":{"d":"P'(x)=\\tfrac{99}{10}\\,T_{10}(s x)","p":"P(x)=\\frac{1}{20\\,s}\\Big[9 T_{11}(s x) - 11 T_{9}(s x)\\Big]","e":"P(x)=\\tfrac{2304}{5}\\,s^{10}\\,x^{11} -1408\\,s^{8}\\,x^{9} +1584\\,s^{6}\\,x^{7} -792\\,s^{4}\\,x^{5} +165\\,s^{2}\\,x^{3} -\\tfrac{99}{10}\\,x","a":"\\tfrac{1152}{5}\\,(123-55\\sqrt5)","aval":3.7465891226649672,"s":"s=2\\sin\\tfrac{\\pi}{10}=\\tfrac{\\sqrt5-1}{2}\\approx 0.618034","R":1.618033988749895,"side":1.0},"12u":{"d":"P'(x)=\\tfrac{120}{11}\\,T_{11}(x)","p":"P(x)=\\frac{1}{11}\\Big[5 T_{12}(x) - 6 T_{10}(x)\\Big]","e":"P(x)=\\tfrac{10240}{11}\\,x^{12} -3072\\,x^{10} +3840\\,x^{8} -2240\\,x^{6} +600\\,x^{4} -60\\,x^{2} +1","a":"\\tfrac{10240}{11}","aval":930.9090909090909,"s":null,"R":1.0,"side":0.5634651136828593},"12s":{"d":"P'(x)=\\tfrac{120}{11}\\,T_{11}(s x)","p":"P(x)=\\frac{1}{11\\,s}\\Big[5 T_{12}(s x) - 6 T_{10}(s x)\\Big]","e":"P(x)=\\tfrac{10240}{11}\\,s^{11}\\,x^{12} -3072\\,s^{9}\\,x^{10} +3840\\,s^{7}\\,x^{8} -2240\\,s^{5}\\,x^{6} +600\\,s^{3}\\,x^{4} -60\\,s\\,x^{2} +\\frac{1}{s}","a":"\\tfrac{10240}{11}\\,s^{11}","aval":1.6921724783718677,"s":"s=2\\sin\\tfrac{\\pi}{11}\\approx 0.563465","R":1.7747327664421118,"side":1.0}};
+var NAMES = {3:'triangle',4:'square',5:'pentagon',6:'hexagon',7:'heptagon',8:'octagon',9:'nonagon',10:'decagon',11:'hendecagon'};
+
+var $ = function (id) { return document.getElementById(id); };
+var nIn = $('n'), unitIn = $('unit'), cv = $('cv'), plot = $('plot');
+var ctx = cv.getContext('2d');
+
+function texInto(el, s, display) {
+  if (window.katex) {
+    try { katex.render(s, el, { throwOnError:false, displayMode:!!display }); return; } catch (_) {}
+  }
+  el.textContent = s;
+}
+
+function cheb(m, t) { /* T_m(t) by the three-term recurrence */
+  if (m === 0) return 1;
+  var a = 1, b = t;
+  for (var i = 1; i < m; i++) { var c = 2 * t * b - a; a = b; b = c; }
+  return b;
+}
+
+var state = { n: 6, unit: false };
+
+function geom() {
+  var n = state.n, k = n - 1;
+  var R = state.unit ? 1 : 1 / (2 * Math.sin(Math.PI / k));
+  var P = function (x) { var t = x / R; return R / (2 * (n - 1)) * ((n - 2) * cheb(n, t) - n * cheb(n - 2, t)); };
+  var verts = [];
+  for (var j = 0; j < k; j++) { var x = R * Math.cos((2 * j + 1) * Math.PI / (2 * k)); verts.push([x, P(x)]); }
+  verts.sort(function (p, q) { return Math.atan2(p[1], p[0]) - Math.atan2(q[1], q[0]); });
+  return { n:n, k:k, R:R, P:P, verts:verts, side: 2 * R * Math.sin(Math.PI / k) };
+}
+
+/* Break the expanded polynomial into as few lines as fit the panel */
+function fitExpanded(e) {
+  var el = $('fe'), terms = e.slice(5).split(' ');
+  for (var m = 1; m <= Math.ceil(terms.length / 2); m++) {
+    var lines = [], at = 0;
+    for (var r = 0; r < m; r++) {           /* balanced: earlier lines get the extra term */
+      var cnt = Math.ceil((terms.length - at) / (m - r));
+      lines.push(terms.slice(at, at + cnt).join(' ')); at += cnt;
+    }
+    var s = lines.length === 1 ? 'P(x)=' + lines[0]
+      : '\\begin{aligned}P(x)&=' + lines.join('\\\\&\\phantom{=}\\;') + '\\end{aligned}';
+    texInto(el, s, true);
+    if (!window.katex || el.scrollWidth <= el.clientWidth + 1) return;
+  }
+}
+
+function fmt(v) { return Math.abs(v) >= 100 ? v.toFixed(3) : v.toPrecision(6).replace(/\.?0+$/, ''); }
+
+function updateFormulas() {
+  var key = state.n + (state.unit ? 'u' : 's'), d = DATA[key], g = geom();
+  texInto($('fd'), d.d, true);
+  texInto($('fp'), d.p, true);
+  fitExpanded(d.e);
+  var a = /^\d+$/.test(d.a) ? d.a : d.a + '\\approx ' + fmt(d.aval);
+  texInto($('fa'), 'a=' + a, true);
+  var fs = $('fs');
+  if (d.s) { fs.style.display = ''; texInto(fs, d.s, false); } else { fs.style.display = 'none'; }
+  $('facts').innerHTML =
+    'polygon <b>regular ' + g.k + '-gon</b> (' + NAMES[g.k] + ')<br>' +
+    'circumradius <b>R = ' + fmt(g.R) + '</b><br>' +
+    'side <b>' + fmt(g.side) + '</b>' + (state.unit ? ' = 2 sin(π/' + g.k + ')' : '') + '<br>' +
+    'extrema at <b>x = R cos((2j+1)π/' + (2 * g.k) + ')</b>';
+  $('cap').textContent = 'n = ' + g.n + ' · ' + NAMES[g.k] + ' · ' + (state.unit ? 'unit circle' : 'unit side');
+}
+
+function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+function niceStep(span) {
+  var raw = span / 6, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+  return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p;
+}
+
+function draw() {
+  var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  var W = plot.clientWidth, H = plot.clientHeight;
+  if (!W || !H) return;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  var g = geom(), L = g.R * 1.3, pad = 22;
+  var sc = Math.min((W - 2 * pad) / (2 * L), (H - 2 * pad - 18) / (2 * L));
+  var cx = W / 2, cy = (H - 18) / 2 + 2;
+  var X = function (x) { return cx + x * sc; }, Y = function (y) { return cy - y * sc; };
+  var xmin = -cx / sc, xmax = (W - cx) / sc, ymax = cy / sc, ymin = -(H - cy) / sc;
+
+  var ink = css('--ink'), soft = css('--ink-soft'), faint = css('--ink-faint'), acc = css('--accent'),
+      line = css('--line'), lsoft = css('--line-soft'), card = css('--paper-card');
+
+  /* background */
+  ctx.fillStyle = card; ctx.fillRect(0, 0, W, H);
+
+  /* grid + axes */
+  var step = niceStep(Math.min(xmax - xmin, ymax - ymin) * 1.2);
+  ctx.lineWidth = 1; ctx.strokeStyle = lsoft; ctx.globalAlpha = 0.55;
+  ctx.beginPath();
+  for (var gx = Math.ceil(xmin / step) * step; gx <= xmax; gx += step) { ctx.moveTo(Math.round(X(gx)) + .5, 0); ctx.lineTo(Math.round(X(gx)) + .5, H); }
+  for (var gy = Math.ceil(ymin / step) * step; gy <= ymax; gy += step) { ctx.moveTo(0, Math.round(Y(gy)) + .5); ctx.lineTo(W, Math.round(Y(gy)) + .5); }
+  ctx.stroke(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = line; ctx.beginPath();
+  ctx.moveTo(0, Math.round(Y(0)) + .5); ctx.lineTo(W, Math.round(Y(0)) + .5);
+  ctx.moveTo(Math.round(X(0)) + .5, 0); ctx.lineTo(Math.round(X(0)) + .5, H);
+  ctx.stroke();
+  ctx.font = '10px "JetBrains Mono", ui-monospace, monospace'; ctx.lineJoin = 'round';
+  var label = function (t, x, y) {
+    ctx.strokeStyle = card; ctx.lineWidth = 3.5; ctx.strokeText(t, x, y);
+    ctx.fillStyle = faint; ctx.fillText(t, x, y);
+  };
+  var dec = step >= 1 ? 0 : Math.min(3, Math.ceil(-Math.log10(step) - 1e-9));
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (gx = Math.ceil(xmin / step) * step; gx <= xmax; gx += step) {
+    if (Math.abs(gx) < step / 2) continue;
+    label(gx.toFixed(dec), X(gx), Y(0) + 4);
+  }
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (gy = Math.ceil(ymin / step) * step; gy <= ymax; gy += step) {
+    if (Math.abs(gy) < step / 2) continue;
+    label(gy.toFixed(dec), X(0) + 5, Y(gy));
+  }
+
+  /* circumscribed circle */
+  ctx.setLineDash([4, 4]); ctx.strokeStyle = faint; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(X(0), Y(0), g.R * sc, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+
+  /* Chebyshev nodes: drop lines to the x-axis */
+  ctx.setLineDash([1.5, 3.5]); ctx.strokeStyle = soft; ctx.globalAlpha = .7;
+  ctx.beginPath();
+  g.verts.forEach(function (p) { ctx.moveTo(X(p[0]), Y(p[1])); ctx.lineTo(X(p[0]), Y(0)); });
+  ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  ctx.fillStyle = soft;
+  g.verts.forEach(function (p) { ctx.fillRect(X(p[0]) - 1, Y(0) - 4, 2, 8); });
+
+  /* polygon */
+  ctx.beginPath();
+  g.verts.forEach(function (p, i) { (i ? ctx.lineTo : ctx.moveTo).call(ctx, X(p[0]), Y(p[1])); });
+  ctx.closePath();
+  ctx.globalAlpha = .11; ctx.fillStyle = acc; ctx.fill(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = acc; ctx.lineWidth = 1.6; ctx.lineJoin = 'round'; ctx.stroke();
+
+  /* the polynomial */
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+  ctx.strokeStyle = ink; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath();
+  var started = false, N = Math.max(400, Math.round(W * 1.5));
+  for (var i = 0; i <= N; i++) {
+    var x = xmin + (xmax - xmin) * i / N, y = g.P(x), py = Y(y);
+    if (py < -2 * H) py = -2 * H; if (py > 3 * H) py = 3 * H;
+    if (!started) { ctx.moveTo(X(x), py); started = true; } else ctx.lineTo(X(x), py);
+  }
+  ctx.stroke(); ctx.restore();
+
+  /* extrema */
+  g.verts.forEach(function (p) {
+    ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 4.6, 0, 2 * Math.PI);
+    ctx.fillStyle = acc; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = card; ctx.stroke();
+  });
+}
+
+function update() {
+  state.n = +nIn.value; state.unit = unitIn.checked;
+  $('nval').textContent = state.n;
+  updateFormulas(); draw();
+}
+nIn.addEventListener('input', update);
+unitIn.addEventListener('change', update);
+new ResizeObserver(draw).observe(plot);
+var lastW = 0;
+new ResizeObserver(function () {
+  var w = $('fpanel').clientWidth; if (w === lastW) return; lastW = w;
+  fitExpanded(DATA[state.n + (state.unit ? 'u' : 's')].e);
+}).observe($('fpanel'));
+window.addEventListener('katex-ready', updateFormulas);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+update();
+})();
+</script>
+</body></html>
