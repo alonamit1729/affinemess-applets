@@ -166,7 +166,7 @@ html.am-standalone .am-home { display:inline-block; }
       </div>
       <h3>Set up</h3>
       <ol>
-        <li>Lay the baseplates edge to edge, 2 across and 2 deep (96 × 96 studs). The map's column and row numbers count studs from the far-left corner as seen from the front.</li>
+        <li>Lay the baseplates edge to edge, 2 across and 2 deep (96 × 96 studs). The map's column and row numbers count studs from the far-left corner as seen from the front, and the darker lines on the map, every 48 studs, are the seams between baseplates.</li>
         <li>Keep the model on the baseplates until it's finished. It stands on the bottoms of its three lobes, which are separate pieces until step 7, so the baseplates keep everything lined up. No pillars are needed: once joined, it stands on its own.</li>
         <li>It's heavy, about 16 kg. Once finished, move it on its baseplates, lifting from underneath.</li>
       </ol>
@@ -259,8 +259,11 @@ function mapSVG(pg) {
   s += `<rect x="0" y="0" width="${ROWS}" height="${COLS}" fill="url(#stud)" stroke="#c3cfd9" stroke-width="0.15"/>`;
   for (let x = 8; x < ROWS; x += 8) s += `<line x1="${x}" y1="0" x2="${x}" y2="${COLS}" stroke="#c3cfd9" stroke-width="0.12"/>`;
   for (let y = 8; y < COLS; y += 8) s += `<line x1="0" y1="${y}" x2="${ROWS}" y2="${y}" stroke="#c3cfd9" stroke-width="0.12"/>`;
-  for (let x = 0; x <= ROWS; x += 8) s += `<text x="${x}" y="-1.2" font-size="1.7" text-anchor="middle" fill="#5b6875" font-family="IBM Plex Mono, monospace">${x}</text>`;
-  for (let y = 0; y <= COLS; y += 8) s += `<text x="-1.2" y="${y + 0.6}" font-size="1.7" text-anchor="end" fill="#5b6875" font-family="IBM Plex Mono, monospace">${y}</text>`;
+  // baseplate seams: the 48×48 plates start at the map's far-left corner
+  for (let x = 48; x < ROWS; x += 48) s += `<line x1="${x}" y1="-0.6" x2="${x}" y2="${COLS + 0.6}" stroke="#6f8aa3" stroke-width="0.42"/>`;
+  for (let y = 48; y < COLS; y += 48) s += `<line x1="-0.6" y1="${y}" x2="${ROWS + 0.6}" y2="${y}" stroke="#6f8aa3" stroke-width="0.42"/>`;
+  for (let x = 0; x <= ROWS; x += 8) s += `<text x="${x}" y="-1.2" font-size="1.7" text-anchor="middle" fill="#5b6875" font-family="IBM Plex Mono, monospace"${x && x % 48 === 0 ? ' font-weight="700"' : ""}>${x}</text>`;
+  for (let y = 0; y <= COLS; y += 8) s += `<text x="-1.2" y="${y + 0.6}" font-size="1.7" text-anchor="end" fill="#5b6875" font-family="IBM Plex Mono, monospace"${y && y % 48 === 0 ? ' font-weight="700"' : ""}>${y}</text>`;
   current = [];
   const refLayer = pg.up ? L + 1 : L - 1; // the layer you build against
   bricks.filter(b => b.k === refLayer && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "ref"));
