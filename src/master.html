@@ -1,5 +1,5 @@
 <!-- =========================================================
-  VERSION 2026-11-26a
+  VERSION 2026-11-27a
     a: logo: thick-line dodecahedron (one ochre face) before the wordmark in the header (tips on hover);
        favicon + apple-touch-icon and og:image link-preview card (brand/ folder, head tags in build_site.py)
   PREVIOUS 2026-11-20c
@@ -762,12 +762,12 @@
   }
 
   /* Desktop: viewer takes over the panel area, page stays one screen tall */
-  @media (min-width: 701px) and (min-height: 521px) {
+  @media (min-width: 701px) and (min-height: 601px) {
     .am-root.am-viewing .am-container { height: 100vh; height: 100dvh; min-height: 560px; }
     .am-root.am-viewing main { display: none; }
   }
   /* Phone (or very short window): full-screen overlay */
-  @media (max-width: 700px), (max-height: 520px) {
+  @media (max-width: 700px), (max-height: 600px) {
     .am-root .viewer {
       position: fixed; inset: 0; z-index: 99999;
       padding: 0;
@@ -818,7 +818,7 @@
   }
 </style>
 
-<div class="am-root" data-version="2026-11-26a">
+<div class="am-root" data-version="2026-11-27a">
   <div class="am-container">
 
     <header class="site-head">
@@ -1852,7 +1852,7 @@
     const vOpen    = document.getElementById('am-viewer-open');
     const vBack    = viewer.querySelector('[data-viewer="back"]');
     const vCopy    = viewer.querySelector('[data-viewer="copy"]');
-    const overlayMQ = window.matchMedia('(max-width: 700px), (max-height: 520px)');
+    const overlayMQ = window.matchMedia('(max-width: 700px), (max-height: 600px)');
     const siteTitle = document.title;
     let currentKey = null;      // "<tab>/<slug>" of the open item
     let currentTab = null;

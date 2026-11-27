@@ -408,7 +408,7 @@
     const vOpen    = document.getElementById('am-viewer-open');
     const vBack    = viewer.querySelector('[data-viewer="back"]');
     const vCopy    = viewer.querySelector('[data-viewer="copy"]');
-    const overlayMQ = window.matchMedia('(max-width: 700px), (max-height: 520px)');
+    const overlayMQ = window.matchMedia('(max-width: 700px), (max-height: 600px)');
     const siteTitle = document.title;
     let currentKey = null;      // "<tab>/<slug>" of the open item
     let currentTab = null;
