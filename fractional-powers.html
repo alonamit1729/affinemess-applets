@@ -153,7 +153,8 @@ input[type=range] { accent-color:var(--accent); }
 .am-about .katex { font-size: 1em; }
 .divider { border-top: 1px solid var(--line-soft); }
 #opts-btn { display: none; }
-@media (max-width: 700px) {
+/* drawer for phones, and for short medium-width frames (tablet on its side, small windows) */
+@media (max-width: 700px), (max-height: 600px) and (max-width: 960px) {
   #opts-btn { display: inline-block; }
   #sidebar {
     position: absolute; top: 0; left: 0; bottom: 0; z-index: 15; width: min(300px, 88%);
