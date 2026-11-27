@@ -131,6 +131,15 @@ input[type=range] { accent-color:var(--accent); }
   .intro { font-size:13.5px; padding:7px 12px 8px; }
 }
 @media (max-width:600px) { .ctl input[type=range] { width:120px; } }
+/* stacked layout: always leave the plot at least ~200px */
+@media (max-width:820px) { .fpanel { max-height:min(46%, calc(100% - 200px)); } }
+/* short frames (phone or tablet on its side, small windows): the intro is repeated in About, so drop it */
+@media (max-height:600px) { .intro { display:none; } }
+/* short and wide enough: formulas beside the plot instead of above it */
+@media (max-height:600px) and (min-width:560px) {
+  .layout { flex-direction:row; }
+  .fpanel { flex:0 0 min(340px, 44%); max-height:none; border-right:1px solid var(--line); border-bottom:0; padding:10px 14px 12px; }
+}
 </style></head>
 <body>
 <div class="am-app">
