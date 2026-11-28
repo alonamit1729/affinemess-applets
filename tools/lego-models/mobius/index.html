@@ -178,7 +178,7 @@ html.am-standalone .am-home { display:inline-block; }
         <li data-style="true">Each step builds one layer. In the picture, new bricks have <b>bold outlines and full colour</b>; earlier layers are faded.</li>
 
         <li data-style="highlight">Each step builds one layer. New bricks are <span class="sw" style="background:var(--new-top);vertical-align:-1px"></span> <b>yellow</b>: they go on top of what's there. Bricks in their own colours are already in place.</li>
-        <li><b>Sub-builds.</b> Some pieces stick out over empty space as the model goes up. Rather than building them in the air, you build each one on its own on the table (its pages say "sub-build"), then lower it onto the model in the step that uses it. On the map, a <span style="color:#7a3fc0;font-weight:600">purple ring</span> marks where a sub-build's bricks land.</li>
+        <li><b>Sub-builds.</b> Some pieces stick out over empty space as the model goes up. Rather than building them in the air, you build each one on its own on the table (its pages say "sub-build"), then lower it onto the model in the step that uses it. On the map, a <span style="color:#7a3fc0;font-weight:600">purple</span> marks a sub-build being lowered into place, in the picture and on the map.</li>
         <li><b>Pillars.</b> Each grey pillar is a stack of crossed pairs of bricks, built on its own and stood on the baseplates (on the <b>black ring</b>) when the strip reaches it.</li>
         <li>Faint outlines on the map show the neighbouring layer, for lining things up. Tap any brick to see its exact columns and rows.</li>
       </ul>
@@ -230,7 +230,6 @@ const PLAN = DATA.plan;
 // table, then lowered onto the model); "main": one layer of the model, plus standing pillars and lowering sub-builds.
 const pages = [];
 const B_ = n => bricks[n];
-const placedAt = new Array(bricks.length).fill(0);   // the main step at which each brick appears in the model
 function piecePages(pc, s, parent) {
   pc.parent = parent;
   pc.subs.forEach(sb => piecePages(sb, s, pc));
@@ -240,12 +239,20 @@ function piecePages(pc, s, parent) {
 function pieceBricks(pc) { return pc.layers.flat().concat(...pc.subs.map(pieceBricks)); }
 PLAN.steps.forEach(st => {
   const pls = PLAN.pillars.filter(p => p.place === st.step);
-  pls.forEach(p => { pages.push({ kind: "pillar", pl: p, s: st.step, items: p.layers.flat().map(B_) }); p.layers.flat().forEach(n => placedAt[n] = st.step); });
-  st.pieces.forEach(pc => { piecePages(pc, st.step, null); pieceBricks(pc).forEach(n => placedAt[n] = st.step); });
-  st.singles.forEach(n => placedAt[n] = st.step);
-  pages.push({ kind: "main", s: st.step, layer: st.step, items: st.singles.map(B_), pieces: st.pieces, pillars: pls });
+  pls.forEach(p => pages.push({ kind: "pillar", pl: p, s: st.step, items: p.layers.flat().map(B_) }));
+  st.pieces.forEach(pc => piecePages(pc, st.step, null));
+  pls.forEach(p => pages.push({ kind: "stand", pl: p, s: st.step, layer: 0, items: [] }));
+  st.pieces.forEach(pc => pages.push({ kind: "attach", pc, s: st.step, layer: st.step, items: [] }));
+  pages.push({ kind: "main", s: st.step, layer: st.step, items: st.singles.map(B_) });
 });
 pages.forEach((p, idx) => p.idx = idx);
+// the page at which each brick becomes part of the model
+const placedPg = new Array(bricks.length).fill(1e9);
+pages.forEach(p => {
+  if (p.kind === "stand") p.pl.layers.flat().forEach(n => placedPg[n] = p.idx);
+  if (p.kind === "attach") pieceBricks(p.pc).forEach(n => placedPg[n] = p.idx);
+  if (p.kind === "main") p.items.forEach(b => placedPg[b.n] = p.idx);
+});
 const cum = []; let acc = 0; pages.forEach(p => { if (p.kind !== "main" || true) acc += p.items.length; cum.push(acc); });
 const pieceName = pc => pc.name;
 
@@ -260,7 +267,7 @@ const STYLE = {
   old:  { col: h => (trueStyle() ? [fadeOf(h), fadeEdge(h)] : [h, LS.edge(h)]), dash: false, studs: true },
   top:  { col: h => (trueStyle() ? [h, LS.edge(h)] : ["#f7ce1e", "#5c4a00"]), dash: false, studs: true },
   below:{ col: h => (trueStyle() ? [h, LS.edge(h)] : ["#1e8fe6", "#06345a"]), dash: false, studs: true },
-  attach:{ col: h => (trueStyle() ? [h, LS.edge(h)] : ["#f7ce1e", "#5c4a00"]), dash: false, studs: true },
+  attach:{ col: h => (trueStyle() ? [h, LS.edge(h)] : ["#a97fe0", "#3c2366"]), dash: false, studs: true },
 };
 let current = [];
 function brickSVG(b, kind, ring) {
@@ -300,12 +307,12 @@ function bbox(list, m) {
 function mapSVG(pg) {
   current = [];
   const L = pg.layer;
-  if (pg.kind === "main") {
+  if (pg.kind === "main" || pg.kind === "attach" || pg.kind === "stand") {
     let s = svgOpen(0, 0, COLS, ROWS, `Top-down map of layer ${L + 1}`) + gridSVG(0, 0, COLS, ROWS, 8);
-    bricks.filter(b => b.k === L - 1 && placedAt[b.n] < pg.s).forEach(b => s += brickSVG(b, "ref"));
-    bricks.filter(b => b.k === L && placedAt[b.n] < pg.s).forEach(b => s += brickSVG(b, "old"));
-    pg.pillars.forEach(p => p.layers.flat().map(B_).filter(b => b.k === L).forEach(b => s += brickSVG(b, "old", RING_PILLAR)));
-    pg.pieces.forEach(pc => pieceBricks(pc).map(B_).filter(b => b.k === L).forEach(b => s += brickSVG(b, "attach", RING_PIECE)));
+    bricks.filter(b => b.k === L - 1 && placedPg[b.n] < pg.idx).forEach(b => s += brickSVG(b, "ref"));
+    bricks.filter(b => b.k === L && placedPg[b.n] < pg.idx).forEach(b => s += brickSVG(b, "old"));
+    if (pg.kind === "stand") pg.pl.layers.flat().map(B_).filter(b => b.k === L).forEach(b => s += brickSVG(b, "old", RING_PILLAR));
+    if (pg.kind === "attach") pieceBricks(pg.pc).map(B_).filter(b => b.k === L).forEach(b => s += brickSVG(b, "attach", RING_PIECE));
     pg.items.forEach(b => s += brickSVG(b, "top"));
     return s + "</svg>";
   }
@@ -353,7 +360,8 @@ let page = -1;
 $("range").max = pages.length;
 function label(pg) { return pg.kind === "main" ? `${pg.s + 1}` : pg.kind === "pillar" ? `${pg.s + 1}` : `${pg.s + 1}`; }
 function hashOf(pg) {
-  return pg.kind === "main" ? `#step-${pg.s + 1}` : pg.kind === "pillar" ? `#step-${pg.s + 1}-pillar-${pg.pl.name}` : `#step-${pg.s + 1}-sub-${pg.pc.name}-${pg.li + 1}`;
+  return pg.kind === "main" ? `#step-${pg.s + 1}` : pg.kind === "pillar" ? `#step-${pg.s + 1}-pillar-${pg.pl.name}` : pg.kind === "stand" ? `#step-${pg.s + 1}-stand-${pg.pl.name}`
+    : pg.kind === "attach" ? `#step-${pg.s + 1}-lower-${pg.pc.name}` : `#step-${pg.s + 1}-sub-${pg.pc.name}-${pg.li + 1}`;
 }
 const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
 function ringBox(list) { const [x0, y0, x1, y1] = bbox(list, 0); return `columns ${x0 + 1}–${x1}, rows ${y0 + 1}–${y1}`; }
@@ -370,15 +378,20 @@ function show(i) {
   if (i < 0) return;
   const pg = pages[i], s = pg.s;
   const cnt4 = (cl) => pg.items.filter(b => bhex(b) === cl.hex && b.o !== 2).length, cnt2 = (cl) => pg.items.filter(b => bhex(b) === cl.hex && b.o === 2).length;
-  const sub = pg.kind === "pillar" ? `pillar ${pg.pl.name}` : pg.kind === "piece" ? `sub-build ${pg.pc.name} · layer ${pg.li + 1} of ${pg.pc.layers.length}` : "";
+  const sub = pg.kind === "pillar" ? `pillar ${pg.pl.name}` : pg.kind === "piece" ? `sub-build ${pg.pc.name} · layer ${pg.li + 1} of ${pg.pc.layers.length}`
+    : pg.kind === "stand" ? `stand pillar ${pg.pl.name}` : pg.kind === "attach" ? `lower sub-build ${pg.pc.name}` : pages.some(q => q.s === s && (q.kind === "stand" || q.kind === "attach")) ? `layer ${s + 1}` : "";
   $("stepnum").innerHTML = `${s + 1}<small>/ ${N}${sub ? ` · ${sub}` : ""}</small>`;
   const chip = (c, n, k) => k ? `<div class="part">${brickIcon(c, n)}× ${k}</div>` : "";
   $("parts").innerHTML = LS.distinct(SC).map(cl => chip(cl.hex, 4, cnt4(cl)) + chip(cl.hex, 2, cnt2(cl))).join("");
   const nn = String(s + 1).padStart(2, "0"), dir = `steps${LS.suffix(SC)}`;
-  $("shot").src = pg.kind === "main" ? `${dir}/step_${nn}.webp` : pg.kind === "pillar" ? `${dir}/pillar_${pg.pl.name}.webp` : `${dir}/sub_${pg.pc.name}_${pg.li + 1}.webp`;
+  $("shot").src = pg.kind === "main" ? `${dir}/step_${nn}.webp` : pg.kind === "pillar" ? `${dir}/pillar_${pg.pl.name}.webp` : pg.kind === "stand" ? `${dir}/stand_${pg.pl.name}.webp`
+    : pg.kind === "attach" ? `${dir}/attach_${pg.pc.name}.webp` : `${dir}/sub_${pg.pc.name}_${pg.li + 1}.webp`;
   $("belowwrap").classList.add("hidden");
-  $("shottitle").textContent = pg.kind === "main" ? "Model after this step" : pg.kind === "pillar" ? `Pillar ${pg.pl.name}, finished` : `Sub-build ${pg.pc.name} so far`;
-  $("maptitle").textContent = pg.kind === "main" ? `Layer ${pg.layer + 1} from above` : pg.kind === "pillar" ? `Pillar ${pg.pl.name}, layer by layer` : `Sub-build ${pg.pc.name}: its layer ${pg.li + 1} from above`;
+  $("shottitle").textContent = pg.kind === "main" ? "Model after this step" : pg.kind === "pillar" ? `Pillar ${pg.pl.name}, finished` : pg.kind === "stand" ? `Pillar ${pg.pl.name} in place`
+    : pg.kind === "attach" ? `Sub-build ${pg.pc.name} in place` : `Sub-build ${pg.pc.name} so far`;
+  $("maptitle").textContent = pg.kind === "main" ? `Layer ${pg.layer + 1} from above` : pg.kind === "pillar" ? `Pillar ${pg.pl.name}, layer by layer`
+    : pg.kind === "stand" ? `Layer 1 from above: where pillar ${pg.pl.name} stands` : pg.kind === "attach" ? `Layer ${pg.layer + 1} from above: where sub-build ${pg.pc.name} lands`
+    : `Sub-build ${pg.pc.name}: its layer ${pg.li + 1} from above`;
   $("mapwrap").innerHTML = pg.kind === "pillar" ? pillarHTML(pg.pl) : mapSVG(pg);
   $("mapwrap").classList.toggle("pillar", pg.kind === "pillar"); $("zoom").hidden = pg.kind === "pillar";
   $("info").textContent = pg.kind === "pillar" ? "" : "Tap a brick for its position.";
@@ -388,11 +401,14 @@ function show(i) {
   if (pg.kind === "pillar") lg = `<span>${sw("#6c6e68", "1px solid #26272a")}each layer: two bricks, crossed over the layer below</span>`;
   else {
     lg = `<span>${newSw}new: place on top</span>`;
-    if (pg.kind === "main" && pg.pieces.length || pg.kind === "piece" && pg.attach.length) lg += `<span>${sw("none", `3px solid ${RING_PIECE}`)}sub-build lands here</span>`;
-    if (pg.kind === "main" && pg.pillars.length) lg += `<span>${sw("none", `3px solid ${RING_PILLAR}`)}stand the pillar here</span>`;
-    if (pg.kind === "main" && bricks.some(b => b.k === pg.layer && placedAt[b.n] < pg.s)) lg += `<span>${trueStyle() ? sw(fadeOf(main), `1px solid ${fadeEdge(main)}`) : sw("#6c6e68", "1px solid #26272a")}already in place</span>`;
+    if (pg.kind !== "main" && pg.kind !== "piece") lg = "";
+    const subSw = trueStyle() ? sw(main, `3px solid ${RING_PIECE}`) : sw("#a97fe0", `3px solid ${RING_PIECE}`);
+    if (pg.kind === "attach") lg += `<span>${subSw}sub-build ${pg.pc.name}: its bricks in this layer</span>`;
+    if (pg.kind === "piece" && pg.attach.length) lg += `<span>${subSw}sub-build ${pg.attach.map(x => x.name).join(", ")} lands here</span>`;
+    if (pg.kind === "stand") lg += `<span>${sw("#6c6e68", `3px solid ${RING_PILLAR}`)}pillar ${pg.pl.name} stands here</span>`;
+    if (pg.kind !== "piece" && bricks.some(b => b.k === pg.layer && placedPg[b.n] < pg.idx)) lg += `<span>${trueStyle() ? sw(fadeOf(main), `1px solid ${fadeEdge(main)}`) : sw("#d01012", "1px solid #3a0a04")}already in place</span>`;
     if (pg.kind === "piece" && pg.li > 0) lg += `<span>${sw("none", "1px dashed #c9a39d")}its layer ${pg.li} (below)</span>`;
-    if (pg.kind === "main" && pg.layer > 0) lg += `<span>${sw("none", "1px dashed #c9a39d")}layer ${pg.layer} (below)</span>`;
+    if (pg.kind !== "piece" && pg.layer > 0) lg += `<span>${sw("none", "1px dashed #c9a39d")}layer ${pg.layer} (below)</span>`;
   }
   $("legend").innerHTML = lg;
   const cnt = pg.items.length, bricksTxt = plural(cnt, "brick");
@@ -410,12 +426,16 @@ function show(i) {
     else t = `<h3>Sub-build ${pc.name} · layer ${pg.li + 1} of ${nl}</h3><p>${cnt ? `Place ${bricksTxt} on top of the piece.` : ""}</p>`;
     pg.attach.forEach(sb => t += `<p>Then take sub-build ${sb.name} and lower it onto this piece, so its bricks land on the purple-ringed places.</p>`);
     if (last) t += `<p>Sub-build ${pc.name} is done. Put it aside until ${when}.</p>`;
+  } else if (pg.kind === "stand") {
+    t = `<h3>Stand pillar ${pg.pl.name}</h3><p>Put pillar ${pg.pl.name} on the baseplates, on the black-ringed place (${ringBox(pg.pl.layers[0].map(B_))}).</p>` +
+        `<p>From this step on, the strip rests on it. If a brick that sits on the pillar doesn't line up, nudge the pillar on the baseplates.</p>`;
+  } else if (pg.kind === "attach") {
+    const top = pieceBricks(pg.pc).map(B_).filter(b => b.k === pg.layer);
+    t = `<h3>Lower sub-build ${pg.pc.name}</h3><p>Lower sub-build ${pg.pc.name} straight down onto the model, so its top bricks (purple on the map, ${ringBox(top)}) sit on layer ${pg.layer}. ` +
+        `Its lower bricks hang beside the layers below. In the picture it's the ${trueStyle() ? "full-colour" : "purple"} part.</p>`;
   } else {
     t = `<h3>Build layer ${s + 1}</h3>`;
-    pg.pillars.forEach(p => t += `<p>First stand <b>pillar ${p.name}</b> on the baseplates, on the black-ringed place (${ringBox(p.layers.flat().map(B_))}).</p>`);
-    t += s === 0 ? `<p>Place ${bricksTxt} directly on the baseplates.</p>` : cnt ? `<p>Place the ${bricksTxt} on top of layer ${s}, in any order.</p>` : "";
-    pg.pieces.forEach(pc => t += `<p>${cnt || pg.pillars.length ? "Then lower" : "Lower"} <b>sub-build ${pc.name}</b> onto the model: its purple-ringed bricks go here (${ringBox(pieceBricks(pc).map(B_).filter(b => b.k === pg.layer))}), and its lower bricks hang beside the layers below.</p>`);
-    if (pg.pillars.length) t += `<p><b>Check:</b> from here on the strip rests on the pillar. If a brick that sits on it doesn't line up, nudge the pillar on the baseplates.</p>`;
+    t += s === 0 ? `<p>Place ${bricksTxt} directly on the baseplates.</p>` : cnt ? `<p>Place the ${bricksTxt} on top of layer ${s}, in any order.</p>` : `<p>Nothing more to add in this layer.</p>`;
   }
   if (i === pages.length - 1) t += `<p><b>Done.</b> Follow the edge with a finger: it goes around twice before it gets back to where you started.</p>`;
   $("todo").innerHTML = t;
