@@ -271,8 +271,13 @@ function mapSVG(pg) {
   for (let y = 0; y <= ROWS; y += 8) s += `<text x="-1.2" y="${y + 0.6}" font-size="1.7" text-anchor="end" fill="#5b6875" font-family="IBM Plex Mono, monospace"${y && y % 48 === 0 ? ' font-weight="700"' : ""}>${y}</text>`;
   current = [];
   const refLayer = pg.up ? L + 1 : L - 1; // the layer you build against
-  bricks.filter(b => b.k === refLayer && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "ref"));
-  bricks.filter(b => b.k === L && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "old"));
+  if (pg.up) {  // pressed-on pages: the layer above is what you see and press onto; this layer's earlier bricks are hidden under it
+    bricks.filter(b => b.k === refLayer && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "old"));
+    bricks.filter(b => b.k === L && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "ref"));
+  } else {
+    bricks.filter(b => b.k === refLayer && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "ref"));
+    bricks.filter(b => b.k === L && placedBefore(b, pg.idx)).forEach(b => s += brickSVG(b, "old"));
+  }
   const ring = !trueStyle() || pg.q === 0 ? null : (pg.up ? "#1e6fd6" : "#e0a800");
   pg.items.forEach(b => s += brickSVG(b, pg.up ? "below" : "top", ring));
   return s + "</svg>";
@@ -309,10 +314,10 @@ function show(i) {
   $("belowwrap").classList.toggle("hidden", !showBelow);
   if (showBelow) $("below").src = `steps${LS.suffix(SC)}/step_${nn}_below.webp`;
   $("shottitle").textContent = n > 1 ? `Model after all of step ${s + 1}` : "Model after this step";
-  $("maptitle").textContent = `Layer ${pg.layer + 1} from above`;
+  $("maptitle").textContent = pg.up ? `Layer ${pg.layer + 1} from above, under layer ${pg.layer + 2}` : `Layer ${pg.layer + 1} from above`;
   $("mapwrap").innerHTML = mapSVG(pg);
   $("info").textContent = "Tap a brick for its position.";
-  const ref = pg.up ? `layer ${pg.layer + 2} (above)` : `layer ${pg.layer} (below)`;
+  const ref = pg.up ? `layer ${pg.layer + 1}: already placed, hidden under layer ${pg.layer + 2}` : `layer ${pg.layer} (below)`;
   const main = LS.distinct(SC)[0].hex;
   $("legend").innerHTML = trueStyle() ?
     (pg.q === 0 ? `<span><span class="sw" style="background:${main};border:1px solid ${LS.edge(main)}"></span>full colour: place now</span>`
@@ -322,6 +327,7 @@ function show(i) {
     `<span><span class="sw" style="background:${pg.up ? "var(--new-below)" : "var(--new-top)"}"></span>${pg.up ? "new: press onto the underside" : "new: place on top"}</span>` +
     `<span>${LS.distinct(SC).filter(cl => !cl.roles.includes(3)).map(cl => `<span class="sw" style="background:${cl.hex};border:1px solid ${LS.edge(cl.hex)}"></span>`).join(" ")} already in this layer</span>` +
     `<span><span class="sw" style="background:none;border:1px dashed #c9a39d"></span>${ref}</span>`;
+  if (pg.up) $("legend").innerHTML = $("legend").innerHTML.replace(/(faded: )?already in this layer/, `layer ${pg.layer + 2}: press onto its underside`);
   const cnt = pg.items.length, bricksTxt = `${cnt} brick${cnt === 1 ? "" : "s"}`;
   let t;
   if (pg.q === 0) {
@@ -342,7 +348,7 @@ function show(i) {
 $("mapwrap").addEventListener("click", e => {
   const g = e.target.closest("g[data-idx]"); if (!g) return;
   const { b, kind } = current[+g.dataset.idx], r = rect(b);
-  const what = kind === "top" ? "new, on top" : kind === "below" ? "new, from below" : kind === "old" ? "already placed" : "neighbouring layer";
+  const what = kind === "top" ? "new, on top" : kind === "below" ? "new, from below" : kind === "old" ? "already placed" : b.k === pages[page].layer ? "already placed, hidden under the layer above" : "neighbouring layer";
   const nm = bname(b);
   $("info").textContent = `${nm[0].toUpperCase() + nm.slice(1)} ${b.o === 2 ? "2×2" : "2×4"} · columns ${r.x + 1}–${r.x + r.w} · rows ${r.y + 1}–${r.y + r.h} · layer ${b.k + 1} (${what})`;
 });
