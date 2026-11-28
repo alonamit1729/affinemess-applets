@@ -154,7 +154,7 @@ a.am-btn { text-decoration:none; display:inline-block; }
 <script src="schemes.js"></script>
 <script>
 // bricks per role (0 side A, 1 side B, 2 rim, 3 pillar) as [2x4, 2x2]
-const COUNTS = { mobius: [[2155, 196], null, [828, 121], [146, 2]], trefoil: [[3013, 84], [2936, 150], [1910, 155], [129, 2]],
+const COUNTS = { mobius: [[2069, 368], null, [805, 167], [146, 2]], trefoil: [[3013, 84], [2936, 150], [1910, 155], [129, 2]],
                  boy: [[4929, 197], null, [385, 31], null, [1475, 17]],
                  antioloid: [[2504, 97], [2462, 65], [766, 55], [90, 1], null, [820, 46]],
                  borromean: [[2262, 64], [2173, 295], [524, 42], [9, 3], null, [506, 64], [514, 53]] };
@@ -169,7 +169,7 @@ const MODELS = {
   mobius: { w: 3200, h: 2560, alt: sc => `Photo-real render of the brick Möbius strip in ${LEGO_SCHEMES.distinct(sc).map(c => c.name).join(", ")}`,
     html: `<h2>A Möbius strip in bricks</h2>
       <p>A band with a half twist: one side, one edge. Tilted 65° so that no part of the band is flatter than about 51°, which lets it go up layer by layer like a curved wall.</p>
-      <table class="facts"><tr><td>Bricks</td><td>3,448</td></tr>__PARTS__
+      <table class="facts"><tr><td>Bricks</td><td>3,557</td></tr>__PARTS__
       <tr><td>Size</td><td>78 × 40 × 82 cm</td></tr><tr><td>Layers</td><td>85</td></tr><tr><td>Weight</td><td>≈ 7.6 kg</td></tr></table>` },
   trefoil: { w: 1552, h: 1940, alt: sc => `Photo-real render of the trefoil Seifert surface in ${LEGO_SCHEMES.distinct(sc).map(c => c.name).join(", ")} bricks`,
     html: `<h2>A Seifert surface for the trefoil</h2>
